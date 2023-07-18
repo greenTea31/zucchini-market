@@ -4,6 +4,7 @@ import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.dto.request.AddUserRequest;
 import com.zucchini.domain.user.dto.request.LoginRequest;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
+import com.zucchini.domain.user.exception.UserException;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.jwt.JwtExpirationEnums;
 import com.zucchini.global.domain.LogoutAccessTokenRedisRepository;
@@ -12,6 +13,7 @@ import com.zucchini.global.domain.RefreshTokenRedisRepository;
 import com.zucchini.global.domain.TokenDto;
 import com.zucchini.global.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -36,6 +39,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(AddUserRequest user) {
+        if (userRepository.findById(user.getId()).isPresent())
+            throw new UserException("이미 등록된 아이디 입니다.");
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user.toEntity());
     }

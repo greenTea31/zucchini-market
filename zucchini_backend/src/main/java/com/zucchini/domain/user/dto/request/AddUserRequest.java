@@ -14,7 +14,7 @@ public class AddUserRequest {
 
     @NotBlank
     @Length(min = 8, max = 16, message = "아이디는 최소 8글자 최대 16글자 입니다.")
-    @Pattern(regexp = "^[a-z0-9-_]$", message = "아이디는 한글, 특수문자를 제외해야합니다.")
+    @Pattern(regexp = "^[a-z0-9-_]*$", message = "아이디는 한글, 특수문자를 제외해야합니다.")
     private String id;
 
     @NotBlank
