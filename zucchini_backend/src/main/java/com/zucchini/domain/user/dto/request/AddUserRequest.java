@@ -1,14 +1,15 @@
-package com.zucchini.zucchini_back.domain.user.dto.request;
+package com.zucchini.domain.user.dto.request;
 
-import lombok.AllArgsConstructor;
+import com.zucchini.domain.user.domain.User;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-@Getter
+@Getter @Setter
 public class AddUserRequest {
 
     @NotBlank
@@ -40,5 +41,17 @@ public class AddUserRequest {
     @Email
     @Length(max = 255)
     private String email;
+
+    public User toEntity() {
+        return User.builder()
+                .id(id)
+                .password(password)
+                .nickname(nickname)
+                .name(name)
+                .phone(phone)
+                .gender(gender)
+                .email(email)
+                .build();
+    }
 
 }

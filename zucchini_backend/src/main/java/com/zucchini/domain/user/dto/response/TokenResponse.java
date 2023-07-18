@@ -1,4 +1,4 @@
-package com.zucchini.zucchini_back.domain.user.dto.response;
+package com.zucchini.domain.user.dto.response;
 
 import lombok.*;
 
