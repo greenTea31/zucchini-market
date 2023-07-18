@@ -1,9 +1,10 @@
-package com.zucchini.zucchini_back.domain.user.domain;
+package com.zucchini.domain.user.domain;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import javax.validation.constraints.Pattern;
 
 @Entity
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 

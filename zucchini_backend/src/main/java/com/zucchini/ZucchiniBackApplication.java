@@ -1,4 +1,4 @@
-package com.zucchini.zucchini_back;
+package com.zucchini;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
