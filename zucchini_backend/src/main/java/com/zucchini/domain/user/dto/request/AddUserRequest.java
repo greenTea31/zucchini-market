@@ -1,7 +1,6 @@
-package com.zucchini.zucchini_back.domain.user.dto.request;
+package com.zucchini.domain.user.dto.request;
 
-import com.zucchini.zucchini_back.domain.user.domain.User;
-import lombok.AllArgsConstructor;
+import com.zucchini.domain.user.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;

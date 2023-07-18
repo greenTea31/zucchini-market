@@ -1,10 +1,8 @@
-package com.zucchini.zucchini_back.domain.user.service;
+package com.zucchini.domain.user.service;
 
-import com.zucchini.zucchini_back.domain.user.dto.request.AddUserRequest;
-import com.zucchini.zucchini_back.domain.user.dto.request.LoginRequest;
-import com.zucchini.zucchini_back.domain.user.dto.response.FindUserResponse;
-
-import java.util.List;
+import com.zucchini.domain.user.dto.request.AddUserRequest;
+import com.zucchini.domain.user.dto.request.LoginRequest;
+import com.zucchini.domain.user.dto.response.FindUserResponse;
 
 public interface UserService {
 

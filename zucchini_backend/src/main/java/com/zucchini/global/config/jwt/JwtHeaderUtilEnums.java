@@ -1,4 +1,4 @@
-package com.zucchini.zucchini_back.global.config.jwt;
+package com.zucchini.global.config.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

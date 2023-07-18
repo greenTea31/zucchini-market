@@ -1,8 +1,8 @@
-package com.zucchini.zucchini_back.global.config.jwt;
+package com.zucchini.global.config.jwt;
 
-import com.zucchini.zucchini_back.global.config.security.CustomUserDetailService;
-import com.zucchini.zucchini_back.global.domain.LogoutAccessTokenRedisRepository;
-import com.zucchini.zucchini_back.global.util.JwtTokenUtil;
+import com.zucchini.global.config.security.CustomUserDetailService;
+import com.zucchini.global.domain.LogoutAccessTokenRedisRepository;
+import com.zucchini.global.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

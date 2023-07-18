@@ -1,4 +1,4 @@
-package com.zucchini.zucchini_back.domain.user.dto.request;
+package com.zucchini.domain.user.dto.request;
 
 import lombok.Getter;
 

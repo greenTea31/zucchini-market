@@ -1,4 +1,4 @@
-package com.zucchini.zucchini_back.domain.user.domain;
+package com.zucchini.domain.user.domain;
 
 import lombok.AccessLevel;
 import lombok.Builder;

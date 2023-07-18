@@ -1,4 +1,4 @@
-package com.zucchini.zucchini_back.global.domain;
+package com.zucchini.global.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

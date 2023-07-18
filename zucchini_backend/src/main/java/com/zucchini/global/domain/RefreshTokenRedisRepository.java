@@ -1,4 +1,4 @@
-package com.zucchini.zucchini_back.global.domain;
+package com.zucchini.global.domain;
 
 import org.springframework.data.repository.CrudRepository;
 

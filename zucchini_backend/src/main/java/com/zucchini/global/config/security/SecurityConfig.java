@@ -1,7 +1,7 @@
-package com.zucchini.zucchini_back.global.config.security;
+package com.zucchini.global.config.security;
 
-import com.zucchini.zucchini_back.global.config.jwt.JwtAuthenticationFilter;
-import com.zucchini.zucchini_back.global.config.jwt.JwtEntryPoint;
+import com.zucchini.global.config.jwt.JwtAuthenticationFilter;
+import com.zucchini.global.config.jwt.JwtEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

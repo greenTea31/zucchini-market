@@ -1,6 +1,5 @@
-package com.zucchini.zucchini_back.global.config.cache;
+package com.zucchini.global.config.cache;
 
-import com.zucchini.zucchini_back.global.config.cache.CacheKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;

@@ -1,7 +1,7 @@
-package com.zucchini.zucchini_back.global.config.security;
+package com.zucchini.global.config.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.zucchini.zucchini_back.domain.user.domain.User;
+import com.zucchini.domain.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

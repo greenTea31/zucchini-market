@@ -1,6 +1,6 @@
-package com.zucchini.zucchini_back.global.util;
+package com.zucchini.global.util;
 
-import com.zucchini.zucchini_back.global.config.jwt.JwtExpirationEnums;
+import com.zucchini.global.config.jwt.JwtExpirationEnums;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

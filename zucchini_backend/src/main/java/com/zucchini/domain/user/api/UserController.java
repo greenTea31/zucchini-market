@@ -1,8 +1,8 @@
-package com.zucchini.zucchini_back.domain.user.api;
+package com.zucchini.domain.user.api;
 
-import com.zucchini.zucchini_back.domain.user.dto.request.AddUserRequest;
-import com.zucchini.zucchini_back.domain.user.service.UserService;
-import com.zucchini.zucchini_back.global.util.JwtTokenUtil;
+import com.zucchini.domain.user.service.UserService;
+import com.zucchini.domain.user.dto.request.AddUserRequest;
+import com.zucchini.global.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

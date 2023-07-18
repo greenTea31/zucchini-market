@@ -1,8 +1,8 @@
-package com.zucchini.zucchini_back.global.config.security;
+package com.zucchini.global.config.security;
 
-import com.zucchini.zucchini_back.domain.user.domain.User;
-import com.zucchini.zucchini_back.domain.user.repository.UserRepository;
-import com.zucchini.zucchini_back.global.config.cache.CacheKey;
+import com.zucchini.domain.user.domain.User;
+import com.zucchini.domain.user.repository.UserRepository;
+import com.zucchini.global.config.cache.CacheKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;

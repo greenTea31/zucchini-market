@@ -1,4 +1,4 @@
-package com.zucchini.zucchini_back.global.config.jwt;
+package com.zucchini.global.config.jwt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;

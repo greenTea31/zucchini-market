@@ -1,12 +1,12 @@
-package com.zucchini.zucchini_back.domain.user.service;
+package com.zucchini.domain.user.service;
 
-import com.zucchini.zucchini_back.domain.user.dto.request.AddUserRequest;
-import com.zucchini.zucchini_back.domain.user.dto.request.LoginRequest;
-import com.zucchini.zucchini_back.domain.user.dto.response.FindUserResponse;
-import com.zucchini.zucchini_back.domain.user.repository.UserRepository;
-import com.zucchini.zucchini_back.global.domain.LogoutAccessTokenRedisRepository;
-import com.zucchini.zucchini_back.global.domain.RefreshTokenRedisRepository;
-import com.zucchini.zucchini_back.global.util.JwtTokenUtil;
+import com.zucchini.domain.user.dto.request.AddUserRequest;
+import com.zucchini.domain.user.dto.request.LoginRequest;
+import com.zucchini.domain.user.dto.response.FindUserResponse;
+import com.zucchini.domain.user.repository.UserRepository;
+import com.zucchini.global.domain.LogoutAccessTokenRedisRepository;
+import com.zucchini.global.domain.RefreshTokenRedisRepository;
+import com.zucchini.global.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

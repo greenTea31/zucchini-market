@@ -1,6 +1,6 @@
-package com.zucchini.zucchini_back.domain.user.repository;
+package com.zucchini.domain.user.repository;
 
-import com.zucchini.zucchini_back.domain.user.domain.User;
+import com.zucchini.domain.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
