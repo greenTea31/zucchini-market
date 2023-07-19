@@ -6,14 +6,13 @@ import com.zucchini.domain.user.dto.request.LoginRequest;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.exception.UserException;
 import com.zucchini.domain.user.repository.UserRepository;
+import com.zucchini.global.config.cache.CacheKey;
 import com.zucchini.global.config.jwt.JwtExpirationEnums;
-import com.zucchini.global.domain.LogoutAccessTokenRedisRepository;
-import com.zucchini.global.domain.RefreshToken;
-import com.zucchini.global.domain.RefreshTokenRedisRepository;
-import com.zucchini.global.domain.TokenDto;
+import com.zucchini.global.domain.*;
 import com.zucchini.global.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,8 +78,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void logout() {
-
+    @CacheEvict(value = CacheKey.USER, key = "#id")
+    public void logout(String accessToken, String id) {
+        long remainMilliSeconds = jwtTokenUtil.getRemainMilliSeconds((accessToken));
+        refreshTokenRedisRepository.deleteById(id);
+        logoutAccessTokenRedisRepository.save(LogoutAccessToken.of(accessToken, id, remainMilliSeconds));
     }
 
 }

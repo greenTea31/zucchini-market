@@ -6,17 +6,12 @@ import com.zucchini.domain.user.service.UserService;
 import com.zucchini.domain.user.dto.request.AddUserRequest;
 import com.zucchini.global.domain.TokenDto;
 import com.zucchini.global.util.JwtTokenUtil;
-import jdk.jfr.internal.Repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -48,6 +43,16 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(userService.login(loginRequest));
+    }
+
+    @PostMapping("/logout")
+    public void logout(@RequestHeader("Authorization") String accessToken) {
+        String id = jwtTokenUtil.getUsername(resolveToken(accessToken));
+        userService.logout(resolveToken(accessToken), id);
+    }
+
+    private String resolveToken(String accessToken) {
+        return accessToken.substring(7);
     }
 
 }

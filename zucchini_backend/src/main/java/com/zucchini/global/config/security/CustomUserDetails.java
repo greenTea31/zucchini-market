@@ -17,6 +17,7 @@ import java.util.Collection;
 @Builder
 public class CustomUserDetails implements UserDetails {
 
+    private String username = null;
     private String id;          // 로그인용 ID 값
     private String password;    // 비밀번호
 //    private String email;       // 이메일

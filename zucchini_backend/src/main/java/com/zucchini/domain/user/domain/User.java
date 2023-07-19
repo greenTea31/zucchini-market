@@ -27,7 +27,6 @@ public class User {
     private String id;
 
     @Column(name = "password", nullable = false)
-//    @Length(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
     @Column(name = "nickname", nullable = false, length = 20)
@@ -49,12 +48,18 @@ public class User {
     private String email;
 
     @Column(name = "report_count", nullable = false, columnDefinition = "integer default 0")
-    private Integer report_count;
+    private Integer reportCount;
 
     @Column(name = "grade", nullable = false, columnDefinition = "double default 3")
     @DecimalMin(value = "0.0", inclusive = true)
     @DecimalMax(value = "5.0", inclusive = true)
-    private Double grade;
+    private Float grade;
+
+    @Column(name = "email_check", nullable = false, columnDefinition = "boolean default 0")
+    private Boolean emailCheck;
+
+    @Column(name = "lock", nullable = false, columnDefinition = "boolean default 0")
+    private Boolean lock;
 
     @Builder
     public User(String id, String password, String nickname, String name, String phone, boolean gender, String email) {
