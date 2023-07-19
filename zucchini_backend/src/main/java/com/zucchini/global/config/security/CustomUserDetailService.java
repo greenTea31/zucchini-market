@@ -23,4 +23,5 @@ public class CustomUserDetailService implements UserDetailsService {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("user doesn't exist"));
         return CustomUserDetails.of(user);
     }
+
 }
