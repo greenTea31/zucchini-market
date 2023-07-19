@@ -55,9 +55,6 @@ public class User {
     @DecimalMax(value = "5.0", inclusive = true)
     private Float grade;
 
-    @Column(name = "email_check", nullable = false, columnDefinition = "boolean default 0")
-    private Boolean emailCheck;
-
     @Column(name = "lock", nullable = false, columnDefinition = "boolean default 0")
     private Boolean lock;
 

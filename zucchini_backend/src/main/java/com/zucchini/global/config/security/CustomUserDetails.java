@@ -20,16 +20,17 @@ public class CustomUserDetails implements UserDetails {
     private String username = null;
     private String id;          // 로그인용 ID 값
     private String password;    // 비밀번호
-//    private String email;       // 이메일
-//    private boolean emailVerified;  // 이메일 인증 여부
-//    private boolean locked;         // 계정 잠김 여부
-//    private String nickname;        // 닉네임
+    private String email;       // 이메일
+    private boolean lock;         // 계정 잠김 여부
+    private String nickname;        // 닉네임
     private Collection<GrantedAuthority> authorities;   // 권한 목록
 
     public static UserDetails of(User user) {
         return CustomUserDetails.builder()
                 .id(user.getId())
                 .password(user.getPassword())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
                 .build();
     }
 
@@ -65,8 +66,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isAccountNonExpired() {
-//        return true;
-        return false;
+        return true;
     }
 
     /**
@@ -77,8 +77,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isAccountNonLocked() {
-//        return locked;
-        return false;
+        return lock;
     }
 
     /**
@@ -89,8 +88,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isCredentialsNonExpired() {
-//        return true;
-        return false;
+        return true;
     }
 
     /**
@@ -101,9 +99,8 @@ public class CustomUserDetails implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        // 이메일이 인증되어 있고 계정이 잠겨잇지 않으면 true
-//        return (emailVerified && !locked);
-        return false;
+        // 계정이 잠겨잇지 않으면 true
+        return !lock;
     }
 
 }
