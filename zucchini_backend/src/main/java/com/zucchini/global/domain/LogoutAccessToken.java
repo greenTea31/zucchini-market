@@ -29,4 +29,5 @@ public class LogoutAccessToken {
                 .expiration(remainingMilliSeconds / 1000)
                 .build();
     }
+
 }
