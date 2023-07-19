@@ -61,8 +61,8 @@ export default function SignUp() {
     border: 2px solid #cde990;
     border-radius: 0.4rem;
     background-color: white;
-    // width: 15rem;
     margin: 0.3rem;
+
     &:hover {
       background-color: #cde990;
       cursor: pointer;

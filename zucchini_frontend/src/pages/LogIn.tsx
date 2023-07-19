@@ -10,7 +10,6 @@ export default function LogIn() {
     align-items: center;
     height: auto;
     font-family: "IBM Plex Sans KR", sans-serif;
-    // border: solid pink;
   `;
 
   const StyledDiv = styled.div`
@@ -18,9 +17,10 @@ export default function LogIn() {
     flex-direction: column;
     justify-content: center;
     height: auto;
+    width: 20rem;
     margin: 4rem;
     text-align: center;
-    // border: solid green;
+    padding-top: 3rem;
   `;
 
   const StyledTitle = styled.span`
@@ -32,11 +32,13 @@ export default function LogIn() {
   const StyledSpanDiv = styled.div`
     display: flex;
     flex-direction: column;
+    margin-top: 0.7rem;
   `;
 
   const StyledSpan = styled.span`
-    margin: 0.2rem;
-    line-height: 1.5rem;
+    line-height: 1.3rem;
+    color: gray;
+    font-size: smaller;
   `;
 
   const StyledForm = styled.form`
@@ -57,6 +59,7 @@ export default function LogIn() {
   const StyledButtonDiv = styled.div`
     display: flex;
     flex-direction: column;
+    margin-top: 0.7rem;
   `;
 
   const StyledButton = styled.button`
@@ -64,8 +67,8 @@ export default function LogIn() {
     border: 2px solid #cde990;
     border-radius: 0.4rem;
     background-color: white;
-    // width: 15rem;
     margin: 0.3rem;
+
     &:hover {
       background-color: #cde990;
       cursor: pointer;
@@ -78,6 +81,9 @@ export default function LogIn() {
     padding: 4px 8px;
     margin: 0 auto;
     text-align: center;
+    margin-top: 0.7rem;
+    color: blue;
+    font-weight: 600;
   `;
 
   const [values, setValues] = useState({ id: "", pw: "" });
@@ -104,11 +110,8 @@ export default function LogIn() {
           </StyledButtonDiv>
         </StyledForm>
         <StyledSpanDiv>
-          <StyledSpan>
-            아직 애호박 멤버가 아니신가요?
-            <br />
-            회원가입하고 더 많은 서비스를 경험해보세요!
-          </StyledSpan>
+          <StyledSpan>아직 애호박 멤버가 아니신가요?</StyledSpan>
+          <StyledSpan>회원가입하고 더 많은 서비스를 경험해보세요!</StyledSpan>
           <StyledLink to="/signup">회원가입</StyledLink>
         </StyledSpanDiv>
       </StyledDiv>

@@ -3,6 +3,7 @@ import Root from "./Root";
 import SignUp from "./pages/SignUp";
 import LogIn from "./pages/LogIn";
 import UpdateUser from "./pages/UpdateUser";
+import Main from "./pages/Main";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/myPage/modify",
         element: <UpdateUser />,
+      },
+      {
+        path: "/main",
+        element: <Main />,
       },
     ],
   },
