@@ -38,6 +38,10 @@ const Logo = styled.div`
   }
 `;
 
+export function Button() {
+  return <div></div>;
+}
+
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -69,7 +73,7 @@ export default function Header() {
 
       <HeaderRight>
         <Menu toggle={setIsMenuOpen} />
-        {isMenuOpen && <MenuWindow />}
+        {isMenuOpen && <MenuWindow toggle={setIsMenuOpen} />}
       </HeaderRight>
     </HeaderContainer>
   );
