@@ -38,6 +38,10 @@ const Logo = styled.div`
   }
 `;
 
+export function Button() {
+  return <div></div>;
+}
+
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
