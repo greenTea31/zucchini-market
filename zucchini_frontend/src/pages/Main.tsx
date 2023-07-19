@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import Form from "../components/Form";
+import { Input, Button } from "../components/Form";
 
 export default function Main() {
   const MainAll = styled.div`

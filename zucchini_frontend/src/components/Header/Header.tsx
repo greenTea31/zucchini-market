@@ -69,7 +69,7 @@ export default function Header() {
 
       <HeaderRight>
         <Menu toggle={setIsMenuOpen} />
-        {isMenuOpen && <MenuWindow />}
+        {isMenuOpen && <MenuWindow toggle={setIsMenuOpen} />}
       </HeaderRight>
     </HeaderContainer>
   );
