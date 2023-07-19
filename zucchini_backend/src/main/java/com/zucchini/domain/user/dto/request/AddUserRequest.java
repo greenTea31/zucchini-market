@@ -42,6 +42,9 @@ public class AddUserRequest {
     @Length(max = 255)
     private String email;
 
+    @NotBlank
+    private String authKey;
+
     public User toEntity() {
         return User.builder()
                 .id(id)

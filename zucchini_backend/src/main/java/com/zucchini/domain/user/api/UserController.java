@@ -1,5 +1,7 @@
 package com.zucchini.domain.user.api;
 
+import com.zucchini.domain.user.dto.request.EmailCheckRequest;
+import com.zucchini.domain.user.dto.request.EmailRequest;
 import com.zucchini.domain.user.dto.request.LoginRequest;
 import com.zucchini.domain.user.exception.UserException;
 import com.zucchini.domain.user.service.UserService;
@@ -39,6 +41,19 @@ public class UserController {
         return new ResponseEntity<Integer>(HttpStatus.CREATED.value(), HttpStatus.CREATED);
     }
 
+    /**
+     * 이메일 인증
+     */
+    @PostMapping("/email")
+    public ResponseEntity<Void> authEmail(@Valid @RequestBody EmailRequest request) {
+        userService.authEmail(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/authCheck")
+    public ResponseEntity<Boolean> authCheck(@RequestBody EmailCheckRequest request) {
+        return ResponseEntity.ok(userService.authCheck(request));
+    }
 
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody LoginRequest loginRequest) {
