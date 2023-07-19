@@ -42,6 +42,14 @@ public class UserController {
     }
 
     /**
+     * 아이디 중복 검사
+     */
+    @GetMapping("/idCheck/{id}")
+    public ResponseEntity<Boolean> idCheck(@PathVariable String id) {
+        return ResponseEntity.ok(userService.idCheck(id));
+    }
+
+    /**
      * 이메일 인증
      */
     @PostMapping("/email")

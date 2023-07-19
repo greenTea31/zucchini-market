@@ -11,6 +11,7 @@ public interface UserService {
 
     FindUserResponse findUser(String userId);
     void addUser(AddUserRequest user);
+    boolean idCheck(String id);
     void authEmail(EmailRequest request);
     boolean authCheck(EmailCheckRequest request);
     void modifyUser(int userNo);

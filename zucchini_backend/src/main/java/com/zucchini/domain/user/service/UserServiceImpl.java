@@ -60,6 +60,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean idCheck(String id) {
+        if (userRepository.findById(id).isPresent())
+            return false;
+        return true;
+    }
+
+    @Override
     public void authEmail(EmailRequest request) {
         // 임의의 authKey 생성
         Random random = new Random();
