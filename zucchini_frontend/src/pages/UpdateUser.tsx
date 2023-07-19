@@ -21,7 +21,7 @@ export default function UpdateUser() {
 
   const StyledTitle = styled.span`
     font-size: 2.5rem;
-    font-weight: 3rem;
+    font-weight: 500;
     margin: 1rem;
   `;
 
@@ -41,8 +41,9 @@ export default function UpdateUser() {
   `;
 
   const Input = styled.input`
-    height: 2.3rem;
-    border: 1px solid gray;
+    height: 3rem;
+    border: none;
+    background-color: #f8f8f8;
     border-radius: 0.4rem;
     padding-left: 1rem;
     margin: 0.3rem;
