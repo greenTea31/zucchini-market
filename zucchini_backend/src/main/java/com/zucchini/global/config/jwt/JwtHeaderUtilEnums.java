@@ -11,4 +11,5 @@ public enum JwtHeaderUtilEnums {
 
     private String description;
     private String value;
+
 }

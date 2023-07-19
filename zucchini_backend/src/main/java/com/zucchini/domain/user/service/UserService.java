@@ -12,6 +12,6 @@ public interface UserService {
     void modifyUser(int userNo);
     void removeUser(int userNo);
     TokenDto login(LoginRequest loginRequest);
-    void logout();
+    void logout(String accessToken, String id);
 
 }
