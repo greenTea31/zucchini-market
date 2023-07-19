@@ -29,4 +29,5 @@ public class RefreshToken {
                 .expiration(remainingMilliSeconds / 1000)
                 .build();
     }
+
 }
