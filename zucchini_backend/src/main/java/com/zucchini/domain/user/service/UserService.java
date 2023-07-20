@@ -18,5 +18,6 @@ public interface UserService {
     void removeUser(int userNo);
     TokenDto login(LoginRequest loginRequest);
     void logout(String accessToken, String id);
+    TokenDto reissue(String refreshToken);
 
 }

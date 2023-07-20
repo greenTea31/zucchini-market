@@ -68,6 +68,11 @@ public class UserController {
         return ResponseEntity.ok(userService.login(loginRequest));
     }
 
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenDto> reissue(@RequestHeader("RefreshToken") String refreshToken) {
+        return ResponseEntity.ok(userService.reissue(refreshToken));
+    }
+
     @PostMapping("/logout")
     public void logout(@RequestHeader("Authorization") String accessToken) {
         String id = jwtTokenUtil.getUsername(resolveToken(accessToken));
