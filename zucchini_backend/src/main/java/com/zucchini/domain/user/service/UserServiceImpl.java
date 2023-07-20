@@ -143,4 +143,39 @@ public class UserServiceImpl implements UserService {
         logoutAccessTokenRedisRepository.save(LogoutAccessToken.of(accessToken, id, remainMilliSeconds));
     }
 
+    private String resolveToken(String token) {
+        return token.substring(7);
+    }
+
+    @Override
+    public TokenDto reissue(String refreshToken) {
+        refreshToken = resolveToken(refreshToken);
+        String username = getCurrentUsername(refreshToken);
+        RefreshToken redisRefreshToken = refreshTokenRedisRepository.findById(username).orElseThrow(NoSuchElementException::new);
+
+        if (refreshToken.equals(redisRefreshToken.getRefreshToken())) {
+            return reissueRefreshToken(refreshToken, username);
+        }
+        throw new IllegalArgumentException("토큰이 일치하지 않습니다.");
+    }
+
+    private String getCurrentUsername(String token) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        UserDetails principal = (UserDetails) authentication.getPrincipal();
+//        return principal.getUsername();
+        return jwtTokenUtil.extractAllClaims(token).get("id", String.class);
+    }
+
+    private TokenDto reissueRefreshToken(String refreshToken, String username) {
+        if (lessThanReissueExpirationTimesLeft(refreshToken)) {
+            String accessToken = jwtTokenUtil.generateAccessToken(username);
+            return TokenDto.of(accessToken, saveRefreshToken(username).getRefreshToken());
+        }
+        return TokenDto.of(jwtTokenUtil.generateAccessToken(username), refreshToken);
+    }
+
+    private boolean lessThanReissueExpirationTimesLeft(String refreshToken) {
+        return jwtTokenUtil.getRemainMilliSeconds(refreshToken) < JwtExpirationEnums.REISSUE_EXPIRATION_TIME.getValue();
+    }
+
 }
