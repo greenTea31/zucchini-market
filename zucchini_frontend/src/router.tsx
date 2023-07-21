@@ -5,8 +5,9 @@ import LogIn from "./pages/LogIn";
 import UpdateUser from "./pages/UpdateUser";
 import Main from "./pages/Main";
 import MyPage from "./pages/MyPage";
-import ItemList from "./pages/ItemList";
+// import ItemList from "./pages/ItemList";
 import Test from "./pages/test";
+import Detail from "./pages/Detail";
 
 const router = createBrowserRouter([
   {
@@ -33,15 +34,17 @@ const router = createBrowserRouter([
         path: "/main",
         element: <Main />,
       },
+      // {
+      //   path: "/items",
+      //   element: <ItemList />,
+      // },
       {
-        path: "/items",
-        element: <ItemList />,
-
+        path: "/test",
+        element: <Test />,
       },
       {
-         path: "/test",
-        element: <Test />,
-
+        path: "/item/:no",
+        element: <Detail />,
       },
     ],
   },
