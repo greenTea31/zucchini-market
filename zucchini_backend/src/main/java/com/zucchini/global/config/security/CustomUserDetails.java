@@ -7,8 +7,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Getter
@@ -21,9 +23,9 @@ public class CustomUserDetails implements UserDetails {
     private String id;          // 로그인용 ID 값
     private String password;    // 비밀번호
     private String email;       // 이메일
-    private boolean lock;         // 계정 잠김 여부
+    private boolean isLocked;         // 계정 잠김 여부
     private String nickname;        // 닉네임
-    private Collection<GrantedAuthority> authorities;   // 권한 목록
+    private String authority;        // 권한
 
     public static UserDetails of(User user) {
         return CustomUserDetails.builder()
@@ -39,7 +41,9 @@ public class CustomUserDetails implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        ArrayList<GrantedAuthority> auth = new ArrayList<>();
+        auth.add(new SimpleGrantedAuthority(authority));
+        return auth;
     }
 
     /**
@@ -77,7 +81,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isAccountNonLocked() {
-        return lock;
+        return isLocked;
     }
 
     /**
@@ -100,7 +104,7 @@ public class CustomUserDetails implements UserDetails {
     @JsonIgnore
     public boolean isEnabled() {
         // 계정이 잠겨잇지 않으면 true
-        return !lock;
+        return !isLocked;
     }
 
 }

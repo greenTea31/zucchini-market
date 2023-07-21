@@ -1,15 +1,13 @@
 package com.zucchini.domain.user.service;
 
 import com.zucchini.domain.user.domain.User;
-import com.zucchini.domain.user.dto.request.AddUserRequest;
-import com.zucchini.domain.user.dto.request.EmailCheckRequest;
-import com.zucchini.domain.user.dto.request.EmailRequest;
-import com.zucchini.domain.user.dto.request.LoginRequest;
+import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.exception.UserException;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.cache.CacheKey;
 import com.zucchini.global.config.jwt.JwtExpirationEnums;
+import com.zucchini.global.config.security.CustomUserDetails;
 import com.zucchini.global.domain.*;
 import com.zucchini.global.util.JwtTokenUtil;
 import com.zucchini.global.util.RedisUtil;
@@ -18,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -43,8 +45,36 @@ public class UserServiceImpl implements UserService {
     private final RedisUtil redisUtil;
 
     @Override
-    public FindUserResponse findUser(String userId) {
-        return null;
+    public FindUserResponse findUser(String id) {
+        int dealCount = (int) userRepository.countItemsByStatusAndUserNo(id);
+
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+        if (!user.getId().equals(getCurrentId())) {
+            return FindUserResponse.builder()
+                    .nickname(user.getNickname())
+                    .reportCount(user.getReportCount())
+                    .grade(user.getGrade())
+                    .dealCount(dealCount)
+                    .build();
+        }
+
+        return FindUserResponse.builder()
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .name(user.getName())
+                .phone(user.getPhone())
+                .gender(user.getGender())
+                .email(user.getEmail())
+                .reportCount(user.getReportCount())
+                .grade(user.getGrade())
+                .dealCount(dealCount)
+                .build();
+    }
+
+    private String getCurrentId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        return principal.getUsername();
     }
 
     @Override
@@ -61,9 +91,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean idCheck(String id) {
-        if (userRepository.findById(id).isPresent())
-            return false;
-        return true;
+        return !userRepository.findById(id).isPresent();
     }
 
     @Override
@@ -98,19 +126,63 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean authCheck(EmailCheckRequest request) {
-        if (redisUtil.getData(request.getEmail()).equals(request.getAuthKey()))
-            return true;
-        return false;
+        return redisUtil.getData(request.getEmail()).equals(request.getAuthKey());
+    }
+
+    /**
+     * 회원 정보 수정
+     */
+    @Override
+    public void modifyUser(int no, ModifyUserRequest modifyUserRequest) {
+        // 기본키로 회원 조회
+        Optional<User> user = userRepository.findById(no);
+        if(!user.isPresent())
+            throw new IllegalArgumentException("해당 회원이 존재하지 않습니다.");
+        String loginId = getCurrentId();
+        User loginUser = user.get();
+        if(!loginId.equals(loginUser.getId()))
+            throw new UserException("잘못된 접근입니다. 로그인한 아이디의 회원 정보만 수정할 수 있습니다.");
+        loginUser.modifyUser(modifyUserRequest);
+    }
+
+    /**
+     * 비밀번호 변경
+     */
+    @Override
+    public void modifyPassword(String password) {
+        String loginId = getCurrentId();
+        Optional<User> user = userRepository.findById(loginId);
+        if(!user.isPresent())
+            throw new IllegalArgumentException("해당 회원이 존재하지 않습니다.");
+        user.get().modifyPassword(passwordEncoder.encode(password));
     }
 
     @Override
-    public void modifyUser(int userNo) {
+    public void removeUser(String token, String id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-    }
+        if (auth == null) {
+            throw new UserException("로그인이 필요합니다.");
+        }
 
-    @Override
-    public void removeUser(int userNo) {
+        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
+        String currentPrincipalId = nowLogInDetail.getId();
+        User user;
 
+        if (id == null) {
+            user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("회원이 없습니다."));
+            logout(token, currentPrincipalId);
+        } else {
+            user = userRepository.findById(id).orElseThrow(() -> new UserException("회원이 없습니다."));
+
+            if (!user.getId().equals(currentPrincipalId)) {
+                // 만일 currentPrincipaId가 관리자 권한이면 탈퇴 처리 가능함 (현재 미구현)
+                throw new UserException("회원 탈퇴는 본인만 가능합니다.");
+            }
+        }
+
+        user.userDelete();
+        userRepository.save(user);
     }
 
     @Override
