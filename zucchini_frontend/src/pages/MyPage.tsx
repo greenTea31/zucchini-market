@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import chatList from "../assets/images/chatList.jpg";
 import likeList from "../assets/images/likeList.jpg";
 import buyList from "../assets/images/buyList.jpg";
@@ -7,6 +8,24 @@ import todoList from "../assets/images/todoList.jpg";
 import femaleImg from "../assets/images/female.jpg";
 
 export default function MyPage() {
+  const navigate = useNavigate();
+
+  const navigateToChat = () => {
+    navigate("/mypage/chat");
+  };
+
+  const navigateToLike = () => {
+    navigate("/mypage/like");
+  };
+
+  const navigateToBuy = () => {
+    navigate("/mypage/buy");
+  };
+
+  const navigateToSell = () => {
+    navigate("/mypage/sell");
+  };
+
   const ContainerDiv = styled.div`
     display: flex;
     flex-direction: column;
@@ -103,19 +122,19 @@ export default function MyPage() {
         <hr />
       </div>
       <LowerDiv>
-        <MenuDiv>
+        <MenuDiv onClick={navigateToChat}>
           <MenuImg src={chatList}></MenuImg>
           <MenuP>채팅 내역</MenuP>
         </MenuDiv>
-        <MenuDiv>
+        <MenuDiv onClick={navigateToLike}>
           <MenuImg src={likeList}></MenuImg>
           <MenuP>찜한 내역</MenuP>
         </MenuDiv>
-        <MenuDiv>
+        <MenuDiv onClick={navigateToBuy}>
           <MenuImg src={buyList}></MenuImg>
           <MenuP>구매 내역</MenuP>
         </MenuDiv>
-        <MenuDiv>
+        <MenuDiv onClick={navigateToSell}>
           <MenuImg src={sellList}></MenuImg>
           <MenuP>판매 내역</MenuP>
         </MenuDiv>
