@@ -227,9 +227,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private String getCurrentUsername(String token) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        UserDetails principal = (UserDetails) authentication.getPrincipal();
-//        return principal.getUsername();
         return jwtTokenUtil.extractAllClaims(token).get("id", String.class);
     }
 
