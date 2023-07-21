@@ -1,0 +1,51 @@
+package com.zucchini.domain.item.domain;
+
+import com.zucchini.domain.user.domain.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import javax.persistence.*;
+import java.util.Date;
+
+@Entity
+@Getter
+@NoArgsConstructor
+public class Item {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int no;
+
+    @Column(name = "title", length = 200, nullable = false)
+    private String title;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
+    private String content;
+
+    @Column(name = "price", nullable = false)
+    private int price;
+
+    @Column(name = "status", nullable = false)
+    private int status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "buyer")
+    private User buyer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller", nullable = false)
+    private User seller;
+
+}
