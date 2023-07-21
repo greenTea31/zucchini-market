@@ -15,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -83,14 +84,27 @@ public class UserController {
     }
 
     /**
-     * 마이페이지
+     * 회원 정보 조회
      */
     @GetMapping("/{id}")
     public ResponseEntity<FindUserResponse> findUser(@PathVariable String id) {
         return ResponseEntity.ok(userService.findUser(id));
     }
 
-    // 회원 탈퇴 요청을 받는 메소드
+    /**
+     * 회원 정보 리스트
+     * - ADMIN만 가능
+     */
+    @GetMapping
+    public ResponseEntity<List<FindUserResponse>> findUser() {
+        return ResponseEntity.ok(userService.findUserList());
+    }
+
+
+
+    /**
+     * 회원 탈퇴
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@RequestHeader("Authorization") String accessToken, @PathVariable String id) {
         userService.removeUser(resolveToken(accessToken), id);
