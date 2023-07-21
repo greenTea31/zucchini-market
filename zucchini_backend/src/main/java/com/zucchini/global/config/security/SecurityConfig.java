@@ -50,6 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasAuthority("USER")
                 .antMatchers(HttpMethod.DELETE, "/user/**")
                 .hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/user")
+                .hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

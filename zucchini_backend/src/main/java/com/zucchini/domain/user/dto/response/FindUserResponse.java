@@ -26,4 +26,6 @@ public class FindUserResponse {
 
     private int dealCount;
 
+    private boolean isLocked;
+
 }

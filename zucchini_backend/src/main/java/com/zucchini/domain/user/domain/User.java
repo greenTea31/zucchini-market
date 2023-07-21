@@ -106,4 +106,15 @@ public class User {
         this.password = password;
     }
 
+    /**
+     * 신고 당한 회원의 신고 횟수 증가
+     */
+    public void increaseReportCount() {
+        this.reportCount++;
+
+        if (this.reportCount >= 3) {
+            this.isLocked = true;
+        }
+    }
+
 }

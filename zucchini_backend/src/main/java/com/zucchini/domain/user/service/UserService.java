@@ -4,8 +4,11 @@ import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.global.domain.TokenDto;
 
+import java.util.List;
+
 public interface UserService {
 
+    List<FindUserResponse> findUserList();
     FindUserResponse findUser(String id);
     void addUser(AddUserRequest user);
     boolean idCheck(String id);

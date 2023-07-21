@@ -25,9 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +72,26 @@ public class UserServiceImpl implements UserService {
                 .grade(user.getGrade())
                 .dealCount(dealCount)
                 .build();
+    }
+
+    @Override
+    public List<FindUserResponse> findUserList() {
+
+        List<User> users = userRepository.findAllByIsDeletedFalseAndAuthorityFalse();
+
+        return users.stream().map(
+                user -> FindUserResponse.builder()
+                        .id(user.getId())
+                        .nickname(user.getNickname())
+                        .name(user.getName())
+                        .phone(user.getPhone())
+                        .gender(user.getGender())
+                        .email(user.getEmail())
+                        .reportCount(user.getReportCount())
+                        .grade(user.getGrade())
+                        .isLocked(user.getIsLocked())
+                        .build()
+        ).collect(Collectors.toList());
     }
 
     private String getCurrentId() {
