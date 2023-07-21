@@ -1,6 +1,5 @@
 package com.zucchini.domain.user.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 

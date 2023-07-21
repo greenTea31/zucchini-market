@@ -91,9 +91,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean idCheck(String id) {
-        if (userRepository.findById(id).isPresent())
-            return false;
-        return true;
+        return !userRepository.findById(id).isPresent();
     }
 
     @Override
@@ -128,9 +126,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean authCheck(EmailCheckRequest request) {
-        if (redisUtil.getData(request.getEmail()).equals(request.getAuthKey()))
-            return true;
-        return false;
+        return redisUtil.getData(request.getEmail()).equals(request.getAuthKey());
     }
 
     /**
@@ -156,6 +152,8 @@ public class UserServiceImpl implements UserService {
     public void modifyPassword(String password) {
         String loginId = getCurrentId();
         Optional<User> user = userRepository.findById(loginId);
+        if(!user.isPresent())
+            throw new IllegalArgumentException("해당 회원이 존재하지 않습니다.");
         user.get().modifyPassword(passwordEncoder.encode(password));
     }
 
