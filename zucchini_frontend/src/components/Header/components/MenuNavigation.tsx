@@ -1,19 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-const NavigationContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-`;
-
-const NavigationItem = styled(Link)`
-  user-select: none;
-  color: white;
-`;
-
 interface IItem {
   navName: string;
   navLink: string;
@@ -34,3 +21,16 @@ export default function MenuNavigation({ list }: INavigation) {
     </NavigationContainer>
   );
 }
+
+const NavigationContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+`;
+
+const NavigationItem = styled(Link)`
+  user-select: none;
+  color: white;
+`;

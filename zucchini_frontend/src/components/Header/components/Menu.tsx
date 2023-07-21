@@ -1,20 +1,5 @@
 import styled from "styled-components";
 
-const MenuClickArea = styled.div`
-  width: 48px;
-  height: 48px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
-`;
-
-const MenuContainer = styled.div`
-  width: 24px;
-  height: 24px;
-  color: white;
-`;
-
 interface IMenuProps {
   toggle: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -39,3 +24,18 @@ export default function Menu({ toggle }: IMenuProps) {
     </MenuClickArea>
   );
 }
+
+const MenuClickArea = styled.div`
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+`;
+
+const MenuContainer = styled.div`
+  width: 24px;
+  height: 24px;
+  color: white;
+`;

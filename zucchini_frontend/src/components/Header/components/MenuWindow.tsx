@@ -1,25 +1,6 @@
 import styled from "styled-components";
 import MenuNavigation from "./MenuNavigation";
-
-const MenuWindowContainer = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ExitButton = styled.div`
-  position: absolute;
-  top: 8px;
-  right: 64px;
-  height: 48px;
-  width: 48px;
-`;
+import menuNavigation from "../constants/menuNavigation";
 
 interface IMenuProps {
   toggle: React.Dispatch<React.SetStateAction<boolean>>;
@@ -48,22 +29,27 @@ export default function MenuWindow({ toggle }: IMenuProps) {
           />
         </svg>
       </ExitButton>
-      <MenuNavigation
-        list={[
-          {
-            navLink: "/login",
-            navName: "로그인",
-          },
-          {
-            navLink: "/myPage/modify",
-            navName: "마이페이지",
-          },
-          {
-            navLink: `/signup`,
-            navName: "회원가입",
-          },
-        ]}
-      />
+      <MenuNavigation list={menuNavigation} />
     </MenuWindowContainer>
   );
 }
+
+const MenuWindowContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ExitButton = styled.div`
+  position: absolute;
+  top: 8px;
+  right: 64px;
+  height: 48px;
+  width: 48px;
+`;
