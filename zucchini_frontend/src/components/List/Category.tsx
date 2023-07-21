@@ -3,8 +3,8 @@ import styled from "styled-components";
 export default function Category() {
   const CategoryDiv = styled.div`
     display: flex;
-    justify-content: space-around;
-    margin: 0.5rem;
+    /* justify-content: center; */
+    margin: 1.5rem 0rem;
   `;
 
   const CategoryBtn = styled.button`
@@ -13,7 +13,8 @@ export default function Category() {
     border-radius: 1rem;
     background-color: white;
     border: 2px solid #cde990;
-
+    margin-right: 1rem;
+    color: #254021;
     &:hover {
       background-color: #cde990;
       cursor: pointer;
