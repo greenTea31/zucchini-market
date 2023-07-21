@@ -28,11 +28,18 @@ public class CustomUserDetails implements UserDetails {
     private String authority;        // 권한
 
     public static UserDetails of(User user) {
+        String test = "USER";
+        // 회원 권한 검사
+        if(user.getAuthority()){
+            // 관리자
+            test = "ADMIN";
+        }
         return CustomUserDetails.builder()
                 .id(user.getId())
                 .password(user.getPassword())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
+                .authority(test)
                 .build();
     }
 
