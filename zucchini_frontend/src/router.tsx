@@ -5,7 +5,6 @@ import LogIn from "./pages/LogIn";
 import UpdateUser from "./pages/UpdateUser";
 import Main from "./pages/Main";
 import MyPage from "./pages/MyPage";
-import ItemList from "./pages/ItemList";
 import Test from "./pages/test";
 
 const router = createBrowserRouter([
@@ -35,13 +34,14 @@ const router = createBrowserRouter([
       },
       {
         path: "/items",
-        element: <ItemList />,
-
+        // element: <ItemList />,
       },
       {
-         path: "/test",
+        path: "/test",
         element: <Test />,
-
+      },
+      {
+        path: "/conference/:no",
       },
     ],
   },
