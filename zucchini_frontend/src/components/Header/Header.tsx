@@ -1,8 +1,31 @@
 import styled from "styled-components";
-import Navigation from "./Navigation";
-import Menu from "./Menu";
+import Navigation from "./components/Navigation";
+import Menu from "./components/Menu";
 import { useState, useEffect } from "react";
-import MenuWindow from "./MenuWindow";
+import MenuWindow from "./components/MenuWindow";
+import navigation from "./constants/navigation";
+
+export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    console.log(isMenuOpen);
+  }, [isMenuOpen]);
+
+  return (
+    <HeaderContainer>
+      <HeaderLeft>
+        <Logo>애호박마켓</Logo>
+        <Navigation list={navigation} />
+      </HeaderLeft>
+
+      <HeaderRight>
+        <Menu toggle={setIsMenuOpen} />
+        {isMenuOpen && <MenuWindow toggle={setIsMenuOpen} />}
+      </HeaderRight>
+    </HeaderContainer>
+  );
+}
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -37,44 +60,3 @@ const Logo = styled.div`
     cursor: pointer;
   }
 `;
-
-export function Button() {
-  return <div></div>;
-}
-
-export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    console.log(isMenuOpen);
-  }, [isMenuOpen]);
-
-  return (
-    <HeaderContainer>
-      <HeaderLeft>
-        <Logo>애호박마켓</Logo>
-        <Navigation
-          list={[
-            {
-              navLink: "/items",
-              navName: "상품보기",
-            },
-            {
-              navLink: "/conference",
-              navName: "화상통화",
-            },
-            {
-              navLink: `/myPage`,
-              navName: "마이페이지",
-            },
-          ]}
-        />
-      </HeaderLeft>
-
-      <HeaderRight>
-        <Menu toggle={setIsMenuOpen} />
-        {isMenuOpen && <MenuWindow toggle={setIsMenuOpen} />}
-      </HeaderRight>
-    </HeaderContainer>
-  );
-}

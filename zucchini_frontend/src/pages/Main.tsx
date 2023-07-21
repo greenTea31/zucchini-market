@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import img from "../assets/images/main.png";
+import img from "../assets/images/Main.png";
 
 export default function Main() {
   const MainAll = styled.div`
