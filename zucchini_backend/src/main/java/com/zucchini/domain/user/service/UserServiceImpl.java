@@ -174,11 +174,6 @@ public class UserServiceImpl implements UserService {
             logout(token, currentPrincipalId);
         } else {
             user = userRepository.findById(id).orElseThrow(() -> new UserException("회원이 없습니다."));
-
-            if (!user.getId().equals(currentPrincipalId)) {
-                // 만일 currentPrincipaId가 관리자 권한이면 탈퇴 처리 가능함 (현재 미구현)
-                throw new UserException("회원 탈퇴는 본인만 가능합니다.");
-            }
         }
 
         user.userDelete();

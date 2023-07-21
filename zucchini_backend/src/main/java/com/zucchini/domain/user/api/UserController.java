@@ -93,13 +93,13 @@ public class UserController {
     // 회원 탈퇴 요청을 받는 메소드
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@RequestHeader("Authorization") String accessToken, @PathVariable String id) {
-        userService.removeUser(accessToken, id);
+        userService.removeUser(resolveToken(accessToken), id);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteUser(@RequestHeader("Authorization") String accessToken) {
-        userService.removeUser(accessToken, null);
+        userService.removeUser(resolveToken(accessToken), null);
         return ResponseEntity.ok().build();
     }
 
