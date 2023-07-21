@@ -36,6 +36,7 @@ const HeaderContainer = styled.div`
   align-items: center;
   padding: 0 64px;
   box-sizing: border-box;
+  font-family: "IBM Plex Sans KR", sans-serif;
 `;
 
 const HeaderLeft = styled.div`

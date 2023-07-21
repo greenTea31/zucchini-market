@@ -1,7 +1,18 @@
 import styled from "styled-components";
-import img from "../assets/images/Main.png";
+import img from "../assets/images/main.png";
+import { useNavigate } from "react-router-dom";
 
 export default function Main() {
+  const navigate = useNavigate();
+
+  const navigateToSignUp = () => {
+    navigate("/signup");
+  };
+
+  const navigateToLogin = () => {
+    navigate("/login");
+  };
+
   const MainAll = styled.div`
     font-family: "IBM Plex Sans KR", sans-serif;
   `;
@@ -174,8 +185,8 @@ export default function Main() {
             </SpanContent>
           </TitleDiv>
           <BtnDiv>
-            <SignUpBtn>회원가입</SignUpBtn>
-            <LoginBtn>로그인</LoginBtn>
+            <SignUpBtn onClick={navigateToSignUp}>회원가입</SignUpBtn>
+            <LoginBtn onClick={navigateToLogin}>로그인</LoginBtn>
           </BtnDiv>
         </UpperLeft>
         <Img src={img}></Img>

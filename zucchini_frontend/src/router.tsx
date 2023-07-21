@@ -4,6 +4,8 @@ import SignUp from "./pages/SignUp";
 import LogIn from "./pages/LogIn";
 import UpdateUser from "./pages/UpdateUser";
 import Main from "./pages/Main";
+import MyPage from "./pages/MyPage";
+import ItemList from "./pages/ItemList";
 import Test from "./pages/test";
 
 const router = createBrowserRouter([
@@ -20,6 +22,10 @@ const router = createBrowserRouter([
         element: <LogIn />,
       },
       {
+        path: "/mypage",
+        element: <MyPage />,
+      },
+      {
         path: "/myPage/modify",
         element: <UpdateUser />,
       },
@@ -28,8 +34,14 @@ const router = createBrowserRouter([
         element: <Main />,
       },
       {
-        path: "/test",
+        path: "/items",
+        element: <ItemList />,
+
+      },
+      {
+         path: "/test",
         element: <Test />,
+
       },
     ],
   },
