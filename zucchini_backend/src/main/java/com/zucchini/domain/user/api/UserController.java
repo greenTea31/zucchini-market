@@ -106,13 +106,13 @@ public class UserController {
     /**
      * 회원 정보 수정
      */
-    @PutMapping("/{no}")
-    public ResponseEntity<Integer> modifyUser(@PathVariable int no, @Valid @RequestBody ModifyUserRequest modifyUserRequest, BindingResult bindingResult){
+    @PutMapping("/{id}")
+    public ResponseEntity<Integer> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
         }
         try{
-            userService.modifyUser(no, modifyUserRequest);
+            userService.modifyUser(id, modifyUserRequest);
         } catch (IllegalArgumentException e){
             // 회원이 없는 경우
             return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);

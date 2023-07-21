@@ -48,8 +48,12 @@ public class UserServiceImpl implements UserService {
     public FindUserResponse findUser(String id) {
         int dealCount = (int) userRepository.countItemsByStatusAndUserNo(id);
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
+        String authority = nowLogInDetail.getAuthority();
+
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
-        if (!user.getId().equals(getCurrentId())) {
+        if (!user.getId().equals(getCurrentId()) && !authority.equals("ADMIN")) {
             return FindUserResponse.builder()
                     .nickname(user.getNickname())
                     .reportCount(user.getReportCount())
@@ -133,14 +137,14 @@ public class UserServiceImpl implements UserService {
      * 회원 정보 수정
      */
     @Override
-    public void modifyUser(int no, ModifyUserRequest modifyUserRequest) {
+    public void modifyUser(String id, ModifyUserRequest modifyUserRequest) {
         // 기본키로 회원 조회
-        Optional<User> user = userRepository.findById(no);
+        Optional<User> user = userRepository.findById(id);
         if(!user.isPresent())
             throw new IllegalArgumentException("해당 회원이 존재하지 않습니다.");
         String loginId = getCurrentId();
         User loginUser = user.get();
-        if(!loginId.equals(loginUser.getId()))
+        if(!loginId.equals(id))
             throw new UserException("잘못된 접근입니다. 로그인한 아이디의 회원 정보만 수정할 수 있습니다.");
         loginUser.modifyUser(modifyUserRequest);
     }

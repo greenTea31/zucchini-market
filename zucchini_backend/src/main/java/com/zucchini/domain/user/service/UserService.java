@@ -11,7 +11,7 @@ public interface UserService {
     boolean idCheck(String id);
     void authEmail(EmailRequest request);
     boolean authCheck(EmailCheckRequest request);
-    void modifyUser(int no, ModifyUserRequest modifyUserRequest);
+    void modifyUser(String id, ModifyUserRequest modifyUserRequest);
     void modifyPassword(String password);
     void removeUser(String token, String id);
     TokenDto login(LoginRequest loginRequest);
