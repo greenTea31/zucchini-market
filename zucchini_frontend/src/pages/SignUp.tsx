@@ -1,12 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 export default function SignUp() {
+  const navigate = useNavigate();
+
+  const navigateToLogin = () => {
+    navigate("/login");
+  };
+
   const StyledAll = styled.div`
     display: flex;
     justify-content: center;
     height: auto;
     font-family: "IBM Plex Sans KR", sans-serif;
-    // border: solid pink;
   `;
 
   const StyledDiv = styled.div`
@@ -17,7 +23,6 @@ export default function SignUp() {
     height: auto;
     margin: 4rem;
     text-align: center;
-    // border: solid green;
   `;
 
   const StyledTitle = styled.span`
@@ -80,8 +85,13 @@ export default function SignUp() {
   `;
 
   const BoldA = styled.a`
-    /* font-weight: 600; */
     color: blue;
+  `;
+
+  const GenderSelect = styled.select`
+    height: 3rem;
+    margin: 0.3rem;
+    border-radius: 0.4rem;
   `;
 
   return (
@@ -100,8 +110,8 @@ export default function SignUp() {
           <Input type="text" placeholder="닉네임" />
           <Input type="number" placeholder="휴대폰번호(- 없이 입력해주세요)" />
           <Input type="email" placeholder="이메일" />
-          <CheckboxAll>
-            <CheckboxDiv>
+          {/* <CheckboxAll> */}
+          {/* <CheckboxDiv>
               <input type="checkbox" id="female" />
               <label htmlFor="female">
                 <span> 여성</span>
@@ -112,8 +122,17 @@ export default function SignUp() {
               <label htmlFor="female">
                 <span> 남성</span>
               </label>
-            </CheckboxDiv>
-          </CheckboxAll>
+            </CheckboxDiv> */}
+          {/* <span>성별 :</span> */}
+          <GenderSelect>
+            <option value="" selected>
+              -- 성별 선택 --
+            </option>
+            <option value="female">여성</option>
+            <option value="male">남성</option>
+            <option value="none">선택 안함</option>
+          </GenderSelect>
+          {/* </CheckboxAll> */}
           <CheckboxAll>
             <CheckboxDiv>
               <input type="checkbox" id="female" />
@@ -125,7 +144,7 @@ export default function SignUp() {
         </InputDiv>
         <StyledButtonDiv>
           <StyledButton>회원가입</StyledButton>
-          <StyledButton>로그인</StyledButton>
+          <StyledButton onClick={navigateToLogin}>로그인</StyledButton>
         </StyledButtonDiv>
       </StyledDiv>
     </StyledAll>
