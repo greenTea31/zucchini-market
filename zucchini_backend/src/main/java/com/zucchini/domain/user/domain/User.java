@@ -101,7 +101,7 @@ public class User implements Serializable {
     }
 
     /**
-     * 비밀번호 변경
+     * 비밀번호변경
      */
     public void modifyPassword(String password) {
         this.password = password;
