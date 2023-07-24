@@ -5,6 +5,8 @@ import com.zucchini.domain.grade.dto.request.GiveGradeRequest;
 import com.zucchini.domain.grade.repository.GradeRepository;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.repository.ItemRepository;
+import com.zucchini.domain.user.domain.User;
+import com.zucchini.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,7 @@ public class GradeServiceImpl implements GradeService{
 
     private final ItemRepository itemRepository;
     private final GradeRepository gradeRepository;
+    private final UserRepository userRepository;
 
     /**
      * 등급 매기기
@@ -54,6 +57,17 @@ public class GradeServiceImpl implements GradeService{
                 .build();
         // Grade 엔티티 저장 (INSERT)
         gradeRepository.save(grade);
+
+
+    }
+
+    /**
+     * 새로 추가된 등급과 기존 사용자의 등급 합 평균 계산
+     */
+    private void calculateGrade(String graderRecipientId, float grade) {
+        User user = userRepository.findById(graderRecipientId).get();
+        float newGrade = (float)(0.99 * user.getGrade() + grade) / 2;
+        user.setGrade(newGrade);
     }
 
     private String getCurrentId() {

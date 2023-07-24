@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class ItemCategory {
 
     @EmbeddedId
-    private ItemCategoryId itemCategoryId;
+    private ItemCategoryId id;
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("itemNo")
     private Item item;

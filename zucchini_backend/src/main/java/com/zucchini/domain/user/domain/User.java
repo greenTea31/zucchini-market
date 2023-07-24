@@ -118,4 +118,11 @@ public class User implements Serializable {
         }
     }
 
+    /**
+     * 회원 등급 갱신
+     */
+    public void setGrade(float grade){
+        this.grade = grade;
+    }
+
 }
