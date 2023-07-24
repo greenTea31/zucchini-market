@@ -1,5 +1,6 @@
 package com.zucchini.domain.item.domain;
 
+import com.zucchini.domain.grade.domain.Grade;
 import com.zucchini.domain.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -47,5 +50,13 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller", nullable = false)
     private User seller;
+
+    @OneToMany(mappedBy = "item")
+    private List<Grade> gradeList = new ArrayList<>();
+
+    // 비즈니스 메서드
+    public void addGrade(Grade grade) {
+        this.gradeList.add(grade);
+    }
 
 }
