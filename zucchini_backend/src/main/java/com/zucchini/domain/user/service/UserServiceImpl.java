@@ -77,9 +77,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<FindUserResponse> findUserList() {
 
-        List<User> users = userRepository.findAllByIsDeletedFalseAndAuthorityFalse();
+        List<User> userList = userRepository.findAllByIsDeletedFalseAndAuthorityFalse();
 
-        return users.stream().map(
+        return userList.stream().map(
                 user -> FindUserResponse.builder()
                         .id(user.getId())
                         .nickname(user.getNickname())
