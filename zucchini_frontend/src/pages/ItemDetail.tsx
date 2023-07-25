@@ -3,6 +3,7 @@ import watch from "../assets/images/watch.png";
 import female from "../assets/images/female.jpg";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
+import Calendar from "react-calendar";
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +32,15 @@ export default function ItemDetail() {
         </ModalDiv>
         <ModalSpan>화상통화 일정 선택</ModalSpan>
         <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
+        <CalendarDiv>
+          <Calendar
+            formatDay={(locale, date) =>
+              date.toLocaleString("en", { day: "numeric" })
+            }
+          />
+        </CalendarDiv>
+        <StyledBtn>확인</StyledBtn>
+        <StyledBtn>취소</StyledBtn>
       </Modal>
       <StyledSvg
         xmlns="http://www.w3.org/2000/svg"
@@ -86,8 +96,8 @@ export default function ItemDetail() {
               />
             </RedSvg>
           </SubSpan>
-          <StyledBtn>채팅하기</StyledBtn>
-          <StyledBtn onClick={toggle}>일정 선택하기</StyledBtn>
+          <SelectBtn>채팅하기</SelectBtn>
+          <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
         </UpperRightDiv>
       </UpperDiv>
       <LowerDiv>
@@ -228,7 +238,7 @@ const SubSpan = styled.span`
   margin-bottom: 0.5rem;
 `;
 
-const StyledBtn = styled.button`
+const SelectBtn = styled.button`
   height: 3rem;
   background-color: #cde990;
   border: transparent;
@@ -286,4 +296,24 @@ const ModalSpan = styled.div`
   font-weight: 600;
   margin-top: 3rem;
   margin-bottom: 0.5rem;
+`;
+
+const CalendarDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+`;
+
+const StyledBtn = styled.button`
+  width: 9rem;
+  height: 2.5rem;
+  background-color: #cde990;
+  border: solid 1px #cde990;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  margin-right: 0.4rem;
+
+  &:hover {
+    background-color: white;
+  }
 `;

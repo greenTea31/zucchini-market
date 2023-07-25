@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
+import Calendar from "react-calendar";
 
 export default function CreateItem() {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +30,15 @@ export default function CreateItem() {
           </StyledSvg>
         </ModalDiv>
         <ModalSpan>화상통화 일정 선택</ModalSpan>
+        <CalendarDiv>
+          <Calendar
+            formatDay={(locale, date) =>
+              date.toLocaleString("en", { day: "numeric" })
+            }
+          />
+        </CalendarDiv>
+        <StyledBtn>확인</StyledBtn>
+        <StyledBtn>취소</StyledBtn>
       </Modal>
       <ContainerDiv>
         <IconDiv>
@@ -213,4 +223,24 @@ const ModalSpan = styled.div`
   font-weight: 600;
   margin-top: 3rem;
   /* border: solid green; */
+`;
+
+const CalendarDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+`;
+
+const StyledBtn = styled.button`
+  width: 9rem;
+  height: 2.5rem;
+  background-color: #cde990;
+  border: solid 1px #cde990;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  margin-right: 0.4rem;
+
+  &:hover {
+    background-color: white;
+  }
 `;
