@@ -369,6 +369,8 @@ const NameTag = styled.span`
 
 const ParticipantInfoDiv = styled.div``;
 
-const ParticipantInfoSpan = styled.span``;
+const ParticipantInfoSpan = styled.span`
+  /* dis */
+`;
 
 const ParticipantInfoImg = styled.img``;
