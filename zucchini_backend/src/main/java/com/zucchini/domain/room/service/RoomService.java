@@ -60,4 +60,6 @@ public interface RoomService {
      */
     void addMessage(int roomNo, AddMessageRequest addMessageRequest);
 
+    void changeRoomItemNo(int itemNo);
+
 }
