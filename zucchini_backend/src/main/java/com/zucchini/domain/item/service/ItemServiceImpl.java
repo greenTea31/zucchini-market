@@ -107,21 +107,23 @@ public class ItemServiceImpl implements ItemService {
                 .title(item.getTitle())
                 .content(item.getContent())
                 .price(item.getPrice())
-                .sellerNo(userRepository.findById(getCurrentId()).get().getNo())
+                .seller(userRepository.findById(getCurrentId()).get())
                 .build();
 
         Item itemEntity = itemRepository.save(buildItem);
         int itemNo = itemEntity.getNo();
 
+        List<com.zucchini.domain.item.domain.Date> dateList = new ArrayList<>();
         for (Date date : item.getDateList()) {
             com.zucchini.domain.item.domain.Date buildDate = com.zucchini.domain.item.domain.Date.builder()
                     .itemNo(itemNo)
                     .date(date)
                     .build();
-
-            dateRepository.save(buildDate);
+            dateList.add(buildDate);
         }
+        dateRepository.saveAll(dateList);
 
+        List<ItemCategory> itemCategoryList = new ArrayList<>();
         for (int categoryNo : item.getCategoryList()) {
             ItemCategoryId itemCategoryId = new ItemCategoryId();
             itemCategoryId.setItemNo(itemNo);
@@ -131,8 +133,9 @@ public class ItemServiceImpl implements ItemService {
                     .id(itemCategoryId)
                     .build();
 
-            itemCategoryRepository.save(itemCategory);
+            itemCategoryList.add(itemCategory);
         }
+        itemCategoryRepository.saveAll(itemCategoryList);
     }
 
     private String getCurrentId() {

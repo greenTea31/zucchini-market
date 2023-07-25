@@ -46,11 +46,9 @@ public class Item {
     @Column(name = "status", nullable = false)
     private int status;
 
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller")
     private User seller;
-    @Column(name = "seller")
-    private int sellerNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer", nullable = false)
@@ -66,11 +64,11 @@ public class Item {
     private List<ItemCategory> categoryList = new ArrayList<>();
 
     @Builder
-    public Item(String title, String content, int price, int sellerNo){
+    public Item(String title, String content, int price, User seller){
         this.title = title;
         this.content = content;
         this.price = price;
-        this.sellerNo = sellerNo;
+        this.seller = seller;
     }
 
     // 비즈니스 메서드
