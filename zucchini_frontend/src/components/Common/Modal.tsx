@@ -16,7 +16,7 @@ export default function Modal(props: ModalType) {
         <ModalOverlay onClick={props.toggle}>
           <ModalBox onClick={(e) => e.stopPropagation()}>
             {props.children}
-            <CalendarDiv>
+            {/* <CalendarDiv>
               <Calendar
                 formatDay={(locale, date) =>
                   date.toLocaleString("en", { day: "numeric" })
@@ -24,7 +24,7 @@ export default function Modal(props: ModalType) {
               />
             </CalendarDiv>
             <StyledBtn>확인</StyledBtn>
-            <StyledBtn>취소</StyledBtn>
+            <StyledBtn>취소</StyledBtn> */}
           </ModalBox>
         </ModalOverlay>
       )}
