@@ -1,13 +1,20 @@
 package com.zucchini.domain.item.service;
 
 import com.zucchini.domain.category.domain.ItemCategory;
+import com.zucchini.domain.category.domain.ItemCategoryId;
+import com.zucchini.domain.category.repository.ItemCategoryRepository;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.dto.request.ItemRequest;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
+import com.zucchini.domain.item.repository.DateRepository;
 import com.zucchini.domain.item.repository.ItemRepository;
+import com.zucchini.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +30,9 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
+    private final DateRepository dateRepository;
+    private final UserRepository userRepository;
+    private final ItemCategoryRepository itemCategoryRepository;
 
     @Override
     public List<FindItemListResponse> findItemList() {
@@ -93,6 +103,42 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void addItem(ItemRequest item) {
 
+        Item buildItem = Item.builder()
+                .title(item.getTitle())
+                .content(item.getContent())
+                .price(item.getPrice())
+                .sellerNo(userRepository.findById(getCurrentId()).get().getNo())
+                .build();
+
+        Item itemEntity = itemRepository.save(buildItem);
+        int itemNo = itemEntity.getNo();
+
+        for (Date date : item.getDateList()) {
+            com.zucchini.domain.item.domain.Date buildDate = com.zucchini.domain.item.domain.Date.builder()
+                    .itemNo(itemNo)
+                    .date(date)
+                    .build();
+
+            dateRepository.save(buildDate);
+        }
+
+        for (int categoryNo : item.getCategoryList()) {
+            ItemCategoryId itemCategoryId = new ItemCategoryId();
+            itemCategoryId.setItemNo(itemNo);
+            itemCategoryId.setCategoryNo(categoryNo);
+
+            ItemCategory itemCategory = ItemCategory.builder()
+                    .id(itemCategoryId)
+                    .build();
+
+            itemCategoryRepository.save(itemCategory);
+        }
+    }
+
+    private String getCurrentId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        return principal.getUsername();
     }
 
     @Override

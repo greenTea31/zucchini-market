@@ -15,8 +15,8 @@ import java.io.Serializable;
 public class ItemCategoryId implements Serializable {
 
     @Column(name = "item_no")
-    private String itemNo;
+    private int itemNo;
     @Column(name = "category_no")
-    private String categoryNo;
+    private int categoryNo;
 
 }

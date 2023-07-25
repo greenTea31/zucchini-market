@@ -3,6 +3,8 @@ package com.zucchini.domain.item.domain;
 import com.zucchini.domain.category.domain.ItemCategory;
 import com.zucchini.domain.grade.domain.Grade;
 import com.zucchini.domain.user.domain.User;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,7 +17,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item {
 
     @Id
@@ -44,13 +46,15 @@ public class Item {
     @Column(name = "status", nullable = false)
     private int status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "buyer")
-    private User buyer;
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller", insertable = false, updatable = false)
+    private User seller;
+    @Column(name = "seller")
+    private int sellerNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller", nullable = false)
-    private User seller;
+    @JoinColumn(name = "buyer", nullable = false)
+    private User buyer;
 
     @OneToMany(mappedBy = "item")
     private List<Grade> gradeList = new ArrayList<>();
@@ -61,9 +65,21 @@ public class Item {
     @OneToMany(mappedBy = "item")
     private List<ItemCategory> categoryList = new ArrayList<>();
 
+    @Builder
+    public Item(String title, String content, int price, int sellerNo){
+        this.title = title;
+        this.content = content;
+        this.price = price;
+        this.sellerNo = sellerNo;
+    }
+
     // 비즈니스 메서드
     public void addGrade(Grade grade) {
         this.gradeList.add(grade);
+    }
+
+    public void setBuyer(User buyer) {
+        this.buyer = buyer;
     }
 
 }
