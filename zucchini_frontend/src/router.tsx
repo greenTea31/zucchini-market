@@ -14,6 +14,8 @@ import SellList from "./pages/SellList";
 import ChatList from "./pages/ChatList";
 import ItemDetail from "./pages/ItemDetail";
 import Detail from "./pages/Detail";
+import ChatRoom from "./pages/ChatRoom";
+import Conference from "./pages/Conference";
 
 const router = createBrowserRouter([
   {
@@ -44,7 +46,7 @@ const router = createBrowserRouter([
         path: "/items",
         element: <ItemList />,
       },
-      {
+
       {
         path: "/test",
         element: <Test />,
@@ -76,6 +78,14 @@ const router = createBrowserRouter([
       {
         path: "/item/:no",
         element: <Detail />,
+      },
+      {
+        path: "/chat",
+        element: <ChatRoom />,
+      },
+      {
+        path: "/conference",
+        element: <Conference />,
       },
     ],
   },
