@@ -2,9 +2,13 @@ package com.zucchini.domain.room.service;
 
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.repository.ItemRepository;
+import com.zucchini.domain.room.domain.Message;
 import com.zucchini.domain.room.domain.Room;
 import com.zucchini.domain.room.domain.RoomUser;
+import com.zucchini.domain.room.dto.AddMessageRequest;
+import com.zucchini.domain.room.dto.MessageResponse;
 import com.zucchini.domain.room.dto.RoomResponse;
+import com.zucchini.domain.room.repository.MessageRepository;
 import com.zucchini.domain.room.repository.RoomRepository;
 import com.zucchini.domain.room.repository.RoomUserRepository;
 import com.zucchini.domain.user.domain.User;
@@ -28,6 +32,7 @@ public class RoomServiceImpl implements RoomService{
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final RoomUserRepository roomUserRepository;
+    private final MessageRepository messageRepository;
 
     @Override
     public int addRoom(int itemNo) {
@@ -121,6 +126,71 @@ public class RoomServiceImpl implements RoomService{
         if (roomUserRepository.countByRoom(room) == 0) {
             roomRepository.deleteById(roomNo);
         }
+    }
+
+    /**
+     * 특정 방에 유저를 입장 시키고, 모든 메세지를 불러옵니다.
+     * @param roomNo
+     */
+    @Override
+    public List<MessageResponse> findMessageList(int roomNo) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null) {
+            throw new UserException("채팅 나가기는 로그인 이후에 가능합니다.");
+        }
+
+        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
+        String currentPrincipalId = nowLogInDetail.getId();
+
+        // RoomUser 살펴보면서 접속한 유저가 roomNo에 접속한 유저인지 확인, 확인하면 그 방의 메세지를 반환해주고 아니면 권한 없다는 예외를 발생시킴.
+        Room room = roomRepository.findById(roomNo).orElseThrow(() -> new IllegalArgumentException("해당 방이 없습니다."));
+        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("비정상적 접근입니다."));
+        boolean joined = roomUserRepository.existsByRoomAndUser(room, user);
+
+        if (!joined) {
+            throw new UserException("권한이 없습니다.");
+        }
+
+        List<Message> messageList = messageRepository.findAllByRoom(room);
+        List<MessageResponse> messageResponseList = MessageResponse.listOf(messageList);
+        return messageResponseList;
+    }
+
+    /**
+     * 특정 방에 메세지를 추가합니다.
+     * @param addMessageRequest(방 번호, 보낸 사람, 내용)
+     */
+    @Override
+    public void addMessage(int roomNo, AddMessageRequest addMessageRequest) {
+        // 로그인한 유저 정보 얻어옴
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null) {
+            throw new UserException("채팅 나가기는 로그인 이후에 가능합니다.");
+        }
+
+        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
+        String currentPrincipalId = nowLogInDetail.getId();
+
+        // 로그인한 유저가 그 방에 참가해 있는지 RoomUser Table 조회하면서 확인함
+        // 참가해있지 않으면 예외 발생시킴
+        Room room = roomRepository.findById(roomNo).orElseThrow(() -> new IllegalArgumentException("해당 방이 없습니다."));
+        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("비정상적 접근입니다."));
+        boolean joined = roomUserRepository.existsByRoomAndUser(room, user);
+
+        if (!joined) {
+            throw new UserException("권한이 없습니다.");
+        }
+
+        // 참가해있으면 Message Table에 추가함
+        Message message = Message.builder()
+                .room(room)
+                .sender(user)
+                .content(addMessageRequest.getContent())
+                .build();
+
+        messageRepository.save(message);
     }
 
 }
