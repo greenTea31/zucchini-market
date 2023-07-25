@@ -32,13 +32,13 @@ public class ItemController {
     @PostMapping("/add")
     public ResponseEntity<Void> addItem(@RequestBody ItemRequest item) {
         itemService.addItem(item);
-        return null;
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{itemNo}")
     public ResponseEntity<Void> removeItem(@PathVariable int itemNo) {
         itemService.removeItem(itemNo);
-        return null;
+        return ResponseEntity.ok().build();
     }
 
 }

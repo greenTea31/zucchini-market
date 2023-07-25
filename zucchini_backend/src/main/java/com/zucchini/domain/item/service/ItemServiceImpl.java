@@ -152,6 +152,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void modifyItem(int itemNo, ItemRequest item) {
         // itemNo로 아이템 조회
+        if (!itemRepository.findById(itemNo).isPresent()) {
+            throw new ItemException("존재하지 않는 상품입니다.");
+        }
         Item findItem = itemRepository.findById(itemNo).get();
 
         // 현재 사용자와 아이템 판매자가 동일한지 확인
@@ -164,6 +167,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void removeItem(int itemNo) {
         // itemNo로 아이템 조회
+        if (!itemRepository.findById(itemNo).isPresent()) {
+            throw new ItemException("존재하지 않는 상품입니다.");
+        }
         Item findItem = itemRepository.findById(itemNo).get();
 
         // 현재 사용자와 아이템 판매자가 동일한지 확인
