@@ -26,88 +26,6 @@ export default function MyPage() {
     navigate("/mypage/sell");
   };
 
-  const ContainerDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 5rem;
-    margin-bottom: 5rem;
-    font-family: "IBM Plex Sans KR", sans-serif;
-  `;
-
-  const UpperDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 2rem;
-  `;
-
-  const TitleSpan = styled.span`
-    font-size: 3rem;
-    font-weight: 500;
-    padding: 2rem;
-  `;
-
-  const SubTitleP = styled.p`
-    font-size: 1.3rem;
-  `;
-
-  const Img = styled.img`
-    height: 10rem;
-    width: 10rem;
-    margin: 2rem;
-    border: 0.1rem solid #254021;
-    border-radius: 7rem;
-  `;
-
-  const InfoP = styled.p`
-    margin: 0.3rem;
-    color: #254021;
-  `;
-
-  const InfoBtn = styled.button`
-    padding: 0.8rem 1.2rem;
-    margin: 1rem;
-    border-radius: 0.4rem;
-    background-color: #ffd4d4;
-    font-size: 1rem;
-    font-weight: 500;
-    color: white;
-    border: solid 2px transparent;
-    cursor: pointer;
-
-    &:hover {
-      background-color: white;
-      border: solid 2px #ffd4d4;
-      color: #ffd4d4;
-      font-weight: 500;
-    }
-  `;
-
-  const LowerDiv = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin: 1rem 2rem;
-  `;
-
-  const MenuDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    width: 15rem;
-    height: 13rem;
-    padding: 1rem;
-    cursor: pointer;
-  `;
-
-  const MenuImg = styled.img`
-    width: 10rem;
-  `;
-
-  const MenuP = styled.p``;
-
   return (
     <ContainerDiv>
       <UpperDiv>
@@ -146,3 +64,84 @@ export default function MyPage() {
     </ContainerDiv>
   );
 }
+const ContainerDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5rem;
+  margin-bottom: 5rem;
+  font-family: "IBM Plex Sans KR", sans-serif;
+`;
+
+const UpperDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+`;
+
+const TitleSpan = styled.span`
+  font-size: 3rem;
+  font-weight: 500;
+  padding: 2rem;
+`;
+
+const SubTitleP = styled.p`
+  font-size: 1.3rem;
+`;
+
+const Img = styled.img`
+  height: 10rem;
+  width: 10rem;
+  margin: 2rem;
+  border: 0.1rem solid #254021;
+  border-radius: 7rem;
+`;
+
+const InfoP = styled.p`
+  margin: 0.3rem;
+  color: #254021;
+`;
+
+const InfoBtn = styled.button`
+  padding: 0.8rem 1.2rem;
+  margin: 1rem;
+  border-radius: 0.4rem;
+  background-color: #ffd4d4;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  border: solid 2px transparent;
+  cursor: pointer;
+
+  &:hover {
+    background-color: white;
+    border: solid 2px #ffd4d4;
+    color: #ffd4d4;
+    font-weight: 500;
+  }
+`;
+
+const LowerDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 1rem 2rem;
+`;
+
+const MenuDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 15rem;
+  height: 13rem;
+  padding: 1rem;
+  cursor: pointer;
+`;
+
+const MenuImg = styled.img`
+  width: 10rem;
+`;
+
+const MenuP = styled.p``;
