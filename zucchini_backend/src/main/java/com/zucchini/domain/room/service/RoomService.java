@@ -1,5 +1,7 @@
 package com.zucchini.domain.room.service;
 
+import com.zucchini.domain.room.dto.AddMessageRequest;
+import com.zucchini.domain.room.dto.MessageResponse;
 import com.zucchini.domain.room.dto.RoomResponse;
 
 import java.util.List;
@@ -45,4 +47,17 @@ public interface RoomService {
      * 특정 방에서 유저를 퇴장시킵니다.
      */
     void quitRoom(int roomNo);
+
+    /**
+     * 특정 방에 유저를 입장 시키고, 모든 메세지를 불러옵니다.
+     * @param roomNo
+     */
+    List<MessageResponse> findMessageList(int roomNo);
+
+    /**
+     * 특정 방에 메세지를 추가합니다.
+     * @param addMessageRequest(방 번호, 보낸 사람, 내용)
+     */
+    void addMessage(int roomNo, AddMessageRequest addMessageRequest);
+
 }

@@ -28,4 +28,7 @@ public interface RoomUserRepository extends JpaRepository<RoomUser, Integer> {
             "WHERE u.no = :currentPrincipalNo")
     List<Room> findAllRoomsByUser(@Param("currentPrincipalNo") int currentPrincipalNo);
 
+    // currentPrincipalNo와 roomNo로 유저가 방에 접속해 있는지를 여부를 판단한다.
+    boolean existsByRoomAndUser(Room room, User user);
+
 }
