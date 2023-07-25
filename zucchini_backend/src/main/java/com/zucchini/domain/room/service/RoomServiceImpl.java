@@ -2,6 +2,7 @@ package com.zucchini.domain.room.service;
 
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.repository.ItemRepository;
+import com.zucchini.domain.report.repository.ReportRepository;
 import com.zucchini.domain.room.domain.Message;
 import com.zucchini.domain.room.domain.Room;
 import com.zucchini.domain.room.domain.RoomUser;
@@ -33,6 +34,7 @@ public class RoomServiceImpl implements RoomService{
     private final ItemRepository itemRepository;
     private final RoomUserRepository roomUserRepository;
     private final MessageRepository messageRepository;
+    private final ReportRepository reportRepository;
 
     @Override
     public int addRoom(int itemNo) {
@@ -63,6 +65,18 @@ public class RoomServiceImpl implements RoomService{
 
         // 생긴 방 번호 반환
         return room.getNo();
+    }
+
+    // itemNo로 모든 룸을 갖고오고 룸의 item no를 null값으로 수정하는 method 구현
+    // report itemno로 다 갖고와서 report의 itemno를 null값으로 바꾸고 room_no는 변경 x
+    @Override
+    public void changeRoomItemNo(int itemNo) {
+        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
+        List<Room> rooms = roomRepository.findAllByItem(item);
+
+        for (Room room : rooms) {
+            room.setItem(null);
+        }
     }
 
     @Override
@@ -122,8 +136,8 @@ public class RoomServiceImpl implements RoomService{
 
         roomUserRepository.deleteByRoomAndUser(room, user);
 
-        // 다 나갔으면 방 삭제
-        if (roomUserRepository.countByRoom(room) == 0) {
+        // 다 나갔으면 방 삭제, 이 방을 신고한 사람이 있으면 삭제하지 않음
+        if (roomUserRepository.countByRoom(room) == 0 && !reportRepository.existsByRoomNo(roomNo)) {
             roomRepository.deleteById(roomNo);
         }
     }

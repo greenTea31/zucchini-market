@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Builder
 public class RoomResponse {
+
     private int no;
     private int itemNo;
 
@@ -24,4 +25,5 @@ public class RoomResponse {
                 .map(RoomResponse::of)
                 .collect(java.util.stream.Collectors.toList());
     }
+
 }

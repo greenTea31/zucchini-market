@@ -29,4 +29,8 @@ public class Room {
         this.item = item;
     }
 
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
 }
