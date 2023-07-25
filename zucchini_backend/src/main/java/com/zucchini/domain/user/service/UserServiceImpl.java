@@ -1,9 +1,13 @@
 package com.zucchini.domain.user.service;
 
+import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.domain.User;
+import com.zucchini.domain.user.domain.UserItemLike;
+import com.zucchini.domain.user.domain.UserItemLikeId;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.exception.UserException;
+import com.zucchini.domain.user.repository.UserItemLikeRepository;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.cache.CacheKey;
 import com.zucchini.global.config.jwt.JwtExpirationEnums;
@@ -38,12 +42,14 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
+    private final UserItemLikeRepository userItemLikeRepository;
     private final JwtTokenUtil jwtTokenUtil;
 
     private final JavaMailSender javaMailSender;
     private final RedisUtil redisUtil;
 
     @Override
+    @Transactional(readOnly = true)
     public FindUserResponse findUser(String id) {
         int dealCount = (int) userRepository.countItemsByStatusAndUserNo(id);
 
@@ -75,6 +81,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<FindUserResponse> findUserList() {
 
         List<User> userList = userRepository.findAllByIsDeletedFalseAndAuthorityFalse();
@@ -263,6 +270,40 @@ public class UserServiceImpl implements UserService {
 
     private boolean lessThanReissueExpirationTimesLeft(String refreshToken) {
         return jwtTokenUtil.getRemainMilliSeconds(refreshToken) < JwtExpirationEnums.REISSUE_EXPIRATION_TIME.getValue();
+    }
+
+    @Override
+    public void addUserLikeItem(String id, int itemNo) {
+        int userNo = userRepository.findById(id).get().getNo();
+        UserItemLikeId userItemLikeId = new UserItemLikeId(userNo, itemNo);
+        UserItemLike userItemLike = UserItemLike.builder()
+                .id(userItemLikeId)
+                .build();
+        userItemLikeRepository.save(userItemLike);
+    }
+
+    @Override
+    public List<FindItemListResponse> findUserLikeItemList(String id) {
+        List<UserItemLike> userItemLikeList = userItemLikeRepository.findAllByUserId(id);
+        return userItemLikeList.stream()
+                .map(userItemLike -> FindItemListResponse.builder()
+                        .no(userItemLike.getItem().getNo())
+                        .title(userItemLike.getItem().getTitle())
+                        .updatedAt(userItemLike.getItem().getUpdatedAt())
+                        .content(userItemLike.getItem().getContent())
+                        .price(userItemLike.getItem().getPrice())
+                        .status(userItemLike.getItem().getStatus())
+                        // 나중에 구현해야 함!!
+                        .image(null)
+                        .likeCount(0)
+                        .category(null)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeUserLikeItem(String id, int itemNo) {
+        userItemLikeRepository.deleteByUser_IdAndItem_No(id, itemNo);
     }
 
 }

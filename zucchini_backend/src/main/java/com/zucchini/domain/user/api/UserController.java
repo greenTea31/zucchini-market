@@ -1,5 +1,6 @@
 package com.zucchini.domain.user.api;
 
+import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.exception.UserException;
@@ -153,6 +154,41 @@ public class UserController {
         userService.modifyPassword(modifyPasswordRequest.getPassword());
 
         return ResponseEntity.ok("비밀번호 변경 완료");
+    }
+
+    /**
+     * 회원의 아이템 찜
+     */
+    @PostMapping("{id}/item/like/{itemNo}")
+    public ResponseEntity<Integer> addLikeItem(@PathVariable String id, @PathVariable int itemNo) {
+        try{
+            userService.addUserLikeItem(id, itemNo);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.OK.value(), HttpStatus.OK);
+    }
+
+    /**
+     * 회원이 찜한 아이템 목록 조회
+     */
+    @GetMapping("/{id}/item/like")
+    public ResponseEntity<List<FindItemListResponse>> findLikeItemList(@PathVariable String id) {
+        List<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(id);
+        return new ResponseEntity<>(userLikeItemList, HttpStatus.OK);
+    }
+
+    /**
+     * 회원의 아이템 찜 취소
+     */
+    @DeleteMapping("{id}/item/like/{itemNo}")
+    public ResponseEntity<Integer> removeLikeItem(@PathVariable String id, @PathVariable int itemNo) {
+        try{
+            userService.removeUserLikeItem(id, itemNo);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.OK.value(), HttpStatus.OK);
     }
 
 }
