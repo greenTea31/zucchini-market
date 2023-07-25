@@ -1,5 +1,6 @@
 package com.zucchini.domain.user.service;
 
+import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.global.domain.TokenDto;
@@ -20,5 +21,8 @@ public interface UserService {
     TokenDto login(LoginRequest loginRequest);
     void logout(String accessToken, String id);
     TokenDto reissue(String refreshToken);
+    void addUserLikeItem(String id, int itemNo);
+    List<FindItemListResponse> findUserLikeItemList(String id);
+    void removeUserLikeItem(String id, int itemNo);
 
 }

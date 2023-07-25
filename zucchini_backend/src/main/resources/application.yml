@@ -24,6 +24,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+#        show_sql: true
+#        format_sql: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
