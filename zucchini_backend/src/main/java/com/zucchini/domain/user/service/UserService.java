@@ -23,6 +23,6 @@ public interface UserService {
     TokenDto reissue(String refreshToken);
     void addUserLikeItem(String id, int itemNo);
     List<FindItemListResponse> findUserLikeItemList(String id);
-
     void removeUserLikeItem(String id, int itemNo);
+
 }

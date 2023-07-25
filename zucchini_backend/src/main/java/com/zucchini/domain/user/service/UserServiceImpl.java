@@ -274,7 +274,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUserLikeItem(String id, int itemNo) {
-        int userNo = userRepository.findById(id).get().getNo();
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent()) throw new UserException("해당하는 회원이 존재하지 않습니다.");
+        int userNo = user.get().getNo();
         UserItemLikeId userItemLikeId = new UserItemLikeId(userNo, itemNo);
         UserItemLike userItemLike = UserItemLike.builder()
                 .id(userItemLikeId)
