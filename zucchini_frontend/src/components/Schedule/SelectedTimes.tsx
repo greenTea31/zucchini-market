@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Button } from "../Common/Button";
+import styled from "styled-components";
 
 // 우선 갖다놓는 날짜(임시, 테스트용.)
 // DB에서 해당 아이템,  해당 날짜에 해당하는 시간을 불러오는 로직 구현하기.
@@ -9,11 +11,7 @@ const times = ["08:00", "09:00", "10:00", "14:00", "15:00"];
 export default function Times(props: any) {
   //props로 넘어온 date로 해당 날짜의 시간을 불러오는 로직을 구현할 것.
   const onClick = (event: any) => {
-    alert(
-      props.date +
-        event.target.__reactProps$p4qwy9js6pr.children +
-        "로 예약하시겠습니까?"
-    );
+    alert("예약하시겠습니까?");
     // 해당 시간 보내서 예약하는 로직 로직
   };
 
@@ -22,7 +20,9 @@ export default function Times(props: any) {
       {times.map((time) => {
         return (
           <div>
-            <button onClick={onClick}>{time}</button>
+            <Button Size="extraSmall" onClick={onClick}>
+              {time}
+            </Button>
           </div>
         );
       })}

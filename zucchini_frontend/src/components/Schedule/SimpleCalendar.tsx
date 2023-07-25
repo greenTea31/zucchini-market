@@ -1,7 +1,7 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
-import "./simpleCalendar.css";
+import "./SimpleCalendarDesign.css";
 import SelectedTime from "./SelectedTime";
 
 export default function SimpleCalendar() {
@@ -12,7 +12,7 @@ export default function SimpleCalendar() {
 
   // 판매자가 등록시 선택한 시간 통신으로 서버에서 받아올 배열 만들기
   // 초기값은 임시. 원래 []
-  const [mark, setMark] = useState(["2023-07-20", "2023-07-22", "2023-07-25"]);
+  const [mark, setMark] = useState(["2023-07-20", "2023-07-22", "2023-07-24"]);
 
   // 달력에서 선택(클릭)한 날짜 콘솔로그(테스트용)
   // useEffect(() => {
@@ -54,7 +54,6 @@ export default function SimpleCalendar() {
           }
         }}
       />
-
       <SelectedTime showTime={showTime} date={selectedDate} />
     </div>
   );
