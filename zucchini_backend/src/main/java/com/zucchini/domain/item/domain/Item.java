@@ -2,6 +2,7 @@ package com.zucchini.domain.item.domain;
 
 import com.zucchini.domain.category.domain.ItemCategory;
 import com.zucchini.domain.grade.domain.Grade;
+import com.zucchini.domain.item.dto.request.ItemRequest;
 import com.zucchini.domain.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -78,6 +79,15 @@ public class Item {
 
     public void setBuyer(User buyer) {
         this.buyer = buyer;
+    }
+
+    /**
+     * 아이템 정보 수정
+     */
+    public void modifyItem(ItemRequest item) {
+        this.title = item.getTitle();
+        this.content = item.getContent();
+        this.price = item.getPrice();
     }
 
 }

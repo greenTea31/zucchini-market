@@ -7,8 +7,11 @@ import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.dto.request.ItemRequest;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
+import com.zucchini.domain.item.exception.ItemException;
 import com.zucchini.domain.item.repository.DateRepository;
 import com.zucchini.domain.item.repository.ItemRepository;
+import com.zucchini.domain.room.repository.RoomRepository;
+import com.zucchini.domain.room.service.RoomService;
 import com.zucchini.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +36,7 @@ public class ItemServiceImpl implements ItemService {
     private final DateRepository dateRepository;
     private final UserRepository userRepository;
     private final ItemCategoryRepository itemCategoryRepository;
+    private final RoomService roomService;
 
     @Override
     public List<FindItemListResponse> findItemList() {
@@ -113,8 +117,13 @@ public class ItemServiceImpl implements ItemService {
         Item itemEntity = itemRepository.save(buildItem);
         int itemNo = itemEntity.getNo();
 
+        addDate(itemNo, item.getDateList());
+        addCategory(itemNo, item.getCategoryList());
+    }
+
+    private void addDate(int itemNo, List<Date> getDateList) {
         List<com.zucchini.domain.item.domain.Date> dateList = new ArrayList<>();
-        for (Date date : item.getDateList()) {
+        for (Date date : getDateList) {
             com.zucchini.domain.item.domain.Date buildDate = com.zucchini.domain.item.domain.Date.builder()
                     .itemNo(itemNo)
                     .date(date)
@@ -122,9 +131,11 @@ public class ItemServiceImpl implements ItemService {
             dateList.add(buildDate);
         }
         dateRepository.saveAll(dateList);
+    }
 
+    private void addCategory(int itemNo, List<Integer> getCategoryList) {
         List<ItemCategory> itemCategoryList = new ArrayList<>();
-        for (int categoryNo : item.getCategoryList()) {
+        for (int categoryNo : getCategoryList) {
             ItemCategoryId itemCategoryId = new ItemCategoryId();
             itemCategoryId.setItemNo(itemNo);
             itemCategoryId.setCategoryNo(categoryNo);
@@ -138,20 +149,43 @@ public class ItemServiceImpl implements ItemService {
         itemCategoryRepository.saveAll(itemCategoryList);
     }
 
-    private String getCurrentId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails principal = (UserDetails) authentication.getPrincipal();
-        return principal.getUsername();
-    }
-
     @Override
     public void modifyItem(int itemNo, ItemRequest item) {
+        // itemNo로 아이템 조회
+        Item findItem = itemRepository.findById(itemNo).get();
 
+        // 현재 사용자와 아이템 판매자가 동일한지 확인
+        if (!findItem.getSeller().getId().equals(getCurrentId())){
+            throw new ItemException("잘못된 접근입니다. 다른 판매자의 상품을 수정할 수 없습니다.");
+        }
+        findItem.modifyItem(item);
     }
 
     @Override
     public void removeItem(int itemNo) {
+        // itemNo로 아이템 조회
+        Item findItem = itemRepository.findById(itemNo).get();
 
+        // 현재 사용자와 아이템 판매자가 동일한지 확인
+        if (!findItem.getSeller().getId().equals(getCurrentId())){
+            throw new ItemException("잘못된 접근입니다. 다른 판매자의 상품을 삭제할 수 없습니다.");
+        }
+
+        // "거래중"일 경우 삭제 불가능
+        if (findItem.getStatus() == 1) {
+            throw new ItemException("거래 중인 상품은 삭제 불가능합니다.");
+        }
+
+        // 삭제할 item과 관련된 room의 itemNo를 null로 변경
+        roomService.changeRoomItemNo(itemNo);
+
+        itemRepository.deleteById(itemNo);
+    }
+
+    private String getCurrentId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        return principal.getUsername();
     }
 
 }
