@@ -229,7 +229,7 @@ public class ItemServiceImpl implements ItemService {
         Item findItem = itemRepository.findById(itemNo).get();
 
         // 현재 사용자와 아이템 판매자가 동일한지 확인
-        if (!findItem.getSeller().getId().equals(getCurrentId())){
+        if (!findItem.getSeller().getId().equals(getCurrentId())) {
             throw new ItemException("잘못된 접근입니다. 다른 판매자의 상품을 삭제할 수 없습니다.");
         }
 
@@ -248,6 +248,53 @@ public class ItemServiceImpl implements ItemService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails principal = (UserDetails) authentication.getPrincipal();
         return principal.getUsername();
+    }
+
+    @Override
+    public void modifyStatusDeal(int itemNo, String buyer) {
+        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new ItemException("존재하지 않는 상품입니다."));
+
+        if (!getCurrentId().equals(item.getSeller().getId())) {
+            throw new ItemException("다른 판매자의 상품을 예약 처리 할 수 없습니다.");
+        }
+
+        if (item.getStatus() != 0) {
+            throw new ItemException("이미 거래 중이거나 완료된 상품입니다.");
+        }
+
+        item.setStatus(1);
+        item.setBuyer(userRepository.findById(buyer).orElseThrow(() -> new ItemException("존재하지 않는 구매자입니다.")));
+    }
+
+    @Override
+    public void modifyStatusConfirmation(int itemNo) {
+        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new ItemException("존재하지 않는 상품입니다."));
+
+        if (!getCurrentId().equals(item.getBuyer().getId())) {
+            throw new ItemException("본인이 구매한 상품만 구매확정 처리 할 수 있습니다.");
+        }
+
+        if (item.getStatus() != 1) {
+            throw new ItemException("거래 중인 상품이 아닙니다.");
+        }
+
+        item.setStatus(2);
+    }
+
+    @Override
+    public void modifyStatusCancel(int itemNo) {
+        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new ItemException("존재하지 않는 상품입니다."));
+
+        if (!getCurrentId().equals(item.getSeller().getId())) {
+            throw new ItemException("다른 판매자의 상품을 거래 취소 할 수 없습니다.");
+        }
+
+        if (item.getStatus() != 1) {
+            throw new ItemException("거래 중인 상품이 아닙니다.");
+        }
+
+        item.setStatus(0);
+        item.setBuyer(null);
     }
 
 }

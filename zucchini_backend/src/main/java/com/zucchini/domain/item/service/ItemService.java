@@ -13,5 +13,8 @@ public interface ItemService {
     void addItem(ItemRequest item);
     void modifyItem(int itemNo, ItemRequest item);
     void removeItem(int itemNo);
+    void modifyStatusDeal(int itemNo, String buyer);
+    void modifyStatusConfirmation(int itemNo);
+    void modifyStatusCancel(int itemNo);
 
 }

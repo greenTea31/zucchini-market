@@ -47,4 +47,22 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{itemNo}/deal")
+    public ResponseEntity<Void> dealItem(@PathVariable int itemNo, @RequestParam String buyer) {
+        itemService.modifyStatusDeal(itemNo, buyer);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{itemNo}/confirmation")
+    public ResponseEntity<Void> confirmationItem(@PathVariable int itemNo) {
+        itemService.modifyStatusConfirmation(itemNo);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{itemNo}/cancel")
+    public ResponseEntity<Void> cancelItem(@PathVariable int itemNo) {
+        itemService.modifyStatusCancel(itemNo);
+        return ResponseEntity.ok().build();
+    }
+
 }
