@@ -17,7 +17,7 @@ public class ItemCategory {
     @JoinColumn(name = "item_no", insertable = false, updatable = false)
     private Item item;
 
-    @ManyToOne(targetEntity = Item.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Category.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_no", insertable = false, updatable = false)
     private Category category;
 
