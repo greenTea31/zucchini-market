@@ -38,6 +38,6 @@ public class CacheConfig {
                 .fromConnectionFactory(redisConnectionFactory)
                 .cacheDefaults(configuration)
                 .build();
-
     }
+
 }

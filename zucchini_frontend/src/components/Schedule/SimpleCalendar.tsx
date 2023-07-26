@@ -69,6 +69,8 @@ export default function SimpleCalendar() {
         isOpen={isTimeScheduleOpen}
         toggle={toggleTimeScheduleModal}
       />
+      />
+      <SelectedTime showTime={showTime} date={selectedDate} />
     </div>
   );
 }
