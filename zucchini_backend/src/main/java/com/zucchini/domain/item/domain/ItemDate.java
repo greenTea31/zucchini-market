@@ -3,12 +3,14 @@ package com.zucchini.domain.item.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Date {
+@Table(name = "date")
+public class ItemDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +22,10 @@ public class Date {
     @Column(name = "item_no")
     private Integer itemNo;
 
-    private java.util.Date date;
+    private Date date;
 
     @Builder
-    public Date(int itemNo, java.util.Date date) {
+    public ItemDate(int itemNo, Date date) {
         this.itemNo = itemNo;
         this.date = date;
     }

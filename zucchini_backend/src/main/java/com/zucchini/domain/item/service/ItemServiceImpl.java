@@ -4,13 +4,13 @@ import com.zucchini.domain.category.domain.ItemCategory;
 import com.zucchini.domain.category.domain.ItemCategoryId;
 import com.zucchini.domain.category.repository.ItemCategoryRepository;
 import com.zucchini.domain.item.domain.Item;
+import com.zucchini.domain.item.domain.ItemDate;
 import com.zucchini.domain.item.dto.request.ItemRequest;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
 import com.zucchini.domain.item.exception.ItemException;
-import com.zucchini.domain.item.repository.DateRepository;
+import com.zucchini.domain.item.repository.ItemDateRepository;
 import com.zucchini.domain.item.repository.ItemRepository;
-import com.zucchini.domain.room.repository.RoomRepository;
 import com.zucchini.domain.room.service.RoomService;
 import com.zucchini.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
-    private final DateRepository dateRepository;
+    private final ItemDateRepository itemDateRepository;
     private final UserRepository userRepository;
     private final ItemCategoryRepository itemCategoryRepository;
     private final RoomService roomService;
@@ -80,8 +80,8 @@ public class ItemServiceImpl implements ItemService {
         }
 
         List<Date> dateList = new ArrayList<>();
-        for (com.zucchini.domain.item.domain.Date date : item.getDateList()) {
-            dateList.add(date.getDate());
+        for (ItemDate itemDate : item.getDateList()) {
+            dateList.add(itemDate.getDate());
         }
 
         FindItemResponse.Seller seller = new FindItemResponse.Seller(item.getSeller().getNickname()
@@ -122,15 +122,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void addDate(int itemNo, List<Date> getDateList) {
-        List<com.zucchini.domain.item.domain.Date> dateList = new ArrayList<>();
+        List<ItemDate> dateList = new ArrayList<>();
         for (Date date : getDateList) {
-            com.zucchini.domain.item.domain.Date buildDate = com.zucchini.domain.item.domain.Date.builder()
+            ItemDate buildDate = ItemDate.builder()
                     .itemNo(itemNo)
                     .date(date)
                     .build();
             dateList.add(buildDate);
         }
-        dateRepository.saveAll(dateList);
+        itemDateRepository.saveAll(dateList);
     }
 
     private void addCategory(int itemNo, List<Integer> getCategoryList) {
@@ -161,7 +161,24 @@ public class ItemServiceImpl implements ItemService {
         if (!findItem.getSeller().getId().equals(getCurrentId())){
             throw new ItemException("잘못된 접근입니다. 다른 판매자의 상품을 수정할 수 없습니다.");
         }
+
+        // date 수정
+        removeDate(itemNo);
+        addDate(itemNo, item.getDateList());
+
+        // category 수정
+        removeCategory(itemNo);
+        addCategory(itemNo, item.getCategoryList());
+
         findItem.modifyItem(item);
+    }
+
+    private void removeDate(int itemNo) {
+        itemDateRepository.deleteByItemNo(itemNo);
+    }
+
+    private void removeCategory(int itemNo) {
+        itemCategoryRepository.deleteByItemNo(itemNo);
     }
 
     @Override
