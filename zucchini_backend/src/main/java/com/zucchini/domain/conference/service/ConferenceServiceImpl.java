@@ -36,6 +36,7 @@ public class ConferenceServiceImpl implements ConferenceService{
      * 실제 화상 채팅 구현 안되어서 일단 API 명세서 그대로 구현
      */
     @Override
+    @Transactional(readOnly = true)
     public FindConferenceResponse findConference(int conferenceNo) {
         Conference conference = conferenceRepository.findById(conferenceNo).orElseThrow(() -> new IllegalArgumentException("회의가 존재하지 않습니다."));
         return FindConferenceResponse.of(conference);
