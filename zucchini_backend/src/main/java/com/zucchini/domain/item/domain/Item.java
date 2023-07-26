@@ -59,7 +59,7 @@ public class Item {
     private List<Grade> gradeList = new ArrayList<>();
 
     @OneToMany(mappedBy = "item")
-    private List<com.zucchini.domain.item.domain.Date> dateList = new ArrayList<>();
+    private List<ItemDate> dateList = new ArrayList<>();
 
     @OneToMany(mappedBy = "item")
     private List<ItemCategory> categoryList = new ArrayList<>();

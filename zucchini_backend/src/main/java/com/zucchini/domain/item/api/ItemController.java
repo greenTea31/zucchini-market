@@ -35,6 +35,13 @@ public class ItemController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{itemNo}")
+    public ResponseEntity<Void> modifyItem(@PathVariable int itemNo, @RequestBody ItemRequest item) {
+        log.info("controller itemNo==========================="+itemNo);
+        itemService.modifyItem(itemNo, item);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{itemNo}")
     public ResponseEntity<Void> removeItem(@PathVariable int itemNo) {
         itemService.removeItem(itemNo);

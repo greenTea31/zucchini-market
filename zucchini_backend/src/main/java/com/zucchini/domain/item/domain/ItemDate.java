@@ -8,7 +8,8 @@ import javax.persistence.*;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Date {
+@Table(name = "date")
+public class ItemDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +24,7 @@ public class Date {
     private java.util.Date date;
 
     @Builder
-    public Date(int itemNo, java.util.Date date) {
+    public ItemDate(int itemNo, java.util.Date date) {
         this.itemNo = itemNo;
         this.date = date;
     }
