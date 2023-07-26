@@ -18,15 +18,14 @@ import java.util.Optional;
 public class VideoServiceImpl implements VideoService {
 
     private final VideoRepository videoRepository;
-
+    private final long oneWeekInMillis = 24 * 60 * 60 * 1000 * 7; // 7일의 밀리초 값
 
     /**
      * 비디오 생성
      */
     @Override
     public void addVideo(AddVideoRequest addVideoRequest) {
-        long oneDayInMillis = 24 * 60 * 60 * 1000 * 7; // 7일의 밀리초 값
-        Date deadLine = new Date(getMidnight(addVideoRequest.getEndTime()).getTime() + oneDayInMillis);
+        Date deadLine = new Date(getMidnight(addVideoRequest.getEndTime()).getTime() + oneWeekInMillis);
         Video video = Video.builder()
                 .itemNo(addVideoRequest.getItemNo())
                 .link(addVideoRequest.getLink())
@@ -91,7 +90,13 @@ public class VideoServiceImpl implements VideoService {
     public void extendVideoDeadLine(int no) {
         Optional<Video> video = videoRepository.findById(no);
         if(!video.isPresent()) throw new IllegalArgumentException("해당 비디오가 존재하지 않습니다.");
+        if(isExtended(video.get().getEndTime(), video.get().getDeleteTime()))
+            throw new IllegalArgumentException("해당 비디오는 이미 연장을 한 상태입니다.");
         video.get().extendDeleteTime();
+    }
+
+    private boolean isExtended(Date endTime, Date deleteTime){
+        return deleteTime.getTime() - getMidnight(endTime).getTime() > oneWeekInMillis;
     }
 
 }
