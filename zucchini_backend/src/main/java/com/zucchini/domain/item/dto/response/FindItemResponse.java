@@ -25,7 +25,7 @@ public class FindItemResponse {
 
     private int status;
 
-    private String image;
+    private List<String> image;
 
     private int likeCount;
 

@@ -1,5 +1,6 @@
 package com.zucchini.domain.user.service;
 
+import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.domain.UserItemLike;
@@ -286,15 +287,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<FindItemListResponse> findUserLikeItemList(String id) {
-        List<UserItemLike> userItemLikeList = userItemLikeRepository.findAllByUserId(id);
+        List<Item> userItemLikeList = userItemLikeRepository.findAllByUserId(id);
         return userItemLikeList.stream()
                 .map(userItemLike -> FindItemListResponse.builder()
-                        .no(userItemLike.getItem().getNo())
-                        .title(userItemLike.getItem().getTitle())
-                        .updatedAt(userItemLike.getItem().getUpdatedAt())
-                        .content(userItemLike.getItem().getContent())
-                        .price(userItemLike.getItem().getPrice())
-                        .status(userItemLike.getItem().getStatus())
+                        .no(userItemLike.getNo())
+                        .title(userItemLike.getTitle())
+                        .updatedAt(userItemLike.getUpdatedAt())
+                        .content(userItemLike.getContent())
+                        .price(userItemLike.getPrice())
+                        .status(userItemLike.getStatus())
                         // 나중에 구현해야 함!!
                         .image(null)
                         .likeCount(0)
@@ -305,7 +306,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void removeUserLikeItem(String id, int itemNo) {
-        userItemLikeRepository.deleteByUser_IdAndItem_No(id, itemNo);
+        userItemLikeRepository.deleteByUserIdAndItemNo(id, itemNo);
     }
 
 }
