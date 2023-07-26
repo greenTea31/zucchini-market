@@ -2,20 +2,12 @@ import styled from "styled-components";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
 import Calendar from "react-calendar";
-import TimeSchedule from "../components/Schedule/TimeSchedule";
-import SimpleCalendar from "../components/Schedule/SimpleCalendar";
 
-export default function CreateItem() {
+export default function UpdateItem() {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => {
     setIsOpen(!isOpen);
-  };
-
-  const [timeOpen, setTimeOpen] = useState(false);
-
-  const timeToggle = () => {
-    setTimeOpen(!timeOpen);
   };
 
   return (
@@ -39,12 +31,15 @@ export default function CreateItem() {
         </ModalDiv>
         <ModalSpan>화상통화 일정 선택</ModalSpan>
         <CalendarDiv>
-          <SimpleCalendar />
+          <Calendar
+            formatDay={(locale, date) =>
+              date.toLocaleString("en", { day: "numeric" })
+            }
+          />
         </CalendarDiv>
         <StyledBtn>확인</StyledBtn>
         <StyledBtn>취소</StyledBtn>
       </Modal>
-      {/* <TimeSchedule isOpen={timeOpen} toggle={timeToggle} /> */}
       <ContainerDiv>
         <IconDiv>
           <StyledSvg
@@ -76,7 +71,7 @@ export default function CreateItem() {
             />
           </StyledSvg>
         </IconDiv>
-        <TitleSpan>내 물건 팔기</TitleSpan>
+        <TitleSpan>판매글 수정</TitleSpan>
         <ContentDiv>
           <ContentSpan>제목</ContentSpan>
           <ContentInput></ContentInput>
@@ -109,7 +104,7 @@ export default function CreateItem() {
         </ContentDiv>
         <ButtonDiv>
           <StyledButton onClick={toggle}>일정 선택</StyledButton>
-          <StyledButton>등록</StyledButton>
+          <StyledButton>수정 완료</StyledButton>
         </ButtonDiv>
       </ContainerDiv>
     </ContainerAll>
@@ -146,12 +141,14 @@ const ContentDiv = styled.div`
 const ContentSpan = styled.span`
   color: #5a5a5a;
   margin-bottom: 0.4rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
 `;
 
 const ContentInput = styled.input`
   height: 2rem;
   width: 100%;
+  font-size: 1rem;
+  padding-left: 0.5rem;
   border-radius: 0.4rem;
   border: transparent;
   background-color: #f4f4f4;
@@ -166,6 +163,8 @@ const ContentInput = styled.input`
 const ContentTextArea = styled.textarea`
   height: 12rem;
   width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
   border-radius: 0.4rem;
   border: transparent;
   background-color: #f4f4f4;
@@ -180,6 +179,8 @@ const ContentTextArea = styled.textarea`
 const CategorySelect = styled.select`
   height: 2rem;
   width: 100%;
+  font-size: 1rem;
+  padding-left: 0.5rem;
   border-radius: 0.4rem;
   color: #254021;
 `;

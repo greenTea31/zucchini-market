@@ -4,6 +4,7 @@ import cycle from "../assets/images/cycle.png";
 import Chatting from "../components/Chatting";
 import { useState } from "react";
 import Modal from "../components/Common/Modal";
+import ClosedButton from "../components/Common/ClosedButton";
 
 export default function Conference() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,28 +13,21 @@ export default function Conference() {
     setIsOpen(!isOpen);
   };
 
+  const [isOpen2, setIsOpen2] = useState(false);
+
+  const toggle2 = () => {
+    setIsOpen2(!isOpen2);
+  };
+
   return (
     <ContainerDiv>
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
-          <ClosedSvg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </ClosedSvg>
+          <ClosedButton />
         </ModalDiv>
-        <ModalSpan>구매 확정하기</ModalSpan>
+        <ModalSpan>거래 확정하기</ModalSpan>
         <SpanDiv>
-          <span>백조이님께서 구매 희망 버튼을 눌렀습니다.</span>
+          <span>백조이님께서 거래 희망 버튼을 눌렀습니다.</span>
           <span>백조이님과 거래를 확정 하시겠습니까?</span>
           <span>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</span>
         </SpanDiv>
@@ -42,19 +36,36 @@ export default function Conference() {
           <RedBtn>거절</RedBtn>
         </ButtonDiv>
       </Modal>
+      <Modal isOpen={isOpen2} toggle={toggle2}>
+        <ModalDiv>
+          <ClosedButton />
+        </ModalDiv>
+        <ModalSpan>사용자 신고</ModalSpan>
+        <SpanDiv>
+          <ModalSelect>
+            <option>-- 신고하는 이유를 선택해주세요 --</option>
+            <option>비매너 사용자</option>
+            <option>욕설 신고</option>
+            <option>성희롱 신고</option>
+            <option>거래 / 환불 분쟁 신고</option>
+            <option>사기 신고</option>
+            <option>기타</option>
+          </ModalSelect>
+          <ModalTextarea placeholder="상세 사유를 입력해주세요.."></ModalTextarea>
+        </SpanDiv>
+        <ButtonDiv>
+          <RedBtn>신고</RedBtn>
+          <GreenBtn>취소</GreenBtn>
+        </ButtonDiv>
+      </Modal>
       <UpperDiv>
         <StyledSvg
           xmlns="http://www.w3.org/2000/svg"
-          fill="none"
           viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="blue"
+          fill="blue"
           className="w-6 h-6"
         >
-          <path
-            stroke-linecap="round"
-            d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"
-          />
+          <path d="M4.5 4.5a3 3 0 00-3 3v9a3 3 0 003 3h8.25a3 3 0 003-3v-9a3 3 0 00-3-3H4.5zM19.94 18.75l-2.69-2.69V7.94l2.69-2.69c.944-.945 2.56-.276 2.56 1.06v11.38c0 1.336-1.616 2.005-2.56 1.06z" />
         </StyledSvg>
 
         <TitleDiv>
@@ -69,6 +80,23 @@ export default function Conference() {
             <span>백조이김</span>
             <span>Lv.1 애호박씨앗</span>
           </SellerInfoDiv>
+          <SvgButton onClick={toggle2}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="red"
+              className="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+              />
+            </svg>
+            신고
+          </SvgButton>
         </SellerDiv>
       </UpperDiv>
       <LowerDiv>
@@ -381,6 +409,7 @@ const SellerDiv = styled.div`
   background-color: #ececec;
   padding: 1.5rem;
   border-radius: 3rem;
+  align-items: center;
 `;
 
 const SellerImg = styled.img`
@@ -637,4 +666,28 @@ const RedBtn = styled.button`
     border: solid 2px red;
     color: red;
   }
+`;
+
+const SvgButton = styled.button`
+  margin: 0 0.8rem;
+  height: 4rem;
+  cursor: pointer;
+  border: solid 1px #d2d2d2;
+  border-radius: 0.4rem;
+`;
+
+const RedSvg = styled.svg``;
+
+const ModalSelect = styled.select`
+  height: 2.5rem;
+  border-radius: 0.4rem;
+  font-size: 1rem;
+  padding-left: 0.5rem;
+`;
+
+const ModalTextarea = styled.textarea`
+  height: 9rem;
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+  font-size: 1rem;
 `;
