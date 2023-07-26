@@ -4,6 +4,7 @@ import female from "../assets/images/female.jpg";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
 import Calendar from "react-calendar";
+import GoBackButton from "../components/Common/GoBackButton";
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,20 +43,23 @@ export default function ItemDetail() {
         <StyledBtn>확인</StyledBtn>
         <StyledBtn>취소</StyledBtn>
       </Modal>
-      <StyledSvg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        className="w-6 h-6"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M15.75 19.5L8.25 12l7.5-7.5"
-        />
-      </StyledSvg>
+      <GoBackButton />
+      <SvgButton>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="red"
+          className="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+          />
+        </svg>
+      </SvgButton>
       <UpperDiv>
         <UpperLeftDiv>
           <StyledImg src={watch}></StyledImg>
@@ -125,6 +129,13 @@ export default function ItemDetail() {
               <span>Lv.1 애호박씨앗</span>
               <SubSpan>판매중 3 · 거래완료 2</SubSpan>
             </SellerSpanDiv>
+            <SelectDiv>
+              <StatusSelect>
+                <option>판매중</option>
+                <option>예약중</option>
+                <option>판매완료</option>
+              </StatusSelect>
+            </SelectDiv>
           </SellerDiv>
         </LowerRightDiv>
       </LowerDiv>
@@ -316,4 +327,33 @@ const StyledBtn = styled.button`
   &:hover {
     background-color: white;
   }
+`;
+
+const SvgButton = styled.button`
+  position: absolute;
+  right: 17rem;
+  height: 3rem;
+  width: 3rem;
+  background-color: white;
+  border: solid 2px #d3d2d2;
+  border-radius: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+`;
+
+const StatusSelect = styled.select`
+  height: 3rem;
+  width: 7rem;
+  padding-left: 1rem;
+  border-radius: 0.4rem;
+  font-size: 1rem;
+`;
+
+const SelectDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 1rem;
 `;

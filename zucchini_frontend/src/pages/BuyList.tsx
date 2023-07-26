@@ -19,6 +19,10 @@ export default function BuyList() {
           </AlertSvg>
           <AlertTitle>거래 후 주의사항 안내</AlertTitle>
           <span>영상 통화 녹화영상은 구매 후 2주 동안만 보관됩니다.</span>
+          <span>
+            거래 영상 다시보기 후 [거래 확정] 또는 [확정 연장] 버튼을
+            눌러주세요.
+          </span>
         </NoticeDiv>
       </div>
       <LowerDiv>
@@ -146,7 +150,7 @@ const ItemContent = styled.span`
 
 const NoticeDiv = styled.div`
   width: 100%;
-  height: 6rem;
+  height: 7.5rem;
   background-color: #d8d8d8;
   border-radius: 0.4rem;
   margin-top: 1.5rem;
@@ -154,6 +158,7 @@ const NoticeDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 0.3rem;
 `;
 
 const AlertTitle = styled.span`

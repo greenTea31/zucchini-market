@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "./SimpleCalendarDesign.css";
 import SelectedTime from "./SelectedTime";
+import TimeSchedule from "./TimeSchedule";
 
 export default function SimpleCalendar() {
   // 마우스로 선택한 날짜 받는 state
@@ -33,6 +34,11 @@ export default function SimpleCalendar() {
     }
   }, [selectedDate, mark]);
 
+  const [isTimeScheduleOpen, setTimeScheduleOpen] = useState(false);
+
+  const toggleTimeScheduleModal = () => {
+    setTimeScheduleOpen((prevIsOpen) => !prevIsOpen);
+  };
   /*
    * 통신을 통해 서버에서 해당 아이템에 대한
    * 판매자의 선택날짜 mark배열에 담을
@@ -53,6 +59,16 @@ export default function SimpleCalendar() {
             return "highlight";
           }
         }}
+        onClickDay={(date) => {
+          onChange(date);
+          toggleTimeScheduleModal();
+        }}
+      />
+      {/* <SelectedTime showTime={showTime} date={selectedDate} /> */}
+      <TimeSchedule
+        isOpen={isTimeScheduleOpen}
+        toggle={toggleTimeScheduleModal}
+      />
       />
       <SelectedTime showTime={showTime} date={selectedDate} />
     </div>

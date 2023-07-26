@@ -16,6 +16,9 @@ import ItemDetail from "./pages/ItemDetail";
 import Detail from "./pages/Detail";
 import ChatRoom from "./pages/ChatRoom";
 import Conference from "./pages/Conference";
+import ReplayVideo from "./pages/ReplayVideo";
+import ScheduleList from "./pages/ScheduleList";
+import UpdateItem from "./pages/UpdateItem";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +59,10 @@ const router = createBrowserRouter([
         element: <CreateItem />,
       },
       {
+        path: "/items/update",
+        element: <UpdateItem />,
+      },
+      {
         path: "/mypage/like",
         element: <LikeList />,
       },
@@ -86,6 +93,14 @@ const router = createBrowserRouter([
       {
         path: "/conference",
         element: <Conference />,
+      },
+      {
+        path: "/mypage/buy/video",
+        element: <ReplayVideo />,
+      },
+      {
+        path: "/mypage/schedule",
+        element: <ScheduleList />,
       },
     ],
   },
