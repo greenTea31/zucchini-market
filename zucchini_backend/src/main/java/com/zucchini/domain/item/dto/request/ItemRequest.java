@@ -20,7 +20,7 @@ public class ItemRequest {
     @NotBlank
     private int price;
 
-    private String image;
+    private List<String> imageList;
 
     private List<Date> dateList;
 
