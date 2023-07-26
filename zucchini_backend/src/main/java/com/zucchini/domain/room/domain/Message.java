@@ -37,11 +37,18 @@ public class Message {
     @CreationTimestamp
     private Date createdAt;
 
+    @Column(name="is_read")
+    private boolean isRead;
+
     @Builder
     public Message(Room room, User sender, String content) {
         this.room = room;
         this.sender = sender;
         this.content = content;
+    }
+
+    public void read() {
+        this.isRead = true;
     }
 
 }

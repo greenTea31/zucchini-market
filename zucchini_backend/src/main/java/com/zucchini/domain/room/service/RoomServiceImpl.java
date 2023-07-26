@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -93,13 +94,48 @@ public class RoomServiceImpl implements RoomService{
         int currentPrincipalNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("채팅 조회는 로그인 이후에 가능합니다.")).getNo();
 
         List<Room> rooms = roomUserRepository.findRoomsByItemNoAndUser(itemNo, currentPrincipalNo);
-        List<RoomResponse> roomResponses = RoomResponse.listOf(rooms);
-        return roomResponses;
+        List<RoomResponse> roomResponseList = toResponseList(rooms, currentPrincipalNo);
+        return roomResponseList;
+    }
+
+    private List<RoomResponse> toResponseList(List<Room> rooms, int currentPrincipalNo) {
+        List<RoomResponse> roomResponseList = new ArrayList<>();
+
+        for (Room room : rooms) {
+            RoomResponse roomResponse = RoomResponse.builder().build();
+
+            // 그 방에서 작성된 마지막 메세지를 반환함
+            Message message = messageRepository.findTopByRoomOrderByCreatedAtDesc(room);
+
+            // 내용과 작성시간은 roomResponse에 그대로 넣음
+            roomResponse.setNo(room.getNo());
+            roomResponse.setTitle(room.getItem().getTitle());
+            roomResponse.setLastMessage(message.getContent());
+            roomResponse.setLastMessageCreatedAt(message.getCreatedAt());
+
+            // 마지막 메세지의 보낸 사람이 조회자 본인이면 그 방의 안 읽은 메세지 수는 무조건 0개
+            // 아니면 그 방의 메세지중 is_read가 false인 값을 리턴함
+            if (room.getItem() != null) {
+                roomResponse.setTitle(room.getItem().getTitle());
+            } else {
+                roomResponse.setTitle("삭제된 상품입니다.");
+            }
+
+            if (message.getSender().getNo() == currentPrincipalNo) {
+                roomResponse.setUnreadCount(0);
+            } else {
+                roomResponse.setUnreadCount(messageRepository.countByRoomAndIsRead(room, false));
+            }
+
+            roomResponseList.add(roomResponse);
+        }
+
+        return roomResponseList;
     }
 
     @Override
     public List<RoomResponse> findAllRoomList() {
-        // 로그인한 유저의 특정 아이템에 관한 모든 방을 조회
+        // 로그인한 유저의 모든 채팅방을 조회함
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null) {
@@ -111,8 +147,8 @@ public class RoomServiceImpl implements RoomService{
         int currentPrincipalNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("채팅 조회는 로그인 이후에 가능합니다.")).getNo();
 
         List<Room> rooms = roomUserRepository.findAllRoomsByUser(currentPrincipalNo);
-        List<RoomResponse> roomResponses = RoomResponse.listOf(rooms);
-        return roomResponses;
+        List<RoomResponse> roomResponseList = toResponseList(rooms, currentPrincipalNo);
+        return roomResponseList;
     }
 
     @Override
@@ -164,6 +200,13 @@ public class RoomServiceImpl implements RoomService{
 
         if (!joined) {
             throw new UserException("권한이 없습니다.");
+        }
+
+        // 내가 들어가면 상대방이 작성한 모든 메세지 읽음 처리
+        List<Message> messages = messageRepository.findAllByRoomAndSenderNotAndIsRead(room, user, false);
+
+        for (Message message : messages) {
+            message.read();
         }
 
         List<Message> messageList = messageRepository.findAllByRoom(room);

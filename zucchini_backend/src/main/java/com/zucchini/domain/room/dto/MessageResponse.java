@@ -13,12 +13,14 @@ public class MessageResponse {
 
     private String sender;
     private String content;
+    private boolean isRead;
     private Date createdAt;
 
     public static MessageResponse of(Message message) {
         return MessageResponse.builder()
                 .sender(message.getSender().getNickname())
                 .content(message.getContent())
+                .isRead(message.isRead())
                 .createdAt(message.getCreatedAt())
                 .build();
     }
