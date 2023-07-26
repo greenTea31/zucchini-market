@@ -22,11 +22,12 @@ public class RefreshToken {
     @TimeToLive
     private Long expiration;
 
-    public static RefreshToken createRefreshToken(String username, String refreshToken, Long remainingMilliSeconds) {
+    public static RefreshToken createRefreshToken(String id, String refreshToken, Long remainingMilliSeconds) {
         return RefreshToken.builder()
-                .id(username)
+                .id(id)
                 .refreshToken(refreshToken)
                 .expiration(remainingMilliSeconds / 1000)
                 .build();
     }
+
 }
