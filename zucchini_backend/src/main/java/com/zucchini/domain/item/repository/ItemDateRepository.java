@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ItemDateRepository extends JpaRepository<ItemDate, Integer> {
 
-    @Modifying
-    @Query(value = "delete from ItemDate where itemNo = :itemNo")
     void deleteByItemNo(int itemNo);
 
 }

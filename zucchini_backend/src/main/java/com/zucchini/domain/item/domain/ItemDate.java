@@ -3,6 +3,7 @@ package com.zucchini.domain.item.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -21,10 +22,10 @@ public class ItemDate {
     @Column(name = "item_no")
     private Integer itemNo;
 
-    private java.util.Date date;
+    private Date date;
 
     @Builder
-    public ItemDate(int itemNo, java.util.Date date) {
+    public ItemDate(int itemNo, Date date) {
         this.itemNo = itemNo;
         this.date = date;
     }
