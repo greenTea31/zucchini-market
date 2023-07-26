@@ -94,12 +94,12 @@ public class RoomServiceImpl implements RoomService{
         int currentPrincipalNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("채팅 조회는 로그인 이후에 가능합니다.")).getNo();
 
         List<Room> rooms = roomUserRepository.findRoomsByItemNoAndUser(itemNo, currentPrincipalNo);
-        List<RoomResponse> roomResponses = toResponseList(rooms, currentPrincipalNo);
-        return roomResponses;
+        List<RoomResponse> roomResponseList = toResponseList(rooms, currentPrincipalNo);
+        return roomResponseList;
     }
 
     private List<RoomResponse> toResponseList(List<Room> rooms, int currentPrincipalNo) {
-        List<RoomResponse> roomResponses = new ArrayList<>();
+        List<RoomResponse> roomResponseList = new ArrayList<>();
 
         for (Room room : rooms) {
             RoomResponse roomResponse = RoomResponse.builder().build();
@@ -127,10 +127,10 @@ public class RoomServiceImpl implements RoomService{
                 roomResponse.setUnreadCount(messageRepository.countByRoomAndIsRead(room, false));
             }
 
-            roomResponses.add(roomResponse);
+            roomResponseList.add(roomResponse);
         }
 
-        return roomResponses;
+        return roomResponseList;
     }
 
     @Override
@@ -147,8 +147,8 @@ public class RoomServiceImpl implements RoomService{
         int currentPrincipalNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("채팅 조회는 로그인 이후에 가능합니다.")).getNo();
 
         List<Room> rooms = roomUserRepository.findAllRoomsByUser(currentPrincipalNo);
-        List<RoomResponse> roomResponses = toResponseList(rooms, currentPrincipalNo);
-        return roomResponses;
+        List<RoomResponse> roomResponseList = toResponseList(rooms, currentPrincipalNo);
+        return roomResponseList;
     }
 
     @Override
@@ -203,7 +203,7 @@ public class RoomServiceImpl implements RoomService{
         }
 
         // 내가 들어가면 상대방이 작성한 모든 메세지 읽음 처리
-        List<Message> messages = messageRepository.findAllByRoomAndSenderNot(room, user);
+        List<Message> messages = messageRepository.findAllByRoomAndSenderNotAndIsRead(room, user, false);
 
         for (Message message : messages) {
             message.read();

@@ -12,6 +12,6 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     List<Message> findAllByRoom(Room room);
     Message findTopByRoomOrderByCreatedAtDesc(Room room);
     int countByRoomAndIsRead(Room room, boolean isRead);
-    List<Message> findAllByRoomAndSenderNot(Room room, User user);
+    List<Message> findAllByRoomAndSenderNotAndIsRead(Room room, User user, boolean isRead);
 
 }
