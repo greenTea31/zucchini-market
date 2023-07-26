@@ -33,10 +33,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = getToken(request);
         if (accessToken != null) {
             checkLogout(accessToken);
-            String username = jwtTokenUtil.getUsername(accessToken);
-            if (username != null) {
-                UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
-                equalsUsernameFromTokenAndUserDetails(userDetails.getUsername(), username);
+            String id = jwtTokenUtil.getUsername(accessToken);
+            if (id != null) {
+                UserDetails userDetails = customUserDetailService.loadUserByUsername(id);
+                equalsUsernameFromTokenAndUserDetails(userDetails.getUsername(), id);
                 validateAccessToken(accessToken, userDetails);
                 processSecurity(request, userDetails);
             }
@@ -60,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void equalsUsernameFromTokenAndUserDetails(String userDetailsUsername, String tokenUsername) {
         if (!userDetailsUsername.equals(tokenUsername)) {
-            throw new IllegalArgumentException("username이 토큰과 맞지 않습니다.");
+            throw new IllegalArgumentException("id가 토큰과 맞지 않습니다.");
         }
     }
 
@@ -75,4 +75,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
+
 }
