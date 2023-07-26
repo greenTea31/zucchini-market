@@ -94,4 +94,11 @@ public class Item {
         this.price = item.getPrice();
     }
 
+    /**
+     * 아이템 상태 수정
+     */
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
 }
