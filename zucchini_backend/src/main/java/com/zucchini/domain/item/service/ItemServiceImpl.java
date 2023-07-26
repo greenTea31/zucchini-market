@@ -3,6 +3,9 @@ package com.zucchini.domain.item.service;
 import com.zucchini.domain.category.domain.ItemCategory;
 import com.zucchini.domain.category.domain.ItemCategoryId;
 import com.zucchini.domain.category.repository.ItemCategoryRepository;
+import com.zucchini.domain.image.domain.Image;
+import com.zucchini.domain.image.repository.ImageRepository;
+import com.zucchini.domain.image.service.ImageService;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.domain.ItemDate;
 import com.zucchini.domain.item.dto.request.ItemRequest;
@@ -36,7 +39,9 @@ public class ItemServiceImpl implements ItemService {
     private final ItemDateRepository itemDateRepository;
     private final UserRepository userRepository;
     private final ItemCategoryRepository itemCategoryRepository;
+    private final ImageRepository imageRepository;
     private final RoomService roomService;
+    private final ImageService imageService;
 
     @Override
     public List<FindItemListResponse> findItemList() {
@@ -44,7 +49,6 @@ public class ItemServiceImpl implements ItemService {
         int likeCount = 0;  // user_item_like 생성 후 작성
 
         // image, category 리스트로 수정 후 작성
-        String image = null;
         String category = null;
 
         List<Item> itemList = itemRepository.findItemAllByUser();
@@ -57,12 +61,34 @@ public class ItemServiceImpl implements ItemService {
                         .content(item.getContent())
                         .price(item.getPrice())
                         .status(item.getStatus())
-                        .image(image)
+                        .image(getItemImage(item.getNo()))
                         .likeCount(likeCount)
-                        .category(category)
+                        .category(getCategory(item.getCategoryList()))
                         .build()
         ).collect(Collectors.toList());
 
+    }
+
+    private String getItemImage(int itemNo) {
+        List<String> imageList = imageService.findImageLinkList(itemNo);
+        if (imageList.isEmpty())
+            return null;
+        return imageList.get(0);
+    }
+
+    private List<String> getItemImageList(int itemNo) {
+        List<String> imageList = imageService.findImageLinkList(itemNo);
+        if (imageList.isEmpty())
+            return null;
+        return imageList;
+    }
+
+    private List<String> getCategory(List<ItemCategory> itemCategoryList) {
+        List<String> categoryList = new ArrayList<>();
+        for (ItemCategory itemCategory : itemCategoryList) {
+            categoryList.add(itemCategory.getCategory().getCategory());
+        }
+        return categoryList;
     }
 
     @Override
@@ -70,14 +96,11 @@ public class ItemServiceImpl implements ItemService {
         int likeCount = 0;  // user_item_like 생성 후 작성
 
         // image 리스트로 수정 후 작성
-        String image = null;
+        List<String> imageList = getItemImageList(itemNo);
 
         Item item = itemRepository.findItemByUser(itemNo);
 
-        List<String> categoryList = new ArrayList<>();
-        for (ItemCategory itemCategory : item.getCategoryList()) {
-            categoryList.add(itemCategory.getCategory().getCategory());
-        }
+        List<String> categoryList = getCategory(item.getCategoryList());
 
         List<Date> dateList = new ArrayList<>();
         for (ItemDate itemDate : item.getDateList()) {
@@ -96,7 +119,7 @@ public class ItemServiceImpl implements ItemService {
                         .content(item.getContent())
                         .price(item.getPrice())
                         .status(item.getStatus())
-                        .image(image)
+                        .image(imageList)
                         .likeCount(likeCount)
                         .seller(seller)
                         .dateList(dateList)
@@ -117,8 +140,21 @@ public class ItemServiceImpl implements ItemService {
         Item itemEntity = itemRepository.save(buildItem);
         int itemNo = itemEntity.getNo();
 
+        addImage(itemNo, item.getImageList());
         addDate(itemNo, item.getDateList());
         addCategory(itemNo, item.getCategoryList());
+    }
+
+    private void addImage(int itemNo, List<String> getImageList) {
+        List<Image> imageList = new ArrayList<>();
+        for (String image : getImageList) {
+            Image buildImage = Image.builder()
+                    .itemNo(itemNo)
+                    .link(image)
+                    .build();
+            imageList.add(buildImage);
+        }
+        imageRepository.saveAll(imageList);
     }
 
     private void addDate(int itemNo, List<Date> getDateList) {
@@ -161,6 +197,9 @@ public class ItemServiceImpl implements ItemService {
         if (!findItem.getSeller().getId().equals(getCurrentId())){
             throw new ItemException("잘못된 접근입니다. 다른 판매자의 상품을 수정할 수 없습니다.");
         }
+
+        // image 수정
+        imageService.modifyImage(itemNo, item.getImageList());
 
         // date 수정
         removeDate(itemNo);

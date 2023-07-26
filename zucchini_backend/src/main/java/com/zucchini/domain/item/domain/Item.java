@@ -2,6 +2,7 @@ package com.zucchini.domain.item.domain;
 
 import com.zucchini.domain.category.domain.ItemCategory;
 import com.zucchini.domain.grade.domain.Grade;
+import com.zucchini.domain.image.domain.Image;
 import com.zucchini.domain.item.dto.request.ItemRequest;
 import com.zucchini.domain.user.domain.User;
 import lombok.AccessLevel;
@@ -63,6 +64,9 @@ public class Item {
 
     @OneToMany(mappedBy = "item")
     private List<ItemCategory> categoryList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item")
+    private List<Image> imageList = new ArrayList<>();
 
     @Builder
     public Item(String title, String content, int price, User seller){
