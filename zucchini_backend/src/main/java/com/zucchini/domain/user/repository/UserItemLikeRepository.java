@@ -17,8 +17,8 @@ public interface UserItemLikeRepository extends JpaRepository<UserItemLike, User
     @Query(value = "select i from UserItemLike uil " +
             "join uil.user u " +
             "join uil.item i " +
-            "where u.id = :userId")
-    List<Item> findAllByUserId(String userId);
+            "where u.id = :userId and i.title like concat('%',:keyword,'%')")
+    List<Item> findAllByUserId(String userId, String keyword);
 
     /**
      * 해당 회원이 찜한 아이템 취소
