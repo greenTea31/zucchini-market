@@ -5,7 +5,7 @@ import com.zucchini.domain.room.dto.AddRoomRequest;
 import com.zucchini.domain.room.dto.MessageResponse;
 import com.zucchini.domain.room.dto.RoomResponse;
 import com.zucchini.domain.room.service.RoomService;
-import com.zucchini.domain.user.exception.UserException;
+import com.zucchini.global.exception.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -4,7 +4,7 @@ import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
-import com.zucchini.domain.user.exception.UserException;
+import com.zucchini.global.exception.UserException;
 import com.zucchini.domain.user.service.UserService;
 import com.zucchini.global.domain.TokenDto;
 import com.zucchini.global.util.JwtTokenUtil;
@@ -122,20 +122,25 @@ public class UserController {
     /**
      * 회원 정보 수정
      */
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Integer> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest, BindingResult bindingResult){
+//        if (bindingResult.hasErrors()) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
+//        }
+//        try{
+//            userService.modifyUser(id, modifyUserRequest);
+//        } catch (IllegalArgumentException e){
+//            // 회원이 없는 경우
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
+//        } catch (UserException e){
+//            // 로그인한 아이디와 수정하려는 아이디가 다른 경우
+//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED);
+//        }
+//        return new ResponseEntity<>(HttpStatus.OK.value(), HttpStatus.OK);
+//    }
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-        }
-        try{
-            userService.modifyUser(id, modifyUserRequest);
-        } catch (IllegalArgumentException e){
-            // 회원이 없는 경우
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
-        } catch (UserException e){
-            // 로그인한 아이디와 수정하려는 아이디가 다른 경우
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<Integer> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest){
+        userService.modifyUser(id, modifyUserRequest);
         return new ResponseEntity<>(HttpStatus.OK.value(), HttpStatus.OK);
     }
 

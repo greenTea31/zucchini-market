@@ -6,7 +6,7 @@ import com.zucchini.domain.reservation.domain.Reservation;
 import com.zucchini.domain.reservation.dto.ReservationResponse;
 import com.zucchini.domain.reservation.repository.ReservationRepository;
 import com.zucchini.domain.user.domain.User;
-import com.zucchini.domain.user.exception.UserException;
+import com.zucchini.global.exception.UserException;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;

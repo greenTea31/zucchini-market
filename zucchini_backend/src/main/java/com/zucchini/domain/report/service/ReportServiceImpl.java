@@ -3,7 +3,7 @@ import com.zucchini.domain.report.domain.Report;
 import com.zucchini.domain.report.dto.AddReportRequest;
 import com.zucchini.domain.report.repository.ReportRepository;
 import com.zucchini.domain.user.domain.User;
-import com.zucchini.domain.user.exception.UserException;
+import com.zucchini.global.exception.UserException;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
