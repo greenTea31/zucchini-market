@@ -1,10 +1,16 @@
 package com.zucchini.domain.video.service;
 
+import com.zucchini.domain.item.domain.Item;
+import com.zucchini.domain.item.repository.ItemRepository;
 import com.zucchini.domain.video.domain.Video;
 import com.zucchini.domain.video.dto.request.AddVideoRequest;
 import com.zucchini.domain.video.dto.response.FindVideoResponse;
 import com.zucchini.domain.video.repository.VideoRepository;
+import com.zucchini.global.exception.UserException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +24,7 @@ import java.util.Optional;
 public class VideoServiceImpl implements VideoService {
 
     private final VideoRepository videoRepository;
+    private final ItemRepository itemRepository;
     private final long oneWeekInMillis = 24 * 60 * 60 * 1000 * 7; // 7일의 밀리초 값
 
     /**
@@ -64,8 +71,14 @@ public class VideoServiceImpl implements VideoService {
      */
     @Override
     public FindVideoResponse findVideo(int no) {
-        Optional<Video> video = videoRepository.findById(no);
+        Optional<Video> video = videoRepository.findByItemNo(no);
         if(!video.isPresent()) throw new IllegalArgumentException("해당 비디오가 존재하지 않습니다.");
+        // 해당 아이템의 판매자 구매자가 아닌 경우 비디오 조회 권한이 없음
+        Optional<Item> item = itemRepository.findById(video.get().getItemNo());
+        String loginId = getCurrentId();
+        // 아이템의 구매자와 판매자를 조회하는 쿼리 최적화 방법은 없을까?
+        if(!item.get().getSeller().getId().equals(loginId) && !item.get().getBuyer().getId().equals(loginId))
+            throw new UserException("해당 아이템의 비디오 조회 권한이 없습니다.");
 
         return FindVideoResponse.builder()
                 .link(video.get().getLink())
@@ -73,6 +86,12 @@ public class VideoServiceImpl implements VideoService {
                 .endTime(video.get().getEndTime())
                 .deleteTime(video.get().getDeleteTime())
                 .build();
+    }
+
+    private String getCurrentId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        return principal.getUsername();
     }
 
     /**
