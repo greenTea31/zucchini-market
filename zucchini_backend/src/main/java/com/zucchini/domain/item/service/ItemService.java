@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ItemService {
 
-    List<FindItemListResponse> findItemList();
+    List<FindItemListResponse> findItemList(String keyword);
     FindItemResponse findItem(int itemNo);
     void addItem(ItemRequest item);
     void modifyItem(int itemNo, ItemRequest item);

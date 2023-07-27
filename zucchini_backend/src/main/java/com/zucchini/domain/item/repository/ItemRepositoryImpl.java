@@ -13,13 +13,14 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Item> findItemAllByUser() {
+    public List<Item> findItemAllByUser(String keyword) {
         QItem item = QItem.item;
 
         return queryFactory.select(item)
                 .from(item)
                 .where(
-                        item.seller.isDeleted.eq(false)
+                        item.title.contains(keyword)
+                                .and(item.seller.isDeleted.eq(false))
                                 .and(item.seller.isLocked.eq(false))
                 )
                 .fetch();

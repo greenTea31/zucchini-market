@@ -20,8 +20,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public ResponseEntity<List<FindItemListResponse>> findItem() {
-        return ResponseEntity.ok(itemService.findItemList());
+    public ResponseEntity<List<FindItemListResponse>> findItem(@RequestParam String keyword) {
+        return ResponseEntity.ok(itemService.findItemList(keyword));
     }
 
     @GetMapping("/{itemNo}")

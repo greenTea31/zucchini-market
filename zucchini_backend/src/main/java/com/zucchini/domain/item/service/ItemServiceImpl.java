@@ -44,14 +44,14 @@ public class ItemServiceImpl implements ItemService {
     private final ImageService imageService;
 
     @Override
-    public List<FindItemListResponse> findItemList() {
+    public List<FindItemListResponse> findItemList(String keyword) {
 
         int likeCount = 0;  // user_item_like 생성 후 작성
 
         // image, category 리스트로 수정 후 작성
         String category = null;
 
-        List<Item> itemList = itemRepository.findItemAllByUser();
+        List<Item> itemList = itemRepository.findItemAllByUser(keyword);
 
         return itemList.stream().map(
                 item -> FindItemListResponse.builder()
