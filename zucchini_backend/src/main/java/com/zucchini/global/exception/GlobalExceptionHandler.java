@@ -51,10 +51,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN);
     }
 
-
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Integer> handleException(Exception e) {
         log.error("handleEntityNotFoundException", e);
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }
