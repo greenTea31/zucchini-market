@@ -15,6 +15,7 @@ import com.zucchini.domain.item.exception.ItemException;
 import com.zucchini.domain.item.repository.ItemDateRepository;
 import com.zucchini.domain.item.repository.ItemRepository;
 import com.zucchini.domain.room.service.RoomService;
+import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -279,6 +280,12 @@ public class ItemServiceImpl implements ItemService {
         }
 
         item.setStatus(2);
+        // 구매자 판매자 거래 횟수 증가
+        User buyer = item.getBuyer();
+        User seller = item.getBuyer();
+
+        buyer.setDealCount();
+        seller.setDealCount();
     }
 
     @Override
