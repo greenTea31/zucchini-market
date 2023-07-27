@@ -52,6 +52,9 @@ public class User implements Serializable {
     @Column(name = "report_count", columnDefinition = "integer default 0")
     private Integer reportCount;
 
+    @Column(name = "deal_count", columnDefinition = "integer default 0")
+    private Integer dealCount;
+
     @Column(name = "grade", columnDefinition = "float default 3")
     @DecimalMin(value = "0.0", inclusive = true)
     @DecimalMax(value = "5.0", inclusive = true)
@@ -125,4 +128,10 @@ public class User implements Serializable {
         this.grade = grade;
     }
 
+    /**
+     * 거래 횟수 증가
+     */
+    public void setDealCount(){
+        this.dealCount++;
+    }
 }
