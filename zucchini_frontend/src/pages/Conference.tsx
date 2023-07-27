@@ -270,7 +270,7 @@ export default function Conference() {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
-                  stroke="currentColor"
+                  stroke="blue"
                   className="w-6 h-6"
                 >
                   <path
@@ -336,13 +336,13 @@ export default function Conference() {
 const ContainerDiv = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1rem 5rem 5rem 5rem;
-  margin: 0 6rem 13rem 6rem;
+  padding: 0 5rem;
+  margin: 0 6rem 0 6rem;
   font-family: "IBM Plex Sans KR", sans-serif;
 `;
 
 const UpperDiv = styled.div`
-  padding: 1.5rem 3rem;
+  padding: 1rem 3rem;
   display: flex;
   justify-content: space-between;
   border: solid 1px #cbcbcb;
@@ -352,7 +352,7 @@ const UpperDiv = styled.div`
 const LowerDiv = styled.div`
   display: flex;
   justify-content: center;
-  height: 40rem;
+  height: 38rem;
 `;
 
 const LeftDiv = styled.div`
@@ -422,7 +422,7 @@ const SellerImg = styled.img`
 const LeftUpperDiv = styled.div`
   height: 85%;
   display: flex;
-  padding: 2rem;
+  padding: 1rem 2rem;
   gap: 1.5rem;
 `;
 
@@ -437,7 +437,7 @@ const LeftLowerDiv = styled.div`
 `;
 
 const RightUpperDiv = styled.div`
-  height: 15rem;
+  height: 13.3rem;
   padding: 1rem 2rem;
   display: flex;
   flex-direction: column;
@@ -591,7 +591,7 @@ const ChatInputDiv = styled.div`
 `;
 
 const ChatDiv = styled.div`
-  height: 17.35rem;
+  height: 15.3rem;
 `;
 
 const StyledInput = styled.input`

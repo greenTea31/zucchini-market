@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
@@ -129,7 +129,9 @@ export default function SignUp() {
             <CheckboxDiv>
               <input type="checkbox" id="agreement" onClick={clickAgree} />
               <label htmlFor="agreement">
-                <BoldA> (필수) 개인정보 수집 및 이용에 관한 동의서</BoldA>
+                <Link to={"/signup/agreement"} target={"_blank"}>
+                  <BoldA> (필수) 개인정보 수집 및 이용에 관한 동의서</BoldA>
+                </Link>
               </label>
             </CheckboxDiv>
           </CheckboxAll>
@@ -194,7 +196,6 @@ const StyledMessage = styled.div`
   display: flex;
   justify-content: start;
   padding-left: 1rem;
-  margin: 0.3rem;
   color: tomato;
 `;
 
@@ -205,11 +206,12 @@ const StyledButtonDiv = styled.div`
 `;
 
 const StyledButton = styled.button`
-  height: 2.9rem;
+  height: 3rem;
   border: 2px solid #cde990;
   border-radius: 0.4rem;
   background-color: white;
   margin: 0.3rem;
+  font-size: 1rem;
 
   &:hover {
     background-color: #cde990;
@@ -229,6 +231,7 @@ const CheckboxDiv = styled.div`
 
 const BoldA = styled.a`
   color: blue;
+  font-size: 1rem;
 `;
 
 const GenderSelect = styled.select`

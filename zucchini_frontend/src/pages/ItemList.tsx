@@ -3,6 +3,7 @@ import Category from "../components/List/Category";
 import { Button } from "../components/Common/Button";
 import Search from "../components/List/Search";
 import ItemEach from "../components/List/ItemEach";
+import { Link } from "react-router-dom";
 
 export default function ItemList() {
   return (
@@ -15,9 +16,11 @@ export default function ItemList() {
       <LowerDiv>
         <TitleDiv>
           <SubTitle>전체보기</SubTitle>
-          <Button Size="extraSmall" Variant="pinkTonal" Rounded="medium">
-            + 글 등록
-          </Button>
+          <Link to={"/items/create"}>
+            <Button Size="small" Variant="pinkTonal" Rounded="medium">
+              + 글 등록
+            </Button>
+          </Link>
         </TitleDiv>
         <ItemsContainer>
           {[1, 2, 3, 4, 5].map((e, i) => (
