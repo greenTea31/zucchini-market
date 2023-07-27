@@ -1,5 +1,6 @@
 import Calendar from "react-calendar";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export default function ScheduleList() {
   return (
@@ -19,7 +20,11 @@ export default function ScheduleList() {
           <ScheduleDiv>
             <span>15:30</span>
             <span>갤럭시북 2 PRO</span>
-            <StyledBtn>입장</StyledBtn>
+            <StyledBtn>
+              <Link to={"/conference"} target="_blank">
+                입장
+              </Link>
+            </StyledBtn>
           </ScheduleDiv>
           <ScheduleDiv>
             <span>20:00</span>

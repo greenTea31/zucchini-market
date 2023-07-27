@@ -122,11 +122,12 @@ const StyledButtonDiv = styled.div`
 `;
 
 const StyledButton = styled.button`
-  height: 2.9rem;
+  height: 3rem;
   border: 2px solid #cde990;
   border-radius: 0.4rem;
   background-color: white;
   margin: 0.3rem;
+  font-size: 1rem;
 
   &:hover {
     background-color: #cde990;

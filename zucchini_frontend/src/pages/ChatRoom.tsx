@@ -5,6 +5,7 @@ import Modal from "../components/Common/Modal";
 import { useState } from "react";
 import Chatting from "../components/Chatting";
 import ClosedButton from "../components/Common/ClosedButton";
+import { Link } from "react-router-dom";
 
 export default function ChatRoom() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +33,9 @@ export default function ChatRoom() {
           <span>중고 매물을 꼼꼼하게 확인 후 확정을 눌러주세요.</span>
         </SpanDiv>
         <ButtonDiv>
-          <GreenBtn>확정</GreenBtn>
+          <GreenBtn>
+            <Link to={"/mypage/buy"}>확정</Link>
+          </GreenBtn>
         </ButtonDiv>
       </Modal>
       <Modal isOpen={isOpen} toggle={toggle}>
@@ -57,31 +60,20 @@ export default function ChatRoom() {
           <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
         </ModalSubSpan>
         <SimpleCalendar />
+        <ModalBtn>확인</ModalBtn>
+        <ModalBtn>취소</ModalBtn>
       </Modal>
-
-      <StyledSvgDiv>
-        <StyledSvg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.75 19.5L8.25 12l7.5-7.5"
-          />
-        </StyledSvg>
-      </StyledSvgDiv>
       <BodyDiv>
         <LeftDiv>
           <UpperDiv>
             <TitleSpan>판매자가 선택한 일정</TitleSpan>
             <SimpleCalendar />
             <StyledBtnDiv>
-              <StyledBtn>영상 통화하기</StyledBtn>
+              <StyledBtn>
+                <Link to={"/conference"} target={"_blank"}>
+                  영상 통화하기
+                </Link>
+              </StyledBtn>
               <StyledBtn onClick={toggle}>일정 선택하기</StyledBtn>
             </StyledBtnDiv>
           </UpperDiv>
@@ -178,7 +170,7 @@ export default function ChatRoom() {
 const ContainerDiv = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 5rem;
+  padding: 0 5rem;
   margin: 0 6rem 13rem 6rem;
   font-family: "IBM Plex Sans KR", sans-serif;
 `;
@@ -240,6 +232,21 @@ const StyledBtn = styled.button`
   cursor: pointer;
   margin-right: 0.4rem;
   font-size: 1rem;
+
+  &:hover {
+    background-color: white;
+  }
+`;
+
+const ModalBtn = styled.button`
+  width: 9rem;
+  height: 2.5rem;
+  background-color: #cde990;
+  border: solid 1px #cde990;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  margin-top: 2rem;
 
   &:hover {
     background-color: white;
@@ -379,8 +386,8 @@ const SellerBtn = styled.button`
 const SpanDiv = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  margin-bottom: 2rem;
+  gap: 0.5rem;
+  margin: 1.1rem 0 2rem 0;
 `;
 
 const ButtonDiv = styled.div`
@@ -394,15 +401,15 @@ const GreenBtn = styled.button`
   width: 16rem;
   height: 2.8rem;
   border-radius: 0.4rem;
-  background-color: green;
-  border: solid 2px green;
+  background-color: #cde990;
+  border: solid 2px #cde990;
   color: white;
   font-size: 1rem;
   cursor: pointer;
 
   &:hover {
     background-color: white;
-    border: solid 2px green;
-    color: green;
+    border: solid 2px #cde990;
+    color: #cde990;
   }
 `;
