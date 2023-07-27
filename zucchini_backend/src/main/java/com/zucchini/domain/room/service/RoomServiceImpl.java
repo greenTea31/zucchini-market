@@ -13,7 +13,7 @@ import com.zucchini.domain.room.repository.MessageRepository;
 import com.zucchini.domain.room.repository.RoomRepository;
 import com.zucchini.domain.room.repository.RoomUserRepository;
 import com.zucchini.domain.user.domain.User;
-import com.zucchini.domain.user.exception.UserException;
+import com.zucchini.global.exception.UserException;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;

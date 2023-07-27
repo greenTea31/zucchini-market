@@ -9,7 +9,7 @@ import com.zucchini.domain.user.domain.UserItemLikeId;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
-import com.zucchini.domain.user.exception.UserException;
+import com.zucchini.global.exception.UserException;
 import com.zucchini.domain.user.repository.UserItemLikeRepository;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.cache.CacheKey;
