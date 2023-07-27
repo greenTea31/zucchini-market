@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import chatList from "../assets/images/chatList.jpg";
 import likeList from "../assets/images/likeList.jpg";
 import buyList from "../assets/images/buyList.jpg";
@@ -8,24 +8,6 @@ import todoList from "../assets/images/todoList.jpg";
 import femaleImg from "../assets/images/female.jpg";
 
 export default function MyPage() {
-  const navigate = useNavigate();
-
-  const navigateToChat = () => {
-    navigate("/mypage/chat");
-  };
-
-  const navigateToLike = () => {
-    navigate("/mypage/like");
-  };
-
-  const navigateToBuy = () => {
-    navigate("/mypage/buy");
-  };
-
-  const navigateToSell = () => {
-    navigate("/mypage/sell");
-  };
-
   return (
     <ContainerDiv>
       <UpperDiv>
@@ -34,32 +16,44 @@ export default function MyPage() {
         <Img src={femaleImg}></Img>
         <InfoP>닉네임 : 애호오박</InfoP>
         <InfoP>등급 : Lv.1 애호박 씨앗</InfoP>
-        <InfoBtn>내 정보 수정</InfoBtn>
+        <Link to={"/myPage/modify"}>
+          <InfoBtn>내 정보 수정</InfoBtn>
+        </Link>
       </UpperDiv>
       <div>
         <hr />
       </div>
       <LowerDiv>
-        <MenuDiv onClick={navigateToChat}>
-          <MenuImg src={chatList}></MenuImg>
-          <MenuP>채팅 내역</MenuP>
-        </MenuDiv>
-        <MenuDiv onClick={navigateToLike}>
-          <MenuImg src={likeList}></MenuImg>
-          <MenuP>찜한 내역</MenuP>
-        </MenuDiv>
-        <MenuDiv onClick={navigateToBuy}>
-          <MenuImg src={buyList}></MenuImg>
-          <MenuP>구매 내역</MenuP>
-        </MenuDiv>
-        <MenuDiv onClick={navigateToSell}>
-          <MenuImg src={sellList}></MenuImg>
-          <MenuP>판매 내역</MenuP>
-        </MenuDiv>
-        <MenuDiv>
-          <MenuImg src={todoList}></MenuImg>
-          <MenuP>나의 일정</MenuP>
-        </MenuDiv>
+        <Link to={"/mypage/chat"}>
+          <MenuDiv>
+            <MenuImg src={chatList}></MenuImg>
+            <MenuP>채팅 내역</MenuP>
+          </MenuDiv>
+        </Link>
+        <Link to={"/mypage/like"}>
+          <MenuDiv>
+            <MenuImg src={likeList}></MenuImg>
+            <MenuP>찜한 내역</MenuP>
+          </MenuDiv>
+        </Link>
+        <Link to={"/mypage/buy"}>
+          <MenuDiv>
+            <MenuImg src={buyList}></MenuImg>
+            <MenuP>구매 내역</MenuP>
+          </MenuDiv>
+        </Link>
+        <Link to={"/mypage/sell"}>
+          <MenuDiv>
+            <MenuImg src={sellList}></MenuImg>
+            <MenuP>판매 내역</MenuP>
+          </MenuDiv>
+        </Link>
+        <Link to={"/mypage/schedule"}>
+          <MenuDiv>
+            <MenuImg src={todoList}></MenuImg>
+            <MenuP>나의 일정</MenuP>
+          </MenuDiv>
+        </Link>
       </LowerDiv>
     </ContainerDiv>
   );

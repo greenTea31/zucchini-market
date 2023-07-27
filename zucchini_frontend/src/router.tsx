@@ -19,12 +19,17 @@ import Conference from "./pages/Conference";
 import ReplayVideo from "./pages/ReplayVideo";
 import ScheduleList from "./pages/ScheduleList";
 import UpdateItem from "./pages/UpdateItem";
+import SignUpAgreement from "./pages/SignUpAgreement";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
     children: [
+      {
+        path: "/",
+        element: <Main />,
+      },
       {
         path: "/signup",
         element: <SignUp />,
@@ -41,10 +46,7 @@ const router = createBrowserRouter([
         path: "/myPage/modify",
         element: <UpdateUser />,
       },
-      {
-        path: "/main",
-        element: <Main />,
-      },
+
       {
         path: "/items",
         element: <ItemList />,
@@ -101,6 +103,10 @@ const router = createBrowserRouter([
       {
         path: "/mypage/schedule",
         element: <ScheduleList />,
+      },
+      {
+        path: "/signup/agreement",
+        element: <SignUpAgreement />,
       },
     ],
   },
