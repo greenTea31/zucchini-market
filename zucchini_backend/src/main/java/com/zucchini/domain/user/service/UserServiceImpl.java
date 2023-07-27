@@ -2,11 +2,13 @@ package com.zucchini.domain.user.service;
 
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
+import com.zucchini.domain.item.repository.ItemRepository;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.domain.UserItemLike;
 import com.zucchini.domain.user.domain.UserItemLikeId;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
+import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.domain.user.exception.UserException;
 import com.zucchini.domain.user.repository.UserItemLikeRepository;
 import com.zucchini.domain.user.repository.UserRepository;
@@ -44,6 +46,7 @@ public class UserServiceImpl implements UserService {
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
     private final UserItemLikeRepository userItemLikeRepository;
+    private final ItemRepository itemRepository;
     private final JwtTokenUtil jwtTokenUtil;
 
     private final JavaMailSender javaMailSender;
@@ -308,5 +311,44 @@ public class UserServiceImpl implements UserService {
     public void removeUserLikeItem(String id, int itemNo) {
         userItemLikeRepository.deleteByUserIdAndItemNo(id, itemNo);
     }
+
+    /**
+     * 회원의 거래내역, 구매내역인지 판매내역인지 판별하고, 거래 상태를 조회함
+     * 아이템 테이블에서 buyer, seller 보면서 나랑 겹치는거 있는지 확인 (내가 buyer인지 seller인지)
+     * 그리고 status 보면서 거래상태 값 리턴해주면 됨
+     * flag 넘어오는거 false면 판매내역, true면 구매내역으로 구현
+     */
+    @Override
+    public List<UserDealHistoryResponse> findUserDealHistoryList(boolean flag) {
+        // 로그인 정보 얻어옴
+        String id = getCurrentId();
+        List<Item> itemList;
+
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+
+        // item 모든 테이블 확인하면서 flag에 따라 seller 혹은 buyer가 현재 id랑 동일한 것을 찾음
+        if (flag) {
+            itemList = itemRepository.findAllByBuyer(user);
+        } else {
+            itemList = itemRepository.findAllBySeller(user);
+        }
+
+        List<UserDealHistoryResponse> userDealHistoryResponseList = new ArrayList<>();
+
+        for (Item item : itemList) {
+            String thumbnailLink = null;
+
+            if (!item.getImageList().isEmpty()) {
+                thumbnailLink = item.getImageList().get(0).getLink();
+            }
+
+            UserDealHistoryResponse userDealHistoryResponse = UserDealHistoryResponse.builder().title(item.getTitle())
+                    .price(item.getPrice()).status(item.getStatus()).thumbnailLink(thumbnailLink).name(item.getSeller().getNickname()).build();
+            userDealHistoryResponseList.add(userDealHistoryResponse);
+        }
+
+        return userDealHistoryResponseList;
+    }
+
 
 }
