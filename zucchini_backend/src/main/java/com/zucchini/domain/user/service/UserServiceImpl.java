@@ -289,8 +289,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<FindItemListResponse> findUserLikeItemList(String id) {
-        List<Item> userItemLikeList = userItemLikeRepository.findAllByUserId(id);
+    public List<FindItemListResponse> findUserLikeItemList(String id, String keyword) {
+        List<Item> userItemLikeList = userItemLikeRepository.findAllByUserId(id, keyword);
         return userItemLikeList.stream()
                 .map(userItemLike -> FindItemListResponse.builder()
                         .no(userItemLike.getNo())

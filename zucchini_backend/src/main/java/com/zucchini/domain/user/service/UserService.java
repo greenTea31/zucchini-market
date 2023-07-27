@@ -23,7 +23,7 @@ public interface UserService {
     void logout(String accessToken, String id);
     TokenDto reissue(String refreshToken);
     void addUserLikeItem(String id, int itemNo);
-    List<FindItemListResponse> findUserLikeItemList(String id);
+    List<FindItemListResponse> findUserLikeItemList(String id, String keyword);
     void removeUserLikeItem(String id, int itemNo);
 
     List<UserDealHistoryResponse> findUserDealHistoryList(boolean flag);

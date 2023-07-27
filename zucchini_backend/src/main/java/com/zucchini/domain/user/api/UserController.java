@@ -174,8 +174,8 @@ public class UserController {
      * 회원이 찜한 아이템 목록 조회
      */
     @GetMapping("/{id}/item/like")
-    public ResponseEntity<List<FindItemListResponse>> findLikeItemList(@PathVariable String id) {
-        List<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(id);
+    public ResponseEntity<List<FindItemListResponse>> findLikeItemList(@PathVariable String id, @RequestParam String keyword) {
+        List<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(id, keyword);
         return new ResponseEntity<>(userLikeItemList, HttpStatus.OK);
     }
 
