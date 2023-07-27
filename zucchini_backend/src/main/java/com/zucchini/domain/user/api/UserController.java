@@ -3,6 +3,7 @@ package com.zucchini.domain.user.api;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
+import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.domain.user.exception.UserException;
 import com.zucchini.domain.user.service.UserService;
 import com.zucchini.global.domain.TokenDto;
@@ -189,6 +190,32 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.OK.value(), HttpStatus.OK);
+    }
+
+    /**
+     * 거래 내역 조회 (판매)
+     */
+    @GetMapping("/deal/sell")
+    public ResponseEntity<List<UserDealHistoryResponse>> findSellDealHistory() {
+        try {
+            List<UserDealHistoryResponse> sellDealHistory = userService.findUserDealHistoryList(false);
+            return new ResponseEntity<>(sellDealHistory, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    /**
+     * 거래 내역 조회 (구매)
+     */
+    @GetMapping("/deal/buy")
+    public ResponseEntity<List<UserDealHistoryResponse>> findBuyDealHistory() {
+        try {
+            List<UserDealHistoryResponse> buyDealHistory = userService.findUserDealHistoryList(true);
+            return new ResponseEntity<>(buyDealHistory, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }

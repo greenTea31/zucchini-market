@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@NamedEntityGraph(name = "Item.withImages", attributeNodes = @NamedAttributeNode("imageList"))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item {
