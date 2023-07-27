@@ -14,9 +14,10 @@ public interface UserItemLikeRepository extends JpaRepository<UserItemLike, User
     /**
      * 해당 회원이 찜한 아이템 목록 조회
      */
-    @Query(value = "select * from user_item_like inner join user on user_item_like.user_no = user.no " +
-            "inner join item on item.no = user_item_like.item_no " +
-            "where user.id = :userId", nativeQuery = true)
+    @Query(value = "select i from UserItemLike uil " +
+            "join uil.user u " +
+            "join uil.item i " +
+            "where u.id = :userId")
     List<Item> findAllByUserId(String userId);
 
     /**
