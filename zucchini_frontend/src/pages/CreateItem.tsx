@@ -4,6 +4,7 @@ import { useState } from "react";
 import Calendar from "react-calendar";
 import TimeSchedule from "../components/Schedule/TimeSchedule";
 import SimpleCalendar from "../components/Schedule/SimpleCalendar";
+import FileUpload from "../components/Common/FileUpload";
 
 export default function CreateItem() {
   const [isOpen, setIsOpen] = useState(false);
@@ -106,6 +107,7 @@ export default function CreateItem() {
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>사진 업로드</ContentSpan>
+          <FileUpload />
         </ContentDiv>
         <ButtonDiv>
           <StyledButton onClick={toggle}>일정 선택</StyledButton>

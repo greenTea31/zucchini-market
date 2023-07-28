@@ -1,6 +1,6 @@
 const navigation = [
   {
-    navLink: "/items",
+    navLink: "/item",
     navName: "상품보기",
   },
   {

@@ -3,9 +3,10 @@ import Header from "./components/Header";
 import styled from "styled-components";
 import ScrollToTop from "./constants/ScrollToTop";
 import { useEffect } from "react";
+import Footer from "./components/Footer/Footer";
 
 const Layout = styled.div`
-  min-width: 100rem;
+  min-width: 90rem;
   font-family: "IBM Plex Sans KR", sans-serif;
 `;
 
@@ -22,6 +23,7 @@ function Root() {
       <ScrollToTop />
       {exclude.includes(location.pathname) ? null : <Header />}
       <Outlet />
+      <Footer />
     </Layout>
   );
 }
