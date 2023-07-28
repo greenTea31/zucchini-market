@@ -5,16 +5,16 @@ import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
 import com.zucchini.domain.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/item")
-@Slf4j
 public class ItemController {
 
     private final ItemService itemService;
@@ -30,13 +30,13 @@ public class ItemController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Void> addItem(@RequestBody ItemRequest item) {
-        itemService.addItem(item);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Integer> addItem(@Valid @RequestBody ItemRequest item) {
+        int itemNo = itemService.addItem(item);
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemNo);
     }
 
     @PutMapping("/{itemNo}")
-    public ResponseEntity<Void> modifyItem(@PathVariable int itemNo, @RequestBody ItemRequest item) {
+    public ResponseEntity<Void> modifyItem(@PathVariable int itemNo, @Valid @RequestBody ItemRequest item) {
         itemService.modifyItem(itemNo, item);
         return ResponseEntity.ok().build();
     }

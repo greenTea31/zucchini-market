@@ -26,6 +26,6 @@ public class FindItemListResponse {
 
     private int likeCount;
 
-    private List<String> category;
+    private List<String> categoryList;
 
 }

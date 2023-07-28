@@ -10,7 +10,7 @@ public interface ItemService {
 
     List<FindItemListResponse> findItemList(String keyword);
     FindItemResponse findItem(int itemNo);
-    void addItem(ItemRequest item);
+    int addItem(ItemRequest item);
     void modifyItem(int itemNo, ItemRequest item);
     void removeItem(int itemNo);
     void modifyStatusDeal(int itemNo, String buyer);
