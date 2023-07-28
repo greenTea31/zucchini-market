@@ -4,10 +4,10 @@ import { useState } from "react";
 
 // 허용 가능한 확장자 목록
 const ALLOW_FILE_EXTENSION = "jpg, jpeg, png";
-const FILE_SIZE_MAX_LIMIT = 5 * 1024 * 1024; // 5MB
+const FILE_SIZE_MAX_LIMIT = 5 * 1024 * 1024; // 30MB
 
 /**
- * 파일 확장자를 검사해주는 함수
+ * 파일 확장자를 검사해주는 함수                                                                                              
  * @returns true: 가능 확장자, false : 불가능 확장자
  */
 const fileExtensionValid = ({ name }: { name: string }): boolean => {

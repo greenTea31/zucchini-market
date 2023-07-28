@@ -48,6 +48,7 @@ const MenuWindowContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1.3rem;
 `;
 
 const ExitButton = styled.div`

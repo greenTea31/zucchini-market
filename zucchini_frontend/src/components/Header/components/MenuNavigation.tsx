@@ -34,4 +34,6 @@ const NavigationContainer = styled.div`
 const NavigationItem = styled(Link)`
   user-select: none;
   color: white;
+  border-bottom: solid 1px white;
+  padding: 1rem;
 `;
