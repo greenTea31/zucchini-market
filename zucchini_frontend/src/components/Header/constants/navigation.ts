@@ -1,6 +1,6 @@
 const navigation = [
   {
-    navLink: "/items",
+    navLink: "/item",
     navName: "상품보기",
   },
   {
@@ -8,7 +8,7 @@ const navigation = [
     navName: "화상통화",
   },
   {
-    navLink: `/myPage`,
+    navLink: `/mypage`,
     navName: "마이페이지",
   },
 ];

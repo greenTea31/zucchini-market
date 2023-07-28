@@ -13,6 +13,7 @@ export default function ItemList() {
         <Category />
         <Search />
       </UpperDiv>
+
       <LowerDiv>
         <TitleDiv>
           <SubTitle>전체보기</SubTitle>

@@ -6,6 +6,7 @@ export default function ItemEach() {
   return (
     <ItemDiv>
       <ItemImg src={watch} />
+      {/* ItemList, BuyList, SellList에서 각각 쓰이는 컴포넌트이므로 버튼은 조건부 렌더링 필요 */}
       <ReplayButton>다시보기</ReplayButton>
       <ItemTitle>
         갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
