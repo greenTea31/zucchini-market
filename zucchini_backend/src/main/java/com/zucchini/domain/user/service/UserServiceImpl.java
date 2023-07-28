@@ -1,5 +1,7 @@
 package com.zucchini.domain.user.service;
 
+import com.zucchini.domain.category.domain.ItemCategory;
+import com.zucchini.domain.image.service.ImageService;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.repository.ItemRepository;
@@ -29,6 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -40,6 +43,8 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
+
+    private final ImageService imageService;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -61,7 +66,7 @@ public class UserServiceImpl implements UserService {
         CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
         String authority = nowLogInDetail.getAuthority();
 
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("회원이 없습니다."));
         if (!user.getId().equals(getCurrentId()) && !authority.equals("ADMIN")) {
             return FindUserResponse.builder()
                     .nickname(user.getNickname())
@@ -114,7 +119,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUser(AddUserRequest user) {
         if (userRepository.findById(user.getId()).isPresent())
-            throw new UserException("이미 등록된 아이디 입니다.");
+            throw new IllegalArgumentException("이미 등록된 아이디 입니다.");
 
         if (!authCheck(new EmailCheckRequest(user.getEmail(), user.getAuthKey())))
             throw new UserException("이메일 인증을 다시 해주세요.");
@@ -171,7 +176,7 @@ public class UserServiceImpl implements UserService {
         // 기본키로 회원 조회
         Optional<User> user = userRepository.findById(id);
         if(!user.isPresent())
-            throw new IllegalArgumentException("해당 회원이 존재하지 않습니다.");
+            throw new NoSuchElementException("해당 회원이 존재하지 않습니다.");
         String loginId = getCurrentId();
         User loginUser = user.get();
         if(!loginId.equals(id))
@@ -187,7 +192,7 @@ public class UserServiceImpl implements UserService {
         String loginId = getCurrentId();
         Optional<User> user = userRepository.findById(loginId);
         if(!user.isPresent())
-            throw new IllegalArgumentException("해당 회원이 존재하지 않습니다.");
+            throw new NoSuchElementException("해당 회원이 존재하지 않습니다.");
         user.get().modifyPassword(passwordEncoder.encode(password));
     }
 
@@ -204,10 +209,10 @@ public class UserServiceImpl implements UserService {
         User user;
 
         if (id == null) {
-            user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("회원이 없습니다."));
+            user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
             logout(token, currentPrincipalId);
         } else {
-            user = userRepository.findById(id).orElseThrow(() -> new UserException("회원이 없습니다."));
+            user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
         }
 
         user.userDelete();
@@ -279,7 +284,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUserLikeItem(String id, int itemNo) {
         Optional<User> user = userRepository.findById(id);
-        if(!user.isPresent()) throw new UserException("해당하는 회원이 존재하지 않습니다.");
+        if(!user.isPresent()) throw new NoSuchElementException("해당하는 회원이 존재하지 않습니다.");
         int userNo = user.get().getNo();
         UserItemLikeId userItemLikeId = new UserItemLikeId(userNo, itemNo);
         UserItemLike userItemLike = UserItemLike.builder()
@@ -300,11 +305,26 @@ public class UserServiceImpl implements UserService {
                         .price(userItemLike.getPrice())
                         .status(userItemLike.getStatus())
                         // 나중에 구현해야 함!!
-                        .image(null)
-                        .likeCount(0)
-                        .category(null)
+                        .image(getItemImage(userItemLike.getNo()))
+                        .likeCount(userItemLikeRepository.countById_ItemNo(userItemLike.getNo()))
+                        .categoryList(getCategory(userItemLike.getCategoryList()))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    private String getItemImage(int itemNo) {
+        List<String> imageList = imageService.findImageLinkList(itemNo);
+        if (imageList.isEmpty())
+            return null;
+        return imageList.get(0);
+    }
+
+    private List<String> getCategory(List<ItemCategory> itemCategoryList) {
+        List<String> categoryList = new ArrayList<>();
+        for (ItemCategory itemCategory : itemCategoryList) {
+            categoryList.add(itemCategory.getCategory().getCategory());
+        }
+        return categoryList;
     }
 
     @Override

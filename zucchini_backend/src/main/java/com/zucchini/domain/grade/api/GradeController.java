@@ -26,17 +26,9 @@ public class GradeController {
      * 구매자 또는 판매자가 판매자 또는 구매자에게 점수 매기기
      */
     @PostMapping
-    public ResponseEntity<Integer> giveGrade(@Valid @RequestBody GiveGradeRequest giveGradeRequest, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-        }
-        try {
-            gradeService.giveGrade(giveGradeRequest);
-        } catch (IllegalArgumentException e) {
-            log.error("점수 매기기 : " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-        }
-        return ResponseEntity.ok(HttpStatus.OK.value());
+    public ResponseEntity<Integer> giveGrade(@Valid @RequestBody GiveGradeRequest giveGradeRequest){
+        gradeService.giveGrade(giveGradeRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

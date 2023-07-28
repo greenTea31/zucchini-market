@@ -22,16 +22,9 @@ public class VideoController {
      * 비디오 등록
      */
     @PostMapping
-    public ResponseEntity<Integer> addVideo(@Valid @RequestBody AddVideoRequest addVideoRequest, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-        }
-        try{
-            videoService.addVideo(addVideoRequest);
-        }catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-        }
-        return ResponseEntity.ok(HttpStatus.OK.value());
+    public ResponseEntity<Void> addVideo(@Valid @RequestBody AddVideoRequest addVideoRequest){
+        videoService.addVideo(addVideoRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
@@ -40,16 +33,16 @@ public class VideoController {
     @GetMapping("/{no}")
     public ResponseEntity<FindVideoResponse> findVideo(@PathVariable int no){
         FindVideoResponse findVideoResponse = videoService.findVideo(no);
-        return ResponseEntity.ok(findVideoResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(findVideoResponse);
     }
 
     /**
      * 해당 아이템의 비디오 기한 연장
      */
     @PutMapping("/extension/{no}")
-    public ResponseEntity<Integer> extendVideoDeadLine(@PathVariable int no){
+    public ResponseEntity<Void> extendVideoDeadLine(@PathVariable int no){
         videoService.extendVideoDeadLine(no);
-        return ResponseEntity.ok(HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }
