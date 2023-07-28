@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import cycle from "../assets/images/cycle.png";
+import ChatRoomEach from "../components/List/ChatRoomEach";
 
 export default function ChatList() {
   return (
@@ -9,54 +9,17 @@ export default function ChatList() {
         <TitleDiv>
           <TitleSpan>채팅 목록</TitleSpan>
         </TitleDiv>
-        <ChatDiv>
-          <ChatImg src={cycle}></ChatImg>
-          <ChatInfoDiv>
-            <InfoTitleSpan>픽시 자전거 팝니다. 연락주세요 :)</InfoTitleSpan>
-            <MessageSpan>판매되었나요?</MessageSpan>
-          </ChatInfoDiv>
-          <ChatTimeDiv>
-            <MessageSpan>15:30</MessageSpan>
-            <ColorDiv>2</ColorDiv>
-          </ChatTimeDiv>
-        </ChatDiv>
-        <hr />
-        <ChatDiv>
-          <ChatImg src={cycle}></ChatImg>
-          <ChatInfoDiv>
-            <InfoTitleSpan>픽시 자전거 팝니다. 연락주세요 :)</InfoTitleSpan>
-            <MessageSpan>판매되었나요?</MessageSpan>
-          </ChatInfoDiv>
-          <ChatTimeDiv>
-            <MessageSpan>15:30</MessageSpan>
-            <ColorDiv>2</ColorDiv>
-          </ChatTimeDiv>
-        </ChatDiv>
-        <hr />
-        <ChatDiv>
-          <ChatImg src={cycle}></ChatImg>
-          <ChatInfoDiv>
-            <InfoTitleSpan>픽시 자전거 팝니다. 연락주세요 :)</InfoTitleSpan>
-            <MessageSpan>판매되었나요?</MessageSpan>
-          </ChatInfoDiv>
-          <ChatTimeDiv>
-            <MessageSpan>15:30</MessageSpan>
-            <ColorDiv>2</ColorDiv>
-          </ChatTimeDiv>
-        </ChatDiv>
-        <hr />
-        <ChatDiv>
-          <ChatImg src={cycle}></ChatImg>
-          <ChatInfoDiv>
-            <InfoTitleSpan>픽시 자전거 팝니다. 연락주세요 :)</InfoTitleSpan>
-            <MessageSpan>판매되었나요?</MessageSpan>
-          </ChatInfoDiv>
-          <ChatTimeDiv>
-            <MessageSpan>15:30</MessageSpan>
-            <ColorDiv>2</ColorDiv>
-          </ChatTimeDiv>
-        </ChatDiv>
-        <hr />
+        {/* 통신합시다^^ */}
+        {[1, 2, 3, 4].map((e, i) => (
+          <ChatRoomEach
+            chat={{
+              img: "물건물건 이미지 쏘오쓰",
+              sender: "거래자",
+              title: "내게시글 제목",
+              msg: "뭐라뭐라",
+            }}
+          />
+        ))}
       </ChatListDiv>
     </ContainerDiv>
   );

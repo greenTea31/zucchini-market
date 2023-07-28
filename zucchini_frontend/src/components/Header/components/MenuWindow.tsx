@@ -10,6 +10,10 @@ export default function MenuWindow({ toggle }: IMenuProps) {
   const clickExit = () => {
     toggle(false);
   };
+
+  const handleMenuItemClick = () => {
+    toggle(false);
+  };
   return (
     <MenuWindowContainer>
       <ExitButton onClick={clickExit}>
@@ -29,7 +33,7 @@ export default function MenuWindow({ toggle }: IMenuProps) {
           />
         </svg>
       </ExitButton>
-      <MenuNavigation list={menuNavigation} />
+      <MenuNavigation list={menuNavigation} onItemClick={handleMenuItemClick} />
     </MenuWindowContainer>
   );
 }
