@@ -16,7 +16,9 @@ import com.zucchini.domain.item.repository.ItemDateRepository;
 import com.zucchini.domain.item.repository.ItemRepository;
 import com.zucchini.domain.room.service.RoomService;
 import com.zucchini.domain.user.domain.User;
+import com.zucchini.domain.user.repository.UserItemLikeRepository;
 import com.zucchini.domain.user.repository.UserRepository;
+import com.zucchini.global.exception.UserException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,17 +44,12 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final ItemCategoryRepository itemCategoryRepository;
     private final ImageRepository imageRepository;
+    private final UserItemLikeRepository userItemLikeRepository;
     private final RoomService roomService;
     private final ImageService imageService;
 
     @Override
     public List<FindItemListResponse> findItemList(String keyword) {
-
-        int likeCount = 0;  // user_item_like 생성 후 작성
-
-        // image, category 리스트로 수정 후 작성
-        String category = null;
-
         List<Item> itemList = itemRepository.findItemAllByUser(keyword);
 
         return itemList.stream().map(
@@ -63,8 +61,8 @@ public class ItemServiceImpl implements ItemService {
                         .price(item.getPrice())
                         .status(item.getStatus())
                         .image(getItemImage(item.getNo()))
-                        .likeCount(likeCount)
-                        .category(getCategory(item.getCategoryList()))
+                        .likeCount(userItemLikeRepository.countById_ItemNo(item.getNo()))
+                        .categoryList(getCategory(item.getCategoryList()))
                         .build()
         ).collect(Collectors.toList());
 
@@ -94,12 +92,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public FindItemResponse findItem(int itemNo) {
-        int likeCount = 0;  // user_item_like 생성 후 작성
+        Item item = itemRepository.findItemByUser(itemNo);
 
-        // image 리스트로 수정 후 작성
+        if (item == null) {
+            throw new NoSuchElementException("상품이 존재하지 않습니다.");
+        }
+
+        int likeCount = userItemLikeRepository.countById_ItemNo(itemNo);
+
         List<String> imageList = getItemImageList(itemNo);
 
-        Item item = itemRepository.findItemByUser(itemNo);
 
         List<String> categoryList = getCategory(item.getCategoryList());
 
@@ -120,7 +122,7 @@ public class ItemServiceImpl implements ItemService {
                         .content(item.getContent())
                         .price(item.getPrice())
                         .status(item.getStatus())
-                        .image(imageList)
+                        .imageList(imageList)
                         .likeCount(likeCount)
                         .seller(seller)
                         .dateList(dateList)
@@ -129,8 +131,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void addItem(ItemRequest item) {
-
+    public int addItem(ItemRequest item) {
         Item buildItem = Item.builder()
                 .title(item.getTitle())
                 .content(item.getContent())
@@ -144,6 +145,8 @@ public class ItemServiceImpl implements ItemService {
         addImage(itemNo, item.getImageList());
         addDate(itemNo, item.getDateList());
         addCategory(itemNo, item.getCategoryList());
+
+        return itemNo;
     }
 
     private void addImage(int itemNo, List<String> getImageList) {
@@ -190,13 +193,13 @@ public class ItemServiceImpl implements ItemService {
     public void modifyItem(int itemNo, ItemRequest item) {
         // itemNo로 아이템 조회
         if (!itemRepository.findById(itemNo).isPresent()) {
-            throw new ItemException("존재하지 않는 상품입니다.");
+            throw new NoSuchElementException("존재하지 않는 상품입니다.");
         }
         Item findItem = itemRepository.findById(itemNo).get();
 
         // 현재 사용자와 아이템 판매자가 동일한지 확인
         if (!findItem.getSeller().getId().equals(getCurrentId())){
-            throw new ItemException("잘못된 접근입니다. 다른 판매자의 상품을 수정할 수 없습니다.");
+            throw new UserException("잘못된 접근입니다. 다른 판매자의 상품을 수정할 수 없습니다.");
         }
 
         // image 수정
@@ -225,18 +228,18 @@ public class ItemServiceImpl implements ItemService {
     public void removeItem(int itemNo) {
         // itemNo로 아이템 조회
         if (!itemRepository.findById(itemNo).isPresent()) {
-            throw new ItemException("존재하지 않는 상품입니다.");
+            throw new NoSuchElementException("존재하지 않는 상품입니다.");
         }
         Item findItem = itemRepository.findById(itemNo).get();
 
         // 현재 사용자와 아이템 판매자가 동일한지 확인
         if (!findItem.getSeller().getId().equals(getCurrentId())) {
-            throw new ItemException("잘못된 접근입니다. 다른 판매자의 상품을 삭제할 수 없습니다.");
+            throw new UserException("잘못된 접근입니다. 다른 판매자의 상품을 삭제할 수 없습니다.");
         }
 
         // "거래중"일 경우 삭제 불가능
         if (findItem.getStatus() == 1) {
-            throw new ItemException("거래 중인 상품은 삭제 불가능합니다.");
+            throw new IllegalArgumentException("거래 중인 상품은 삭제 불가능합니다.");
         }
 
         // 삭제할 item과 관련된 room의 itemNo를 null로 변경
@@ -253,14 +256,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void modifyStatusDeal(int itemNo, String buyer) {
-        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new ItemException("존재하지 않는 상품입니다."));
+        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new NoSuchElementException("존재하지 않는 상품입니다."));
 
         if (!getCurrentId().equals(item.getSeller().getId())) {
-            throw new ItemException("다른 판매자의 상품을 예약 처리 할 수 없습니다.");
+            throw new UserException("다른 판매자의 상품을 예약 처리 할 수 없습니다.");
         }
 
         if (item.getStatus() != 0) {
-            throw new ItemException("이미 거래 중이거나 완료된 상품입니다.");
+            throw new IllegalArgumentException("이미 거래 중이거나 완료된 상품입니다.");
         }
 
         item.setStatus(1);
@@ -269,14 +272,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void modifyStatusConfirmation(int itemNo) {
-        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new ItemException("존재하지 않는 상품입니다."));
+        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new NoSuchElementException("존재하지 않는 상품입니다."));
 
         if (!getCurrentId().equals(item.getBuyer().getId())) {
-            throw new ItemException("본인이 구매한 상품만 구매확정 처리 할 수 있습니다.");
+            throw new UserException("본인이 구매한 상품만 구매확정 처리 할 수 있습니다.");
         }
 
         if (item.getStatus() != 1) {
-            throw new ItemException("거래 중인 상품이 아닙니다.");
+            throw new IllegalArgumentException("거래 중인 상품이 아닙니다.");
         }
 
         item.setStatus(2);
@@ -290,14 +293,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void modifyStatusCancel(int itemNo) {
-        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new ItemException("존재하지 않는 상품입니다."));
+        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new NoSuchElementException("존재하지 않는 상품입니다."));
 
         if (!getCurrentId().equals(item.getSeller().getId())) {
-            throw new ItemException("다른 판매자의 상품을 거래 취소 할 수 없습니다.");
+            throw new UserException("다른 판매자의 상품을 거래 취소 할 수 없습니다.");
         }
 
         if (item.getStatus() != 1) {
-            throw new ItemException("거래 중인 상품이 아닙니다.");
+            throw new IllegalArgumentException("거래 중인 상품이 아닙니다.");
         }
 
         item.setStatus(0);
