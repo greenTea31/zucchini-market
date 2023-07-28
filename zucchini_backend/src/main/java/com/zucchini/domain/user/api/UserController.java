@@ -29,18 +29,9 @@ public class UserController {
     private final JwtTokenUtil jwtTokenUtil;
 
     @PostMapping
-    public ResponseEntity<Integer> signUp(@Valid @RequestBody AddUserRequest user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<Integer>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-        }
-
-        try {
-            userService.addUser(user);
-        } catch (UserException e) {
-            return new ResponseEntity<Integer>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<Integer>(HttpStatus.CREATED.value(), HttpStatus.CREATED);
+    public ResponseEntity<Void> signUp(@Valid @RequestBody AddUserRequest user) {
+        userService.addUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
@@ -48,7 +39,7 @@ public class UserController {
      */
     @GetMapping("/idCheck/{id}")
     public ResponseEntity<Boolean> idCheck(@PathVariable String id) {
-        return ResponseEntity.ok(userService.idCheck(id));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.idCheck(id));
     }
 
     /**
@@ -57,28 +48,29 @@ public class UserController {
     @PostMapping("/email")
     public ResponseEntity<Void> authEmail(@Valid @RequestBody EmailRequest request) {
         userService.authEmail(request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/authCheck")
     public ResponseEntity<Boolean> authCheck(@RequestBody EmailCheckRequest request) {
-        return ResponseEntity.ok(userService.authCheck(request));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.authCheck(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(userService.login(loginRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.login(loginRequest));
     }
 
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestHeader("RefreshToken") String refreshToken) {
-        return ResponseEntity.ok(userService.reissue(refreshToken));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.reissue(refreshToken));
     }
 
     @PostMapping("/logout")
-    public void logout(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken) {
         String id = jwtTokenUtil.getUsername(resolveToken(accessToken));
         userService.logout(resolveToken(accessToken), id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private String resolveToken(String accessToken) {
@@ -90,7 +82,7 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<FindUserResponse> findUser(@PathVariable String id) {
-        return ResponseEntity.ok(userService.findUser(id));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findUser(id));
     }
 
     /**
@@ -99,7 +91,7 @@ public class UserController {
      */
     @GetMapping
     public ResponseEntity<List<FindUserResponse>> findUser() {
-        return ResponseEntity.ok(userService.findUserList());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findUserList());
     }
 
 
@@ -110,69 +102,42 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@RequestHeader("Authorization") String accessToken, @PathVariable String id) {
         userService.removeUser(resolveToken(accessToken), id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteUser(@RequestHeader("Authorization") String accessToken) {
         userService.removeUser(resolveToken(accessToken), null);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
      * 회원 정보 수정
      */
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Integer> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest, BindingResult bindingResult){
-//        if (bindingResult.hasErrors()) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-//        }
-//        try{
-//            userService.modifyUser(id, modifyUserRequest);
-//        } catch (IllegalArgumentException e){
-//            // 회원이 없는 경우
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
-//        } catch (UserException e){
-//            // 로그인한 아이디와 수정하려는 아이디가 다른 경우
-//            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED);
-//        }
-//        return new ResponseEntity<>(HttpStatus.OK.value(), HttpStatus.OK);
-//    }
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest){
+    public ResponseEntity<Void> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest){
         userService.modifyUser(id, modifyUserRequest);
-        return new ResponseEntity<>(HttpStatus.OK.value(), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
      * 비밀번호 변경
      */
     @PostMapping("/password")
-    public ResponseEntity<String> modifyPassword(@Valid @RequestBody ModifyPasswordRequest modifyPasswordRequest, BindingResult bindingResult){
+    public ResponseEntity<Void> modifyPassword(@Valid @RequestBody ModifyPasswordRequest modifyPasswordRequest){
         log.info(String.valueOf(modifyPasswordRequest));
-        if (bindingResult.hasErrors()) {
-            for(FieldError error : bindingResult.getFieldErrors()){
-                log.info(error.getDefaultMessage());
-            }
-
-            return new ResponseEntity<>("비밀번호 양식이 잘못되었습니다.", HttpStatus.BAD_REQUEST);
-        }
         userService.modifyPassword(modifyPasswordRequest.getPassword());
 
-        return ResponseEntity.ok("비밀번호 변경 완료");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
      * 회원의 아이템 찜
      */
     @PostMapping("{id}/item/like/{itemNo}")
-    public ResponseEntity<Integer> addLikeItem(@PathVariable String id, @PathVariable int itemNo) {
-        try{
-            userService.addUserLikeItem(id, itemNo);
-        } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(HttpStatus.OK.value(), HttpStatus.OK);
+    public ResponseEntity<Void> addLikeItem(@PathVariable String id, @PathVariable int itemNo) {
+        userService.addUserLikeItem(id, itemNo);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
@@ -181,20 +146,16 @@ public class UserController {
     @GetMapping("/{id}/item/like")
     public ResponseEntity<List<FindItemListResponse>> findLikeItemList(@PathVariable String id, @RequestParam String keyword) {
         List<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(id, keyword);
-        return new ResponseEntity<>(userLikeItemList, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(userLikeItemList);
     }
 
     /**
      * 회원의 아이템 찜 취소
      */
     @DeleteMapping("{id}/item/like/{itemNo}")
-    public ResponseEntity<Integer> removeLikeItem(@PathVariable String id, @PathVariable int itemNo) {
-        try{
-            userService.removeUserLikeItem(id, itemNo);
-        } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(HttpStatus.OK.value(), HttpStatus.OK);
+    public ResponseEntity<Void> removeLikeItem(@PathVariable String id, @PathVariable int itemNo) {
+        userService.removeUserLikeItem(id, itemNo);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
@@ -202,12 +163,8 @@ public class UserController {
      */
     @GetMapping("/deal/sell")
     public ResponseEntity<List<UserDealHistoryResponse>> findSellDealHistory() {
-        try {
-            List<UserDealHistoryResponse> sellDealHistory = userService.findUserDealHistoryList(false);
-            return new ResponseEntity<>(sellDealHistory, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        List<UserDealHistoryResponse> sellDealHistory = userService.findUserDealHistoryList(false);
+        return ResponseEntity.status(HttpStatus.OK).body(sellDealHistory);
     }
 
     /**
@@ -215,12 +172,8 @@ public class UserController {
      */
     @GetMapping("/deal/buy")
     public ResponseEntity<List<UserDealHistoryResponse>> findBuyDealHistory() {
-        try {
-            List<UserDealHistoryResponse> buyDealHistory = userService.findUserDealHistoryList(true);
-            return new ResponseEntity<>(buyDealHistory, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        List<UserDealHistoryResponse> buyDealHistory = userService.findUserDealHistoryList(true);
+        return ResponseEntity.status(HttpStatus.OK).body(buyDealHistory);
     }
 
 }
