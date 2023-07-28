@@ -6,6 +6,7 @@ import com.zucchini.domain.item.domain.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface ItemCategoryRepository extends JpaRepository<ItemCategory, Item
      * 해당하는 아이템이 속한 카테고리 전부 삭제
      */
     @Modifying
-    @Query(value = "delete from Item_category where Item_category.item_no = :itemNo", nativeQuery = true)
-    void deleteByItemNo(int itemNo);
+    @Query(value = "delete from ItemCategory ic where ic.id.itemNo = :itemNo")
+    void deleteByItemNo(@Param("itemNo") int itemNo);
 
 }
