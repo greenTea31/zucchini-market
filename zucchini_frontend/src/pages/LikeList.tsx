@@ -14,39 +14,9 @@ export default function LikeList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          <ItemEach />
-          <ItemDiv>
-            <ItemImg src={watch} />
-            <ItemTitle>
-              갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-            </ItemTitle>
-            <ItemContent>365,000원</ItemContent>
-            <ItemContent>춘식이</ItemContent>
-          </ItemDiv>
-          <ItemDiv>
-            <ItemImg src={watch} />
-            <ItemTitle>
-              갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-            </ItemTitle>
-            <ItemContent>365,000원</ItemContent>
-            <ItemContent>swan</ItemContent>
-          </ItemDiv>
-          <ItemDiv>
-            <ItemImg src={watch} />
-            <ItemTitle>
-              갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-            </ItemTitle>
-            <ItemContent>365,000원</ItemContent>
-            <ItemContent>seoulA209</ItemContent>
-          </ItemDiv>
-          <ItemDiv>
-            <ItemImg src={watch} />
-            <ItemTitle>
-              갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-            </ItemTitle>
-            <ItemContent>365,000원</ItemContent>
-            <ItemContent>김싸피</ItemContent>
-          </ItemDiv>
+          {[1, 2, 3, 4, 5].map((e, i) => (
+            <ItemEach />
+          ))}
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>
