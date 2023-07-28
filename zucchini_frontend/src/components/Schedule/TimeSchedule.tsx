@@ -1,4 +1,4 @@
-import ClosedButton from "../Common/ClosedButton";
+import ClosedButton from "../Button/ClosedButton";
 import Modal from "../Common/Modal";
 import styled from "styled-components";
 import { LocalizationProvider } from "@mui/x-date-pickers";

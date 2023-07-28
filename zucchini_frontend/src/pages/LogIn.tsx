@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { http } from "../utils/axios";
 import { useLogin } from "../hooks/useLogin";
+import FullWidthButton from "../components/Button/FullWidthButton";
 
 export default function LogIn() {
   const {
@@ -39,7 +40,7 @@ export default function LogIn() {
             <span>{errors?.password?.message?.toString()}</span>
           )}
           <StyledButtonDiv>
-            <StyledButton>로그인</StyledButton>
+            <FullWidthButton>로그인</FullWidthButton>
           </StyledButtonDiv>
         </StyledForm>
         <StyledSpanDiv>

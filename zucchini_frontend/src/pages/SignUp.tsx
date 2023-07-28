@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "@hookform/error-message";
+import FullWidthButton from "../components/Button/FullWidthButton";
 
 export default function SignUp() {
   // react-hook-form
@@ -138,7 +139,7 @@ export default function SignUp() {
           <StyledButtonDiv>
             {/* 폼이 채워지지 않으면 회원가입 버튼 비활성화 */}
             <StyledButton disabled={!isValid}>회원가입</StyledButton>
-            <StyledButton onClick={navigateToLogin}>로그인</StyledButton>
+            <FullWidthButton onClick={navigateToLogin}>로그인</FullWidthButton>
           </StyledButtonDiv>
         </StyledForm>
       </StyledDiv>
@@ -190,6 +191,7 @@ const Input = styled.input`
   border-radius: 0.4rem;
   padding-left: 1rem;
   margin: 0.3rem;
+  font-size: 1rem;
 `;
 
 const StyledMessage = styled.div`
@@ -238,4 +240,6 @@ const GenderSelect = styled.select`
   height: 3rem;
   margin: 0.3rem;
   border-radius: 0.4rem;
+  font-size: 1rem;
+  padding-left: 0.4rem;
 `;

@@ -1,17 +1,18 @@
 import styled from "styled-components";
-import { Button } from "../Common/Button";
 import watch from "../../assets/images/watch.png";
+import ReplayButton from "../Button/ReplayButton";
 
 export default function ItemEach() {
   return (
     <ItemDiv>
       <ItemImg src={watch} />
+      <ReplayButton>다시보기</ReplayButton>
       <ItemTitle>
         갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
       </ItemTitle>
       <ItemTitle>365,000원</ItemTitle>
-      <ItemContent>찜 15 | 조회 33</ItemContent>
-      <ItemContent>2023-07-24 10:31</ItemContent>
+      {/* <ItemContent>찜 15 | 조회 33</ItemContent> */}
+      <ItemContent>닉네임.. 또는 시간..</ItemContent>
     </ItemDiv>
   );
 }
@@ -24,6 +25,7 @@ const ItemDiv = styled.div`
   margin-bottom: 1rem;
   border: solid 1px #aeb9ad;
   border-radius: 2rem;
+  position: relative;
 `;
 
 const ItemImg = styled.img`
