@@ -389,13 +389,6 @@ const StyledSvg = styled.svg`
   height: 3rem;
 `;
 
-const ClosedSvg = styled.svg`
-  height: 1.5rem;
-  width: 1.5rem;
-  cursor: pointer;
-  color: #849c80;
-`;
-
 const SellerInfoDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -446,8 +439,6 @@ const RightUpperDiv = styled.div`
 
 const RightLowerDiv = styled.div`
   height: 26rem;
-  /* background-color: white;
-  border: solid 1px #ececec; */
 `;
 
 const MainImg = styled.img`
