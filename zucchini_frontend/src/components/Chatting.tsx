@@ -1,15 +1,13 @@
 import styled from "styled-components";
-import RightChat from "./Chat/RightChat";
-import LeftChat from "./Chat/LeftChat";
+import MesssageEach from "./List/MessageEach";
 
 export default function Chatting() {
   return (
     <ChatBubble>
-      <RightChat>되나........된다!</RightChat>
-      <LeftChat>어쩌고 저쩌꼬</LeftChat>
-      <LeftChat>
-        어쩌고 저쩌꼬dd오오애ㅓ아너ㅣ란멍라 ㅓ내일 발표ㅔㄴ에에ㅔ에
-      </LeftChat>
+      {[1, 2, 3, 4, 5].map((e, i) => (
+        // props로 작성자 정보 보내주기
+        <MesssageEach send={e} />
+      ))}
     </ChatBubble>
   );
 }

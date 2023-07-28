@@ -15,8 +15,10 @@ export default function ChatList() {
             chat={{
               img: "물건물건 이미지 쏘오쓰",
               sender: "거래자",
-              title: "내게시글 제목",
-              msg: "뭐라뭐라",
+              senderGrade: "거래자 등급",
+              lastMsg: "lastMessage",
+              lastMsgTime: "12:00",
+              unread: "1",
             }}
           />
         ))}
@@ -54,7 +56,7 @@ const ChatListDiv = styled.div`
   /* 스크롤바의 thumb 스타일 지정 */
   &::-webkit-scrollbar-thumb {
     background-color: #acb4a8; /* 스크롤바 thumb 색상 */
-    /* border-radius: 8px; 스크롤바 thumb의 모서리 둥글기 */
+    border-radius: 3px; /*스크롤바 thumb의 모서리 둥글기*/
   }
 
   /* 스크롤바의 thumb에 호버했을 때 스타일 지정 */
