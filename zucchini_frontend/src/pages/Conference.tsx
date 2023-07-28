@@ -4,7 +4,7 @@ import cycle from "../assets/images/cycle.png";
 import Chatting from "../components/Chatting";
 import { useState } from "react";
 import Modal from "../components/Common/Modal";
-import ClosedButton from "../components/Common/ClosedButton";
+import ClosedButton from "../components/Button/ClosedButton";
 
 export default function Conference() {
   const [isOpen, setIsOpen] = useState(false);
@@ -676,17 +676,16 @@ const SvgButton = styled.button`
   border-radius: 0.4rem;
 `;
 
-const RedSvg = styled.svg``;
-
 const ModalSelect = styled.select`
   height: 2.5rem;
+  width: 22rem;
   border-radius: 0.4rem;
   font-size: 1rem;
   padding-left: 0.5rem;
 `;
 
 const ModalTextarea = styled.textarea`
-  height: 9rem;
+  height: 10rem;
   border-radius: 0.4rem;
   padding: 0.5rem;
   font-size: 1rem;

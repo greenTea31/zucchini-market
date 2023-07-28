@@ -2,6 +2,7 @@ import styled from "styled-components";
 import CategorySecond from "../components/List/CategorySecond";
 import Search from "../components/List/Search";
 import watch from "../assets/images/watch.png";
+import ItemEach from "../components/List/ItemEach";
 
 export default function LikeList() {
   return (
@@ -13,14 +14,7 @@ export default function LikeList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          <ItemDiv>
-            <ItemImg src={watch} />
-            <ItemTitle>
-              갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-            </ItemTitle>
-            <ItemContent>365,000원</ItemContent>
-            <ItemContent>백조이김</ItemContent>
-          </ItemDiv>
+          <ItemEach />
           <ItemDiv>
             <ItemImg src={watch} />
             <ItemTitle>

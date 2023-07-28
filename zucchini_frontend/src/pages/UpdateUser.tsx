@@ -97,7 +97,6 @@ const StyledAll = styled.div`
   justify-content: center;
   height: auto;
   font-family: "IBM Plex Sans KR", sans-serif;
-  // border: solid pink;
 `;
 
 const StyledDiv = styled.div`
@@ -107,7 +106,6 @@ const StyledDiv = styled.div`
   height: auto;
   margin: 4rem;
   text-align: center;
-  // border: solid green;
 `;
 
 const StyledTitle = styled.span`
@@ -142,7 +140,6 @@ const StyledMessage = styled.div`
   display: flex;
   justify-content: start;
   padding-left: 1rem;
-  margin: 0.3rem;
   color: tomato;
 `;
 

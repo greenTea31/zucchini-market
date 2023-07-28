@@ -4,7 +4,7 @@ import female from "../assets/images/female.jpg";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
 import Calendar from "react-calendar";
-import GoBackButton from "../components/Common/GoBackButton";
+import GoBackButton from "../components/Button/GoBackButton";
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import GoBackButton from "../components/Common/GoBackButton";
+import GoBackButton from "../components/Button/GoBackButton";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
-import ClosedButton from "../components/Common/ClosedButton";
+import ClosedButton from "../components/Button/ClosedButton";
 
-export default function ReplayVideo() {
+export default function ReplayBuyVideo() {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => {

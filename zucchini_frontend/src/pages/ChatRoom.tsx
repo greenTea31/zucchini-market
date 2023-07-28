@@ -4,7 +4,7 @@ import female from "../assets/images/female.jpg";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
 import Chatting from "../components/Chatting";
-import ClosedButton from "../components/Common/ClosedButton";
+import ClosedButton from "../components/Button/ClosedButton";
 import { Link } from "react-router-dom";
 
 export default function ChatRoom() {
@@ -173,10 +173,6 @@ const ContainerDiv = styled.div`
   padding: 0 5rem;
   margin: 0 6rem 13rem 6rem;
   font-family: "IBM Plex Sans KR", sans-serif;
-`;
-
-const StyledSvgDiv = styled.div`
-  margin-bottom: 2rem;
 `;
 
 const StyledSvg = styled.svg`
@@ -361,6 +357,8 @@ const StyledInput = styled.input`
   padding: 0 0.7rem;
   background-color: transparent;
   border: transparent;
+  border-radius: 0.4rem;
+  font-size: 1rem;
 
   &:focus {
     /* box-shadow: 0 0 10px #9ec4f2; */
