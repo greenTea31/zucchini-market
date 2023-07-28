@@ -10,7 +10,7 @@ export default function ChatList() {
           <TitleSpan>채팅 목록</TitleSpan>
         </TitleDiv>
         {/* 통신합시다^^ */}
-        {[1, 2, 3, 4].map((e, i) => (
+        {[1, 2, 3, 4, 5, 6, 7].map((e, i) => (
           <ChatRoomEach
             chat={{
               img: "물건물건 이미지 쏘오쓰",
@@ -43,56 +43,29 @@ const ChatListDiv = styled.div`
   padding: 3rem;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
     rgba(0, 0, 0, 0.22) 0px 10px 10px;
-`;
+  overflow-y: auto;
 
-const ChatDiv = styled.div`
-  padding: 1rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
+  /* 스크롤바의 스타일 지정 */
+  &::-webkit-scrollbar {
+    width: 8px; /* 스크롤바의 너비 */
+    background-color: #e8e2d9; /* 스크롤바의 배경색 */
+  }
 
-const ChatImg = styled.img`
-  height: 4rem;
-  width: 4rem;
-  border: solid 1px gray;
-  border-radius: 0.4rem;
-`;
+  /* 스크롤바의 thumb 스타일 지정 */
+  &::-webkit-scrollbar-thumb {
+    background-color: #acb4a8; /* 스크롤바 thumb 색상 */
+    /* border-radius: 8px; 스크롤바 thumb의 모서리 둥글기 */
+  }
 
-const ChatInfoDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 68%;
-`;
+  /* 스크롤바의 thumb에 호버했을 때 스타일 지정 */
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #818a7e; /* 스크롤바 thumb 호버 색상 */
+  }
 
-const ChatTimeDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const InfoTitleSpan = styled.span`
-  margin-bottom: 0.6rem;
-  font-weight: 600;
-  font-size: 1.1rem;
-`;
-
-const MessageSpan = styled.span`
-  color: gray;
-`;
-
-const ColorDiv = styled.div`
-  background-color: #a32fff;
-  height: 2rem;
-  width: 2rem;
-  border-radius: 0.4rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
+  /* 스크롤바의 thumb에 클릭했을 때 스타일 지정 */
+  &::-webkit-scrollbar-thumb:active {
+    background-color: #656c62; /* 스크롤바 thumb 클릭 색상 */
+  }
 `;
 
 const TitleDiv = styled.div`
