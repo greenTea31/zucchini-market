@@ -9,11 +9,11 @@ export default function ChatRoomEach(props: any) {
         <ChatImg src={cycle}></ChatImg>
         <ChatInfoDiv>
           <InfoTitleSpan>{props.chat.sender}</InfoTitleSpan>
-          <MessageSpan>{props.chat.msg}</MessageSpan>
+          <MessageSpan>{props.chat.lastMsg}</MessageSpan>
         </ChatInfoDiv>
         <ChatTimeDiv>
-          <MessageSpan>15:30</MessageSpan>
-          <ColorDiv>2</ColorDiv>
+          <MessageSpan>{props.chat.lastMsgTime}</MessageSpan>
+          <ColorDiv>{props.chat.unread}</ColorDiv>
         </ChatTimeDiv>
       </ChatDiv>
       <hr />
@@ -33,6 +33,7 @@ const ChatImg = styled.img`
   width: 4rem;
   border: solid 1px gray;
   border-radius: 0.4rem;
+  margin-right: 0.5rem;
 `;
 
 const ChatInfoDiv = styled.div`
