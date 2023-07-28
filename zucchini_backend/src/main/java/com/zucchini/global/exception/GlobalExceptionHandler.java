@@ -19,42 +19,42 @@ public class GlobalExceptionHandler {
      *  주로 @RequestBody, @RequestPart 어노테이션에서 발생
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    protected ResponseEntity<Integer> handleIllegalArgumentException(IllegalArgumentException e) {
+    protected ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
         log.error("handleIllegalArgumentException", e);
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     /**
      * Authentication 객체가 필요한 권한을 보유하지 않은 경우 발생합
      */
     @ExceptionHandler(AccessDeniedException.class)
-    protected ResponseEntity<Integer> handleAccessDeniedException(AccessDeniedException e) {
+    protected ResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
         log.error("handleAccessDeniedException", e);
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     /**
      * 대상이 없는 경우 발생함.
      */
     @ExceptionHandler(NoSuchElementException.class)
-    protected ResponseEntity<Integer> handleNoSuchElementException(NoSuchElementException e) {
+    protected ResponseEntity<String> handleNoSuchElementException(NoSuchElementException e) {
         log.error("handleNoSuchElementException", e);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     /**
      * 로그인 안한 경우, 자기 자신이 아닌 경우 등 유저와 관련된 에러 처리
      */
     @ExceptionHandler(UserException.class)
-    protected ResponseEntity<Integer> handleUserException(UserException e) {
+    protected ResponseEntity<String> handleUserException(UserException e) {
         log.error("handleUserException", e);
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Integer> handleException(Exception e) {
+    protected ResponseEntity<String> handleException(Exception e) {
         log.error("handleException", e);
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
 }
