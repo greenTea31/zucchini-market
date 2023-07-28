@@ -3,11 +3,11 @@ package com.zucchini.global.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.nio.file.AccessDeniedException;
+import java.util.NoSuchElementException;
 
 @ControllerAdvice
 @Slf4j
@@ -18,9 +18,9 @@ public class GlobalExceptionHandler {
      *  HttpMessageConverter 에서 등록한 HttpMessageConverter binding 못할경우 발생
      *  주로 @RequestBody, @RequestPart 어노테이션에서 발생
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<Integer> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        log.error("handleMethodArgumentNotValidException", e);
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<Integer> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.error("handleIllegalArgumentException", e);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
     }
 
@@ -36,9 +36,9 @@ public class GlobalExceptionHandler {
     /**
      * 대상이 없는 경우 발생함.
      */
-    @ExceptionHandler(IllegalArgumentException.class)
-    protected ResponseEntity<Integer> handleIllegalArgumentException(IllegalArgumentException e) {
-        log.error("handleIllegalArgumentException", e);
+    @ExceptionHandler(NoSuchElementException.class)
+    protected ResponseEntity<Integer> handleNoSuchElementException(NoSuchElementException e) {
+        log.error("handleNoSuchElementException", e);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
     }
 
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Integer> handleException(Exception e) {
-        log.error("handleEntityNotFoundException", e);
+        log.error("handleException", e);
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
