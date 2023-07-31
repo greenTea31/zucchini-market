@@ -25,9 +25,16 @@ public class Reservation {
     @JoinColumn(name = "user_no", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "conference_no", nullable = false)
+//    @ManyToOne
+//    @JoinColumn(name = "conference_no", nullable = false)
+//    private Conference conference;
+
+    @ManyToOne(targetEntity = Conference.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "conference_no", insertable = false, updatable = false)
     private Conference conference;
+
+    @Column(name = "conference_no")
+    private int conferenceNo;
 
     @Column(name = "is_seller")
     private boolean isSeller;
@@ -36,9 +43,9 @@ public class Reservation {
     private boolean isAttended;
 
     @Builder
-    public Reservation(User user, Conference conference, boolean isSeller) {
+    public Reservation(User user, int conferenceNo, boolean isSeller) {
         this.user = user;
-        this.conference = conference;
+        this.conferenceNo = conferenceNo;
         this.isSeller = isSeller;
         this.isAttended = false;
     }
