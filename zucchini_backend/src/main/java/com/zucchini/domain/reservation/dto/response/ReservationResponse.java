@@ -1,4 +1,4 @@
-package com.zucchini.domain.reservation.dto;
+package com.zucchini.domain.reservation.dto.response;
 
 import com.zucchini.domain.reservation.domain.Reservation;
 import lombok.Builder;
@@ -13,11 +13,13 @@ public class ReservationResponse {
 
     String title;
     Date confirmedDate;
+    int conferenceNo;
 
     public static ReservationResponse of (Reservation reservation) {
         return ReservationResponse.builder()
                 .title(reservation.getConference().getItem().getTitle())
                 .confirmedDate(reservation.getConference().getConfirmedDate())
+                .conferenceNo(reservation.getConference().getNo())
                 .build();
     }
 
