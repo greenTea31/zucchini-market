@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +52,9 @@ public class ReservationServiceImpl implements ReservationService {
      */
     @Override
     public void addReservation(String sellerId, String buyerId, int conferenceNo) {
-        User seller = userRepository.findById(sellerId).orElseThrow(() -> new IllegalArgumentException("판매자가 존재하지 않습니다."));
-        User buyer = userRepository.findById(buyerId).orElseThrow(() -> new IllegalArgumentException("구매자가 존재하지 않습니다."));
-        Conference conference = conferenceRepository.findById(conferenceNo).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회의입니다."));
+        User seller = userRepository.findById(sellerId).orElseThrow(() -> new NoSuchElementException("판매자가 존재하지 않습니다."));
+        User buyer = userRepository.findById(buyerId).orElseThrow(() -> new NoSuchElementException("구매자가 존재하지 않습니다."));
+        Conference conference = conferenceRepository.findById(conferenceNo).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회의입니다."));
         List<Reservation> reservationList = new ArrayList<>();
 
         Reservation reservation = Reservation.builder()
