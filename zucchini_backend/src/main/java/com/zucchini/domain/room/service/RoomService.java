@@ -4,6 +4,7 @@ import com.zucchini.domain.room.dto.AddMessageRequest;
 import com.zucchini.domain.room.dto.MessageResponse;
 import com.zucchini.domain.room.dto.RoomResponse;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 public interface RoomService {
