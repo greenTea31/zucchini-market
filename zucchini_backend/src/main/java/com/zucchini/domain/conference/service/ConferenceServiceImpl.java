@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.NoSuchElementException;
 
 @Service
@@ -29,7 +30,7 @@ public class ConferenceServiceImpl implements ConferenceService{
      * 실패시 404, 500 코드 리턴
      */
     @Override
-    public int addConference(int itemNo) {
+    public int addConference(int itemNo, Date confirmDate) {
         // 아이템 넘버 입력받아서 해당 아이템에 해당하는 회의만 생성하면 됨
         Item item = itemRepository.findById(itemNo).orElseThrow(() -> new NoSuchElementException("아이템이 존재하지 않습니다."));
         Conference conference = Conference.builder().item(item).build();
