@@ -17,7 +17,7 @@ export default function ItemList() {
       <LowerDiv>
         <TitleDiv>
           <SubTitle>전체보기</SubTitle>
-          <Link to={"/items/create"}>
+          <Link to={"/item/register"}>
             <Button Size="small" Variant="pinkTonal" Rounded="medium">
               + 글 등록
             </Button>

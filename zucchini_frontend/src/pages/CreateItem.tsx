@@ -5,6 +5,7 @@ import Calendar from "react-calendar";
 import TimeSchedule from "../components/Schedule/TimeSchedule";
 import SimpleCalendar from "../components/Schedule/SimpleCalendar";
 import ImageUpload from "../FileUpload/ImageUpload";
+import DragDrop from "../FileUpload/DragDrop";
 
 export default function CreateItem() {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,36 +48,6 @@ export default function CreateItem() {
       </Modal>
       {/* <TimeSchedule isOpen={timeOpen} toggle={timeToggle} /> */}
       <ContainerDiv>
-        <IconDiv>
-          <StyledSvg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15.75 19.5L8.25 12l7.5-7.5"
-            />
-          </StyledSvg>
-          <StyledSvg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </StyledSvg>
-        </IconDiv>
         <TitleSpan>내 물건 팔기</TitleSpan>
         <ContentDiv>
           <ContentSpan>제목</ContentSpan>
@@ -107,7 +78,7 @@ export default function CreateItem() {
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>사진 업로드</ContentSpan>
-          <ImageUpload />
+          <DragDrop />
         </ContentDiv>
         <ButtonDiv>
           <StyledButton onClick={toggle}>일정 선택</StyledButton>
@@ -137,6 +108,7 @@ const TitleSpan = styled.span`
   font-size: 2.5rem;
   font-weight: 500;
   margin-bottom: 1rem;
+  margin-top: 1rem;
 `;
 
 const ContentDiv = styled.div`
