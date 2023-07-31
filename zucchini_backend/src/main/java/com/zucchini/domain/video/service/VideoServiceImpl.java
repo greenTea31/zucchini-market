@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -72,12 +73,13 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public FindVideoResponse findVideo(int no) {
         Optional<Video> video = videoRepository.findByItemNo(no);
-        if(!video.isPresent()) throw new IllegalArgumentException("해당 비디오가 존재하지 않습니다.");
+        if(!video.isPresent()) throw new NoSuchElementException("해당 비디오가 존재하지 않습니다.");
         // 해당 아이템의 판매자 구매자가 아닌 경우 비디오 조회 권한이 없음
-        Optional<Item> item = itemRepository.findById(video.get().getItemNo());
+//        Optional<Item> item = itemRepository.findById(video.get().getItemNo());
+        Item item = itemRepository.findItemWithFetchJoinById(video.get().getItem().getNo());
         String loginId = getCurrentId();
-        // 아이템의 구매자와 판매자를 조회하는 쿼리 최적화 방법은 없을까?
-        if(!item.get().getSeller().getId().equals(loginId) && !item.get().getBuyer().getId().equals(loginId))
+        // 최적화 방법 -> fetch join
+        if(!item.getSeller().getId().equals(loginId) && !item.getBuyer().getId().equals(loginId))
             throw new UserException("해당 아이템의 비디오 조회 권한이 없습니다.");
 
         return FindVideoResponse.builder()
@@ -108,7 +110,7 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public void extendVideoDeadLine(int no) {
         Optional<Video> video = videoRepository.findById(no);
-        if(!video.isPresent()) throw new IllegalArgumentException("해당 비디오가 존재하지 않습니다.");
+        if(!video.isPresent()) throw new NoSuchElementException("해당 비디오가 존재하지 않습니다.");
         if(isExtended(video.get().getEndTime(), video.get().getDeleteTime()))
             throw new IllegalArgumentException("해당 비디오는 이미 연장을 한 상태입니다.");
         video.get().extendDeleteTime();
