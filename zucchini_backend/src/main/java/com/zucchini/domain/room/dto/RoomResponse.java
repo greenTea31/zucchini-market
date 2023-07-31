@@ -12,9 +12,12 @@ import java.util.Date;
 public class RoomResponse {
 
     private int no;
-    private String title;
+    private String opponentNickname;
+    private String itemImage;
+    private float opponentGrade;
     private String lastMessage;
     private int unreadCount;
     private Date lastMessageCreatedAt;
+    private Boolean isDeleted = false;
 
 }

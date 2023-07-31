@@ -33,14 +33,9 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public List<ReservationResponse> findReservationList() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null) {
-            throw new UserException("예약 내역 조회는 로그인 이후에 가능합니다.");
-        }
-
         CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
         String currentPrincipalId = nowLogInDetail.getId();
-        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("예약 내역 조회는 로그인 이후에 가능합니다."));
+        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다."));
 
         // 모든 예약 목록 불러오고, 예약된 날짜와 예약 아이템의 이름 리스트를 반환함.
         List<Reservation> reservationList = reservationRepository.findAllByUser(user);
@@ -56,9 +51,9 @@ public class ReservationServiceImpl implements ReservationService {
      */
     @Override
     public void addReservation(String sellerId, String buyerId, int conferenceNo) {
-        User seller = userRepository.findById(sellerId).orElseThrow(() -> new UserException("판매자가 존재하지 않습니다."));
-        User buyer = userRepository.findById(buyerId).orElseThrow(() -> new UserException("구매자가 존재하지 않습니다."));
-        Conference conference = conferenceRepository.findById(conferenceNo).orElseThrow(() -> new UserException("존재하지 않는 회의입니다."));
+        User seller = userRepository.findById(sellerId).orElseThrow(() -> new IllegalArgumentException("판매자가 존재하지 않습니다."));
+        User buyer = userRepository.findById(buyerId).orElseThrow(() -> new IllegalArgumentException("구매자가 존재하지 않습니다."));
+        Conference conference = conferenceRepository.findById(conferenceNo).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회의입니다."));
         List<Reservation> reservationList = new ArrayList<>();
 
         Reservation reservation = Reservation.builder()

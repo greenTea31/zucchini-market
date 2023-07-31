@@ -21,9 +21,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -37,18 +37,17 @@ public class RoomServiceImpl implements RoomService{
     private final MessageRepository messageRepository;
     private final ReportRepository reportRepository;
 
-    @Override
-    public int addRoom(int itemNo) {
+    private String getCurrentId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null) {
-            throw new UserException("방 생성은 로그인 이후에 가능합니다.");
-        }
-
         CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
-        String currentPrincipalId = nowLogInDetail.getId();
+        return nowLogInDetail.getId();
+    }
 
-        User loginUser = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("방 생성은 로그인 이후에 가능합니다."));
+    @Override
+    public int addRoom(int itemNo)  {
+        String currentPrincipalId = getCurrentId();
+
+        User loginUser = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다."));
         Item item = itemRepository.findById(itemNo).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
         User seller = item.getSeller();
 
@@ -83,19 +82,24 @@ public class RoomServiceImpl implements RoomService{
     @Override
     public List<RoomResponse> findRoomList(int itemNo) {
         // 로그인한 유저의 특정 아이템에 관한 모든 방을 조회
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null) {
-            throw new UserException("채팅 조회는 로그인 이후에 가능합니다.");
-        }
-
-        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
-        String currentPrincipalId = nowLogInDetail.getId();
-        int currentPrincipalNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("채팅 조회는 로그인 이후에 가능합니다.")).getNo();
+        String currentPrincipalId = getCurrentId();
+        int currentPrincipalNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
 
         List<Room> rooms = roomUserRepository.findRoomsByItemNoAndUser(itemNo, currentPrincipalNo);
         List<RoomResponse> roomResponseList = toResponseList(rooms, currentPrincipalNo);
         return roomResponseList;
+    }
+
+    private User getOpponent(Item item) {
+        // 아이템에서 seller, buyer 확인하고 내 번호랑 다른 유저의 닉네임 반환
+        String currentPrincipalId = getCurrentId();
+        int currentPrincialNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
+
+        if (item.getSeller().getNo() == currentPrincialNo) {
+            return item.getBuyer();
+        } else {
+            return item.getSeller();
+        }
     }
 
     private List<RoomResponse> toResponseList(List<Room> rooms, int currentPrincipalNo) {
@@ -106,20 +110,24 @@ public class RoomServiceImpl implements RoomService{
 
             // 그 방에서 작성된 마지막 메세지를 반환함
             Message message = messageRepository.findTopByRoomOrderByCreatedAtDesc(room);
+            Item item = room.getItem();
+
+            User opponent = getOpponent(item);
 
             // 내용과 작성시간은 roomResponse에 그대로 넣음
             roomResponse.setNo(room.getNo());
-            roomResponse.setTitle(room.getItem().getTitle());
+            roomResponse.setOpponentNickname(opponent.getNickname());
+            roomResponse.setOpponentGrade(opponent.getGrade());
+            roomResponse.setItemImage(item.getImageList().get(0).getLink());
             roomResponse.setLastMessage(message.getContent());
             roomResponse.setLastMessageCreatedAt(message.getCreatedAt());
 
+             if (room.getItem() != null) {
+                 roomResponse.setIsDeleted(true);
+             }
+
             // 마지막 메세지의 보낸 사람이 조회자 본인이면 그 방의 안 읽은 메세지 수는 무조건 0개
             // 아니면 그 방의 메세지중 is_read가 false인 값을 리턴함
-            if (room.getItem() != null) {
-                roomResponse.setTitle(room.getItem().getTitle());
-            } else {
-                roomResponse.setTitle("삭제된 상품입니다.");
-            }
 
             if (message.getSender().getNo() == currentPrincipalNo) {
                 roomResponse.setUnreadCount(0);
@@ -136,15 +144,8 @@ public class RoomServiceImpl implements RoomService{
     @Override
     public List<RoomResponse> findAllRoomList() {
         // 로그인한 유저의 모든 채팅방을 조회함
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null) {
-            throw new UserException("채팅 조회는 로그인 이후에 가능합니다.");
-        }
-
-        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
-        String currentPrincipalId = nowLogInDetail.getId();
-        int currentPrincipalNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("채팅 조회는 로그인 이후에 가능합니다.")).getNo();
+        String currentPrincipalId = getCurrentId();
+        int currentPrincipalNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
 
         List<Room> rooms = roomUserRepository.findAllRoomsByUser(currentPrincipalNo);
         List<RoomResponse> roomResponseList = toResponseList(rooms, currentPrincipalNo);
@@ -158,16 +159,9 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public void quitRoom(int roomNo) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalId = getCurrentId();
 
-        if (auth == null) {
-            throw new UserException("채팅 나가기는 로그인 이후에 가능합니다.");
-        }
-
-        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
-        String currentPrincipalId = nowLogInDetail.getId();
-
-        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("채팅 나가기는 로그인 이후에 가능합니다."));
+        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근 입니다."));
         Room room = roomRepository.findById(roomNo).orElseThrow(() -> new IllegalArgumentException("방을 나갈 수 없습니다."));
 
         roomUserRepository.deleteByRoomAndUser(room, user);
@@ -184,18 +178,11 @@ public class RoomServiceImpl implements RoomService{
      */
     @Override
     public List<MessageResponse> findMessageList(int roomNo) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null) {
-            throw new UserException("채팅 나가기는 로그인 이후에 가능합니다.");
-        }
-
-        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
-        String currentPrincipalId = nowLogInDetail.getId();
+        String currentPrincipalId = getCurrentId();
 
         // RoomUser 살펴보면서 접속한 유저가 roomNo에 접속한 유저인지 확인, 확인하면 그 방의 메세지를 반환해주고 아니면 권한 없다는 예외를 발생시킴.
         Room room = roomRepository.findById(roomNo).orElseThrow(() -> new IllegalArgumentException("해당 방이 없습니다."));
-        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("비정상적 접근입니다."));
+        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다."));
         boolean joined = roomUserRepository.existsByRoomAndUser(room, user);
 
         if (!joined) {
@@ -221,19 +208,12 @@ public class RoomServiceImpl implements RoomService{
     @Override
     public void addMessage(int roomNo, AddMessageRequest addMessageRequest) {
         // 로그인한 유저 정보 얻어옴
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null) {
-            throw new UserException("채팅 나가기는 로그인 이후에 가능합니다.");
-        }
-
-        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
-        String currentPrincipalId = nowLogInDetail.getId();
+        String currentPrincipalId = getCurrentId();
 
         // 로그인한 유저가 그 방에 참가해 있는지 RoomUser Table 조회하면서 확인함
         // 참가해있지 않으면 예외 발생시킴
-        Room room = roomRepository.findById(roomNo).orElseThrow(() -> new IllegalArgumentException("해당 방이 없습니다."));
-        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("비정상적 접근입니다."));
+        Room room = roomRepository.findById(roomNo).orElseThrow(() -> new NoSuchElementException("해당 방이 없습니다."));
+        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다."));
         boolean joined = roomUserRepository.existsByRoomAndUser(room, user);
 
         if (!joined) {
