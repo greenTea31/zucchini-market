@@ -48,7 +48,7 @@ public class RoomServiceImpl implements RoomService{
         String currentPrincipalId = getCurrentId();
 
         User loginUser = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다."));
-        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
+        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new NoSuchElementException("해당 아이템이 없습니다."));
         User seller = item.getSeller();
 
         // Room 생성
