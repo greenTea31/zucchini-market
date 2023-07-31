@@ -35,6 +35,8 @@ public class FindItemResponse {
 
     private List<String> categoryList;
 
+    private int view;
+
     @Data
     @AllArgsConstructor
     public static class Seller {
