@@ -14,7 +14,7 @@ public interface RoomService {
      * @param itemNo 아이템 번호
      * @return Http Status, 생성된 방의 번호(생성 성공시)
      */
-    int addRoom(int itemNo) throws AccessDeniedException;
+    int addRoom(int itemNo);
 
     /**
      * 주어진 아이템 번호와 구매자 사용자 아이디에 해당하는 방을 찾습니다.
