@@ -163,7 +163,8 @@ public class ReservationServiceImpl implements ReservationService {
             // 바로 예약 생성 가능
             status = 2;
             addReservation(itemNo, selectDate);
-        }else if(status == 1){
+        }else {
+            status = 1;
             // UUID 생성
             // 랜덤 UUID 생성
             code = UUID.randomUUID();
