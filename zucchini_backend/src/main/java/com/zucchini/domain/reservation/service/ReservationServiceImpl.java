@@ -121,8 +121,8 @@ public class ReservationServiceImpl implements ReservationService {
         reservationList.add(sellerReservation);
         // 한번에 save 하기 위함
         reservationRepository.saveAll(reservationList);
-        //예약 성공 -> 자신이 판매하는 아이템의 날짜 목록 중 해당 날짜에 해당하는 것들 모두 status 2로 변경
-        itemService.modifyDateStatus(selectDate);
+        //예약 성공 -> 구매자와 판매자가 판매하는 아이템의 날짜 목록 중 해당 날짜에 해당하는 것들 모두 status 2로 변경
+        itemService.modifyDateStatus(sellerNo, selectDate);
         //예약 성공 -> 아이템의 해당 날짜 status 1로 변경
         itemService.modifyDateReservation(itemNo, selectDate);
     }
