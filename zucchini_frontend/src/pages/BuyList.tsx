@@ -1,10 +1,17 @@
 import styled from "styled-components";
 import Search from "../components/List/Search";
 import ItemEach from "../components/List/ItemEach";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import Loading from "../components/Loading/Loading";
+
+interface Item {
+  id: number;
+}
 
 export default function BuyList() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
   function getItems() {
@@ -18,6 +25,30 @@ export default function BuyList() {
   useEffect(() => {
     getItems();
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    axios
+      .get("http://localhost:8080/api/mypage/buy")
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+    setIsLoading(false); // 나중에 지울것임
+  }, [data]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <ContainerDiv>
@@ -43,9 +74,17 @@ export default function BuyList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
+<<<<<<< zucchini_frontend/src/pages/BuyList.tsx
+          {data ? (
+            data.map((item) => <ItemEach key={item.id} data={item} />)
+          ) : (
+            <span>구매한 물건이 없습니다.</span>
+          )}
+=======
           {items.map((item, index) => (
             <ItemEach item={item} />
           ))}
+>>>>>>> zucchini_frontend/src/pages/BuyList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

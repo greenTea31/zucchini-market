@@ -3,6 +3,14 @@ import watch from "../../assets/images/watch.png";
 import ReplayButton from "../Button/ReplayButton";
 import moment from "moment";
 
+interface Item {
+  id: number;
+}
+
+interface ItemEachProps {
+  data: Item;
+}
+
 interface IItem {
   no: number;
   title: string;
@@ -19,6 +27,7 @@ interface IItem {
 interface IProps {
   item: IItem;
 }
+
 
 export default function ItemEach(props: IProps) {
   return (
@@ -38,7 +47,7 @@ export default function ItemEach(props: IProps) {
       <ItemContent>{props?.item?.category}</ItemContent>
     </ItemDiv>
   );
-}
+};
 
 const ItemDiv = styled.div`
   display: flex;
@@ -66,3 +75,5 @@ const ItemContent = styled.span`
   color: gray;
   margin: 0.2rem;
 `;
+
+export default ItemEach;

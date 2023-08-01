@@ -18,7 +18,13 @@ const ContainerDiv = styled.div`
   justify-content: center;
   align-items: center;
   gap: 2rem;
-  padding-top: 5rem;
+  padding-top: 1rem;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: white;
 `;
 
 const StyledImg = styled.img`

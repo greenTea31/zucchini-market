@@ -1,12 +1,19 @@
 import styled from "styled-components";
 import CategorySecond from "../components/List/CategorySecond";
 import Search from "../components/List/Search";
-import watch from "../assets/images/watch.png";
 import ItemEach from "../components/List/ItemEach";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import Loading from "../components/Loading/Loading";
+
+interface Item {
+  id: number;
+}
 
 export default function LikeList() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<Item[] | null>(null);
+
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
   function getItems() {
@@ -21,6 +28,30 @@ export default function LikeList() {
     getItems();
   }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+
+    axios
+      .get("http://localhost:8080/api/mypage/like")
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+    setIsLoading(false);
+  }, [data]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <ContainerDiv>
       <div>
@@ -30,9 +61,20 @@ export default function LikeList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
+<<<<<<< zucchini_frontend/src/pages/LikeList.tsx
+          {/* {[1, 2, 3, 4, 5].map((e, i) => (
+            <ItemEach />
+          ))} */}
+          {data ? (
+            data.map((item) => <ItemEach key={item.id} data={item} />)
+          ) : (
+            <span>찜한 물건이 없습니다.</span>
+          )}
+=======
           {items.map((item, index) => (
             <ItemEach item={item} />
           ))}
+>>>>>>> zucchini_frontend/src/pages/LikeList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

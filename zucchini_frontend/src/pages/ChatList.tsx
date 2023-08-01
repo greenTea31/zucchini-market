@@ -1,9 +1,16 @@
 import styled from "styled-components";
 import ChatRoomEach from "../components/List/ChatRoomEach";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import Loading from "../components/Loading/Loading";
+
+interface Item {
+  id: number;
+}
 
 export default function ChatList() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<Item[] | null>(null);
   const [chats, setChats] = useState([]);
 
   // 들어오자마자 실행하려면 useEffect()
@@ -21,6 +28,26 @@ export default function ChatList() {
   useEffect(() => {
     getChatList();
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    axios
+      .get("http://localhost:8080/api/mypage/chat")
+      .then((res) => setData(res.data))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+    setIsLoading(false);
+  }, [data]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <ContainerDiv>

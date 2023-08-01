@@ -1,4 +1,3 @@
-import { Checkbox } from "@mui/material";
 import styled from "styled-components";
 import Logo from "../components/Footer/Logo";
 

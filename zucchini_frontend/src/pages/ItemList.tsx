@@ -5,9 +5,16 @@ import Search from "../components/List/Search";
 import ItemEach from "../components/List/ItemEach";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Loading from "../components/Loading/Loading";
 import axios from "axios";
 
+interface Item {
+  id: number;
+}
+
 export default function ItemList() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
   function getItems() {
@@ -26,6 +33,29 @@ export default function ItemList() {
     getItems();
   }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+    // 통신....
+    axios
+      .get("http://localhost:8080/api/item")
+      .then((res) => {
+        setData(res.data);
+        // console.log(res.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+    setIsLoading(false); // 여기는 지울거에용
+  }, [data]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <ContainerDiv>
       <UpperDiv>
@@ -33,7 +63,6 @@ export default function ItemList() {
         <Category />
         <Search setKeyword={setKeyword} getItems={getItems} />
       </UpperDiv>
-
       <LowerDiv>
         <TitleDiv>
           <SubTitle>전체보기</SubTitle>
@@ -44,7 +73,18 @@ export default function ItemList() {
           </Link>
         </TitleDiv>
         <ItemsContainer>
+<<<<<<< zucchini_frontend/src/pages/ItemList.tsx
+          {/* {[1, 2, 3, 4, 5].map((e, i) => (
+            <ItemEach />
+          ))} */}
+          {data ? (
+            data.map((item) => <ItemEach key={item.id} data={item} />)
+          ) : (
+            <span>게시글이 없습니다.</span>
+          )}
+=======
           {items && items.map((item, index) => <ItemEach item={item} />)}
+>>>>>>> zucchini_frontend/src/pages/ItemList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>
