@@ -20,6 +20,7 @@ import ReplaySellVideo from "./pages/ReplaySellVideo";
 import ScheduleList from "./pages/ScheduleList";
 import UpdateItem from "./pages/UpdateItem";
 import SignUpAgreement from "./pages/SignUpAgreement";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -108,6 +109,7 @@ const router = createBrowserRouter([
         element: <Conference />,
       },
     ],
+    errorElement: <NotFound />,
   },
 ]);
 

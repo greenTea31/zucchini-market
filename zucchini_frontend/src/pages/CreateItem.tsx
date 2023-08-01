@@ -91,7 +91,6 @@ export default function CreateItem() {
 const ContainerAll = styled.div`
   display: flex;
   justify-content: center;
-  font-family: "IBM Plex Sans KR", sans-serif;
   /* padding: 5rem 0 13rem 0; */
 `;
 
@@ -168,12 +167,6 @@ const StyledSvg = styled.svg`
   width: 1.5rem;
   cursor: pointer;
   color: #849c80;
-`;
-
-const IconDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 3rem;
 `;
 
 const ButtonDiv = styled.div`
