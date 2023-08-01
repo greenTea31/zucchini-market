@@ -14,7 +14,7 @@ public interface ItemDateRepository extends JpaRepository<ItemDate, Integer> {
     ItemDate searchItemDateByItemNoAndDate(int itemNo, Date selectDate);
 
     @Query("SELECT d FROM ItemDate d " +
-            "JOIN Item i " +
+            "JOIN fetch d.item i " +
             "WHERE i.seller.no = :userNo and d.date = :selectDate")
     List<ItemDate> searchItemDatesByUser(int userNo, Date selectDate);
 
