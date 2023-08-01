@@ -28,13 +28,12 @@ export default function CreateItem() {
   const clickSubmit = () => {
     // 그냥 나가면 될까?
     // selectedTimes는 이미 채워진 상태
-    if (selectedTimes.length) {
+    if (selectedTimes.length !== 0) {
       alert("등록완료");
       toggle();
     } else {
       alert("선택된 일정이 없습니다.");
     }
-    // 모달 창 닫기
   };
 
   const onSubmit = (data: any) => {
