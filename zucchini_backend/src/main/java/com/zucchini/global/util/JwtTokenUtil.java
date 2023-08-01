@@ -30,7 +30,7 @@ public class JwtTokenUtil {
     }
 
     public String getUsername(String token) {
-        return extractAllClaims(token).get("username", String.class);
+        return extractAllClaims(token).get("id", String.class);
     }
 
     private Key getSigningKey(String secretKey) {
@@ -43,17 +43,17 @@ public class JwtTokenUtil {
         return expiration.before(new Date());
     }
 
-    public String generateAccessToken(String username) {
-        return doGenerateToken(username, JwtExpirationEnums.ACCESS_TOKEN_EXPIRATION_TIME.getValue());
+    public String generateAccessToken(String id) {
+        return doGenerateToken(id, JwtExpirationEnums.ACCESS_TOKEN_EXPIRATION_TIME.getValue());
     }
 
-    public String generateRefreshToken(String username) {
-        return doGenerateToken(username, JwtExpirationEnums.REFRESH_TOKEN_EXPIRATION_TIME.getValue());
+    public String generateRefreshToken(String id) {
+        return doGenerateToken(id, JwtExpirationEnums.REFRESH_TOKEN_EXPIRATION_TIME.getValue());
     }
 
-    private String doGenerateToken(String username, long expireTime) { // 1
+    private String doGenerateToken(String id, long expireTime) { // 1
         Claims claims = Jwts.claims();
-        claims.put("username", username);
+        claims.put("id", id);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -64,8 +64,8 @@ public class JwtTokenUtil {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        String username = getUsername(token);
-        return username.equals(userDetails.getUsername())
+        String id = getUsername(token);
+        return id.equals(userDetails.getUsername())
                 && !isTokenExpired(token);
     }
 
@@ -74,4 +74,5 @@ public class JwtTokenUtil {
         Date now = new Date();
         return expiration.getTime() - now.getTime();
     }
+
 }
