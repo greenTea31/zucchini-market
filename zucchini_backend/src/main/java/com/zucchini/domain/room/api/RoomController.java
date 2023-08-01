@@ -5,7 +5,6 @@ import com.zucchini.domain.room.dto.AddRoomRequest;
 import com.zucchini.domain.room.dto.MessageResponse;
 import com.zucchini.domain.room.dto.RoomResponse;
 import com.zucchini.domain.room.service.RoomService;
-import com.zucchini.global.exception.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class RoomController {
 
     // 방 생성, item_no를 입력받는다
     @PostMapping
-    public ResponseEntity<Integer> addRoom(@Valid @RequestBody AddRoomRequest addRoomRequest, BindingResult bindingResult) throws AccessDeniedException {
+    public ResponseEntity<Integer> addRoom(@Valid @RequestBody AddRoomRequest addRoomRequest, BindingResult bindingResult) {
 //        if (bindingResult.hasErrors()) {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
 //        }
@@ -35,7 +33,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body(roomNo);
     }
 
-    // 유저의 특정 아이템에 대한 모든 방을 불러옴
+    // 유저의 특정 아이템에 대한 모든 방을 불러옴, 현재 프론트에서 사용을 안함
     @GetMapping("/{itemNo}")
     public ResponseEntity<List<RoomResponse>> getRoomList(@PathVariable int itemNo) {
         List<RoomResponse> rooms = roomService.findRoomList(itemNo);
