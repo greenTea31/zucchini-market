@@ -8,13 +8,14 @@ interface IItem {
 
 interface INavigation {
   list: IItem[];
+  onItemClick: () => void;
 }
 
-export default function MenuNavigation({ list }: INavigation) {
+export default function MenuNavigation({ list, onItemClick }: INavigation) {
   return (
     <NavigationContainer>
       {list.map((element, index) => (
-        <NavigationItem to={element.navLink} key={index}>
+        <NavigationItem onClick={onItemClick} to={element.navLink} key={index}>
           {element.navName}
         </NavigationItem>
       ))}
@@ -33,4 +34,6 @@ const NavigationContainer = styled.div`
 const NavigationItem = styled(Link)`
   user-select: none;
   color: white;
+  border-bottom: solid 1px white;
+  padding: 1rem;
 `;

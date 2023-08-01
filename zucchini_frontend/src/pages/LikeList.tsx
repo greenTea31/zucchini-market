@@ -1,58 +1,80 @@
 import styled from "styled-components";
 import CategorySecond from "../components/List/CategorySecond";
 import Search from "../components/List/Search";
-import watch from "../assets/images/watch.png";
+import ItemEach from "../components/List/ItemEach";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Loading from "../components/Loading/Loading";
+
+interface Item {
+  id: number;
+}
 
 export default function LikeList() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<Item[] | null>(null);
+
+  const [items, setItems] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  function getItems() {
+    axios
+      .get(`http://localhost:8080/user/item/like?keyword=${keyword}`)
+      .then((response) => {
+        setItems(response.data);
+      });
+  }
+
+  useEffect(() => {
+    getItems();
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    axios
+      .get("http://localhost:8080/api/mypage/like")
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+    setIsLoading(false);
+  }, [data]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <ContainerDiv>
       <div>
         <TitleSpan>나의 찜한 목록</TitleSpan>
         <CategorySecond />
-        <Search />
+        <Search setKeyword={setKeyword} getItems={getItems} />
       </div>
       <LowerDiv>
         <ItemsContainer>
-          <ItemDiv>
-            <ItemImg src={watch} />
-            <ItemTitle>
-              갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-            </ItemTitle>
-            <ItemContent>365,000원</ItemContent>
-            <ItemContent>백조이김</ItemContent>
-          </ItemDiv>
-          <ItemDiv>
-            <ItemImg src={watch} />
-            <ItemTitle>
-              갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-            </ItemTitle>
-            <ItemContent>365,000원</ItemContent>
-            <ItemContent>춘식이</ItemContent>
-          </ItemDiv>
-          <ItemDiv>
-            <ItemImg src={watch} />
-            <ItemTitle>
-              갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-            </ItemTitle>
-            <ItemContent>365,000원</ItemContent>
-            <ItemContent>swan</ItemContent>
-          </ItemDiv>
-          <ItemDiv>
-            <ItemImg src={watch} />
-            <ItemTitle>
-              갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-            </ItemTitle>
-            <ItemContent>365,000원</ItemContent>
-            <ItemContent>seoulA209</ItemContent>
-          </ItemDiv>
-          <ItemDiv>
-            <ItemImg src={watch} />
-            <ItemTitle>
-              갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-            </ItemTitle>
-            <ItemContent>365,000원</ItemContent>
-            <ItemContent>김싸피</ItemContent>
-          </ItemDiv>
+<<<<<<< zucchini_frontend/src/pages/LikeList.tsx
+          {/* {[1, 2, 3, 4, 5].map((e, i) => (
+            <ItemEach />
+          ))} */}
+          {data ? (
+            data.map((item) => <ItemEach key={item.id} data={item} />)
+          ) : (
+            <span>찜한 물건이 없습니다.</span>
+          )}
+=======
+          {items.map((item, index) => (
+            <ItemEach item={item} />
+          ))}
+>>>>>>> zucchini_frontend/src/pages/LikeList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

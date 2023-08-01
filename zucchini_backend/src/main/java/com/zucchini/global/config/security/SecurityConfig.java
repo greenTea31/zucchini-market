@@ -44,10 +44,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests() // 5
 //                .antMatchers("/", "/user/**", "/login", "/health").permitAll()
-                .antMatchers(HttpMethod.POST, "/user", "/user/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/user", "/user/login", "/user/email", "/user/authCheck", "/user/reissue").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/idCheck/**", "/item", "/item/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/user", "/user/*/item/like/**")
+                .hasAuthority("USER")
+                .antMatchers(HttpMethod.DELETE, "/user/**")
+                .hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/user")
+                .hasAuthority("ADMIN")
                 .anyRequest().authenticated()
-//                .anyRequest().hasRole("USER")
-
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtEntryPoint)
@@ -65,4 +70,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
     }
+
 }

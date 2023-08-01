@@ -99,10 +99,12 @@ const TYPE_VARIANTS = {
   pinkFilled: {
     backgroundColor: colors.error90,
     color: colors.white,
+    fontWeight: "500",
   },
   pinkTonal: {
     backgroundColor: colors.error90,
-    color: colors.primary40,
+    // color: colors.primary40,
+    color: "#254021",
   },
   blueFilled: {
     backgroundColor: colors.tertiary,

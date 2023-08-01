@@ -4,6 +4,7 @@ import Menu from "./components/Menu";
 import { useState, useEffect } from "react";
 import MenuWindow from "./components/MenuWindow";
 import navigation from "./constants/navigation";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,7 +16,9 @@ export default function Header() {
   return (
     <HeaderContainer>
       <HeaderLeft>
-        <Logo>애호박마켓</Logo>
+        <Link to={"/"}>
+          <Logo>애호박마켓</Logo>
+        </Link>
         <Navigation list={navigation} />
       </HeaderLeft>
 

@@ -1,9 +1,11 @@
-import Calendar from "react-calendar";
+import SimpleCalendar from "../components/Schedule/SimpleCalendar";
 import styled from "styled-components";
 import female from "../assets/images/female.jpg";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
 import Chatting from "../components/Chatting";
+import ClosedButton from "../components/Button/ClosedButton";
+import { Link } from "react-router-dom";
 
 export default function ChatRoom() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +14,30 @@ export default function ChatRoom() {
     setIsOpen(!isOpen);
   };
 
+  const [buyOpen, setBuyOpen] = useState(false);
+
+  const buyToggle = () => {
+    setBuyOpen(!buyOpen);
+  };
+
   return (
     <ContainerDiv>
+      <Modal isOpen={buyOpen} toggle={buyToggle}>
+        <ModalDiv>
+          <ClosedButton />
+        </ModalDiv>
+        <ModalSpan>구매 확정하기</ModalSpan>
+        <SpanDiv>
+          <span>구매하신 물건에 이상이 없는지 확인하셨나요?</span>
+          <span>구매 확정을 누르시면 영상 다시보기가 불가합니다.</span>
+          <span>중고 매물을 꼼꼼하게 확인 후 확정을 눌러주세요.</span>
+        </SpanDiv>
+        <ButtonDiv>
+          <GreenBtn>
+            <Link to={"/mypage/buy"}>확정</Link>
+          </GreenBtn>
+        </ButtonDiv>
+      </Modal>
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
           <StyledSvg
@@ -32,35 +56,24 @@ export default function ChatRoom() {
           </StyledSvg>
         </ModalDiv>
         <ModalSpan>화상통화 일정 선택</ModalSpan>
-        <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
+        <ModalSubSpan>
+          <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
+        </ModalSubSpan>
+        <SimpleCalendar />
+        <ModalBtn>확인</ModalBtn>
+        <ModalBtn>취소</ModalBtn>
       </Modal>
-      <StyledSvgDiv>
-        <StyledSvg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.75 19.5L8.25 12l7.5-7.5"
-          />
-        </StyledSvg>
-      </StyledSvgDiv>
       <BodyDiv>
         <LeftDiv>
           <UpperDiv>
             <TitleSpan>판매자가 선택한 일정</TitleSpan>
-            <Calendar
-              formatDay={(locale, date) =>
-                date.toLocaleString("en", { day: "numeric" })
-              }
-            />
+            <SimpleCalendar />
             <StyledBtnDiv>
-              <StyledBtn>영상 통화하기</StyledBtn>
+              <StyledBtn>
+                <Link to={"/conference"} target={"_blank"}>
+                  영상 통화하기
+                </Link>
+              </StyledBtn>
               <StyledBtn onClick={toggle}>일정 선택하기</StyledBtn>
             </StyledBtnDiv>
           </UpperDiv>
@@ -73,6 +86,7 @@ export default function ChatRoom() {
                 <span>Lv.1 애호박씨앗</span>
                 <SubSpan>판매중 3 · 거래완료 2</SubSpan>
               </SellerSpanDiv>
+              <SellerBtn onClick={buyToggle}>구매확정</SellerBtn>
             </SellerDiv>
           </LowerDiv>
         </LeftDiv>
@@ -156,13 +170,9 @@ export default function ChatRoom() {
 const ContainerDiv = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 5rem;
+  padding: 0 5rem;
   margin: 0 6rem 13rem 6rem;
   font-family: "IBM Plex Sans KR", sans-serif;
-`;
-
-const StyledSvgDiv = styled.div`
-  margin-bottom: 2rem;
 `;
 
 const StyledSvg = styled.svg`
@@ -223,11 +233,26 @@ const StyledBtn = styled.button`
     background-color: white;
   }
 `;
+
+const ModalBtn = styled.button`
+  width: 9rem;
+  height: 2.5rem;
+  background-color: #cde990;
+  border: solid 1px #cde990;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  margin-top: 2rem;
+
+  &:hover {
+    background-color: white;
+  }
+`;
 const SellerDiv = styled.div`
   display: flex;
+  align-items: center;
   height: 100%;
   width: 100%;
-  padding-left: 1rem;
 `;
 
 const SellerImg = styled.img`
@@ -240,18 +265,16 @@ const SellerImg = styled.img`
 
 const SellerSpanDiv = styled.div`
   width: 50%;
-  height: 8.6rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding-left: 2rem;
+  padding-left: 1rem;
   gap: 0.8rem;
+  padding-top: 0.8rem;
 `;
 
 const SellerTitle = styled.span`
   font-size: 1.3rem;
   margin-bottom: 0.3rem;
-  padding-left: 1rem;
 `;
 
 const SellerName = styled.span`
@@ -262,6 +285,10 @@ const SubSpan = styled.span`
   color: gray;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
+`;
+
+const ModalSubSpan = styled.div`
+  margin-bottom: 1rem;
 `;
 
 const ModalDiv = styled.div`
@@ -330,10 +357,57 @@ const StyledInput = styled.input`
   padding: 0 0.7rem;
   background-color: transparent;
   border: transparent;
+  border-radius: 0.4rem;
+  font-size: 1rem;
 
   &:focus {
     /* box-shadow: 0 0 10px #9ec4f2; */
     outline: none;
     background-color: white;
+  }
+`;
+
+const SellerBtn = styled.button`
+  height: 3rem;
+  width: 5.6rem;
+  border-radius: 0.4rem;
+  border: solid 2px #ffd4d4;
+  background-color: #ffd4d4;
+  letter-spacing: 0.1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: white;
+  }
+`;
+
+const SpanDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1.1rem 0 2rem 0;
+`;
+
+const ButtonDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+`;
+
+const GreenBtn = styled.button`
+  width: 16rem;
+  height: 2.8rem;
+  border-radius: 0.4rem;
+  background-color: #cde990;
+  border: solid 2px #cde990;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: white;
+    border: solid 2px #cde990;
+    color: #cde990;
   }
 `;

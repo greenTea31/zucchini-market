@@ -1,18 +1,8 @@
 import styled from "styled-components";
 import img from "../assets/images/main.png";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Main() {
-  const navigate = useNavigate();
-
-  const navigateToSignUp = () => {
-    navigate("/signup");
-  };
-
-  const navigateToLogin = () => {
-    navigate("/login");
-  };
-
   return (
     <MainAll>
       <MainUpper>
@@ -34,8 +24,12 @@ export default function Main() {
             </SpanContent>
           </TitleDiv>
           <BtnDiv>
-            <SignUpBtn onClick={navigateToSignUp}>회원가입</SignUpBtn>
-            <LoginBtn onClick={navigateToLogin}>로그인</LoginBtn>
+            <Link to={"/signup"}>
+              <SignUpBtn>회원가입</SignUpBtn>
+            </Link>
+            <Link to={"/login"}>
+              <LoginBtn>로그인</LoginBtn>
+            </Link>
           </BtnDiv>
         </UpperLeft>
         <Img src={img}></Img>
@@ -80,7 +74,9 @@ export default function Main() {
               </SubDiv>
             </div>
             <div>
-              <LowerBtn>영상 목록</LowerBtn>
+              <LowerBtn>
+                <Link to={"/mypage/buy"}>영상 목록</Link>
+              </LowerBtn>
             </div>
           </ContentDiv>
           <ContentDiv>
@@ -110,7 +106,9 @@ export default function Main() {
               </SpanContent>
             </SubDiv>
             <div>
-              <LowerBtn>영상 통화</LowerBtn>
+              <Link to={"/conference"} target={"_blank"}>
+                <LowerBtn>영상 통화</LowerBtn>
+              </Link>
             </div>
           </ContentDiv>
           <ContentDiv>
@@ -142,7 +140,9 @@ export default function Main() {
               </SpanContent>
             </SubDiv>
             <div>
-              <LowerBtn>일정 잡기</LowerBtn>
+              <LowerBtn>
+                <Link to={"/mypage/schedule"}>일정 목록</Link>
+              </LowerBtn>
             </div>
           </ContentDiv>
         </MainLower>
@@ -231,13 +231,14 @@ const BtnDiv = styled.div`
 
 const SignUpBtn = styled.button`
   width: 8rem;
-  height: 2.5rem;
+  height: 2.8rem;
   border: none;
   color: #aacb73;
   font-weight: 600;
   border-radius: 2rem;
   margin-right: 1rem;
   box-shadow: 0 0 10px white;
+  font-size: 1rem;
 
   &:hover {
     cursor: pointer;
@@ -249,12 +250,13 @@ const SignUpBtn = styled.button`
 
 const LoginBtn = styled.button`
   width: 8rem;
-  height: 2.5rem;
+  height: 2.8rem;
   border: solid 1px white;
   color: white;
   background-color: #aacb73;
   font-weight: 600;
   border-radius: 2rem;
+  font-size: 1rem;
 
   &:hover {
     cursor: pointer;

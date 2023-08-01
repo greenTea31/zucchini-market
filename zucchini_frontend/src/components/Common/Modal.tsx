@@ -1,7 +1,5 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import styled from "styled-components";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 
 interface ModalType {
   children?: ReactNode;
@@ -10,21 +8,20 @@ interface ModalType {
 }
 
 export default function Modal(props: ModalType) {
+  useEffect(() => {
+    if (props.isOpen) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [props.isOpen]);
   return (
     <>
       {props.isOpen && (
         <ModalOverlay onClick={props.toggle}>
           <ModalBox onClick={(e) => e.stopPropagation()}>
             {props.children}
-            <CalendarDiv>
-              <Calendar
-                formatDay={(locale, date) =>
-                  date.toLocaleString("en", { day: "numeric" })
-                }
-              />
-            </CalendarDiv>
-            <StyledBtn>확인</StyledBtn>
-            <StyledBtn>취소</StyledBtn>
           </ModalBox>
         </ModalOverlay>
       )}
@@ -48,31 +45,11 @@ const ModalOverlay = styled.div`
 const ModalBox = styled.div`
   display: block;
   background: rgb(255, 255, 255);
-  width: 28rem;
+  width: auto;
   height: auto;
-  padding: 1rem 1rem 3rem 1rem;
+  padding: 2rem 4rem 3rem 4rem;
   border-radius: 1rem;
   margin-top: 1%;
   text-align: center;
   border: solid 5px #cde990;
-`;
-
-const CalendarDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 2rem;
-`;
-
-const StyledBtn = styled.button`
-  width: 9rem;
-  height: 2.5rem;
-  background-color: #cde990;
-  border: solid 1px #cde990;
-  border-radius: 0.4rem;
-  cursor: pointer;
-  margin-right: 0.4rem;
-
-  &:hover {
-    background-color: white;
-  }
 `;

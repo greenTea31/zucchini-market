@@ -2,14 +2,22 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { http } from "../utils/axios";
+import { useLogin } from "../hooks/useLogin";
+import FullWidthButton from "../components/Button/FullWidthButton";
 
 export default function LogIn() {
-  const [values, setValues] = useState({ id: "", pw: "" });
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+  });
+  const { mutate: login } = useLogin();
 
-  const onSubmit = (data: any) => {
-    setValues(data);
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    login(data);
   };
 
   return (
@@ -21,10 +29,18 @@ export default function LogIn() {
           <Input
             type="password"
             placeholder="비밀번호"
-            {...register("pw")}
+            {...register("password", {
+              minLength: {
+                value: 7,
+                message: "뭐임?",
+              },
+            })}
           ></Input>
+          {errors?.password && (
+            <span>{errors?.password?.message?.toString()}</span>
+          )}
           <StyledButtonDiv>
-            <StyledButton>로그인</StyledButton>
+            <FullWidthButton>로그인</FullWidthButton>
           </StyledButtonDiv>
         </StyledForm>
         <StyledSpanDiv>
@@ -36,6 +52,18 @@ export default function LogIn() {
     </StyledAll>
   );
 }
+
+interface IUser {
+  id: string;
+  password: string;
+}
+
+async function login(data: any) {
+  const response = await http.post("user/login", data);
+
+  return response;
+}
+
 const StyledAll = styled.div`
   display: flex;
   justify-content: center;
@@ -95,11 +123,12 @@ const StyledButtonDiv = styled.div`
 `;
 
 const StyledButton = styled.button`
-  height: 2.9rem;
+  height: 3rem;
   border: 2px solid #cde990;
   border-radius: 0.4rem;
   background-color: white;
   margin: 0.3rem;
+  font-size: 1rem;
 
   &:hover {
     background-color: #cde990;
