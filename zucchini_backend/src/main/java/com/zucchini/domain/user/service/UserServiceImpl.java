@@ -11,13 +11,13 @@ import com.zucchini.domain.user.domain.UserItemLikeId;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
-import com.zucchini.global.exception.UserException;
 import com.zucchini.domain.user.repository.UserItemLikeRepository;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.cache.CacheKey;
 import com.zucchini.global.config.jwt.JwtExpirationEnums;
 import com.zucchini.global.config.security.CustomUserDetails;
 import com.zucchini.global.domain.*;
+import com.zucchini.global.exception.UserException;
 import com.zucchini.global.util.JwtTokenUtil;
 import com.zucchini.global.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -282,7 +281,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUserLikeItem(String id, int itemNo) {
+    public void addUserLikeItem(int itemNo) {
+        String id = getCurrentId();
         Optional<User> user = userRepository.findById(id);
         if(!user.isPresent()) throw new NoSuchElementException("해당하는 회원이 존재하지 않습니다.");
         int userNo = user.get().getNo();
@@ -294,7 +294,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<FindItemListResponse> findUserLikeItemList(String id, String keyword) {
+    public List<FindItemListResponse> findUserLikeItemList(String keyword) {
+        String id = getCurrentId();
         List<Item> userItemLikeList = userItemLikeRepository.findAllByUserId(id, keyword);
         return userItemLikeList.stream()
                 .map(userItemLike -> FindItemListResponse.builder()
@@ -328,7 +329,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void removeUserLikeItem(String id, int itemNo) {
+    public void removeUserLikeItem(int itemNo) {
+        String id = getCurrentId();
         userItemLikeRepository.deleteByUserIdAndItemNo(id, itemNo);
     }
 
