@@ -18,6 +18,6 @@ public interface ItemService {
     void modifyStatusConfirmation(int itemNo);
     void modifyStatusCancel(int itemNo);
     void modifyDateReservation(int itemNo, Date selectDate);
-    void modifyDateStatus(Date selectDate);
+    void modifyDateStatus(int sellerNo, Date selectDate);
 
 }

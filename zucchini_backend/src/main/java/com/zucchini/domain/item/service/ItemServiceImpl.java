@@ -336,12 +336,20 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void modifyDateStatus(Date selectDate) {
-        int userNo = userRepository.findById(getCurrentId()).get().getNo();
-        List<ItemDate> itemDateList = itemDateRepository.searchItemDatesByUser(userNo, selectDate);
-        for (ItemDate itemDate : itemDateList) {
+    public void modifyDateStatus(int sellerNo, Date selectDate) {
+        // 구매자 판매 날짜 상태 변경
+        int buyerNo = userRepository.findById(getCurrentId()).get().getNo();
+        List<ItemDate> buyerItemDateList = itemDateRepository.searchItemDatesByUser(buyerNo, selectDate);
+        for (ItemDate itemDate : buyerItemDateList) {
             itemDate.setStatus(2);
         }
+
+        // 판매자 판매 날짜 상태 변경
+        List<ItemDate> sellerItemDateList = itemDateRepository.searchItemDatesByUser(sellerNo, selectDate);
+        for (ItemDate itemDate : sellerItemDateList) {
+            itemDate.setStatus(2);
+        }
+
     }
 
 }
