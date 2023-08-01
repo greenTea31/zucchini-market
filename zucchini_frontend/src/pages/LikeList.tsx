@@ -3,19 +3,35 @@ import CategorySecond from "../components/List/CategorySecond";
 import Search from "../components/List/Search";
 import watch from "../assets/images/watch.png";
 import ItemEach from "../components/List/ItemEach";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function LikeList() {
+  const [items, setItems] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  function getItems() {
+    axios
+      .get(`http://localhost:8080/user/item/like?keyword=${keyword}`)
+      .then((response) => {
+        setItems(response.data);
+      });
+  }
+
+  useEffect(() => {
+    getItems();
+  }, []);
+
   return (
     <ContainerDiv>
       <div>
         <TitleSpan>나의 찜한 목록</TitleSpan>
         <CategorySecond />
-        <Search />
+        <Search setKeyword={setKeyword} getItems={getItems} />
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {[1, 2, 3, 4, 5].map((e, i) => (
-            <ItemEach />
+          {items.map((item, index) => (
+            <ItemEach item={item} />
           ))}
         </ItemsContainer>
       </LowerDiv>

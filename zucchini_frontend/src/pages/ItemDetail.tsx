@@ -25,13 +25,15 @@ export default function ItemDetail() {
     setIsOpen(!isOpen);
   };
   const location = useLocation();
+  //
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/item/${location.pathname.split("/")[2]}`
+          `http://localhost:8080/item/${location.pathname.split("/")[2]}`
         );
+        console.log(response);
         setItem(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -44,7 +46,7 @@ export default function ItemDetail() {
   const toChatRoom = async () => {
     try {
       // 채팅방 생성
-      const response = await axios.post("http://localhost:8080/api/room", {
+      const response = await axios.post("http://localhost:8080/room", {
         headers: {
           Authorization: `Bearer ${
             (queryClient.getQueryData([QUERY_KEY.user]) as IToken).accessToken
@@ -114,11 +116,11 @@ export default function ItemDetail() {
         </UpperLeftDiv>
         <UpperRightDiv>
           <CategorySpan>전자제품</CategorySpan>
-          <TitleSpan>{item.title}</TitleSpan>
-          <ContentSpan>{item.content}</ContentSpan>
-          <PriceSpan>{item.price}원</PriceSpan>
+          <TitleSpan>{item?.title}</TitleSpan>
+          <ContentSpan>{item?.content}</ContentSpan>
+          <PriceSpan>{item?.price}원</PriceSpan>
           <SubSpan>
-            {item.createdAt}분 전 · 조회 {item.view} · 찜 {item.likeCount}
+            {item?.createdAt}분 전 · 조회 {item?.view} · 찜 {item?.likeCount}
           </SubSpan>
           <SubSpan>
             신고하기
@@ -162,8 +164,8 @@ export default function ItemDetail() {
           <SellerDiv>
             <SellerImg src={female}></SellerImg>
             <SellerSpanDiv>
-              <SellerName>{item.seller.nickname}</SellerName>
-              <span>{item.seller.grade}</span>
+              <SellerName>{item?.seller.nickname}</SellerName>
+              <span>{item?.seller.grade}</span>
               <SubSpan>판매중 3 · 거래완료 2</SubSpan>
             </SellerSpanDiv>
             <SelectDiv>

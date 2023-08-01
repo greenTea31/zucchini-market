@@ -4,14 +4,34 @@ import { Button } from "../components/Common/Button";
 import Search from "../components/List/Search";
 import ItemEach from "../components/List/ItemEach";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function ItemList() {
+  const [items, setItems] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  function getItems() {
+    axios
+      .get(`http://localhost:8080/item?keyword=${keyword}`)
+      .then((response) => {
+        setItems(response.data);
+      });
+  }
+
+  useEffect(() => {
+    console.log(keyword);
+  }, [keyword]);
+
+  useEffect(() => {
+    getItems();
+  }, []);
+
   return (
     <ContainerDiv>
       <UpperDiv>
         <TitleSpan>중고거래 매물</TitleSpan>
         <Category />
-        <Search />
+        <Search setKeyword={setKeyword} getItems={getItems} />
       </UpperDiv>
 
       <LowerDiv>
@@ -24,9 +44,7 @@ export default function ItemList() {
           </Link>
         </TitleDiv>
         <ItemsContainer>
-          {[1, 2, 3, 4, 5].map((e, i) => (
-            <ItemEach />
-          ))}
+          {items && items.map((item, index) => <ItemEach item={item} />)}
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>
