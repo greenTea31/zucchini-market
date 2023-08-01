@@ -1,7 +1,27 @@
 import styled from "styled-components";
 import ChatRoomEach from "../components/List/ChatRoomEach";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function ChatList() {
+  const [chats, setChats] = useState([]);
+
+  // 들어오자마자 실행하려면 useEffect()
+  async function getChatList() {
+    const response = await axios.get("http://localhost:8080/room");
+    setChats(response.data);
+  }
+
+  // function getChatList() {
+  //   axios.get("http://localhost:8080/room").then((response) => {
+  //     setChats(response.data);
+  //   });
+  // }
+
+  useEffect(() => {
+    getChatList();
+  }, []);
+
   return (
     <ContainerDiv>
       {/* <TitleSpan>나의 채팅 목록</TitleSpan> */}
@@ -10,16 +30,17 @@ export default function ChatList() {
           <TitleSpan>채팅 목록</TitleSpan>
         </TitleDiv>
         {/* 통신합시다^^ */}
-        {[1, 2, 3, 4, 5, 6, 7].map((e, i) => (
+        {chats.map((chat, index) => (
           <ChatRoomEach
-            chat={{
-              img: "물건물건 이미지 쏘오쓰",
-              sender: "거래자",
-              senderGrade: "거래자 등급",
-              lastMsg: "lastMessage",
-              lastMsgTime: "12:00",
-              unread: "1",
-            }}
+            chat={chat}
+            // chat={{
+            //   img: "물건물건 이미지 쏘오쓰",
+            //   sender: "거래자",
+            //   senderGrade: "거래자 등급",
+            //   lastMsg: "lastMessage",
+            //   lastMsgTime: "12:00",
+            //   unread: "1",
+            // }}
           />
         ))}
       </ChatListDiv>
