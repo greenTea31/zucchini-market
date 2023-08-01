@@ -31,7 +31,7 @@ public class FindItemResponse {
 
     private Seller seller;
 
-    private List<Date> dateList;
+    private List<DateResponse> dateList;
 
     private List<String> categoryList;
 
