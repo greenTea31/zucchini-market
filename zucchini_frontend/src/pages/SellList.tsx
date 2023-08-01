@@ -15,7 +15,7 @@ export default function SellList() {
   const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
-  
+
   function getItems() {
     axios
       .get(`http://localhost:8080/user/deal/sell?keyword=${keyword}`)
@@ -57,17 +57,9 @@ export default function SellList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-<<<<<<< zucchini_frontend/src/pages/SellList.tsx
-          {data ? (
-            data.map((item) => <ItemEach key={item.id} data={item} />)
-          ) : (
-            <span>판매한 물건이 없습니다.</span>
-          )}
-=======
           {items.map((item, index) => (
             <ItemEach item={item} />
           ))}
->>>>>>> zucchini_frontend/src/pages/SellList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

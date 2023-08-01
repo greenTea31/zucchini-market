@@ -61,20 +61,9 @@ export default function LikeList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-<<<<<<< zucchini_frontend/src/pages/LikeList.tsx
-          {/* {[1, 2, 3, 4, 5].map((e, i) => (
-            <ItemEach />
-          ))} */}
-          {data ? (
-            data.map((item) => <ItemEach key={item.id} data={item} />)
-          ) : (
-            <span>찜한 물건이 없습니다.</span>
-          )}
-=======
           {items.map((item, index) => (
             <ItemEach item={item} />
           ))}
->>>>>>> zucchini_frontend/src/pages/LikeList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

@@ -73,18 +73,7 @@ export default function ItemList() {
           </Link>
         </TitleDiv>
         <ItemsContainer>
-<<<<<<< zucchini_frontend/src/pages/ItemList.tsx
-          {/* {[1, 2, 3, 4, 5].map((e, i) => (
-            <ItemEach />
-          ))} */}
-          {data ? (
-            data.map((item) => <ItemEach key={item.id} data={item} />)
-          ) : (
-            <span>게시글이 없습니다.</span>
-          )}
-=======
           {items && items.map((item, index) => <ItemEach item={item} />)}
->>>>>>> zucchini_frontend/src/pages/ItemList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

@@ -74,17 +74,9 @@ export default function BuyList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-<<<<<<< zucchini_frontend/src/pages/BuyList.tsx
-          {data ? (
-            data.map((item) => <ItemEach key={item.id} data={item} />)
-          ) : (
-            <span>구매한 물건이 없습니다.</span>
-          )}
-=======
           {items.map((item, index) => (
             <ItemEach item={item} />
           ))}
->>>>>>> zucchini_frontend/src/pages/BuyList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

@@ -28,7 +28,6 @@ interface IProps {
   item: IItem;
 }
 
-
 export default function ItemEach(props: IProps) {
   return (
     <ItemDiv>
@@ -47,7 +46,7 @@ export default function ItemEach(props: IProps) {
       <ItemContent>{props?.item?.category}</ItemContent>
     </ItemDiv>
   );
-};
+}
 
 const ItemDiv = styled.div`
   display: flex;
@@ -75,5 +74,3 @@ const ItemContent = styled.span`
   color: gray;
   margin: 0.2rem;
 `;
-
-export default ItemEach;
