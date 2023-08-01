@@ -3,7 +3,7 @@ import watch from "../assets/images/watch.png";
 import female from "../assets/images/female.jpg";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
-import Calendar from "react-calendar";
+import SimpleCalendar from "../components/Schedule/SimpleCalendar";
 import GoBackButton from "../components/Button/GoBackButton";
 
 export default function ItemDetail() {
@@ -34,11 +34,7 @@ export default function ItemDetail() {
         <ModalSpan>화상통화 일정 선택</ModalSpan>
         <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
         <CalendarDiv>
-          <Calendar
-            formatDay={(locale, date) =>
-              date.toLocaleString("en", { day: "numeric" })
-            }
-          />
+          <SimpleCalendar />
         </CalendarDiv>
         <StyledBtn>확인</StyledBtn>
         <StyledBtn>취소</StyledBtn>
