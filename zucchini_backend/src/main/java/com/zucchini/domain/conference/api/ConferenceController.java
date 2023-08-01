@@ -1,4 +1,4 @@
-package com.zucchini.domain.conference;
+package com.zucchini.domain.conference.api;
 
 import com.zucchini.domain.conference.dto.FindConferenceResponse;
 import com.zucchini.domain.conference.service.ConferenceService;
@@ -16,8 +16,8 @@ public class ConferenceController {
 
     private final ConferenceService conferenceService;
 
-    @GetMapping("{no}")
-    public ResponseEntity<FindConferenceResponse> addConference(@PathVariable int no) {
+    @GetMapping("/{no}")
+    public ResponseEntity<FindConferenceResponse> findConference(@PathVariable int no) {
         FindConferenceResponse response = conferenceService.findConference(no);
         return ResponseEntity.ok(response);
     }
