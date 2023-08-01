@@ -34,9 +34,10 @@ public class Conference {
     private Date confirmedDate;
 
     @Builder
-    public Conference(Item item) {
+    public Conference(Item item, Date date) {
         this.active = true;
         this.item = item;
+        this.confirmedDate = date;
     }
 
 }
