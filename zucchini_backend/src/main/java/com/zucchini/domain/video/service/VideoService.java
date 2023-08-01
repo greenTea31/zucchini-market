@@ -5,7 +5,7 @@ import com.zucchini.domain.video.dto.response.FindVideoResponse;
 
 public interface VideoService {
 
-    void addVideo(AddVideoRequest addVideoRequest);
+    int addVideo(AddVideoRequest addVideoRequest);
     void extendVideoDeadLine(int no);
     FindVideoResponse findVideo(int no);
     void deleteVideo(int no);

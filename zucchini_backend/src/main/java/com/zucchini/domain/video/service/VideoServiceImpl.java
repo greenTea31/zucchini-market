@@ -32,7 +32,7 @@ public class VideoServiceImpl implements VideoService {
      * 비디오 생성
      */
     @Override
-    public void addVideo(AddVideoRequest addVideoRequest) {
+    public int addVideo(AddVideoRequest addVideoRequest) {
         Date deadLine = new Date(getMidnight(addVideoRequest.getEndTime()).getTime() + oneWeekInMillis);
         Video video = Video.builder()
                 .itemNo(addVideoRequest.getItemNo())
@@ -42,6 +42,7 @@ public class VideoServiceImpl implements VideoService {
                 .deleteTime(deadLine)
                 .build();
         videoRepository.save(video);
+        return video.getNo();
     }
 
     /**

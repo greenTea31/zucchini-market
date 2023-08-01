@@ -6,7 +6,6 @@ import com.zucchini.domain.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,9 +21,9 @@ public class VideoController {
      * 비디오 등록
      */
     @PostMapping
-    public ResponseEntity<Void> addVideo(@Valid @RequestBody AddVideoRequest addVideoRequest){
-        videoService.addVideo(addVideoRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Integer> addVideo(@Valid @RequestBody AddVideoRequest addVideoRequest){
+        int result = videoService.addVideo(addVideoRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     /**
@@ -33,7 +32,7 @@ public class VideoController {
     @GetMapping("/{no}")
     public ResponseEntity<FindVideoResponse> findVideo(@PathVariable int no){
         FindVideoResponse findVideoResponse = videoService.findVideo(no);
-        return ResponseEntity.status(HttpStatus.OK).body(findVideoResponse);
+        return ResponseEntity.ok(findVideoResponse);
     }
 
     /**
@@ -42,7 +41,7 @@ public class VideoController {
     @PutMapping("/extension/{no}")
     public ResponseEntity<Void> extendVideoDeadLine(@PathVariable int no){
         videoService.extendVideoDeadLine(no);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok().build();
     }
 
 }
