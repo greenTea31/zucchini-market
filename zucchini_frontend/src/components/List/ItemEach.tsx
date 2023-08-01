@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import watch from "../../assets/images/watch.png";
 import ReplayButton from "../Button/ReplayButton";
+import moment from "moment";
 
 interface Item {
   id: number;
@@ -10,18 +11,40 @@ interface ItemEachProps {
   data: Item;
 }
 
-const ItemEach: React.FC<ItemEachProps> = ({ data }) => {
+interface IItem {
+  no: number;
+  title: string;
+  content: string;
+  updatedAt: string;
+  price: number;
+  status: boolean;
+  image?: string;
+  likeCount: number;
+  category?: string[];
+  view: number;
+}
+
+interface IProps {
+  item: IItem;
+}
+
+
+export default function ItemEach(props: IProps) {
   return (
     <ItemDiv>
+      {/* 이미지 {props?.item?.image}로 변경 */}
       <ItemImg src={watch} />
       {/* ItemList, BuyList, SellList에서 각각 쓰이는 컴포넌트이므로 버튼은 조건부 렌더링 필요 */}
-      <ReplayButton>다시보기</ReplayButton>
-      <ItemTitle>
-        갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
-      </ItemTitle>
+      <ReplayButton>상태표시{props?.item?.status} | 다시보기</ReplayButton>
+      <ItemTitle>{props?.item?.title}</ItemTitle>
       <ItemTitle>365,000원</ItemTitle>
-      {/* <ItemContent>찜 15 | 조회 33</ItemContent> */}
-      <ItemContent>닉네임.. 또는 시간..</ItemContent>
+      <ItemContent>
+        찜 {props?.item?.likeCount} | 조회 {props?.item?.view}
+      </ItemContent>
+      <ItemContent>
+        {moment(props?.item?.updatedAt).format("YYYY-MM-DD hh:mm:ss")}
+      </ItemContent>
+      <ItemContent>{props?.item?.category}</ItemContent>
     </ItemDiv>
   );
 };

@@ -14,6 +14,20 @@ export default function LikeList() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<Item[] | null>(null);
 
+  const [items, setItems] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  function getItems() {
+    axios
+      .get(`http://localhost:8080/user/item/like?keyword=${keyword}`)
+      .then((response) => {
+        setItems(response.data);
+      });
+  }
+
+  useEffect(() => {
+    getItems();
+  }, []);
+
   useEffect(() => {
     setIsLoading(true);
 
@@ -43,10 +57,11 @@ export default function LikeList() {
       <div>
         <TitleSpan>나의 찜한 목록</TitleSpan>
         <CategorySecond />
-        <Search />
+        <Search setKeyword={setKeyword} getItems={getItems} />
       </div>
       <LowerDiv>
         <ItemsContainer>
+<<<<<<< zucchini_frontend/src/pages/LikeList.tsx
           {/* {[1, 2, 3, 4, 5].map((e, i) => (
             <ItemEach />
           ))} */}
@@ -55,6 +70,11 @@ export default function LikeList() {
           ) : (
             <span>찜한 물건이 없습니다.</span>
           )}
+=======
+          {items.map((item, index) => (
+            <ItemEach item={item} />
+          ))}
+>>>>>>> zucchini_frontend/src/pages/LikeList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

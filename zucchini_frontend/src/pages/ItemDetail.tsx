@@ -2,16 +2,68 @@ import styled from "styled-components";
 import watch from "../assets/images/watch.png";
 import female from "../assets/images/female.jpg";
 import Modal from "../components/Common/Modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SimpleCalendar from "../components/Schedule/SimpleCalendar";
 import GoBackButton from "../components/Button/GoBackButton";
+import axios from "axios";
+import { QueryClient } from "@tanstack/query-core";
+import { QUERY_KEY } from "../constants/queryKey";
+import { useQueryClient } from "@tanstack/react-query";
+import { useLocation, useNavigate } from "react-router";
+import IToken from "../types/IToken";
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
+  const [item, setItem] = useState<any>(); // item 상태 추가
+  const navigate = useNavigate();
+  // accessToken필요할 때
+  // const queryClient = useQueryClient();
+
+  const queryClient = useQueryClient();
 
   const toggle = () => {
     setIsOpen(!isOpen);
   };
+  const location = useLocation();
+  //
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/item/${location.pathname.split("/")[2]}`
+        );
+        console.log(response);
+        setItem(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [location.pathname]);
+
+  const toChatRoom = async () => {
+    try {
+      // 채팅방 생성
+      const response = await axios.post("http://localhost:8080/room", {
+        headers: {
+          Authorization: `Bearer ${
+            (queryClient.getQueryData([QUERY_KEY.user]) as IToken).accessToken
+          }`,
+        },
+      });
+
+      // 응답 확인
+      console.log(response.data);
+
+      // useNavigate를 이용해 채팅방 이동
+      navigate("/chat");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <ContainerDiv>
       <Modal isOpen={isOpen} toggle={toggle}>
@@ -64,23 +116,12 @@ export default function ItemDetail() {
         </UpperLeftDiv>
         <UpperRightDiv>
           <CategorySpan>전자제품</CategorySpan>
-          <TitleSpan>갤럭시북2 프로 360 32GB, 1TB 최고 사양</TitleSpan>
-          <ContentSpan>
-            갤럭시북2 프로 360(NT950QED-KD72S) 최고 사양 풀박스 판매합니다. -
-            CPU: 코어 i7-1260P(12세대) - 화면크기: 15.6인치 - RAM: 32GB - SSD:
-            NVMe 1TB - GPU: Iris Xe Graphics - 운영체제: Windows 11 Home - 기타:
-            360도 회전, 터치스크린, S펜 등 - 최초 활성화: 2022.10.16 - 배터리:
-            100% - 구성품: 풀박스(젠더, 파우치, 마우스, S펜 등) 한글 2022 정품,
-            MS Office 2021 정품, V3 정품 설치되어 있고, 바이오스 등 모든
-            프로그램 업데이트 후 보관 중입니다. 설치된 프로그램은 원하시면 추후
-            메일로 보내드립니다. 프로그램 가격만해도 상당한 가격이며, 바닥에
-            거슬리지 않는 약간의 눌림(?)있습니다. 크게 거슬리지는 않지만 혹시나
-            교체비용 생각해서 가격 정했습니다. 13세대 동일 기종보다 RAM이 커서
-            작업속도 더 빠르고 강력합니다. 직거래, 택배거래, 안전거래 모두
-            가능합니다.
-          </ContentSpan>
-          <PriceSpan>1,370,000원</PriceSpan>
-          <SubSpan>8분 전 · 조회 5 · 찜 0</SubSpan>
+          <TitleSpan>{item?.title}</TitleSpan>
+          <ContentSpan>{item?.content}</ContentSpan>
+          <PriceSpan>{item?.price}원</PriceSpan>
+          <SubSpan>
+            {item?.createdAt}분 전 · 조회 {item?.view} · 찜 {item?.likeCount}
+          </SubSpan>
           <SubSpan>
             신고하기
             <RedSvg
@@ -98,7 +139,7 @@ export default function ItemDetail() {
               />
             </RedSvg>
           </SubSpan>
-          <SelectBtn>채팅하기</SelectBtn>
+          <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
           <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
         </UpperRightDiv>
       </UpperDiv>
@@ -123,11 +164,12 @@ export default function ItemDetail() {
           <SellerDiv>
             <SellerImg src={female}></SellerImg>
             <SellerSpanDiv>
-              <SellerName>백조이김</SellerName>
-              <span>Lv.1 애호박씨앗</span>
+              <SellerName>{item?.seller.nickname}</SellerName>
+              <span>{item?.seller.grade}</span>
               <SubSpan>판매중 3 · 거래완료 2</SubSpan>
             </SellerSpanDiv>
             <SelectDiv>
+              {/* 구매자 판매자 따라 조건부 렌더링 필요... */}
               <StatusSelect>
                 <option>판매중</option>
                 <option>예약중</option>

@@ -15,6 +15,23 @@ interface Item {
 export default function ItemList() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<Item[] | null>(null);
+  const [items, setItems] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  function getItems() {
+    axios
+      .get(`http://localhost:8080/item?keyword=${keyword}`)
+      .then((response) => {
+        setItems(response.data);
+      });
+  }
+
+  useEffect(() => {
+    console.log(keyword);
+  }, [keyword]);
+
+  useEffect(() => {
+    getItems();
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -44,7 +61,7 @@ export default function ItemList() {
       <UpperDiv>
         <TitleSpan>중고거래 매물</TitleSpan>
         <Category />
-        <Search />
+        <Search setKeyword={setKeyword} getItems={getItems} />
       </UpperDiv>
       <LowerDiv>
         <TitleDiv>
@@ -56,6 +73,7 @@ export default function ItemList() {
           </Link>
         </TitleDiv>
         <ItemsContainer>
+<<<<<<< zucchini_frontend/src/pages/ItemList.tsx
           {/* {[1, 2, 3, 4, 5].map((e, i) => (
             <ItemEach />
           ))} */}
@@ -64,6 +82,9 @@ export default function ItemList() {
           ) : (
             <span>게시글이 없습니다.</span>
           )}
+=======
+          {items && items.map((item, index) => <ItemEach item={item} />)}
+>>>>>>> zucchini_frontend/src/pages/ItemList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

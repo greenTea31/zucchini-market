@@ -1,43 +1,27 @@
 import styled from "styled-components";
 
-export default function Search() {
-  const SearchContainer = styled.div`
-    width: 33rem;
-    /* width: 100%; */
-    height: 2.6rem;
-    display: flex;
-    flex-direction: row;
-    /* justify-content: center; */
-    margin-top: 1rem;
-  `;
+interface ISearch {
+  setKeyword: React.Dispatch<React.SetStateAction<string>>;
+  getItems: () => void;
+}
 
-  const StyledInput = styled.input`
-    width: 30rem;
-    padding-left: 1rem;
-    border-radius: 0.4rem;
-    border: transparent;
-    background-color: #f4f4f4;
+export default function Search({ setKeyword, getItems }: ISearch) {
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    setKeyword(event.currentTarget.value);
+  };
 
-    &:focus {
-      box-shadow: 0 0 10px #9ec4f2;
-      outline: none;
-      background-color: white;
-    }
-  `;
-
-  const StyledButton = styled.button`
-    width: 2.7rem;
-    padding: 0.7rem;
-    margin-left: 0.4rem;
-    border: transparent;
-    border-radius: 0.4rem;
-    background-color: #aacb73;
-  `;
+  const onClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+    event?.preventDefault();
+    getItems();
+  };
 
   return (
     <SearchContainer>
-      <StyledInput placeholder="검색어를 입력하세요.."></StyledInput>
-      <StyledButton>
+      <StyledInput
+        placeholder="검색어를 입력하세요.."
+        onChange={onChange}
+      ></StyledInput>
+      <StyledButton onClick={onClick}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -56,3 +40,36 @@ export default function Search() {
     </SearchContainer>
   );
 }
+
+const SearchContainer = styled.form`
+  width: 33rem;
+  /* width: 100%; */
+  height: 2.6rem;
+  display: flex;
+  flex-direction: row;
+  /* justify-content: center; */
+  margin-top: 1rem;
+`;
+
+const StyledInput = styled.input`
+  width: 30rem;
+  padding-left: 1rem;
+  border-radius: 0.4rem;
+  border: transparent;
+  background-color: #f4f4f4;
+
+  &:focus {
+    box-shadow: 0 0 10px #9ec4f2;
+    outline: none;
+    background-color: white;
+  }
+`;
+
+const StyledButton = styled.button`
+  width: 2.7rem;
+  padding: 0.7rem;
+  margin-left: 0.4rem;
+  border: transparent;
+  border-radius: 0.4rem;
+  background-color: #aacb73;
+`;

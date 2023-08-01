@@ -12,6 +12,19 @@ interface Item {
 export default function BuyList() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<Item[] | null>(null);
+  const [items, setItems] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  function getItems() {
+    axios
+      .get(`http://localhost:8080/user/deal/buy?keyword=${keyword}`)
+      .then((response) => {
+        setItems(response.data);
+      });
+  }
+
+  useEffect(() => {
+    getItems();
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -41,7 +54,7 @@ export default function BuyList() {
     <ContainerDiv>
       <div>
         <TitleSpan>나의 구매 목록</TitleSpan>
-        <Search />
+        <Search setKeyword={setKeyword} getItems={getItems} />
         <NoticeDiv>
           <AlertSvg
             xmlns="http://www.w3.org/2000/svg"
@@ -61,11 +74,17 @@ export default function BuyList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
+<<<<<<< zucchini_frontend/src/pages/BuyList.tsx
           {data ? (
             data.map((item) => <ItemEach key={item.id} data={item} />)
           ) : (
             <span>구매한 물건이 없습니다.</span>
           )}
+=======
+          {items.map((item, index) => (
+            <ItemEach item={item} />
+          ))}
+>>>>>>> zucchini_frontend/src/pages/BuyList.tsx
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>
