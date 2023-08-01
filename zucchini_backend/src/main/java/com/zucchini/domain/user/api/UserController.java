@@ -159,8 +159,8 @@ public class UserController {
      * 거래 내역 조회 (판매)
      */
     @GetMapping("/deal/sell")
-    public ResponseEntity<List<UserDealHistoryResponse>> findSellDealHistory() {
-        List<UserDealHistoryResponse> sellDealHistory = userService.findUserDealHistoryList(false);
+    public ResponseEntity<List<UserDealHistoryResponse>> findSellDealHistory(@RequestParam String keyword) {
+        List<UserDealHistoryResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false);
         return ResponseEntity.ok(sellDealHistory);
     }
 
@@ -168,8 +168,8 @@ public class UserController {
      * 거래 내역 조회 (구매)
      */
     @GetMapping("/deal/buy")
-    public ResponseEntity<List<UserDealHistoryResponse>> findBuyDealHistory() {
-        List<UserDealHistoryResponse> buyDealHistory = userService.findUserDealHistoryList(true);
+    public ResponseEntity<List<UserDealHistoryResponse>> findBuyDealHistory(@RequestParam String keyword) {
+        List<UserDealHistoryResponse> buyDealHistory = userService.findUserDealHistoryList(keyword, true);
         return ResponseEntity.ok(buyDealHistory);
     }
 

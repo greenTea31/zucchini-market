@@ -10,10 +10,14 @@ import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Integer>, ItemRepositoryCustom {
     @EntityGraph(value = "Item.withImages", type = EntityGraph.EntityGraphType.LOAD)
-    List<Item> findAllByBuyer(User user);
+    @Query(value = "select i from Item i " +
+            "where i.buyer = :user and i.title like concat('%', :keyword, '%') ")
+    List<Item> findAllByBuyer(User user, String keyword);
 
     @EntityGraph(value = "Item.withImages", type = EntityGraph.EntityGraphType.LOAD)
-    List<Item> findAllBySeller(User user);
+    @Query(value = "select i from Item i " +
+            "where i.seller = :user and i.title like concat('%', :keyword, '%') ")
+    List<Item> findAllBySeller(User user, String keyword);
 
     @Query(value = "select i from Item i " +
             "join fetch i.buyer " +

@@ -26,6 +26,6 @@ public interface UserService {
     List<FindItemListResponse> findUserLikeItemList(String keyword);
     void removeUserLikeItem(int itemNo);
 
-    List<UserDealHistoryResponse> findUserDealHistoryList(boolean flag);
+    List<UserDealHistoryResponse> findUserDealHistoryList(String keyword, boolean flag);
 
 }

@@ -341,7 +341,7 @@ public class UserServiceImpl implements UserService {
      * flag 넘어오는거 false면 판매내역, true면 구매내역으로 구현
      */
     @Override
-    public List<UserDealHistoryResponse> findUserDealHistoryList(boolean flag) {
+    public List<UserDealHistoryResponse> findUserDealHistoryList(String keyword, boolean flag) {
         // 로그인 정보 얻어옴
         String id = getCurrentId();
         List<Item> itemList;
@@ -350,9 +350,9 @@ public class UserServiceImpl implements UserService {
 
         // item 모든 테이블 확인하면서 flag에 따라 seller 혹은 buyer가 현재 id랑 동일한 것을 찾음
         if (flag) {
-            itemList = itemRepository.findAllByBuyer(user);
+            itemList = itemRepository.findAllByBuyer(user, keyword);
         } else {
-            itemList = itemRepository.findAllBySeller(user);
+            itemList = itemRepository.findAllBySeller(user, keyword);
         }
 
         List<UserDealHistoryResponse> userDealHistoryResponseList = new ArrayList<>();
