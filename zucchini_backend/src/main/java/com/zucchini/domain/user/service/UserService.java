@@ -22,9 +22,9 @@ public interface UserService {
     TokenDto login(LoginRequest loginRequest);
     void logout(String accessToken, String id);
     TokenDto reissue(String refreshToken);
-    void addUserLikeItem(String id, int itemNo);
-    List<FindItemListResponse> findUserLikeItemList(String id, String keyword);
-    void removeUserLikeItem(String id, int itemNo);
+    void addUserLikeItem(int itemNo);
+    List<FindItemListResponse> findUserLikeItemList(String keyword);
+    void removeUserLikeItem(int itemNo);
 
     List<UserDealHistoryResponse> findUserDealHistoryList(boolean flag);
 
