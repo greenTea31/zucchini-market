@@ -7,11 +7,15 @@ import com.zucchini.domain.item.repository.ItemDateRepository;
 import com.zucchini.domain.item.repository.ItemRepository;
 import com.zucchini.domain.item.service.ItemService;
 import com.zucchini.domain.reservation.domain.Reservation;
-import com.zucchini.domain.reservation.dto.request.AddReservationRequest;
+import com.zucchini.domain.reservation.dto.request.ConfirmReservationRequest;
+import com.zucchini.domain.reservation.dto.request.ReservationRequest;
+import com.zucchini.domain.reservation.dto.response.CheckReservationResponse;
 import com.zucchini.domain.reservation.dto.response.ReservationResponse;
 import com.zucchini.domain.reservation.repository.ReservationRepository;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.repository.UserRepository;
+import com.zucchini.global.domain.ReservationConfirmCode;
+import com.zucchini.global.domain.ReservationConfirmCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,21 +23,23 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ReservationServiceImpl implements ReservationService {
 
+    // 예약 확인 유효 시간 1분
+    private static final Long reservationConfirmExpiration = 1000L * 60;
+
     private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
     private final ConferenceRepository conferenceRepository;
     private final ItemDateRepository itemDateRepository;
     private final ItemRepository itemRepository;
+    private final ReservationConfirmCodeRepository reservationConfirmCodeRepository;
+
     private final ItemService itemService;
     private final ConferenceService conferenceService;
 
@@ -83,23 +89,13 @@ public class ReservationServiceImpl implements ReservationService {
 
     /**
      * 예약 추가
-     * @param addReservationRequest
      */
     @Override
-    public void addReservation(AddReservationRequest addReservationRequest) {
-        // date status 확인
-        int itemNo = addReservationRequest.getItemNo();
-        Date selectDate = addReservationRequest.getSelectDate();
-        ItemDate itemDate = itemDateRepository.searchItemDateByItemNoAndDate(itemNo, selectDate);
-        if(itemDate.getStatus() != 0) throw new IllegalArgumentException("해당 날짜는 이미 예약이 잡힌 상태입니다.");
-        // conference와 reservation 조인 -> 선택한 날짜가 이미 예약된 일정 날짜 목록에 포함되어있는지 확인
-        String buyerId = getCurrentId();
-        Optional<Reservation> reservation = reservationRepository.findWithFetchJoinByUserIdAndDate(buyerId, selectDate);
-        // 포함되어 있으므로 예약 실패
-        if(reservation.isPresent()) throw new IllegalArgumentException("해당 날짜로 예약한 화상 통화 일정이 존재합니다.");
+    public void addReservation(int itemNo, Date selectDate) {
         // 예약 성공
         // 컨퍼런스 생성 후 예약 생성 -> 논의해야 함
         // 일단 해당 날짜로 컨퍼런스 생성 후 컨퍼런스에 대한 구매자, 판매자 예약 생성하는 방식으로 구현한 상태
+        String buyerId = getCurrentId();
         int conferenceNo = conferenceService.addConference(itemNo, selectDate);
         Reservation buyerReservation = Reservation.builder()
                 .user(userRepository.findById(buyerId).get())
@@ -126,6 +122,76 @@ public class ReservationServiceImpl implements ReservationService {
         //예약 성공 -> 아이템의 해당 날짜 status 1로 변경
         itemService.modifyDateReservation(itemNo, selectDate);
     }
+
+    /**
+     * 예약하려는 날짜 가능 여부 검사
+     * 예약 가능 -> 구매자가 등록한 판매 상품의 날짜 목록에 포함되는지 검사
+     * @param checkReservationRequest
+     * @return
+     */
+    @Override
+    public CheckReservationResponse checkReservation(ReservationRequest checkReservationRequest) {
+        int status = 0;
+        UUID code = null;
+        // date status 확인
+        int itemNo = checkReservationRequest.getItemNo();
+        Date selectDate = checkReservationRequest.getSelectDate();
+        ItemDate itemDate = itemDateRepository.searchItemDateByItemNoAndDate(itemNo, selectDate);
+        if (itemDate == null) throw new IllegalArgumentException("해당 날짜는 판매자가 판매하지 않는 날짜입니다.");
+        if(itemDate.getStatus() != 0) {
+            return CheckReservationResponse.builder()
+                    .status(status)
+                    .code(code)
+                    .build();
+        }
+        // conference와 reservation 조인 -> 선택한 날짜가 이미 예약된 일정 날짜 목록에 포함되어있는지 확인
+        String buyerId = getCurrentId();
+        Optional<Reservation> reservation = reservationRepository.findWithFetchJoinByUserIdAndDate(buyerId, selectDate);
+        // 포함되어 있으므로 예약 실패
+        if(reservation.isPresent()) {
+            return CheckReservationResponse.builder()
+                    .status(status)
+                    .code(code)
+                    .build();
+        }
+        // 예약 가능한 상황
+        // 구매자가 등록한 판매 상품 날짜 목록에 해당 날짜가 포함되어 있는지 확인
+        int buyerNo = userRepository.findById(buyerId).get().getNo();
+        List<ItemDate> itemDateList = itemDateRepository.searchItemDatesByUser(buyerNo, selectDate);
+        if(itemDateList.isEmpty()){
+            // 포함되어 있는 날짜가 없음
+            // 바로 예약 생성 가능
+            status = 2;
+            addReservation(itemNo, selectDate);
+        }else if(status == 1){
+            // UUID 생성
+            // 랜덤 UUID 생성
+            code = UUID.randomUUID();
+            // redis에 유효시간 1분으로 UUID 코드 저장
+            reservationConfirmCodeRepository.save(ReservationConfirmCode.createReservationConfirmCode(code, buyerId, reservationConfirmExpiration));
+        }
+        return CheckReservationResponse.builder()
+                .status(status)
+                .code(code)
+                .build();
+    }
+
+
+    /**
+     * 예약 코드가 유효한지 검사 후 예약 생성으로 이동
+     */
+    @Override
+    public void checkReservationConfirmCode(ConfirmReservationRequest confirmReservationRequest) {
+        UUID code = confirmReservationRequest.getCode();
+        ReservationConfirmCode confirmCode = reservationConfirmCodeRepository.findById(code).orElseThrow(NoSuchElementException::new);
+        // 유효해서 예약 생성
+        int itemNo = confirmReservationRequest.getItemNo();
+        Date selectDate = confirmReservationRequest.getSelectDate();
+        addReservation(itemNo, selectDate);
+        // code 확인이 완료되었으므로 파기
+        reservationConfirmCodeRepository.deleteById(code);
+    }
+
 
     /**
      * 현재 로그인한 유저의 화상 예약된 날짜를 리턴함

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class AddReservationRequest {
+public class ReservationRequest {
 
     //아이템 번호
     int itemNo;
