@@ -173,6 +173,11 @@ public class ItemServiceImpl implements ItemService {
 
     private void addImage(int itemNo, List<String> getImageList) {
         List<Image> imageList = new ArrayList<>();
+
+        if (getImageList == null) {
+            return;
+        }
+
         for (String image : getImageList) {
             Image buildImage = Image.builder()
                     .itemNo(itemNo)
@@ -197,6 +202,11 @@ public class ItemServiceImpl implements ItemService {
 
     private void addCategory(int itemNo, List<Integer> getCategoryList) {
         List<ItemCategory> itemCategoryList = new ArrayList<>();
+
+        if (getCategoryList == null) {
+            return;
+        }
+
         for (int categoryNo : getCategoryList) {
             ItemCategoryId itemCategoryId = new ItemCategoryId();
             itemCategoryId.setItemNo(itemNo);

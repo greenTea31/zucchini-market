@@ -26,4 +26,10 @@ public interface ConferenceService {
      */
     void removeConference(int conferenceNo);
 
+    /**
+     * 판매자의 예약 취소
+     * reservation에서 conference 조회하는 쿼리 날리고 conference의 confirmedDate와 같은 모든 date status를 0으로 변경함. 단 Date.item.seller or Date.item.buyer가 현 로그인한 유저와 같아야 함.
+     */
+    void cancelConference(int conferenceNo);
+
 }
