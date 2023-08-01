@@ -83,7 +83,6 @@ const router = createBrowserRouter([
         path: "/chat",
         element: <ChatRoom />,
       },
-
       {
         path: "/item",
         element: <ItemList />,

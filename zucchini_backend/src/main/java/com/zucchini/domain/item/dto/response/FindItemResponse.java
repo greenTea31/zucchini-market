@@ -25,15 +25,17 @@ public class FindItemResponse {
 
     private int status;
 
-    private String image;
+    private List<String> imageList;
 
     private int likeCount;
 
     private Seller seller;
 
-    private List<Date> dateList;
+    private List<DateResponse> dateList;
 
     private List<String> categoryList;
+
+    private int view;
 
     @Data
     @AllArgsConstructor

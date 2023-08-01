@@ -52,6 +52,9 @@ public class User implements Serializable {
     @Column(name = "report_count", columnDefinition = "integer default 0")
     private Integer reportCount;
 
+    @Column(name = "deal_count", columnDefinition = "integer default 0")
+    private Integer dealCount;
+
     @Column(name = "grade", columnDefinition = "float default 3")
     @DecimalMin(value = "0.0", inclusive = true)
     @DecimalMax(value = "5.0", inclusive = true)
@@ -101,7 +104,7 @@ public class User implements Serializable {
     }
 
     /**
-     * 비밀번호 변경
+     * 비밀번호변경
      */
     public void modifyPassword(String password) {
         this.password = password;
@@ -118,4 +121,17 @@ public class User implements Serializable {
         }
     }
 
+    /**
+     * 회원 등급 갱신
+     */
+    public void setGrade(float grade){
+        this.grade = grade;
+    }
+
+    /**
+     * 거래 횟수 증가
+     */
+    public void setDealCount(){
+        this.dealCount++;
+    }
 }

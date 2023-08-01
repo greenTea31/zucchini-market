@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
 import java.io.Serializable;
 
 @Data
@@ -15,9 +14,9 @@ import java.io.Serializable;
 @Embeddable
 public class ItemCategoryId implements Serializable {
 
-    @JoinColumn(name = "item_no")
-    private String itemNo;
+    @Column(name = "item_no")
+    private int itemNo;
     @Column(name = "category_no")
-    private String categoryNo;
+    private int categoryNo;
 
 }

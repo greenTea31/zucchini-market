@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -25,6 +26,8 @@ public class FindItemListResponse {
 
     private int likeCount;
 
-    private String category;
+    private List<String> categoryList;
+
+    private int view;
 
 }

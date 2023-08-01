@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ItemRepositoryCustom {
 
-    List<Item> findItemAllByUser();
+    List<Item> findItemAllByUser(String keyword);
 
     Item findItemByUser(int itemNo);
 

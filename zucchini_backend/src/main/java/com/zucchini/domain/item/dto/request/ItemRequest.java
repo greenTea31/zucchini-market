@@ -1,9 +1,14 @@
 package com.zucchini.domain.item.dto.request;
 
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
+import java.util.List;
 
+@Data
 public class ItemRequest {
 
     @NotBlank
@@ -13,9 +18,13 @@ public class ItemRequest {
     @NotBlank
     private String content;
 
-    @NotBlank
+    @Min(0)
     private int price;
 
-    private String image;
+    private List<String> imageList;
+
+    private List<Date> dateList;
+
+    private List<Integer> categoryList;
 
 }

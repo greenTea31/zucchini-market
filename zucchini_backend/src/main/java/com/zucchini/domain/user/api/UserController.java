@@ -1,8 +1,9 @@
 package com.zucchini.domain.user.api;
 
+import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
-import com.zucchini.domain.user.exception.UserException;
+import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.domain.user.service.UserService;
 import com.zucchini.global.domain.TokenDto;
 import com.zucchini.global.util.JwtTokenUtil;
@@ -10,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,18 +26,9 @@ public class UserController {
     private final JwtTokenUtil jwtTokenUtil;
 
     @PostMapping
-    public ResponseEntity<Integer> signUp(@Valid @RequestBody AddUserRequest user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<Integer>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-        }
-
-        try {
-            userService.addUser(user);
-        } catch (UserException e) {
-            return new ResponseEntity<Integer>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<Integer>(HttpStatus.CREATED.value(), HttpStatus.CREATED);
+    public ResponseEntity<Void> signUp(@Valid @RequestBody AddUserRequest user) {
+        userService.addUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     /**
@@ -74,9 +64,10 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public void logout(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken) {
         String id = jwtTokenUtil.getUsername(resolveToken(accessToken));
         userService.logout(resolveToken(accessToken), id);
+        return ResponseEntity.ok().build();
     }
 
     private String resolveToken(String accessToken) {
@@ -121,38 +112,65 @@ public class UserController {
      * 회원 정보 수정
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
-        }
-        try{
-            userService.modifyUser(id, modifyUserRequest);
-        } catch (IllegalArgumentException e){
-            // 회원이 없는 경우
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
-        } catch (UserException e){
-            // 로그인한 아이디와 수정하려는 아이디가 다른 경우
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity<>(HttpStatus.OK.value(), HttpStatus.OK);
+    public ResponseEntity<Void> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest){
+        userService.modifyUser(id, modifyUserRequest);
+        return ResponseEntity.ok().build();
     }
 
     /**
      * 비밀번호 변경
      */
     @PostMapping("/password")
-    public ResponseEntity<String> modifyPassword(@Valid @RequestBody ModifyPasswordRequest modifyPasswordRequest, BindingResult bindingResult){
+    public ResponseEntity<Void> modifyPassword(@Valid @RequestBody ModifyPasswordRequest modifyPasswordRequest){
         log.info(String.valueOf(modifyPasswordRequest));
-        if (bindingResult.hasErrors()) {
-            for(FieldError error : bindingResult.getFieldErrors()){
-                log.info(error.getDefaultMessage());
-            }
-
-            return new ResponseEntity<>("비밀번호 양식이 잘못되었습니다.", HttpStatus.BAD_REQUEST);
-        }
         userService.modifyPassword(modifyPasswordRequest.getPassword());
 
-        return ResponseEntity.ok("비밀번호 변경 완료");
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 회원의 아이템 찜
+     */
+    @PostMapping("/item/like/{itemNo}")
+    public ResponseEntity<Void> addLikeItem(@PathVariable int itemNo) {
+        userService.addUserLikeItem(itemNo);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 회원이 찜한 아이템 목록 조회
+     */
+    @GetMapping("/item/like")
+    public ResponseEntity<List<FindItemListResponse>> findLikeItemList(@RequestParam String keyword) {
+        List<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(keyword);
+        return ResponseEntity.ok(userLikeItemList);
+    }
+
+    /**
+     * 회원의 아이템 찜 취소
+     */
+    @DeleteMapping("/item/like/{itemNo}")
+    public ResponseEntity<Void> removeLikeItem(@PathVariable int itemNo) {
+        userService.removeUserLikeItem(itemNo);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 거래 내역 조회 (판매)
+     */
+    @GetMapping("/deal/sell")
+    public ResponseEntity<List<UserDealHistoryResponse>> findSellDealHistory(@RequestParam String keyword) {
+        List<UserDealHistoryResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false);
+        return ResponseEntity.ok(sellDealHistory);
+    }
+
+    /**
+     * 거래 내역 조회 (구매)
+     */
+    @GetMapping("/deal/buy")
+    public ResponseEntity<List<UserDealHistoryResponse>> findBuyDealHistory(@RequestParam String keyword) {
+        List<UserDealHistoryResponse> buyDealHistory = userService.findUserDealHistoryList(keyword, true);
+        return ResponseEntity.ok(buyDealHistory);
     }
 
 }

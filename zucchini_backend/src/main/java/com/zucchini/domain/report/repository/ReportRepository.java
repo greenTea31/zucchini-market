@@ -14,4 +14,7 @@ public interface ReportRepository extends JpaRepository<Report, Integer> {
 
     Report findByReporterAndReportedAndReportDateBetween(String reporter, String reported, Date now, Date before24Hour);
 
+    // room_no 입력받아서 해당 방을 신고하는 report가 존재 여부 확인함
+    boolean existsByRoomNo(int roomNo);
+
 }

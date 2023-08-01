@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/", "/user/**", "/login", "/health").permitAll()
                 .antMatchers(HttpMethod.POST, "/user", "/user/login", "/user/email", "/user/authCheck", "/user/reissue").permitAll()
                 .antMatchers(HttpMethod.GET, "/user/idCheck/**", "/item", "/item/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/user")
+                .antMatchers(HttpMethod.DELETE, "/user", "/user/*/item/like/**")
                 .hasAuthority("USER")
                 .antMatchers(HttpMethod.DELETE, "/user/**")
                 .hasAuthority("ADMIN")
