@@ -9,6 +9,7 @@ import com.zucchini.domain.image.service.ImageService;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.domain.ItemDate;
 import com.zucchini.domain.item.dto.request.ItemRequest;
+import com.zucchini.domain.item.dto.response.DateResponse;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
 import com.zucchini.domain.item.exception.ItemException;
@@ -107,10 +108,14 @@ public class ItemServiceImpl implements ItemService {
 
         List<String> categoryList = getCategory(item.getCategoryList());
 
-        List<Date> dateList = new ArrayList<>();
-        for (ItemDate itemDate : item.getDateList()) {
-            dateList.add(itemDate.getDate());
-        }
+        List<DateResponse> dateList = new ArrayList<>();
+
+        dateList = item.getDateList().stream().map(
+                itemDate -> DateResponse.builder()
+                        .date(itemDate.getDate())
+                        .status(itemDate.getStatus())
+                        .build()
+        ).collect(Collectors.toList());
 
         FindItemResponse.Seller seller = new FindItemResponse.Seller(item.getSeller().getNickname()
                 , item.getSeller().getGrade());
