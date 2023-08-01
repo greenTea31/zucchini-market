@@ -89,7 +89,6 @@ public class ReservationServiceImpl implements ReservationService {
 
     /**
      * 예약 추가
-     * @param addReservationRequest
      */
     @Override
     public void addReservation(int itemNo, Date selectDate) {
@@ -138,6 +137,7 @@ public class ReservationServiceImpl implements ReservationService {
         int itemNo = checkReservationRequest.getItemNo();
         Date selectDate = checkReservationRequest.getSelectDate();
         ItemDate itemDate = itemDateRepository.searchItemDateByItemNoAndDate(itemNo, selectDate);
+        if (itemDate == null) throw new IllegalArgumentException("해당 날짜는 판매자가 판매하지 않는 날짜입니다.");
         if(itemDate.getStatus() != 0) {
             return CheckReservationResponse.builder()
                     .status(status)
