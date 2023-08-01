@@ -1,6 +1,8 @@
 package com.zucchini.domain.reservation.service;
 
-import com.zucchini.domain.reservation.dto.request.AddReservationRequest;
+import com.zucchini.domain.reservation.dto.request.ConfirmReservationRequest;
+import com.zucchini.domain.reservation.dto.request.ReservationRequest;
+import com.zucchini.domain.reservation.dto.response.CheckReservationResponse;
 import com.zucchini.domain.reservation.dto.response.ReservationResponse;
 
 import java.util.Date;
@@ -22,6 +24,18 @@ public interface ReservationService {
     /**
      * 예약 추가
      */
-    void addReservation(AddReservationRequest addReservationRequest);
+    void addReservation(int itemNo, Date selectDate);
+
+    /**
+     * 예약하려는 날짜 검사
+     *
+     * @return
+     */
+    CheckReservationResponse checkReservation(ReservationRequest checkReservationRequest);
+
+    /**
+     * 확인용 예약 코드 검사
+     */
+    void checkReservationConfirmCode(ConfirmReservationRequest confirmReservationRequest);
 
 }
