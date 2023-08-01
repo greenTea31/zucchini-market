@@ -1,5 +1,6 @@
 import { Checkbox } from "@mui/material";
 import styled from "styled-components";
+import Logo from "../components/Footer/Logo";
 
 export default function SignUpAgreement() {
   return (
@@ -51,7 +52,7 @@ export default function SignUpAgreement() {
         <AgreeSubSpan>
           동의하기 버튼을 누르시면 회원가입 페이지로 이동합니다.
         </AgreeSubSpan>
-        <Logo>애호박마켓</Logo>
+        <Logo />
       </AgreementDiv>
     </ContainerDiv>
   );
@@ -113,14 +114,6 @@ const NumberSubSpan = styled.span`
 
 const ContentP = styled.p`
   padding-left: 4rem;
-`;
-
-const Logo = styled.div`
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 600;
-  margin-top: 6rem;
-  color: lightgray;
 `;
 
 const AgreeSubSpan = styled.div`

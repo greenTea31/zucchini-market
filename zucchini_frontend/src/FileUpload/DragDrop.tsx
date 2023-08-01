@@ -2,15 +2,19 @@ import styled from "styled-components";
 import { ChangeEvent, useCallback, useRef, useState, useEffect } from "react";
 
 interface IFileTypes {
-  id: number;
+  id: number; // 파일의 고유값 id
   object: File;
 }
 
 export default function DragDrop() {
+  // 드래그 중일 때와 아닐 때의 스타일을 구분하기 위한 state 변수
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [files, setFiles] = useState<IFileTypes[]>([]);
 
-  const dragRef = useRef<HTMLLabelElement>(null);
+  // 드래그 이벤트를 감지하는 ref 참조변수 (label 태그에 들어갈 예정)
+  const dragRef = useRef<HTMLLabelElement | null>(null);
+
+  // 각 선택했던 파일들의 고유값 id
   const fileId = useRef<number>(0);
 
   const onChangeFiles = useCallback(
@@ -78,6 +82,7 @@ export default function DragDrop() {
   );
 
   const initDragEvents = useCallback((): void => {
+    // 4개의 이벤트에 Listener 등록 (마운트 될 때)
     if (dragRef.current !== null) {
       dragRef.current.addEventListener("dragenter", handleDragIn);
       dragRef.current.addEventListener("dragleave", handleDragOut);
@@ -87,6 +92,7 @@ export default function DragDrop() {
   }, [handleDragIn, handleDragOut, handleDragOver, handleDrop]);
 
   const resetDragEvents = useCallback((): void => {
+    // 4개의 이벤트에 Listener 삭제 (언마운트 될 때)
     if (dragRef.current !== null) {
       dragRef.current.removeEventListener("dragenter", handleDragIn);
       dragRef.current.removeEventListener("dragleave", handleDragOut);
@@ -103,34 +109,38 @@ export default function DragDrop() {
 
   return (
     <ContainerDiv>
-      <ContentDiv className="DragDrop">
-        <StyledSvg
-          xmlns="http://www.w3.org/2000/svg"
-          height="1em"
-          viewBox="0 0 512 512"
-        >
-          <path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM323.8 202.5c-4.5-6.6-11.9-10.5-19.8-10.5s-15.4 3.9-19.8 10.5l-87 127.6L170.7 297c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6h96 32H424c8.9 0 17.1-4.9 21.2-12.8s3.6-17.4-1.4-24.7l-120-176zM112 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z" />
-        </StyledSvg>
-        <ContentP>최대 30MB 이하 jpeg, jpg, png 첨부 가능</ContentP>
-        <input
-          type="file"
-          onChange={onChangeFiles}
-          style={{ display: "none" }}
-          multiple={true}
-        />
-        <ImgBtn
-          onClick={() =>
-            (
-              document.querySelector('input[type="file"]') as HTMLInputElement
-            )?.click()
-          }
-          className={isDragging ? "DragDrop-File-Dragging" : "DragDrop-File"}
-          // htmlFor="fileUpload"
-          // ref={dragRef}
-        >
-          사진 가져오기
-        </ImgBtn>
-      </ContentDiv>
+      <label
+        className={isDragging ? "DragDrop-File-Dragging" : "DragDrop-File"}
+        htmlFor="fileUpload"
+        ref={dragRef}
+      >
+        <ContentDiv className="DragDrop">
+          <StyledSvg
+            xmlns="http://www.w3.org/2000/svg"
+            height="1em"
+            viewBox="0 0 512 512"
+          >
+            <path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM323.8 202.5c-4.5-6.6-11.9-10.5-19.8-10.5s-15.4 3.9-19.8 10.5l-87 127.6L170.7 297c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6h96 32H424c8.9 0 17.1-4.9 21.2-12.8s3.6-17.4-1.4-24.7l-120-176zM112 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z" />
+          </StyledSvg>
+          <ContentP>최대 30MB 이하 jpeg, jpg, png 첨부 가능</ContentP>
+          <input
+            type="file"
+            onChange={onChangeFiles}
+            style={{ display: "none" }} // label 이용하여 구현하기 때문에 없애주기
+            multiple={true} // 파일 다중선택 허용
+          />
+
+          <ImgBtn
+            onClick={() =>
+              (
+                document.querySelector('input[type="file"]') as HTMLInputElement
+              )?.click()
+            }
+          >
+            사진 가져오기
+          </ImgBtn>
+        </ContentDiv>
+      </label>
       <FileListDiv>
         {files.length > 0 &&
           files.map((file: IFileTypes) => {
