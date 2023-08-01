@@ -25,17 +25,16 @@ public class Conference {
     @Column(name = "is_active", nullable = false)
     private boolean active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_no", nullable = false)
     private Item item;
 
     @Column(name = "confirmed_date", nullable = false)
-    @CreationTimestamp
     private Date confirmedDate;
 
     @Builder
     public Conference(Item item, Date date) {
-        this.active = true;
+        this.active = false;
         this.item = item;
         this.confirmedDate = date;
     }
