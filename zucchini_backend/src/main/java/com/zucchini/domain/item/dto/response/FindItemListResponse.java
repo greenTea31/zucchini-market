@@ -28,4 +28,6 @@ public class FindItemListResponse {
 
     private List<String> categoryList;
 
+    private int view;
+
 }

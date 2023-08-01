@@ -69,6 +69,9 @@ public class Item {
     @OneToMany(mappedBy = "item")
     private List<Image> imageList = new ArrayList<>();
 
+    private int view;
+
+
     @Builder
     public Item(String title, String content, int price, User seller){
         this.title = title;
@@ -100,6 +103,13 @@ public class Item {
      */
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    /**
+     * 조회수 올리기
+     */
+    public void viewUp() {
+        this.view++;
     }
 
 }

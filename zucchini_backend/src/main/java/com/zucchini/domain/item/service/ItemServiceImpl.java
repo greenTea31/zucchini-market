@@ -14,6 +14,7 @@ import com.zucchini.domain.item.dto.response.FindItemResponse;
 import com.zucchini.domain.item.exception.ItemException;
 import com.zucchini.domain.item.repository.ItemDateRepository;
 import com.zucchini.domain.item.repository.ItemRepository;
+import com.zucchini.domain.reservation.repository.ReservationRepository;
 import com.zucchini.domain.room.service.RoomService;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.repository.UserItemLikeRepository;
@@ -45,6 +46,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemCategoryRepository itemCategoryRepository;
     private final ImageRepository imageRepository;
     private final UserItemLikeRepository userItemLikeRepository;
+    private final ReservationRepository reservationRepository;
     private final RoomService roomService;
     private final ImageService imageService;
 
@@ -63,9 +65,9 @@ public class ItemServiceImpl implements ItemService {
                         .image(getItemImage(item.getNo()))
                         .likeCount(userItemLikeRepository.countById_ItemNo(item.getNo()))
                         .categoryList(getCategory(item.getCategoryList()))
+                        .view(item.getView())
                         .build()
         ).collect(Collectors.toList());
-
     }
 
     private String getItemImage(int itemNo) {
@@ -114,29 +116,44 @@ public class ItemServiceImpl implements ItemService {
                 , item.getSeller().getGrade());
         log.info(seller.toString());
 
+        item.viewUp();
+
         return FindItemResponse.builder()
-                        .no(item.getNo())
-                        .title(item.getTitle())
-                        .createdAt(item.getCreatedAt())
-                        .updatedAt(item.getUpdatedAt())
-                        .content(item.getContent())
-                        .price(item.getPrice())
-                        .status(item.getStatus())
-                        .imageList(imageList)
-                        .likeCount(likeCount)
-                        .seller(seller)
-                        .dateList(dateList)
-                        .categoryList(categoryList)
-                        .build();
+                .no(item.getNo())
+                .title(item.getTitle())
+                .createdAt(item.getCreatedAt())
+                .updatedAt(item.getUpdatedAt())
+                .content(item.getContent())
+                .price(item.getPrice())
+                .status(item.getStatus())
+                .imageList(imageList)
+                .likeCount(likeCount)
+                .seller(seller)
+                .dateList(dateList)
+                .categoryList(categoryList)
+                .view(item.getView())
+                .build();
+
     }
 
     @Override
     public int addItem(ItemRequest item) {
+        String currentPrincipalId = getCurrentId();
+        User user = userRepository.findById(currentPrincipalId).get();
+        List<Date> inputDateList = item.getDateList();
+
+        // inputDateList와 reservatedList의 요소중 하나라도 겹치는게 있으면 예외를 발생시킴
+        List<Date> overlapDateList = reservationRepository.findOverlapDatesByUserAndDates(user, inputDateList);
+
+        if (!overlapDateList.isEmpty()) {
+            throw new IllegalArgumentException("이미 예약된 날짜가 포함되어 있습니다.");
+        }
+
         Item buildItem = Item.builder()
                 .title(item.getTitle())
                 .content(item.getContent())
                 .price(item.getPrice())
-                .seller(userRepository.findById(getCurrentId()).get())
+                .seller(userRepository.findById(currentPrincipalId).get())
                 .build();
 
         Item itemEntity = itemRepository.save(buildItem);
@@ -305,6 +322,21 @@ public class ItemServiceImpl implements ItemService {
 
         item.setStatus(0);
         item.setBuyer(null);
+    }
+
+    @Override
+    public void modifyDateReservation(int itemNo, Date selectDate) {
+        ItemDate itemDate = itemDateRepository.searchItemDateByItemNoAndDate(itemNo, selectDate);
+        itemDate.setStatus(1);
+    }
+
+    @Override
+    public void modifyDateStatus(Date selectDate) {
+        int userNo = userRepository.findById(getCurrentId()).get().getNo();
+        List<ItemDate> itemDateList = itemDateRepository.searchItemDatesByUser(userNo, selectDate);
+        for (ItemDate itemDate : itemDateList) {
+            itemDate.setStatus(2);
+        }
     }
 
 }

@@ -24,10 +24,18 @@ public class ItemDate {
 
     private Date date;
 
+    private int status;
+
+
     @Builder
     public ItemDate(int itemNo, Date date) {
         this.itemNo = itemNo;
         this.date = date;
+    }
+
+    // 비즈니스 메서드
+    public void setStatus(int status) {
+        this.status = status;
     }
 
 }

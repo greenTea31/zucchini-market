@@ -2,6 +2,8 @@ package com.zucchini.domain.conference.service;
 
 import com.zucchini.domain.conference.dto.FindConferenceResponse;
 
+import java.util.Date;
+
 public interface ConferenceService {
 
     /**
@@ -9,7 +11,7 @@ public interface ConferenceService {
      * 성공시 생성된 회의의 번호와 201 코드 리턴
      * 실패시 400, 500 코드 리턴
      */
-    int addConference(int itemNo);
+    int addConference(int itemNo, Date confirmDate);
     
 
     /**
