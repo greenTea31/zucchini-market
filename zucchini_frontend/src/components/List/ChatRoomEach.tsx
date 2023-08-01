@@ -2,7 +2,20 @@ import styled from "styled-components";
 //임시쏘오쓰
 import cycle from "../../assets/images/cycle.png";
 
-export default function ChatRoomEach(props: any) {
+interface IChat {
+  img: String;
+  sender: String;
+  senderGrade: String;
+  lastMsg: String;
+  lastMsgTime: String;
+  unread: String;
+}
+
+interface IProps {
+  chat: IChat;
+}
+
+export default function ChatRoomEach(props: IProps) {
   return (
     <div>
       <ChatDiv>

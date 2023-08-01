@@ -1,8 +1,21 @@
 import Calendar from "react-calendar";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function ScheduleList() {
+  const [schedules, setSchedules] = useState([]);
+
+  async function getScheduleList() {
+    const response = await axios.get("http://localhost:8080/reservation");
+    setSchedules(response.data);
+  }
+
+  useEffect(() => {
+    getScheduleList();
+  }, []);
+
   return (
     <ContainerDiv>
       <TitleSpanDiv>
