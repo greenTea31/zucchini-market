@@ -1,7 +1,37 @@
 import styled from "styled-components";
 import ChatRoomEach from "../components/List/ChatRoomEach";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Loading from "../components/Loading/Loading";
+
+interface Item {
+  id: number;
+}
 
 export default function ChatList() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<Item[] | null>(null);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    axios
+      .get("http://localhost:8080/api/mypage/chat")
+      .then((res) => setData(res.data))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+    setIsLoading(false);
+  }, [data]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <ContainerDiv>
       {/* <TitleSpan>나의 채팅 목록</TitleSpan> */}

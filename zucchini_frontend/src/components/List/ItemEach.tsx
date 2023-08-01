@@ -2,7 +2,15 @@ import styled from "styled-components";
 import watch from "../../assets/images/watch.png";
 import ReplayButton from "../Button/ReplayButton";
 
-export default function ItemEach() {
+interface Item {
+  id: number;
+}
+
+interface ItemEachProps {
+  data: Item;
+}
+
+const ItemEach: React.FC<ItemEachProps> = ({ data }) => {
   return (
     <ItemDiv>
       <ItemImg src={watch} />
@@ -16,7 +24,7 @@ export default function ItemEach() {
       <ItemContent>닉네임.. 또는 시간..</ItemContent>
     </ItemDiv>
   );
-}
+};
 
 const ItemDiv = styled.div`
   display: flex;
@@ -44,3 +52,5 @@ const ItemContent = styled.span`
   color: gray;
   margin: 0.2rem;
 `;
+
+export default ItemEach;

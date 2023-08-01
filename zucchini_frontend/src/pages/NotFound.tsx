@@ -5,7 +5,6 @@ import Zucchini from "../assets/images/zucchini.png";
 import XColor from "../assets/images/xcolor.png";
 import { Button } from "../components/Common/Button";
 import { Link } from "react-router-dom";
-import Loading from "../components/Loading/Loading";
 
 export default function NotFound() {
   return (
