@@ -1,25 +1,59 @@
 import styled from "styled-components";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
-import Calendar from "react-calendar";
-import TimeSchedule from "../components/Schedule/TimeSchedule";
-import SimpleCalendar from "../components/Schedule/SimpleCalendar";
+import SimpleCalendarRegister from "../components/Schedule/SimpleCalendarRegister";
 import ImageUpload from "../FileUpload/ImageUpload";
 import DragDrop from "../FileUpload/DragDrop";
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 
 export default function CreateItem() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onChange",
+  });
+
   const [isOpen, setIsOpen] = useState(false);
+
+  const [selectedTimes, setSelectedTimes] = useState([]);
 
   const toggle = () => {
     setIsOpen(!isOpen);
   };
 
-  const [timeOpen, setTimeOpen] = useState(false);
-
-  const timeToggle = () => {
-    setTimeOpen(!timeOpen);
+  //화상 일정 선택 완료
+  const clickSubmit = () => {
+    // 그냥 나가면 될까?
+    // selectedTimes는 이미 채워진 상태
+    if (selectedTimes.length) {
+      alert("등록완료");
+      toggle();
+    } else {
+      alert("선택된 일정이 없습니다.");
+    }
+    // 모달 창 닫기
   };
 
+  const onSubmit = (data: any) => {
+    alert(JSON.stringify(data));
+    const formData = new FormData();
+    //스케줄에만
+    formData.append("title", data.title);
+    formData.append("content", data.content);
+    formData.append("category", data.category);
+
+    selectedTimes.map((selectedTime, index) =>
+      formData.append("schedule" + index, selectedTime)
+    ); // 이상한 거 나도 알아요 고쳐야지
+  };
+
+  //   const formData = new FormData();
+  //   //스케줄에만
+  //   formData.append();
+  // };
   return (
     <ContainerAll>
       <Modal isOpen={isOpen} toggle={toggle}>
@@ -41,32 +75,55 @@ export default function CreateItem() {
         </ModalDiv>
         <ModalSpan>화상통화 일정 선택</ModalSpan>
         <CalendarDiv>
-          <SimpleCalendar />
+          {/* 판매자 등록을 위한 달력 따로 */}
+          <SimpleCalendarRegister
+            selectedTimes={selectedTimes}
+            setSelectedTimes={setSelectedTimes}
+          />
         </CalendarDiv>
-        <StyledBtn>확인</StyledBtn>
-        <StyledBtn>취소</StyledBtn>
+        {/* 선택된 시간 보여주기 */}
+        {/* css 부탁해요~~ */}
+        <div>
+          {selectedTimes.map((selectedTime: Date) => {
+            return <div>{selectedTime.toString()}</div>;
+          })}
+        </div>
+        <StyledBtn onClick={clickSubmit}>확인</StyledBtn>
+        <StyledBtn onClick={() => toggle()}>취소</StyledBtn>
       </Modal>
       {/* <TimeSchedule isOpen={timeOpen} toggle={timeToggle} /> */}
-      <ContainerDiv>
+      <ContainerForm onSubmit={handleSubmit(onSubmit)}>
         <TitleSpan>내 물건 팔기</TitleSpan>
         <ContentDiv>
           <ContentSpan>제목</ContentSpan>
-          <ContentInput></ContentInput>
+          <ContentInput
+            {...register("title", {
+              required: "제목을 입력해주세요.",
+              maxLength: 200,
+            })}
+            maxLength={200}
+          ></ContentInput>
+          {/* <StyledMessage>
+            <ErrorMessage errors={errors} name="title" />
+          </StyledMessage> */}
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>상세 설명</ContentSpan>
-          <ContentTextArea></ContentTextArea>
+          <ContentTextArea
+            {...register("content", { required: "설명을 입력해주세요." })}
+          ></ContentTextArea>
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>가격</ContentSpan>
           <ContentInput
             type="number"
             placeholder=", 없이 입력해주세요"
+            {...register("price", { required: true })}
           ></ContentInput>
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>카테고리</ContentSpan>
-          <CategorySelect>
+          <CategorySelect {...register("category", { required: true })}>
             <option selected>-- 물품의 종류를 선택해주세요 --</option>
             <option>전자제품</option>
             <option>가전제품</option>
@@ -84,7 +141,7 @@ export default function CreateItem() {
           <StyledButton onClick={toggle}>일정 선택</StyledButton>
           <StyledButton>등록</StyledButton>
         </ButtonDiv>
-      </ContainerDiv>
+      </ContainerForm>
     </ContainerAll>
   );
 }
@@ -94,7 +151,7 @@ const ContainerAll = styled.div`
   /* padding: 5rem 0 13rem 0; */
 `;
 
-const ContainerDiv = styled.div`
+const ContainerForm = styled.form`
   display: flex;
   flex-direction: column;
   width: 35rem;
@@ -137,6 +194,13 @@ const ContentInput = styled.input`
     outline: none;
     background-color: white;
   }
+`;
+
+const StyledMessage = styled.div`
+  display: flex;
+  justify-content: start;
+  padding-left: 1rem;
+  color: tomato;
 `;
 
 const ContentTextArea = styled.textarea`
