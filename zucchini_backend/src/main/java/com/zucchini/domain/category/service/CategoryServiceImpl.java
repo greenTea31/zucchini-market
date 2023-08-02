@@ -7,12 +7,14 @@ import com.zucchini.domain.category.repository.ItemCategoryRepository;
 import com.zucchini.domain.item.domain.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CategoryServiceImpl implements CategoryService{
 
     private final CategoryRepository categoryRepository;
@@ -23,6 +25,7 @@ public class CategoryServiceImpl implements CategoryService{
      * @return List<FindCategoryResponse> : 카테고리 목록
      */
     @Override
+    @Transactional(readOnly = true)
     public List<FindCategoryResponse> findCategoryList() {
         List<Category> categoryList = categoryRepository.findAll();
         List<FindCategoryResponse> findCategoryResponseList = categoryList.stream()
@@ -37,6 +40,7 @@ public class CategoryServiceImpl implements CategoryService{
      * @return List<Item> : 상품 목록
      */
     @Override
+    @Transactional(readOnly = true)
     public List<Item> findCategoryItemList(String category) {
         return itemCategoryRepository.findAllByCategory(category);
     }

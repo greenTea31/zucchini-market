@@ -78,6 +78,7 @@ public class VideoServiceImpl implements VideoService {
      * @return FindVideoResponse : 비디오 조회 response
      */
     @Override
+    @Transactional(readOnly = true)
     public FindVideoResponse findVideo(int no) {
         Optional<Video> video = videoRepository.findByItemNo(no);
         if(!video.isPresent()) throw new NoSuchElementException("해당 비디오가 존재하지 않습니다.");

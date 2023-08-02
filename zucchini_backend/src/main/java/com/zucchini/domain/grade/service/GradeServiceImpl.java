@@ -61,6 +61,8 @@ public class GradeServiceImpl implements GradeService{
                 .build();
         // Grade 엔티티 저장 (INSERT)
         gradeRepository.save(grade);
+        // 별점 갱신
+        calculateGrade(graderRecipientId, giveGradeRequest.getGrade());
     }
 
     /**
