@@ -5,14 +5,18 @@ import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.domain.user.service.UserService;
+import com.zucchini.global.config.jwt.JwtHeaderUtilEnums;
 import com.zucchini.global.domain.TokenDto;
 import com.zucchini.global.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -24,6 +28,9 @@ public class UserController {
 
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
+
+    @Value("${jwt.cookieName}")
+    private String jwtCookieName;
 
     /**
      * 회원가입
@@ -89,20 +96,39 @@ public class UserController {
      * 500 : 서버 내 에러
      */
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(userService.login(loginRequest));
+    public ResponseEntity<TokenDto> login(@RequestBody LoginRequest loginRequest) {
+
+        TokenDto token = userService.login(loginRequest);
+
+        return ResponseEntity.ok()
+                .header("Set-Cookie", jwtCookieName + "=" + token.getRefreshToken() + "; HttpOnly; Max-Age=" + 1000L * 60 * 60 * 24 + "; SameSite=None; Secure")
+                .body(token);
     }
 
     /**
      * 토큰 재발급
-     * @param refreshToken : Refresh 토큰
+     * @param request : Refresh 토큰 가져올 HttpServletRequest
      * @return TokenDto : Access 토큰, Refresh 토큰 저장 DTO
      * 200 : 토큰 재발급 성공
      * 500 : 서버 내 에러
      */
     @PostMapping("/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestHeader("RefreshToken") String refreshToken) {
-        return ResponseEntity.ok(userService.reissue(refreshToken));
+    public ResponseEntity<TokenDto> reissue(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+
+        String refreshToken = JwtHeaderUtilEnums.GRANT_TYPE.getValue();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (jwtCookieName.equals(cookie.getName())) {
+                    refreshToken += cookie.getValue();
+                }
+            }
+        }
+        TokenDto token = userService.reissue(refreshToken);
+        return ResponseEntity.ok()
+                .header("Set-Cookie", jwtCookieName + "=" + token.getRefreshToken() + "; HttpOnly; Max-Age=" + 1000L * 60 * 60 * 24 + "; SameSite=None; Secure")
+                .body(token);
     }
 
     /**
