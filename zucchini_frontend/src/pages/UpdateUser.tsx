@@ -85,8 +85,9 @@ export default function UpdateUser() {
           <StyledButtonDiv>
             <StyledButton>수정</StyledButton>
             {/* 취소버튼 어디로 갈 지 안 정함 */}
-            <StyledButton>취소</StyledButton>
+            {/* <StyledButton>취소</StyledButton> */}
           </StyledButtonDiv>
+          <RedBtn>탈퇴</RedBtn>
         </StyledForm>
       </StyledDiv>
     </StyledAll>
@@ -158,5 +159,20 @@ const StyledButton = styled.button`
   &:hover {
     background-color: #cde990;
     cursor: pointer;
+  }
+`;
+
+const RedBtn = styled.button`
+  background-color: white;
+  border-radius: 0.4rem;
+  color: red;
+  height: 2.9rem;
+  border: 2px solid red;
+  cursor: pointer;
+  margin: 0.3rem;
+  &:hover {
+    background-color: red;
+    cursor: pointer;
+    color: white;
   }
 `;
