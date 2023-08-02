@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class FindCategoryResponse {
 
     int no;
+
     String category;
 
 }

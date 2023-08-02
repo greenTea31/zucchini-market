@@ -16,6 +16,7 @@ public class ItemCategoryId implements Serializable {
 
     @Column(name = "item_no")
     private int itemNo;
+
     @Column(name = "category_no")
     private int categoryNo;
 

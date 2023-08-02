@@ -80,11 +80,11 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    // 비즈니스 메서드
-
     /**
-     * 회원 삭제
+     * 비즈니스 메서드
      */
+
+    // 회원 탈퇴 시 중요한 개인정보 삭제
     public void userDelete() {
         this.id = null;
         this.nickname = null;
@@ -93,9 +93,7 @@ public class User implements Serializable {
         this.isDeleted = true;
     }
 
-    /**
-     * 회원 정보 수정
-     */
+    // 회원 정보 수정
     public void modifyUser(ModifyUserRequest modifyUserRequest) {
         this.nickname = modifyUserRequest.getNickname();
         this.name = modifyUserRequest.getName();
@@ -103,16 +101,12 @@ public class User implements Serializable {
         this.gender = modifyUserRequest.getGender();
     }
 
-    /**
-     * 비밀번호변경
-     */
+    // 회원 비밀번호 변경
     public void modifyPassword(String password) {
         this.password = password;
     }
 
-    /**
-     * 신고 당한 회원의 신고 횟수 증가
-     */
+    // 회원 신고 횟수 증가
     public void increaseReportCount() {
         this.reportCount++;
 
@@ -121,16 +115,12 @@ public class User implements Serializable {
         }
     }
 
-    /**
-     * 회원 등급 갱신
-     */
+    // 별점 설정
     public void setGrade(float grade){
         this.grade = grade;
     }
 
-    /**
-     * 거래 횟수 증가
-     */
+    // 거래 횟수 증가
     public void setDealCount(){
         this.dealCount++;
     }

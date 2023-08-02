@@ -29,29 +29,30 @@ public class GradeServiceImpl implements GradeService{
     private final UserRepository userRepository;
 
     /**
-     * 등급 매기기
+     * 별점 평가
+     * @param giveGradeRequest : 별점 평가 요청 DTO
      */
     @Override
     public void giveGrade(GiveGradeRequest giveGradeRequest) {
-        // 어떤 아이템에 대하여 점수 매기기가 진행되는지 확인
+        // 어떤 상품에 대하여 점수 매기기가 진행되는지 확인
         Item item = itemRepository.findItemWithFetchJoinById(giveGradeRequest.getItemNo());
-        // 아이템이 존재하지 않는 경우
-        if(item == null) throw new NoSuchElementException("아이템이 존재하지 않습니다.");
+        // 상품이 존재하지 않는 경우
+        if(item == null) throw new NoSuchElementException("상품이 존재하지 않습니다.");
         // 판매자와 구매자에 해당하는 아이디가 아니면 잘못된 접근
         String graderId = getCurrentId();
         String graderRecipientId = giveGradeRequest.getGradeRecipient();
         if(!item.getBuyer().getId().equals(graderId) && !item.getSeller().getId().equals(graderId))
-            throw new UserException("해당 아이템의 구매자 또는 판매자가 아닌 회원은 점수를 매길 수 없습니다.");
+            throw new UserException("해당 상품의 구매자 또는 판매자가 아닌 회원은 별점을 매길 수 없습니다.");
         if(!item.getBuyer().getId().equals(graderRecipientId) && !item.getSeller().getId().equals(graderRecipientId))
-            throw new UserException("해당 아이템의 구매자 또는 판매자가 아닌 회원에게 점수를 매길 수 없습니다.");
+            throw new UserException("해당 상품의 구매자 또는 판매자가 아닌 회원에게 별점을 매길 수 없습니다.");
         // 이미 점수를 매긴 상태면 잘못된 접근
         for (Grade grade : item.getGradeList()) {
             // 해당 아이템에 grade는 총 2개 존재 -> from 구매자 to 사용자 or from 사용자 to 구매자
-            // grade의 graderId와 같으면 이미 해당 아이템에 대하여 점수를 매긴 상태를 의미함
+            // grade의 graderId와 같으면 이미 해당 상품에 대하여 별점을 매긴 상태를 의미함
             // 예외 처리
-            if(grade.getGraderId().equals(graderId)) throw new IllegalArgumentException("이미 점수를 매긴 사용자입니다.");
+            if(grade.getGraderId().equals(graderId)) throw new IllegalArgumentException("이미 별점을 매긴 사용자입니다.");
         }
-        // 등급 매기는 요청을 한 회원과 매겨지는 회원이 아이템 판매자와 구매자와 일치하는지 확인
+        // 별점 매기는 요청을 한 회원과 매겨지는 회원이 상품 판매자와 구매자와 일치하는지 확인
         // Grade 엔티티 생성 및 연관 관계 설정
         Grade grade = Grade.builder()
                 .itemNo(item.getNo())
@@ -60,12 +61,12 @@ public class GradeServiceImpl implements GradeService{
                 .build();
         // Grade 엔티티 저장 (INSERT)
         gradeRepository.save(grade);
-
-
     }
 
     /**
-     * 새로 추가된 등급과 기존 사용자의 등급 합 평균 계산
+     * 새로 추가된 별점과 기존 사용자의 별점 합 평균 계산
+     * @param graderRecipientId : 별점 받는 회원 아이디
+     * @param grade : 별점
      */
     private void calculateGrade(String graderRecipientId, float grade) {
         User user = userRepository.findById(graderRecipientId).get();
@@ -73,6 +74,10 @@ public class GradeServiceImpl implements GradeService{
         user.setGrade(newGrade);
     }
 
+    /**
+     * 스프링 시큐리티 인증을 통과하여 저장된 회원의 인증 객체에서 아이디 추출
+     * @return String : 아이디
+     */
     private String getCurrentId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails principal = (UserDetails) authentication.getPrincipal();

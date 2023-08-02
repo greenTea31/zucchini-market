@@ -4,6 +4,9 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * 로그인 요청 DTO
+ */
 @Getter
 public class LoginRequest {
 

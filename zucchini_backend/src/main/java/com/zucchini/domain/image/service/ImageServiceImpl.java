@@ -15,7 +15,9 @@ public class ImageServiceImpl implements ImageService {
     private final ImageRepository imageRepository;
 
     /**
-     * 사진 링크 저장
+     * 상품 사진 추가
+     * @param itemNo : 상품 번호
+     * @param linkList : 상품의 사진 링크 리스트
      */
     @Override
     public void addImage(int itemNo, List<String> linkList) {
@@ -29,7 +31,9 @@ public class ImageServiceImpl implements ImageService {
     }
 
     /**
-     * 사진 링크 수정
+     * 상품 사진 수정
+     * @param itemNo : 상품 번호
+     * @param linkList : 상품의 사진 링크 리스트
      */
     @Override
     public void modifyImage(int itemNo, List<String> linkList) {
@@ -40,7 +44,9 @@ public class ImageServiceImpl implements ImageService {
     }
 
     /**
-     * 해당 아이템의 사진 링크 리스트 조회
+     * 상품 사진 링크 조회
+     * @param itemNo : 상품 번호
+     * @return List<String> : 상품 링크 리스트
      */
     @Override
     public List<String> findImageLinkList(int itemNo) {

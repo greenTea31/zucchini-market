@@ -19,7 +19,8 @@ public class CategoryServiceImpl implements CategoryService{
     private final ItemCategoryRepository itemCategoryRepository;
 
     /**
-     * 전체 카테고리 조회
+     * 카테고리 전체 조회
+     * @return List<FindCategoryResponse> : 카테고리 목록
      */
     @Override
     public List<FindCategoryResponse> findCategoryList() {
@@ -31,7 +32,9 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     /**
-     * 해당 카테고리에 속한 아이템 전체 조회
+     * 카테고리에 속한 상품 목록 조회
+     * @param category : 카테고리
+     * @return List<Item> : 상품 목록
      */
     @Override
     public List<Item> findCategoryItemList(String category) {
