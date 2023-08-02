@@ -21,6 +21,8 @@ import ScheduleList from "./pages/ScheduleList";
 import UpdateItem from "./pages/UpdateItem";
 import SignUpAgreement from "./pages/SignUpAgreement";
 import NotFound from "./pages/NotFound";
+import TermsOfUse from "./components/Footer/TermsOfUse";
+import PrivacyPolicy from "./components/Footer/PrivacyPolicy";
 
 const router = createBrowserRouter([
   {
@@ -106,6 +108,14 @@ const router = createBrowserRouter([
       {
         path: "/conference",
         element: <Conference />,
+      },
+      {
+        path: "/termsofuse",
+        element: <TermsOfUse />,
+      },
+      {
+        path: "/privacypolicy",
+        element: <PrivacyPolicy />,
       },
     ],
     errorElement: <NotFound />,
