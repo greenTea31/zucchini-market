@@ -3,7 +3,7 @@ import styled from "styled-components";
 import female from "../assets/images/female.jpg";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
-import Chatting from "../components/Chatting";
+import Chatting from "../components/Chat/Chatting";
 import ClosedButton from "../components/Button/ClosedButton";
 import { Link } from "react-router-dom";
 
