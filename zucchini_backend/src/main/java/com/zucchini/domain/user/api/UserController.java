@@ -143,6 +143,7 @@ public class UserController {
 
     /**
      * 전체 회원 목록 조회
+     * - ADMIN만 가능
      * @return List<FindUserResponse> - 조회한 회원 DTO 리스트
      * 200 : 전체 회원 조회 성공
      * 500 : 서버 내 에러
