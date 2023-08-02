@@ -57,13 +57,11 @@ logging:
     org:
       org.hibernate.SQL: DEBUG
       org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-      sringframework:
-        boot: DEBUG
-        security: DEBUG
+      org.springframework.boot: DEBUG
+      org.springframework.security: DEBUG
+      org.springframework.web: DEBUG
       apache:
         tiles: INFO
-      springframework:
-        web: DEBUG
     root: INFO
     com:
       samsung:
@@ -76,7 +74,7 @@ server:
       enabled: 'true'
       force: 'true'
       charset: UTF-8
-    contextPath: /
+    contextPath: /api
   address: localhost
   port: '8080'
   compression:
