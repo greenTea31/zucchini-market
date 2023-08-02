@@ -3,10 +3,11 @@ package com.zucchini.domain.video.dto.response;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import java.sql.Timestamp;
 import java.util.Date;
 
+/**
+ * 비디오 조회 response
+ */
 @Data
 public class FindVideoResponse {
 

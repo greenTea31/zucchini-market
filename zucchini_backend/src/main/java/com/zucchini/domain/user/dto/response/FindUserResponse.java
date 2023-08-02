@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * 회원 조회 응답 DTO
+ * 회원 조회 response
  */
 @Getter
 @Builder

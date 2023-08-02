@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 /**
- * 회원 가입 요청 DTO
+ * 회원 가입 request
  */
 @Getter @Setter
 public class AddUserRequest {

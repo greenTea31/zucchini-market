@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 /**
- * 회원 정보 수정 요청 DTO
+ * 회원 정보 수정 request
  */
 @Data
 @AllArgsConstructor

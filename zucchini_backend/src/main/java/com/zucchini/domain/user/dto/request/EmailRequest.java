@@ -6,7 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 /**
- * 이메일 인증 요청 DTO
+ * 이메일 인증 request
  */
 @Data
 public class EmailRequest {

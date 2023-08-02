@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 카테고리 조회 response
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

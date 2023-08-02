@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 /**
- * 비밀번호 변경 요청 DTO
+ * 비밀번호 변경 request
  */
 @Data
 public class ModifyPasswordRequest {
