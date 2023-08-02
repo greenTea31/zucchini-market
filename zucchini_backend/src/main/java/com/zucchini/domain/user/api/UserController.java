@@ -96,7 +96,7 @@ public class UserController {
      * 500 : 서버 내 에러
      */
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         TokenDto token = userService.login(loginRequest);
 
