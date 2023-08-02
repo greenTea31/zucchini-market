@@ -6,6 +6,9 @@ import lombok.Getter;
 
 import java.util.Date;
 
+/**
+ * 회의 정보를 반환하는 DTO
+ */
 @Getter
 @Builder
 public class FindConferenceResponse {

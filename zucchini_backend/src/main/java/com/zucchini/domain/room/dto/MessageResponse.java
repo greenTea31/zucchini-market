@@ -7,6 +7,9 @@ import lombok.Getter;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 사용자가 채팅방에서 보는 개별 메세지를 보여주기 위한 DTO
+ */
 @Getter
 @Builder
 public class MessageResponse {

@@ -47,6 +47,11 @@ public class Message {
         this.content = content;
     }
 
+    /**
+     * 비즈니스 메소드
+     */
+
+    // 현재 메세지를 읽었음을 표시함.
     public void read() {
         this.isRead = true;
     }

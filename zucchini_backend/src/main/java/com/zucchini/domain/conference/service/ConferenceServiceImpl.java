@@ -33,8 +33,10 @@ public class ConferenceServiceImpl implements ConferenceService{
 
     /**
      * 회의 생성
-     * 성공시 생성된 회의의 번호와 201 코드 리턴
-     * 실패시 404, 500 코드 리턴
+     *
+     * @param itemNo      : 아이템 번호
+     * @param confirmDate : 화상 회의 확정 날짜
+     * @return int : 생성된 회의의 번호
      */
     @Override
     public int addConference(int itemNo, Date confirmDate) {
@@ -47,7 +49,9 @@ public class ConferenceServiceImpl implements ConferenceService{
 
     /**
      * 회의 조회
-     * 실제 화상 채팅 구현 안되어서 일단 API 명세서 그대로 구현
+     *
+     * @param conferenceNo : 회의 번호
+     * @return FindConferenceResponse : 회의 정보 반환
      */
     @Override
     @Transactional(readOnly = true)
@@ -66,7 +70,8 @@ public class ConferenceServiceImpl implements ConferenceService{
 
     /**
      * 회의 삭제
-     * 회의 조회와 같음
+     *
+     * @param conferenceNo : 회의 번호
      */
     @Override
     public void removeConference(int conferenceNo) {
@@ -76,9 +81,8 @@ public class ConferenceServiceImpl implements ConferenceService{
 
     /**
      * 판매자의 예약 취소
-     * reservation에서 conference 조회하는 쿼리 날리고 conference의 confirmedDate와 같은 모든 date status를 0으로 변경함. 단 Date.item.seller or Date.item.buyer가 현 로그인한 유저와 같아야 함.
      *
-     * @param conferenceNo
+     * @param conferenceNo : 회의 번호
      */
     @Override
     public void cancelConference(int conferenceNo) {
@@ -102,17 +106,24 @@ public class ConferenceServiceImpl implements ConferenceService{
         conferenceRepository.delete(conference);
     }
 
+    /**
+     * 회의실 번호로 희의실 객체를 얻어옴
+     * @param conferenceNo
+     * @return Conference : 회의 객체
+     */
     private Conference getConferenceByNo(int conferenceNo) {
         return conferenceRepository.findById(conferenceNo)
                 .orElseThrow(() -> new NoSuchElementException("회의가 존재하지 않습니다."));
     }
 
+    /**
+     * 현재 로그인한 회원의 아이디를 얻어옴
+     * @return String : 회원 아이디
+     */
     private String getLoginUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
         return nowLogInDetail.getId();
     }
-
-
 
 }

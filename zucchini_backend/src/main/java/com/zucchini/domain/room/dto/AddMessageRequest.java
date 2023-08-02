@@ -6,6 +6,9 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * 채팅 메세지를 입력받는 DTO
+ */
 @Getter
 @Setter
 @RequiredArgsConstructor

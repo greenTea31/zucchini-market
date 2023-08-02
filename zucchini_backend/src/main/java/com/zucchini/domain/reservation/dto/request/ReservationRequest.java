@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * 유저가 보내는 예약 요청 객체
+ */
 @Data
 public class ReservationRequest {
 

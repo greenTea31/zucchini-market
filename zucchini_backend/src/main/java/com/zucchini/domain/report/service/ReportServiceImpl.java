@@ -5,7 +5,6 @@ import com.zucchini.domain.report.domain.Report;
 import com.zucchini.domain.report.dto.AddReportRequest;
 import com.zucchini.domain.report.repository.ReportRepository;
 import com.zucchini.domain.user.domain.User;
-import com.zucchini.global.exception.UserException;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.NoSuchElementException;
 
@@ -28,7 +25,12 @@ public class ReportServiceImpl implements ReportService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-    // 새로운 신고 접수가 들어옴
+    /**
+     * 새로운 신고 접수함
+     *
+     * @param report 신고 정보를 담은 요청 객체 (@Valid 어노테이션으로 유효성 검사)
+     * @return int : 생성된 신고의 식별번호를 반환
+     */
     @Override
     public int addReport(@Valid AddReportRequest report) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

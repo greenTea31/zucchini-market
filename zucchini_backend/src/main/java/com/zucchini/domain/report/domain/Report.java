@@ -51,6 +51,11 @@ public class Report {
         this.roomNo = roomNo;
     }
 
+    /**
+     * 비즈니스 메소드
+     */
+
+    // 신고자를 변경하는 메소드
     public void setReporter(String reporter) {
         this.reporter = reporter;
     }
