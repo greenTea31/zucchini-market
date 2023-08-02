@@ -6,6 +6,9 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+/**
+ * 이메일 인증 검사 request
+ */
 @Data
 @AllArgsConstructor
 public class EmailCheckRequest {
