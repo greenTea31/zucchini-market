@@ -52,7 +52,7 @@ export default function Footer() {
           </Link>
           <StyledSpan onClick={toggle}>문의하기</StyledSpan>
         </FooterDiv>
-        <span>ⓒ 애호박마켓</span>
+        <LogoSpan>ⓒ 애호박마켓</LogoSpan>
       </ContainerDiv>
     </>
   );
@@ -117,4 +117,8 @@ const ModalTextarea = styled.textarea`
   border-radius: 0.4rem;
   padding: 0.5rem;
   font-size: 1rem;
+`;
+
+const LogoSpan = styled.span`
+  color: gray;
 `;

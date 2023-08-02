@@ -182,9 +182,9 @@ const ContentSpan = styled.span`
 const ContentInput = styled.input`
   height: 2rem;
   width: 100%;
+  padding-left: 0.7rem;
   border-radius: 0.4rem;
   font-size: 1rem;
-
   border: transparent;
   background-color: #f4f4f4;
 
@@ -208,7 +208,7 @@ const ContentTextArea = styled.textarea`
   border-radius: 0.4rem;
   border: transparent;
   font-size: 1rem;
-
+  padding: 0.7rem;
   background-color: #f4f4f4;
 
   &:focus {

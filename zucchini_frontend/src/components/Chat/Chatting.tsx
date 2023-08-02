@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import MesssageEach from "./List/MessageEach";
+import MesssageEach from "../List/MessageEach";
 
 export default function Chatting() {
   return (
@@ -16,6 +16,5 @@ const ChatBubble = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  height: 30rem;
   line-height: 1.4rem;
 `;
