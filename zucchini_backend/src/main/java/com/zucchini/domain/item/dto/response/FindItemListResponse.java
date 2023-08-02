@@ -6,6 +6,9 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 상품 전체 조회 response
+ */
 @Data
 @Builder
 public class FindItemListResponse {

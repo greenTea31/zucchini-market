@@ -54,6 +54,7 @@ querydsl {
 
 sourceSets {
 	main.java.srcDir querydslDir
+	test.java.srcDir querydslDir
 }
 
 compileQuerydsl {
