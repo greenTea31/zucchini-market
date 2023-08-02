@@ -21,6 +21,7 @@ import ScheduleList from "./pages/ScheduleList";
 import UpdateItem from "./pages/UpdateItem";
 import SignUpAgreement from "./pages/SignUpAgreement";
 import NotFound from "./pages/NotFound";
+import PrivateRoute from "./components/Common/PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -93,7 +94,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/item/register",
-        element: <CreateItem />,
+        element: (
+          <PrivateRoute>
+            <CreateItem />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/item/:no/modify",

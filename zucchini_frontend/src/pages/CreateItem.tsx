@@ -6,8 +6,11 @@ import ImageUpload from "../FileUpload/ImageUpload";
 import DragDrop from "../FileUpload/DragDrop";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import useAuth from "../hooks/useAuth";
 
 export default function CreateItem() {
+  const token = useAuth();
+
   const {
     register,
     handleSubmit,
