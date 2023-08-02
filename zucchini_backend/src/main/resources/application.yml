@@ -57,10 +57,9 @@ logging:
     org:
       org.hibernate.SQL: DEBUG
       org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-      springframework:
-        boot: DEBUG
-        security: DEBUG
-        web: DEBUG
+      org.springframework.boot: DEBUG
+      org.springframework.security: DEBUG
+      org.springframework.web: DEBUG
       apache:
         tiles: INFO
     root: INFO
