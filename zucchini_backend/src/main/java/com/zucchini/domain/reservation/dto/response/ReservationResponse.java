@@ -7,6 +7,9 @@ import lombok.Getter;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 예약 확인 응답을 나타내는 객체로, 제목과 예약 날짜, 그리고 예약과 연관된 회의 번호를 담고 있음.
+ */
 @Getter
 @Builder
 public class ReservationResponse {

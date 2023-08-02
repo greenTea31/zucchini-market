@@ -32,19 +32,19 @@ public class ReservationServiceImpl implements ReservationService {
 
     // 예약 확인 유효 시간 1분
     private static final Long reservationConfirmExpiration = 1000L * 60;
-
     private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
     private final ConferenceRepository conferenceRepository;
     private final ItemDateRepository itemDateRepository;
     private final ItemRepository itemRepository;
     private final ReservationConfirmCodeRepository reservationConfirmCodeRepository;
-
     private final ItemService itemService;
     private final ConferenceService conferenceService;
 
     /**
      * 사용자의 모든 예약 내역 조회
+     *
+     * @return List<ReservationResponse> : 예약 내역 리스트
      */
     @Override
     public List<ReservationResponse> findReservationList() {
@@ -87,8 +87,12 @@ public class ReservationServiceImpl implements ReservationService {
 //        reservationRepository.saveAll(reservationList);
 //    }
 
+
     /**
      * 예약 추가
+     *
+     * @param itemNo : 아이템 번호
+     * @param selectDate : 구매자가 선택한 예약 날짜
      */
     @Override
     public void addReservation(int itemNo, Date selectDate) {
@@ -124,10 +128,13 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     /**
-     * 예약하려는 날짜 가능 여부 검사
-     * 예약 가능 -> 구매자가 등록한 판매 상품의 날짜 목록에 포함되는지 검사
-     * @param checkReservationRequest
-     * @return
+     * 구매자가 예약하려는 날짜 가능 여부를 확인함
+     *
+     * @param checkReservationRequest : 예약 검사 요청 객체
+     * @return CheckReservationResponse : 예약 가능 여부와 필요시 확인 코드 반환
+     * 구매자가 선택한 날짜가 예약이 아예 불가능한 경우는 status 0
+     * 구매자가 선택한 날짜가 구매자가 등록한 아이템의 날짜 목록에 포함되면 status 1 -> 프론트에 임시코드 반환
+     * 구매자가 선택한 날짜가 구매자가 등록한 아이템의 날짜 목록에 포함되지 않으면 status 2 -> 바로 예약 생성
      */
     @Override
     public CheckReservationResponse checkReservation(ReservationRequest checkReservationRequest) {
@@ -179,7 +186,9 @@ public class ReservationServiceImpl implements ReservationService {
 
 
     /**
-     * 예약 코드가 유효한지 검사 후 예약 생성으로 이동
+     * 예약 코드가 유효한지 검사 후 예약을 생성함
+     *
+     * @param confirmReservationRequest : 예약 코드와 예약 정보를 담은 요청 객체
      */
     @Override
     public void checkReservationConfirmCode(ConfirmReservationRequest confirmReservationRequest) {
@@ -195,7 +204,9 @@ public class ReservationServiceImpl implements ReservationService {
 
 
     /**
-     * 현재 로그인한 유저의 화상 예약된 날짜를 리턴함
+     * 현재 로그인한 유저의 화상 예약된 날짜를 조회함
+     *
+     * @return List<Date> : 화상 예약된 날짜 리스트
      */
     @Override
     public List<Date> findReservationDateList() {
@@ -207,6 +218,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
 
+    /**
+     * 현재 로그인한 유저의 아이디를 조회함
+     *
+     * @return String : 현재 로그인한 유저의 아이디
+     */
     private String getCurrentId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails principal = (UserDetails) authentication.getPrincipal();
