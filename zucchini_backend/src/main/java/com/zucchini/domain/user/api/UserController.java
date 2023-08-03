@@ -155,7 +155,7 @@ public class UserController {
     }
 
     /**
-     * 회원 정보 조회
+     * 회원 정보 조회(상대방)
      * @param id - 아이디
      * @return FindUserResponse - 조회한 회원 정보를 저장한 응답 DTO
      * 200 : 회원 조회 성공
@@ -165,6 +165,18 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<FindUserResponse> findUser(@PathVariable String id) {
         return ResponseEntity.ok(userService.findUser(id));
+    }
+
+    /**
+     * 회원 정보 조회(본인)
+     * @return FindUserResponse - 조회한 회원 정보를 저장한 응답 DTO
+     * 200 : 회원 조회 성공
+     * 404 : 회원이 존재하지 않음
+     * 500 : 서버 내 에러
+     */
+    @GetMapping("/mypage")
+    public ResponseEntity<FindUserResponse> findMe() {
+        return ResponseEntity.ok(userService.findUser());
     }
 
     /**
