@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     private final RedisUtil redisUtil;
 
     /**
-     * 회원 조회
+     * 회원 조회(상대방)
      * @param id : 아이디
      * @return FindUserResponse : 회원 조회 응답 DTO
      */
@@ -80,6 +80,28 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
 
+        return FindUserResponse.builder()
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .name(user.getName())
+                .phone(user.getPhone())
+                .gender(user.getGender())
+                .email(user.getEmail())
+                .reportCount(user.getReportCount())
+                .grade(user.getGrade())
+                .dealCount(dealCount)
+                .build();
+    }
+
+    /**
+     * 회원 조회(본인)
+     * @return FindUserResponse : 회원 조회 응답 DTO
+     */
+    @Override
+    public FindUserResponse findUser() {
+        String id = getCurrentId();
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("회원이 없습니다."));
+        int dealCount = (int) userRepository.countItemsByStatusAndUserNo(id);
         return FindUserResponse.builder()
                 .id(user.getId())
                 .nickname(user.getNickname())

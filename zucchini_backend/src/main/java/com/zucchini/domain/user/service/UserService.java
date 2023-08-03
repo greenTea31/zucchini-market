@@ -17,11 +17,17 @@ public interface UserService {
     List<FindUserResponse> findUserList();
 
     /**
-     * 회원 조회
+     * 회원 조회(상대방)
      * @param id : 아이디
      * @return FindUserResponse : 회원 조회 응답 DTO
      */
     FindUserResponse findUser(String id);
+
+    /**
+     * 회원 조회(본인)
+     * @return FindUserResponse : 회원 조회 응답 DTO
+     */
+    FindUserResponse findUser();
 
     /**
      * 회원 가입
