@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
         String authority = nowLogInDetail.getAuthority();
 
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("회원이 없습니다."));
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
         if (!user.getId().equals(getCurrentId()) && !authority.equals("ADMIN")) {
             return FindUserResponse.builder()
                     .nickname(user.getNickname())
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public FindUserResponse findUser() {
         String id = getCurrentId();
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("회원이 없습니다."));
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
         int dealCount = (int) userRepository.countItemsByStatusAndUserNo(id);
         return FindUserResponse.builder()
                 .id(user.getId())
