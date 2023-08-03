@@ -34,7 +34,10 @@ export default function SellList() {
     axios
       .get("http://localhost:8080/api/mypage/sell")
       .then((res) => setData(res.data))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -57,9 +60,11 @@ export default function SellList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {items.map((item, index) => (
-            <ItemEach item={item} />
-          ))}
+          {data && data.length > 0 ? (
+            items.map((item, index) => <ItemEach item={item} />)
+          ) : (
+            <p>판매한 내역이 없습니다.</p>
+          )}
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

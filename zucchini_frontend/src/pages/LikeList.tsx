@@ -61,9 +61,11 @@ export default function LikeList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {items.map((item, index) => (
-            <ItemEach item={item} />
-          ))}
+          {data && data.length > 0 ? (
+            items.map((item, index) => <ItemEach item={item} />)
+          ) : (
+            <p>찜한 내역이 없습니다.</p>
+          )}
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>
@@ -102,20 +104,4 @@ const ItemDiv = styled.div`
   margin-bottom: 1rem;
   border: solid 1px #aeb9ad;
   border-radius: 2rem;
-`;
-
-const ItemImg = styled.img`
-  border-radius: 1.5rem;
-`;
-
-const ItemTitle = styled.span`
-  font-weight: 500;
-  font-size: 1.1rem;
-  line-height: 1.4rem;
-  margin: 0.4rem 0.1rem;
-`;
-
-const ItemContent = styled.span`
-  color: gray;
-  margin: 0.2rem;
 `;
