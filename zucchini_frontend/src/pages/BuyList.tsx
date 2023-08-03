@@ -74,9 +74,11 @@ export default function BuyList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {items.map((item, index) => (
-            <ItemEach item={item} />
-          ))}
+          {data && data.length > 0 ? (
+            items.map((item, index) => <ItemEach item={item} />)
+          ) : (
+            <p>구매한 내역이 없습니다.</p>
+          )}
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>
