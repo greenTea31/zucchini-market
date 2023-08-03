@@ -9,6 +9,8 @@ import { ErrorMessage } from "@hookform/error-message";
 import ClosedButton from "../components/Button/ClosedButton";
 import dayjs from "dayjs";
 import axios from "axios";
+import IFileTypes from "../types/IFileTypes";
+import { Button } from "../components/Common/Button";
 
 export default function CreateItem() {
   const {
@@ -21,6 +23,7 @@ export default function CreateItem() {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  const [files, setFiles] = useState<IFileTypes[]>([]);
   // 마우스로 선택한 날짜 받는 state
   const [clickedTime, setClickedTime] = useState(new Date());
 
@@ -29,6 +32,8 @@ export default function CreateItem() {
 
   // 카테고리 전부
   const [allCategories, setAllCategories] = useState([]);
+  // 선택한 카테고리
+  const [selectedCategories, setSelectedCategories] = useState<any>([]);
   // 처음 렌더링될 때, 카테고리 가져올 거예영
   useEffect(() => {
     const getCategories = async () => {
@@ -48,6 +53,18 @@ export default function CreateItem() {
     console.log("눌려?");
   };
 
+  const onChange = (event: any) => {
+    if (!selectedCategories.includes(event.target.value)) {
+      setSelectedCategories([...selectedCategories, event.target.value]);
+    }
+  };
+
+  const discardCategory = (e: any) => {
+    let reselect;
+    [e.target.value, ...reselect] = selectedCategories;
+    setSelectedCategories(reselect);
+  };
+
   const addTime = () => {
     // 이미 해당 아이템에서 선택해서 넣어준 시간일 경우
     if (selectedTimes.includes(clickedTime)) {
@@ -64,15 +81,17 @@ export default function CreateItem() {
   //진짜 제출
   const onSubmit = (data: any) => {
     alert(JSON.stringify(data));
-    // const formData = new FormData();
-    // //스케줄에만
-    // formData.append("title", data.title);
-    // formData.append("content", data.content);
-    // formData.append("category", data.category);
-
-    // selectedTimes.map((selectedTime: any, index: any) =>
-    //   formData.append("schedule" + index, selectedTime)
-    // ); // 이상한 거 나도 알아요 고쳐야지
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("content", data.content);
+    formData.append("price", data.price);
+    formData.append("categoryList", data.category);
+    for (let i = 0; i < selectedCategories.length; i++) {
+      formData.append("categoryList", selectedCategories[i]);
+    }
+    for (let i = 0; i < selectedTimes.length; i++) {
+      formData.append("dateList", selectedTimes[i]);
+    }
   };
 
   //   const formData = new FormData();
@@ -142,13 +161,32 @@ export default function CreateItem() {
         <ContentDiv>
           <ContentSpan>카테고리</ContentSpan>
           {/* 카테고리 여러 개 선택은 나중에 생각할게요~^^ */}
-          <CategorySelect
-            {...register("category", { required: "카테고리를 선택해주세요" })}
-          >
+          <div>
+            {selectedCategories.map((category: any) => {
+              return (
+                <Button
+                  Size="extraSmall"
+                  Variant="filled"
+                  style={{
+                    padding: "8px",
+                    margin: "0.2rem",
+                    width: "8rem",
+                    borderRadius: "10px",
+                  }}
+                  onClick={discardCategory}
+                >
+                  {category}
+                </Button>
+              );
+            })}
+          </div>
+          <CategorySelect onChange={onChange}>
             <option value="" disabled selected hidden>
               물품의 종류를 선택해주세요
             </option>
-            <option>카테고리</option>
+            <option value="" disabled selected hidden>
+              카테고리
+            </option>
             {allCategories.map((category) => {
               return <option>{category}</option>;
             })}
@@ -159,7 +197,7 @@ export default function CreateItem() {
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>사진 업로드</ContentSpan>
-          <DragDrop />
+          <DragDrop files={files} setFiles={setFiles} />
         </ContentDiv>
         <ButtonDiv>
           <StyledButton onClick={toggle}>일정 선택</StyledButton>
