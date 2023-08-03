@@ -37,7 +37,7 @@ public class WebSocketController {
         if (random == 0) {
             sender = "SSSAFY";
         }
-        System.out.println("메세지 전달은 받았음\n");
+
         System.out.println(chatMessage.getContent() + "\n");
 
         MessageResponse messageResponse = MessageResponse.builder()
