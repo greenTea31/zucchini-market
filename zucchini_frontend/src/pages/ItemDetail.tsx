@@ -31,7 +31,7 @@ export default function ItemDetail() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/item/${location.pathname.split("/")[2]}`
+          `http://localhost:8080/api/item/${location.pathname.split("/")[2]}`
         );
         console.log(response);
         setItem(response.data);
@@ -168,14 +168,6 @@ export default function ItemDetail() {
               <span>{item?.seller.grade}</span>
               <SubSpan>판매중 3 · 거래완료 2</SubSpan>
             </SellerSpanDiv>
-            <SelectDiv>
-              {/* 구매자 판매자 따라 조건부 렌더링 필요... */}
-              <StatusSelect>
-                <option>판매중</option>
-                <option>예약중</option>
-                <option>판매완료</option>
-              </StatusSelect>
-            </SelectDiv>
           </SellerDiv>
         </LowerRightDiv>
       </LowerDiv>
