@@ -10,21 +10,21 @@ import { useNavigate } from "react-router-dom";
 
 export default function Times({ clickedDate, mark, setFixedSchedule }: any) {
   // clickedDate에 해당하는 시간들 담을 배열
-  const [times, setTimes] = useState([]);
+  // const [times, setTimes] = useState([]);
   const navigate = useNavigate();
 
-  // const times = ["08:00", "09:00", "10:00", "14:00", "15:00"]; // 임시 시간표
+  const times = ["08:00", "09:00", "10:00", "14:00", "15:00"]; // 임시 시간표
   // 통신을 통해 setMark는 캘린더에서 완료해서 넣어준 것.
   // 그 중 date랑 동일한 date의 시간 뽑아내기(clickedDate바뀔 때마다) > to setTime
   // props로 넘어온 date로 해당 날짜의 시간을 불러오는 로직.
-  useEffect(() => {
-    const timesOftheDay = mark.reduce((arr: any, m: any) => {
-      if (m.getDate === clickedDate) {
-        arr.push(`${m.getHours}:${m.getMinutes}`);
-      }
-    }, []);
-    setTimes(timesOftheDay);
-  }, [clickedDate, mark]);
+  // useEffect(() => {
+  //   const timesOftheDay = mark.reduce((arr: any, m: any) => {
+  //     if (m.getDate === clickedDate) {
+  //       arr.push(`${m.getHours}:${m.getMinutes}`);
+  //     }
+  //   }, []);
+  //   setTimes(timesOftheDay);
+  // }, [clickedDate, mark]);
 
   // 시간 버튼 클릭 시
   const onClick = async (event: any) => {
