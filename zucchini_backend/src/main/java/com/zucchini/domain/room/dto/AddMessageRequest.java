@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -13,6 +14,9 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @RequiredArgsConstructor
 public class AddMessageRequest {
+
+    @Min(1)
+    private int roomNo;
 
     @NotBlank
     private String content;

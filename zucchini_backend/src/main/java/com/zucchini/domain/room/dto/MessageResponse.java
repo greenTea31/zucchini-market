@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 public class MessageResponse {
 
+    private int roomNo;
     private String sender;
     private String content;
     private boolean isRead;
@@ -21,6 +22,7 @@ public class MessageResponse {
 
     public static MessageResponse of(Message message) {
         return MessageResponse.builder()
+                .roomNo(message.getRoom().getNo())
                 .sender(message.getSender().getNickname())
                 .content(message.getContent())
                 .isRead(message.isRead())
