@@ -12,6 +12,7 @@ import axios from "axios";
 import IFileTypes from "../types/IFileTypes";
 import { Button } from "../components/Common/Button";
 import useAuth from "../hooks/useAuth";
+import { NumericFormat } from "react-number-format";
 
 export default function CreateItem() {
   const token = useAuth();
@@ -152,11 +153,12 @@ export default function CreateItem() {
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>가격</ContentSpan>
-          <ContentInput
-            type="number"
+          <NumericFormat
+            type="text"
             placeholder=", 없이 입력해주세요"
+            thousandSeparator=","
             {...register("price", { required: "가격을 입력해주세요" })}
-          ></ContentInput>
+          />
           <StyledMessage>
             <ErrorMessage errors={errors} name="price" />
           </StyledMessage>
@@ -259,6 +261,12 @@ const ContentInput = styled.input`
     outline: none;
     background-color: white;
   }
+
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
 `;
 
 const StyledMessage = styled.div`
@@ -290,13 +298,6 @@ const CategorySelect = styled.select`
   width: 100%;
   border-radius: 0.4rem;
   color: #254021;
-`;
-
-const StyledSvg = styled.svg`
-  height: 1.5rem;
-  width: 1.5rem;
-  cursor: pointer;
-  color: #849c80;
 `;
 
 const ButtonDiv = styled.div`

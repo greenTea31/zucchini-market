@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import MenuNavigation from "./MenuNavigation";
 import menuNavigation from "../constants/menuNavigation";
+import Zucchini from "../../../assets/images/zucchini.png";
 
 interface IMenuProps {
   toggle: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,6 +43,7 @@ export default function MenuWindow({ toggle }: IMenuProps) {
           />
         </svg>
       </ExitButton>
+      <StyledImg src={Zucchini} />
       <MenuNavigation list={menuNavigation} onItemClick={handleMenuItemClick} />
     </MenuWindowContainer>
   );
@@ -56,6 +58,7 @@ const MenuWindowContainer = styled(motion.div)`
   background-color: white;
   /* background-color: rgba(0, 0, 0, 0.7); */
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   font-size: 1rem;
@@ -66,7 +69,14 @@ const MenuWindowContainer = styled(motion.div)`
 const ExitButton = styled.div`
   position: absolute;
   top: 20px;
-  right: 64px;
+  right: 30px;
   height: 48px;
   width: 48px;
+  cursor: pointer;
+`;
+
+const StyledImg = styled.img`
+  height: 4rem;
+  width: 4rem;
+  margin-bottom: 3rem;
 `;

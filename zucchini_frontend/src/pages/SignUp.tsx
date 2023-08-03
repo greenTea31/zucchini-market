@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "@hookform/error-message";
 import FullWidthButton from "../components/Button/FullWidthButton";
+import { NumericFormat } from "react-number-format";
 
 export default function SignUp() {
   // react-hook-form
@@ -109,7 +110,12 @@ export default function SignUp() {
             {...register("nickname", { required: true })}
           />
           <Input
-            type="number"
+            type="text"
+            placeholder="휴대폰번호(- 없이 입력해주세요)"
+            {...register("phoneNumber", { required: true })}
+          />
+          <NumericFormat
+            type="text"
             placeholder="휴대폰번호(- 없이 입력해주세요)"
             {...register("phoneNumber", { required: true })}
           />
@@ -192,6 +198,11 @@ const Input = styled.input`
   padding-left: 1rem;
   margin: 0.3rem;
   font-size: 1rem;
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
 `;
 
 const StyledMessage = styled.div`
@@ -199,6 +210,7 @@ const StyledMessage = styled.div`
   justify-content: start;
   padding-left: 1rem;
   color: tomato;
+  font-size: 0.9rem;
 `;
 
 const StyledButtonDiv = styled.div`
