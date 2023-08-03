@@ -95,7 +95,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/item/register",
-        element: <CreateItem />,
+        element: (
+          <PrivateRoute>
+            <CreateItem />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/item/:no/modify",

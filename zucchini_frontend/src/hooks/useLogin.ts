@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { http } from "../utils/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY } from "../constants/queryKey";
+import { saveUser } from "./useLocalStorage";
+import IToken from "../types/IToken";
 
 interface IUser {
   id: string;
@@ -22,9 +24,10 @@ export function useLogin() {
     onMutate: (variables: any) => {
       // 로그인시 실행 함수
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data: IToken) => {
       // 성공시 실행
       queryClient.setQueryData([QUERY_KEY.user], data);
+      saveUser(data);
       navigate("/");
     },
     onError: (error: any) => {

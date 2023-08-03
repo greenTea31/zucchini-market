@@ -13,6 +13,8 @@ import IFileTypes from "../types/IFileTypes";
 import { Button } from "../components/Common/Button";
 
 export default function CreateItem() {
+  const token = useAuth();
+
   const {
     register,
     handleSubmit,

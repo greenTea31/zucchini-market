@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  frontend:
+    build:
+      context: ./zucchini_frontend
+    ports:
+      - "80:80"
+
+  backend:
+    build:
+      context: ./zucchini_backend
+    ports:
+      - "8081:8081"
+
+  # nginx:
+  #   build:
+  #     context: .
+  #     dockerfile: nginx/Dockerfile
+  #   ports:
+  #     - "80:80"
