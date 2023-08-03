@@ -65,5 +65,18 @@ const NavigationItem = styled(motion(Link))`
 
   &:hover {
     background-color: #cde990;
+    /* animation: fade-in-out 1s infinite alternate; */
   }
+
+  /* @keyframes fade-in-out {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  } */
 `;

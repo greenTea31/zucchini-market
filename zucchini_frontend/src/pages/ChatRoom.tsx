@@ -314,6 +314,29 @@ const ChatTitleDiv = styled.div`
 const ChatMainDiv = styled.div`
   height: 32rem;
   background-color: #cccccc;
+  overflow-y: scroll;
+
+  /* 스크롤바의 스타일 지정 */
+  &::-webkit-scrollbar {
+    width: 8px; /* 스크롤바의 너비 */
+    background-color: #e8e2d9; /* 스크롤바의 배경색 */
+  }
+
+  /* 스크롤바의 thumb 스타일 지정 */
+  &::-webkit-scrollbar-thumb {
+    background-color: #acb4a8; /* 스크롤바 thumb 색상 */
+    border-radius: 3px; /*스크롤바 thumb의 모서리 둥글기*/
+  }
+
+  /* 스크롤바의 thumb에 호버했을 때 스타일 지정 */
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #818a7e; /* 스크롤바 thumb 호버 색상 */
+  }
+
+  /* 스크롤바의 thumb에 클릭했을 때 스타일 지정 */
+  &::-webkit-scrollbar-thumb:active {
+    background-color: #656c62; /* 스크롤바 thumb 클릭 색상 */
+  }
 `;
 
 const ChatInputDiv = styled.div`

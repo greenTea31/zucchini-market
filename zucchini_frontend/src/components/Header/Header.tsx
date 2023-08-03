@@ -48,6 +48,7 @@ const HeaderRight = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
+  cursor: pointer;
 `;
 
 const Logo = styled.div`
