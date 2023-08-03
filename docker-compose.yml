@@ -1,15 +1,21 @@
 version: "3"
+
 services:
+  frontend:
+    build:
+      context: ./zucchini_frontend
+    ports:
+      - "80:80"
+
+  backend:
+    build:
+      context: ./zucchini_backend
+    ports:
+      - "8080:8080"
+
   nginx:
     build:
-      context: ./frontend
+      context: .
+      dockerfile: nginx/Dockerfile
     ports:
-      - 80:80
-    depends_on:
-      - spring
-
-  spring:
-    build:
-      context: ./backend
-    ports:
-      - 8080:8080 #로컬포트:컨테이너포트
+      - "80:80"
