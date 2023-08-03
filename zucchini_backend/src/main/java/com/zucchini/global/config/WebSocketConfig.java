@@ -22,4 +22,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // 클라이언트에서 메시지를 send할 때의 주소 prefix를 정의
         registry.setApplicationDestinationPrefixes("/pub");
     }
+
 }

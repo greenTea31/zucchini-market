@@ -21,6 +21,4 @@ public class AddMessageRequest {
     @NotBlank
     private String content;
 
-
-
 }
