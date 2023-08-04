@@ -1,13 +1,22 @@
 import styled from "styled-components";
 import Modal from "../components/Common/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SimpleCalendarRegister from "../components/Schedule/SimpleCalendarRegister";
-import ImageUpload from "../FileUpload/ImageUpload";
+// import ImageUpload from "../FileUpload/ImageUpload";
 import DragDrop from "../FileUpload/DragDrop";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import ClosedButton from "../components/Button/ClosedButton";
+import dayjs from "dayjs";
+import axios from "axios";
+import IFileTypes from "../types/IFileTypes";
+import { Button } from "../components/Common/Button";
+import useAuth from "../hooks/useAuth";
+import { NumericFormat } from "react-number-format";
 
 export default function CreateItem() {
+  const token = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -18,35 +27,75 @@ export default function CreateItem() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const [selectedTimes, setSelectedTimes] = useState([]);
+  const [files, setFiles] = useState<IFileTypes[]>([]);
+  // 마우스로 선택한 날짜 받는 state
+  const [clickedTime, setClickedTime] = useState(new Date());
+
+  // 판매자가 선택한 시간들 차곡차곡 담아주기
+  const [selectedTimes, setSelectedTimes] = useState<any>([]);
+
+  // 카테고리 전부
+  const [allCategories, setAllCategories] = useState([]);
+  // 선택한 카테고리
+  const [selectedCategories, setSelectedCategories] = useState<any>([]);
+  // 처음 렌더링될 때, 카테고리 가져올 거예영
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/category`);
+        console.log(response);
+        setAllCategories(response.data.category);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    getCategories();
+  }, []);
 
   const toggle = () => {
     setIsOpen(!isOpen);
+    console.log("눌려?");
   };
 
-  //화상 일정 선택 완료
-  const clickSubmit = () => {
-    // 그냥 나가면 될까?
-    // selectedTimes는 이미 채워진 상태
-    if (selectedTimes.length !== 0) {
-      alert("등록완료");
-      toggle();
-    } else {
-      alert("선택된 일정이 없습니다.");
+  const onChange = (event: any) => {
+    if (!selectedCategories.includes(event.target.value)) {
+      setSelectedCategories([...selectedCategories, event.target.value]);
     }
   };
 
+  const discardCategory = (e: any) => {
+    let reselect;
+    [e.target.value, ...reselect] = selectedCategories;
+    setSelectedCategories(reselect);
+  };
+
+  const addTime = () => {
+    // 이미 해당 아이템에서 선택해서 넣어준 시간일 경우
+    if (selectedTimes.includes(clickedTime)) {
+      alert("이미 선택된 시간입니다");
+      return;
+    }
+    // 중복 체크 통과하면 넣어준다.
+    // 30분 반올림하는 것도 추가해야대여....
+    // gmt??tlqkf...
+    setSelectedTimes([...selectedTimes, clickedTime]);
+    alert("추가되었습니다");
+  };
+
+  //진짜 제출
   const onSubmit = (data: any) => {
     alert(JSON.stringify(data));
     const formData = new FormData();
-    //스케줄에만
     formData.append("title", data.title);
     formData.append("content", data.content);
-    formData.append("category", data.category);
-
-    selectedTimes.map((selectedTime, index) =>
-      formData.append("schedule" + index, selectedTime)
-    ); // 이상한 거 나도 알아요 고쳐야지
+    formData.append("price", data.price);
+    formData.append("categoryList", data.category);
+    for (let i = 0; i < selectedCategories.length; i++) {
+      formData.append("categoryList", selectedCategories[i]);
+    }
+    for (let i = 0; i < selectedTimes.length; i++) {
+      formData.append("dateList", selectedTimes[i]);
+    }
   };
 
   //   const formData = new FormData();
@@ -57,27 +106,14 @@ export default function CreateItem() {
     <ContainerAll>
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
-          <StyledSvg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </StyledSvg>
+          <ClosedButton onClick={toggle} />
         </ModalDiv>
         <ModalSpan>화상통화 일정 선택</ModalSpan>
         <CalendarDiv>
-          {/* 판매자 등록을 위한 달력 따로 */}
           <SimpleCalendarRegister
-            selectedTimes={selectedTimes}
-            setSelectedTimes={setSelectedTimes}
+            clickedTime={clickedTime}
+            setClickedTime={setClickedTime}
+            toggle={toggle}
           />
         </CalendarDiv>
         {/* 선택된 시간 보여주기 */}
@@ -87,8 +123,8 @@ export default function CreateItem() {
             return <div>{selectedTime.toString()}</div>;
           })}
         </div>
-        <StyledBtn onClick={clickSubmit}>확인</StyledBtn>
-        <StyledBtn onClick={() => toggle()}>취소</StyledBtn>
+        <StyledBtn onClick={addTime}>추가</StyledBtn>
+        <StyledBtn onClick={() => toggle()}>완료</StyledBtn>
       </Modal>
       {/* <TimeSchedule isOpen={timeOpen} toggle={timeToggle} /> */}
       <ContainerForm onSubmit={handleSubmit(onSubmit)}>
@@ -102,39 +138,71 @@ export default function CreateItem() {
             })}
             maxLength={200}
           ></ContentInput>
-          {/* <StyledMessage>
+          <StyledMessage>
             <ErrorMessage errors={errors} name="title" />
-          </StyledMessage> */}
+          </StyledMessage>
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>상세 설명</ContentSpan>
           <ContentTextArea
             {...register("content", { required: "설명을 입력해주세요." })}
           ></ContentTextArea>
+          <StyledMessage>
+            <ErrorMessage errors={errors} name="content" />
+          </StyledMessage>
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>가격</ContentSpan>
-          <ContentInput
-            type="number"
+          <NumericFormat
+            type="text"
             placeholder=", 없이 입력해주세요"
-            {...register("price", { required: true })}
-          ></ContentInput>
+            thousandSeparator=","
+            {...register("price", { required: "가격을 입력해주세요" })}
+          />
+          <StyledMessage>
+            <ErrorMessage errors={errors} name="price" />
+          </StyledMessage>
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>카테고리</ContentSpan>
-          <CategorySelect {...register("category", { required: true })}>
-            <option selected>-- 물품의 종류를 선택해주세요 --</option>
-            <option>전자제품</option>
-            <option>가전제품</option>
-            <option>의류/잡화</option>
-            <option>서적/음반</option>
-            <option>애완용품</option>
-            <option>기타</option>
+          {/* 카테고리 여러 개 선택은 나중에 생각할게요~^^ */}
+          <div>
+            {selectedCategories.map((category: any) => {
+              return (
+                <Button
+                  Size="extraSmall"
+                  Variant="filled"
+                  style={{
+                    padding: "8px",
+                    margin: "0.2rem",
+                    width: "8rem",
+                    borderRadius: "10px",
+                  }}
+                  onClick={discardCategory}
+                >
+                  {category}
+                </Button>
+              );
+            })}
+          </div>
+          <CategorySelect onChange={onChange}>
+            <option value="" disabled selected hidden>
+              물품의 종류를 선택해주세요
+            </option>
+            <option value="" disabled selected hidden>
+              카테고리
+            </option>
+            {allCategories.map((category) => {
+              return <option>{category}</option>;
+            })}
           </CategorySelect>
+          <StyledMessage>
+            <ErrorMessage errors={errors} name="category" />
+          </StyledMessage>
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>사진 업로드</ContentSpan>
-          <DragDrop />
+          <DragDrop files={files} setFiles={setFiles} />
         </ContentDiv>
         <ButtonDiv>
           <StyledButton onClick={toggle}>일정 선택</StyledButton>
@@ -193,12 +261,19 @@ const ContentInput = styled.input`
     outline: none;
     background-color: white;
   }
+
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
 `;
 
 const StyledMessage = styled.div`
   display: flex;
   justify-content: start;
-  padding-left: 1rem;
+  padding-left: 0.3;
+  margin: 0.3rem;
   color: tomato;
 `;
 
@@ -223,13 +298,6 @@ const CategorySelect = styled.select`
   width: 100%;
   border-radius: 0.4rem;
   color: #254021;
-`;
-
-const StyledSvg = styled.svg`
-  height: 1.5rem;
-  width: 1.5rem;
-  cursor: pointer;
-  color: #849c80;
 `;
 
 const ButtonDiv = styled.div`

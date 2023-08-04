@@ -1877,10 +1877,10 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@mui/x-date-pickers@^6.10.1":
-  version "6.10.1"
-  resolved "https://registry.yarnpkg.com/@mui/x-date-pickers/-/x-date-pickers-6.10.1.tgz#a2a2767c82ad6cc070498ad1c6532fa655cf632d"
-  integrity sha512-806zxZkLgK2FYTptzy+x880RVDkHi9TcjMq9fTQwqx9DujEZ/YuGIu0wE97mhzNeqdTO02gnH96yHSo3EWu2VQ==
+"@mui/x-date-pickers@^6.10.2":
+  version "6.10.2"
+  resolved "https://registry.yarnpkg.com/@mui/x-date-pickers/-/x-date-pickers-6.10.2.tgz#af9734994b6415e19f2f01c34b64f9772b05cc21"
+  integrity sha512-RZHvPj5UYGdV2FoBlTbtAtg1aaJ1sbdD9LM9vSgefQWMW0vFC4fSYtFACS4ptxK/8Q0FHyuVZF5bDO+TUAPxQg==
   dependencies:
     "@babel/runtime" "^7.22.6"
     "@mui/utils" "^5.13.7"
@@ -7969,7 +7969,7 @@ prompts@^2.0.1, prompts@^2.4.2:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.8.1:
+prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -8137,6 +8137,13 @@ react-is@^18.0.0, react-is@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
+
+react-number-format@^5.2.2:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-5.2.2.tgz#60ee1152b33fee9e522e13846da9c9bf30993404"
+  integrity sha512-wCh64Z1HCwXcO2dbgkeYIaB+Rmp/fcsH8kAeRtUkc46dv1pIrgDjie2WkOqKBw8YqyqhwNdYgNFNQuuY+iGJ/g==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-refresh@^0.11.0:
   version "0.11.0"
@@ -9002,10 +9009,10 @@ style-loader@^3.3.1:
   resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-3.3.3.tgz#bba8daac19930169c0c9c96706749a597ae3acff"
   integrity sha512-53BiGLXAcll9maCYtZi2RCQZKa8NQQai5C4horqKyRmHj9H7QmcUyucrH+4KW/gBQbXM2AsB0axoEcFZPlfPcw==
 
-styled-components@^6.0.5:
-  version "6.0.5"
-  resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-6.0.5.tgz#a2588432507a57d946bfb6feb2ebd13fce447bd9"
-  integrity sha512-308zi5o7LrA9cVaP4nPD0TaUpOjGPePkAUFb/OGB0xRI3I9ozpW5UyASvRVi9wJcYASG+Y3mLDLDUZC7nqzimw==
+styled-components@^6.0.6:
+  version "6.0.6"
+  resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-6.0.6.tgz#cfead4b7d8cab393e0c73f6e3d5d34c8961d1387"
+  integrity sha512-gkToLizJyiaRLGlPzfzvBY4DoC/fAKnRulstNXv/zXyvqKVaIQNHFbufjM1sspwqd77azcpnWuoZBL4O+oqxVw==
   dependencies:
     "@babel/cli" "^7.21.0"
     "@babel/core" "^7.21.0"

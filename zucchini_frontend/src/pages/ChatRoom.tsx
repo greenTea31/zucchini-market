@@ -422,7 +422,7 @@ const ChatTitleDiv = styled.div`
 const ChatMainDiv = styled.div`
   height: 32rem;
   background-color: #cccccc;
-  overflow-y: auto;
+  overflow-y: scroll;
 
   /* 스크롤바의 스타일 지정 */
   &::-webkit-scrollbar {

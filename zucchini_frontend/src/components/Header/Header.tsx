@@ -1,17 +1,13 @@
 import styled from "styled-components";
 import Navigation from "./components/Navigation";
 import Menu from "./components/Menu";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import MenuWindow from "./components/MenuWindow";
 import navigation from "./constants/navigation";
 import { Link } from "react-router-dom";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    console.log(isMenuOpen);
-  }, [isMenuOpen]);
 
   return (
     <HeaderContainer>
@@ -52,6 +48,7 @@ const HeaderRight = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
+  cursor: pointer;
 `;
 
 const Logo = styled.div`
