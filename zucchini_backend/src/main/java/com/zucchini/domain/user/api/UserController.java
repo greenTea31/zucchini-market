@@ -1,11 +1,15 @@
 package com.zucchini.domain.user.api;
 
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
+import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
+import com.zucchini.domain.user.dto.response.UserInfoResponse;
+import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.domain.user.service.UserService;
 import com.zucchini.global.config.jwt.JwtHeaderUtilEnums;
+import com.zucchini.global.config.security.CustomUserDetails;
 import com.zucchini.global.domain.TokenDto;
 import com.zucchini.global.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +35,7 @@ public class UserController {
 
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
+    private final UserRepository userRepository;
 
     @Value("${jwt.cookieName}")
     private String jwtCookieName;
@@ -316,6 +324,20 @@ public class UserController {
     public ResponseEntity<List<UserDealHistoryResponse>> findBuyDealHistory(@RequestParam String keyword) {
         List<UserDealHistoryResponse> buyDealHistory = userService.findUserDealHistoryList(keyword, true);
         return ResponseEntity.ok(buyDealHistory);
+    }
+
+    /**
+     * 실시간 채팅 클라이언트에서 저장할 유저의 정보를 가져온다.
+     * @return
+     */
+    @GetMapping("/findMyNo")
+    public ResponseEntity<UserInfoResponse> findMyUserNo(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
+        String currentPrincipalId = nowLogInDetail.getId();
+        User user = userRepository.findById(currentPrincipalId).orElseThrow(()->new NoSuchElementException(currentPrincipalId));
+        UserInfoResponse userInfoResponse = UserInfoResponse.builder().no(user.getNo()).nickname(user.getNickname()).build();
+        return ResponseEntity.ok(userInfoResponse);
     }
 
 }

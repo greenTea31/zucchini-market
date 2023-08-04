@@ -18,6 +18,9 @@ public class AddMessageRequest {
     @Min(1)
     private int roomNo;
 
+    @Min(1)
+    private int senderNo;
+
     @NotBlank
     private String content;
 

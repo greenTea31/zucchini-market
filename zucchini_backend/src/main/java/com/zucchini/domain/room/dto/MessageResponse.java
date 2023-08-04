@@ -16,6 +16,7 @@ public class MessageResponse {
 
     private int roomNo;
     private String sender;
+    private int senderNo;
     private String content;
     private boolean isRead;
     private Date createdAt;
@@ -24,6 +25,7 @@ public class MessageResponse {
         return MessageResponse.builder()
                 .roomNo(message.getRoom().getNo())
                 .sender(message.getSender().getNickname())
+                .senderNo(message.getSender().getNo())
                 .content(message.getContent())
                 .isRead(message.isRead())
                 .createdAt(message.getCreatedAt())

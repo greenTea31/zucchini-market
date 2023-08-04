@@ -2,8 +2,11 @@ package com.zucchini.domain.realtimechat;
 
 import com.zucchini.domain.room.dto.AddMessageRequest;
 import com.zucchini.domain.room.dto.MessageResponse;
+import com.zucchini.domain.user.domain.User;
+import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -12,12 +15,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class WebSocketController {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final UserRepository userRepository;
+
+//    @EventListener(SessionConnectEvent.class)
+//    public void onConnect(SessionConnectEvent event){
+//        String sessionId = event.getMessage().getHeaders().get("simpSessionId").toString();
+//        String userId = event.getMessage().getHeaders().get("nativeHeaders").toString().split("User=\\[")[1].split("]")[0];
+//
+//        sessions.put(sessionId, Integer.valueOf(userId));
+//    }
 
     /**
      * 실시간 메시징 처리, 메세지를 받아서 참가자들에게 보내줌
@@ -29,20 +43,14 @@ public class WebSocketController {
     @MessageMapping("/chat")
     public void sendMessage(AddMessageRequest chatMessage, SimpMessageHeaderAccessor accessor) {
         // request가 들어오면 적절한 repsonse 형태로 변경하고 사용자들에게 반환함
-//        String sender = getCurrentId();
-
-        // 랜덤으로 0이나 1 값 생성
-        int random = (int) (Math.random() * 2);
-        String sender = "SSAFY";
-        if (random == 0) {
-            sender = "SSSAFY";
-        }
-
+        User user = userRepository.findById(chatMessage.getSenderNo()).orElseThrow(() -> new NoSuchElementException("해당 사용자가 없습니다."));
         System.out.println(chatMessage.getContent() + "\n");
+        log.info("sender : " + chatMessage.getSenderNo() + ", content : " + chatMessage.getContent());
 
         MessageResponse messageResponse = MessageResponse.builder()
                 .roomNo(chatMessage.getRoomNo())
-                .sender(sender)
+                .sender(user.getNickname())
+                .senderNo(chatMessage.getSenderNo())
                 .content(chatMessage.getContent())
                 .isRead(true)
                 .createdAt(new Date())
