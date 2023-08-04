@@ -14,6 +14,7 @@ import { Button } from "../components/Common/Button";
 import useAuth from "../hooks/useAuth";
 import Calendar from "react-calendar";
 import { NumericFormat } from "react-number-format";
+import { motion } from "framer-motion";
 
 export default function UpdateItem() {
   const token = useAuth();
@@ -104,7 +105,11 @@ export default function UpdateItem() {
   };
 
   return (
-    <ContainerAll>
+    <ContainerAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
           <StyledSvg
@@ -220,7 +225,7 @@ export default function UpdateItem() {
     </ContainerAll>
   );
 }
-const ContainerAll = styled.div`
+const ContainerAll = styled(motion.div)`
   display: flex;
   justify-content: center;
   font-family: "IBM Plex Sans KR", sans-serif;

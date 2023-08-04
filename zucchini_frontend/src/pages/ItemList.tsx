@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading/Loading";
 import axios from "axios";
-
+import { motion } from "framer-motion";
 interface Item {
   id: number;
 }
@@ -57,7 +57,11 @@ export default function ItemList() {
   }
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <UpperDiv>
         <TitleSpan>중고거래 매물</TitleSpan>
         <Category />
@@ -83,7 +87,7 @@ export default function ItemList() {
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;

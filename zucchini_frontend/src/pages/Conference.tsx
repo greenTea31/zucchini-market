@@ -19,6 +19,14 @@ export default function Conference() {
     setIsOpen2(!isOpen2);
   };
 
+  const message = {
+    id: 1,
+    sender: "",
+    content: "",
+    isRead: false,
+    createdAt: "",
+  };
+
   return (
     <ContainerDiv>
       <Modal isOpen={isOpen} toggle={toggle}>
@@ -295,7 +303,7 @@ export default function Conference() {
               <ParticipantInfoName>채팅</ParticipantInfoName>
             </ChatTitleDiv>
             <ChatDiv>
-              <Chatting />
+              <Chatting message={message} />
             </ChatDiv>
             <ChatInputDiv>
               <Svg

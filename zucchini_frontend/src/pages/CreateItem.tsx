@@ -13,6 +13,7 @@ import IFileTypes from "../types/IFileTypes";
 import { Button } from "../components/Common/Button";
 import useAuth from "../hooks/useAuth";
 import { NumericFormat } from "react-number-format";
+import { motion } from "framer-motion";
 
 export default function CreateItem() {
   const token = useAuth();
@@ -103,7 +104,11 @@ export default function CreateItem() {
   //   formData.append();
   // };
   return (
-    <ContainerAll>
+    <ContainerAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
           <ClosedButton onClick={toggle} />
@@ -156,6 +161,7 @@ export default function CreateItem() {
           <NumericFormat
             type="text"
             placeholder=", 없이 입력해주세요"
+            suffix={" 원"}
             thousandSeparator=","
             {...register("price", { required: "가격을 입력해주세요" })}
           />
@@ -212,7 +218,7 @@ export default function CreateItem() {
     </ContainerAll>
   );
 }
-const ContainerAll = styled.div`
+const ContainerAll = styled(motion.div)`
   display: flex;
   justify-content: center;
   /* padding: 5rem 0 13rem 0; */

@@ -5,7 +5,7 @@ import ItemEach from "../components/List/ItemEach";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Loading from "../components/Loading/Loading";
-
+import { motion } from "framer-motion";
 interface Item {
   id: number;
 }
@@ -53,7 +53,11 @@ export default function LikeList() {
   }
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div>
         <TitleSpan>나의 찜한 목록</TitleSpan>
         <CategorySecond />
@@ -71,7 +75,7 @@ export default function LikeList() {
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;
@@ -94,14 +98,4 @@ const ItemsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-`;
-
-const ItemDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 16rem;
-  padding: 0.7rem 0.7rem 1.7rem 0.7rem;
-  margin-bottom: 1rem;
-  border: solid 1px #aeb9ad;
-  border-radius: 2rem;
 `;

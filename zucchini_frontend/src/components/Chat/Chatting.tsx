@@ -25,6 +25,7 @@ export default function Chatting(props: Iprops) {
 const ChatBubble = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  /* padding: 1rem; */
+  /* padding-left: 1rem; */
   line-height: 1.4rem;
 `;
