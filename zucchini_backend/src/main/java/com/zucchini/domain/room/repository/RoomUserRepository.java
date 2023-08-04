@@ -65,4 +65,13 @@ public interface RoomUserRepository extends JpaRepository<RoomUser, Integer> {
      */
     boolean existsByRoomAndUser(Room room, User user);
 
+    /**
+     * 특정 채팅방과 유저 아이디를 입력받아 그 채팅방에 있는 상대방 유저를 조회함
+     */
+    @Query("SELECT u FROM RoomUser ru " +
+            "JOIN ru.user u " +
+            "JOIN ru.room r " +
+            "WHERE r.no = :roomNo AND u.no != :userNo")
+    User findOpponentByRoomAndUser(@Param("roomNo") int roomNo, @Param("userNo") int userNo);
+
 }

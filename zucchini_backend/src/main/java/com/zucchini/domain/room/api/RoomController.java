@@ -76,6 +76,10 @@ public class RoomController {
     @GetMapping
     public ResponseEntity<List<RoomResponse>> getRoomList() {
         List<RoomResponse> rooms = roomService.findAllRoomList();
+        // 얻어온 모든 방 로그로 조회 system.out.println 말고 로그로
+        for (RoomResponse room : rooms) {
+            System.out.println(room.getNo());
+        }
         return ResponseEntity.ok(rooms);
     }
 

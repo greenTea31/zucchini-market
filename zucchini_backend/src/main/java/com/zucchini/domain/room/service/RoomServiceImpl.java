@@ -110,20 +110,19 @@ public class RoomServiceImpl implements RoomService{
 
 
     /**
-     * item을 입력받아 현재 로그인한 유저의 거래 상대자가 누군지 파악합니다.
+     * room을 입력받아 현재 로그인한 유저의 거래 상대자가 누군지 파악합니다.
      * @param item
      * @return User : 현재 로그인한 유저의 거래 상대자
      */
-    private User getOpponent(Item item) {
+    private User getOpponent(Room room) {
         // 아이템에서 seller, buyer 확인하고 내 번호랑 다른 유저의 닉네임 반환
+        // 아 채팅만 하고있는데 getOpponent를 어떻게 알아....
         String currentPrincipalId = getCurrentId();
         int currentPrincialNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
 
-        if (item.getSeller().getNo() == currentPrincialNo) {
-            return item.getBuyer();
-        } else {
-            return item.getSeller();
-        }
+        // 방 번호를 입력받아 그 방에 속한 유저들중 자신이 아닌 사람을 반환합니다.
+          User user = roomUserRepository.findOpponentByRoomAndUser(room.getNo(), currentPrincialNo);
+          return user;
     }
 
     /**
@@ -142,13 +141,19 @@ public class RoomServiceImpl implements RoomService{
             Message message = messageRepository.findTopByRoomOrderByCreatedAtDesc(room);
             Item item = room.getItem();
 
-            User opponent = getOpponent(item);
+            User opponent = getOpponent(room);
+            String opponentNickName = opponent.getNickname();
+
+            String itemImageLink = null; // 기본값을 null로 설정
+            if (item != null && item.getImageList() != null && !item.getImageList().isEmpty()) {
+                itemImageLink = item.getImageList().get(0).getLink();
+            }
 
             // 내용과 작성시간은 roomResponse에 그대로 넣음
             roomResponse.setNo(room.getNo());
-            roomResponse.setOpponentNickname(opponent.getNickname());
+            roomResponse.setOpponentNickname(opponent.getNickname() != null ? opponent.getNickname() : "나간 상대방입니다.");
             roomResponse.setOpponentGrade(opponent.getGrade());
-            roomResponse.setItemImage(item.getImageList().get(0).getLink());
+            roomResponse.setItemImage(itemImageLink);
             roomResponse.setLastMessage(message.getContent());
             roomResponse.setLastMessageCreatedAt(message.getCreatedAt());
 
