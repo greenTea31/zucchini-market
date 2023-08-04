@@ -1,7 +1,56 @@
 import styled from "styled-components";
+import { useState, useEffect } from "react";
 import ScheduleEach from "../components/Schedule/ScheduleEach";
+import axios from "axios";
+import Loading from "../components/Loading/Loading";
+
+interface Item {
+  id: number;
+}
 
 export default function ScheduleList() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<Item[] | null>(null);
+
+  const [items, setItems] = useState([]);
+
+  function getItems() {
+    axios.get(``).then((response) => {
+      setItems(response.data);
+    });
+  }
+
+  useEffect(() => {
+    getItems();
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    axios
+      .get("http://localhost:8080/api/mypage/schedule")
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+    setIsLoading(false); // 이거 없앨거에용
+  }, [data]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <ContainerDiv>
       <ChatListDiv>
@@ -12,16 +61,11 @@ export default function ScheduleList() {
           <TodayDiv>
             <p>Today : 2023-08-03</p>
           </TodayDiv>
-          <ScheduleEach />
-          <ScheduleEach />
-          <ScheduleEach />
-          <ScheduleEach />
-          <ScheduleEach />
-          <ScheduleEach />
-          <ScheduleEach />
-          <ScheduleEach />
-          <ScheduleEach />
-          <ScheduleEach />
+          {data && data.length > 0 ? (
+            data.map((item) => <ScheduleEach key={item.id} item={item} />)
+          ) : (
+            <p>일정이 없습니다.</p>
+          )}
         </div>
       </ChatListDiv>
     </ContainerDiv>

@@ -45,7 +45,7 @@ export default function LikeList() {
     if (data) {
       setIsLoading(false);
     }
-    setIsLoading(false);
+    setIsLoading(false); // 없앨거에용
   }, [data]);
 
   if (isLoading) {

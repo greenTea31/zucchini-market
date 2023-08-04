@@ -73,7 +73,11 @@ export default function ItemList() {
           </Link>
         </TitleDiv>
         <ItemsContainer>
-          {items && items.map((item, index) => <ItemEach item={item} />)}
+          {data && data.length > 0 ? (
+            items && items.map((item, index) => <ItemEach item={item} />)
+          ) : (
+            <p>등록된 매물이 없습니다.</p>
+          )}
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>

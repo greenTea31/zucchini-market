@@ -1,7 +1,16 @@
 import styled from "styled-components";
 import { Button } from "../Common/Button";
 
-export default function ScheduleEach() {
+interface IItem {
+  id: number;
+  // 여기 채워넣어야 함
+}
+
+interface IProps {
+  item: IItem;
+}
+
+export default function ScheduleEach(props: IProps) {
   return (
     <VideoDiv>
       <p>10:30 - 11:00</p>
