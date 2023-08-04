@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import { motion } from "framer-motion";
 
 export default function UpdateUser() {
   const {
@@ -27,7 +28,11 @@ export default function UpdateUser() {
     alert(JSON.stringify(data));
   };
   return (
-    <StyledAll>
+    <StyledAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <StyledDiv>
         <StyledTitle>회원정보 수정</StyledTitle>
         <StyledSpanDiv>
@@ -93,7 +98,7 @@ export default function UpdateUser() {
     </StyledAll>
   );
 }
-const StyledAll = styled.div`
+const StyledAll = styled(motion.div)`
   display: flex;
   justify-content: center;
   height: auto;

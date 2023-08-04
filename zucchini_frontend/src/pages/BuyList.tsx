@@ -4,7 +4,7 @@ import ItemEach from "../components/List/ItemEach";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Loading from "../components/Loading/Loading";
-
+import { motion } from "framer-motion";
 interface Item {
   id: number;
 }
@@ -51,7 +51,11 @@ export default function BuyList() {
   }
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div>
         <TitleSpan>나의 구매 목록</TitleSpan>
         <Search setKeyword={setKeyword} getItems={getItems} />
@@ -84,7 +88,7 @@ export default function BuyList() {
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;

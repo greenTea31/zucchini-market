@@ -1,10 +1,15 @@
 import styled from "styled-components";
 import img from "../assets/images/Main.png";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function Main() {
   return (
-    <MainAll>
+    <MainAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <MainUpper>
         <UpperLeft>
           <TitleDiv>
@@ -151,7 +156,7 @@ export default function Main() {
   );
 }
 
-const MainAll = styled.div`
+const MainAll = styled(motion.div)`
   font-family: "IBM Plex Sans KR", sans-serif;
 `;
 
@@ -161,6 +166,8 @@ const MainUpper = styled.div`
   flex-direction: row;
   justify-content: center;
   background-color: #aacb73;
+
+  
 `;
 
 const MainLower = styled.div`

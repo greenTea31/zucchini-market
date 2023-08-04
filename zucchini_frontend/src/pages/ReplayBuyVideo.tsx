@@ -3,6 +3,7 @@ import GoBackButton from "../components/Button/GoBackButton";
 import Modal from "../components/Common/Modal";
 import { useState } from "react";
 import ClosedButton from "../components/Button/ClosedButton";
+import { motion } from "framer-motion";
 
 export default function ReplayBuyVideo() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +19,11 @@ export default function ReplayBuyVideo() {
   };
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Modal isOpen={isOpen2} toggle={toggle2}>
         <ModalDiv>
           <ClosedButton />
@@ -61,7 +66,7 @@ export default function ReplayBuyVideo() {
   );
 }
 
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 1rem 15rem;
@@ -122,22 +127,6 @@ const GreenBtn = styled.button`
   }
 `;
 
-const RedBtn = styled.button`
-  width: 16rem;
-  height: 2.8rem;
-  border-radius: 0.4rem;
-  background-color: #f54040;
-  border: solid 2px red;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-
-  &:hover {
-    background-color: white;
-    border: solid 2px red;
-    color: red;
-  }
-`;
 const ModalDiv = styled.div`
   float: right;
 `;

@@ -1,10 +1,9 @@
 import styled from "styled-components";
 import watch from "../assets/images/watch.png";
-import female from "../assets/images/female.jpg";
+import gradeFive from "../assets/images/5.png";
 import Modal from "../components/Common/Modal";
 import { useState, useEffect } from "react";
 import SimpleCalendar from "../components/Schedule/SimpleCalendar";
-import GoBackButton from "../components/Button/GoBackButton";
 import axios from "axios";
 import { QueryClient } from "@tanstack/query-core";
 import { QUERY_KEY } from "../constants/queryKey";
@@ -12,6 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router";
 import IToken from "../types/IToken";
 import ClosedButton from "../components/Button/ClosedButton";
+import { motion } from "framer-motion";
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
@@ -81,7 +81,11 @@ export default function ItemDetail() {
   };
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
           <ClosedButton onClick={toggle} />
@@ -119,7 +123,6 @@ export default function ItemDetail() {
               stroke="red"
               className="w-6 h-6"
             >
-              {" "}
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -131,6 +134,7 @@ export default function ItemDetail() {
       </div>
       <UpperDiv>
         <UpperLeftDiv>
+          {/* src 태그 안에 제품 사진 */}
           <StyledImg src={watch}></StyledImg>
         </UpperLeftDiv>
         <UpperRightDiv>
@@ -191,7 +195,10 @@ export default function ItemDetail() {
         <LowerRightDiv>
           <SellerTitle>판매자 정보</SellerTitle>
           <SellerDiv>
-            <SellerImg src={female}></SellerImg>
+            {/* 등급 관련 이미지 넣기.. */}
+            <ImgDiv>
+              <SellerImg src={gradeFive}></SellerImg>
+            </ImgDiv>
             <SellerSpanDiv>
               <SellerName>{item?.seller.nickname}</SellerName>
               <span>{item?.seller.grade}</span>
@@ -203,20 +210,12 @@ export default function ItemDetail() {
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;
   margin: 0 10rem 13rem 10rem;
   font-family: "IBM Plex Sans KR", sans-serif;
-`;
-
-const StyledSvg = styled.svg`
-  height: 1.5rem;
-  width: 1.5rem;
-  cursor: pointer;
-  color: #849c80;
-  margin-bottom: 1rem;
 `;
 
 const RedSvg = styled.svg`
@@ -331,12 +330,20 @@ const SellerDiv = styled.div`
   padding-left: 1rem;
 `;
 
-const SellerImg = styled.img`
+const ImgDiv = styled.div`
   width: 6.5rem;
   height: 6.5rem;
   border-radius: 5rem;
   border: solid 1px black;
   margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SellerImg = styled.img`
+  width: 4.3rem;
+  height: 4.3rem;
 `;
 
 const SellerSpanDiv = styled.div`

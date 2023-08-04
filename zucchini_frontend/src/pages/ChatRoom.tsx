@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { Client } from "@stomp/stompjs";
 import Imessage from "../types/Imessage";
+import { motion } from "framer-motion";
 
 export default function ChatRoom() {
   const [isOpen, setIsOpen] = useState(false);
@@ -120,7 +121,11 @@ export default function ChatRoom() {
   };
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Modal isOpen={buyOpen} toggle={buyToggle}>
         <ModalDiv>
           <ClosedButton />
@@ -246,12 +251,12 @@ export default function ChatRoom() {
                 d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
               />
             </Svg>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <StyledForm onSubmit={handleSubmit(onSubmit)}>
               <StyledInput
                 {...register("content")}
                 placeholder="메시지를 입력해주세요.."
               ></StyledInput>
-              <button type="submit">
+              <SubmitBtn type="submit">
                 <Svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -266,8 +271,8 @@ export default function ChatRoom() {
                     d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
                   />
                 </Svg>
-              </button>
-            </form>
+              </SubmitBtn>
+            </StyledForm>
           </ChatInputDiv>
         </RightDiv>
       </BodyDiv>
@@ -275,7 +280,7 @@ export default function ChatRoom() {
   );
 }
 
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 0 5rem;
@@ -317,7 +322,7 @@ const LowerDiv = styled.div`
 const TitleSpan = styled.span`
   font-size: 1.4rem;
   font-weight: 600;
-  margin-bottom: 0.7rem;
+  margin: 1.5rem 0;
 `;
 
 const StyledBtnDiv = styled.div`
@@ -423,6 +428,7 @@ const ChatMainDiv = styled.div`
   height: 32rem;
   background-color: #cccccc;
   overflow-y: scroll;
+  padding: 1rem;
 
   /* 스크롤바의 스타일 지정 */
   &::-webkit-scrollbar {
@@ -450,7 +456,7 @@ const ChatMainDiv = styled.div`
 const ChatInputDiv = styled.div`
   height: 3rem;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
   padding: 0 0.7rem;
   background-color: #f3f3f3;
@@ -483,7 +489,7 @@ const ChatDiv = styled.div`
 `;
 
 const StyledInput = styled.input`
-  width: 23rem;
+  width: 33rem;
   height: 2rem;
   padding: 0 0.7rem;
   background-color: transparent;
@@ -541,4 +547,19 @@ const GreenBtn = styled.button`
     border: solid 2px #cde990;
     color: #cde990;
   }
+`;
+
+const SubmitBtn = styled.button`
+  border: transparent;
+  background-color: transparent;
+  padding-left: 0.5rem;
+  padding-top: 0.3rem;
+`;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0.5rem;
 `;

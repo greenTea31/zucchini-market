@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "@hookform/error-message";
 import FullWidthButton from "../components/Button/FullWidthButton";
-import { NumericFormat } from "react-number-format";
+import { motion } from "framer-motion";
 
 export default function SignUp() {
   // react-hook-form
@@ -56,7 +56,11 @@ export default function SignUp() {
   };
 
   return (
-    <StyledAll>
+    <StyledAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <StyledDiv>
         <StyledTitle>회원가입</StyledTitle>
         <StyledSpanDiv>
@@ -114,11 +118,6 @@ export default function SignUp() {
             placeholder="휴대폰번호(- 없이 입력해주세요)"
             {...register("phoneNumber", { required: true })}
           />
-          <NumericFormat
-            type="text"
-            placeholder="휴대폰번호(- 없이 입력해주세요)"
-            {...register("phoneNumber", { required: true })}
-          />
           <Input
             type="email"
             placeholder="이메일"
@@ -152,7 +151,7 @@ export default function SignUp() {
     </StyledAll>
   );
 }
-const StyledAll = styled.div`
+const StyledAll = styled(motion.div)`
   display: flex;
   justify-content: center;
   height: auto;

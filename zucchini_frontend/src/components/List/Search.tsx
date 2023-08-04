@@ -56,6 +56,7 @@ const StyledInput = styled.input`
   padding-left: 1rem;
   border-radius: 0.4rem;
   border: transparent;
+  font-size: 1rem;
   background-color: #f4f4f4;
 
   &:focus {

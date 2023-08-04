@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import ScheduleEach from "../components/Schedule/ScheduleEach";
 import axios from "axios";
 import Loading from "../components/Loading/Loading";
-
+import { motion } from "framer-motion";
 interface Item {
   id: number;
 }
@@ -52,7 +52,11 @@ export default function ScheduleList() {
   }
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <ChatListDiv>
         <TitleDiv>
           <TitleSpan>나의 일정</TitleSpan>
@@ -71,7 +75,7 @@ export default function ScheduleList() {
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
