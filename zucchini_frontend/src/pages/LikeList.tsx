@@ -5,7 +5,7 @@ import ItemEach from "../components/List/ItemEach";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Loading from "../components/Loading/Loading";
-
+import { motion } from "framer-motion";
 interface Item {
   id: number;
 }
@@ -45,7 +45,7 @@ export default function LikeList() {
     if (data) {
       setIsLoading(false);
     }
-    setIsLoading(false);
+    setIsLoading(false); // 없앨거에용
   }, [data]);
 
   if (isLoading) {
@@ -53,7 +53,11 @@ export default function LikeList() {
   }
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div>
         <TitleSpan>나의 찜한 목록</TitleSpan>
         <CategorySecond />
@@ -61,15 +65,17 @@ export default function LikeList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {items.map((item, index) => (
-            <ItemEach item={item} />
-          ))}
+          {data && data.length > 0 ? (
+            items.map((item, index) => <ItemEach item={item} />)
+          ) : (
+            <p>찜한 내역이 없습니다.</p>
+          )}
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;
@@ -92,30 +98,4 @@ const ItemsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-`;
-
-const ItemDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 16rem;
-  padding: 0.7rem 0.7rem 1.7rem 0.7rem;
-  margin-bottom: 1rem;
-  border: solid 1px #aeb9ad;
-  border-radius: 2rem;
-`;
-
-const ItemImg = styled.img`
-  border-radius: 1.5rem;
-`;
-
-const ItemTitle = styled.span`
-  font-weight: 500;
-  font-size: 1.1rem;
-  line-height: 1.4rem;
-  margin: 0.4rem 0.1rem;
-`;
-
-const ItemContent = styled.span`
-  color: gray;
-  margin: 0.2rem;
 `;

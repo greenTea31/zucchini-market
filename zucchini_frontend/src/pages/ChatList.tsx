@@ -3,6 +3,7 @@ import ChatRoomEach from "../components/List/ChatRoomEach";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Loading from "../components/Loading/Loading";
+import { motion } from "framer-motion";
 
 interface Item {
   id: number;
@@ -50,31 +51,38 @@ export default function ChatList() {
   }
 
   return (
-    <ContainerDiv>
-      {/* <TitleSpan>나의 채팅 목록</TitleSpan> */}
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <ChatListDiv>
         <TitleDiv>
           <TitleSpan>채팅 목록</TitleSpan>
         </TitleDiv>
         {/* 통신합시다^^ */}
-        {chats.map((chat, index) => (
-          <ChatRoomEach
-            chat={chat}
-            // chat={{
-            //   img: "물건물건 이미지 쏘오쓰",
-            //   sender: "거래자",
-            //   senderGrade: "거래자 등급",
-            //   lastMsg: "lastMessage",
-            //   lastMsgTime: "12:00",
-            //   unread: "1",
-            // }}
-          />
-        ))}
+        {data && data.length > 0 ? (
+          chats.map((chat, index) => (
+            <ChatRoomEach
+              chat={chat}
+              // chat={{
+              //   img: "물건물건 이미지 쏘오쓰",
+              //   sender: "거래자",
+              //   senderGrade: "거래자 등급",
+              //   lastMsg: "lastMessage",
+              //   lastMsgTime: "12:00",
+              //   unread: "1",
+              // }}
+            />
+          ))
+        ) : (
+          <p>채팅한 내역이 없습니다.</p>
+        )}
       </ChatListDiv>
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -84,7 +92,8 @@ const ContainerDiv = styled.div`
 `;
 
 const TitleSpan = styled.span`
-  font-size: 1.4rem;
+  font-size: 2rem;
+  font-weight: 600;
 `;
 
 const ChatListDiv = styled.div`

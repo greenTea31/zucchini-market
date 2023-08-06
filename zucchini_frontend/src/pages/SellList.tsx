@@ -5,7 +5,7 @@ import ItemEach from "../components/List/ItemEach";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Loading from "../components/Loading/Loading";
-
+import { motion } from "framer-motion";
 interface Item {
   id: number;
 }
@@ -34,7 +34,10 @@ export default function SellList() {
     axios
       .get("http://localhost:8080/api/mypage/sell")
       .then((res) => setData(res.data))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -49,7 +52,11 @@ export default function SellList() {
   }
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div>
         <TitleSpan>나의 판매 목록</TitleSpan>
         <CategorySecond />
@@ -57,15 +64,17 @@ export default function SellList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {items.map((item, index) => (
-            <ItemEach item={item} />
-          ))}
+          {data && data.length > 0 ? (
+            items.map((item, index) => <ItemEach item={item} />)
+          ) : (
+            <p>판매한 내역이 없습니다.</p>
+          )}
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;

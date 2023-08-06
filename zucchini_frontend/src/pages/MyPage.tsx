@@ -8,6 +8,7 @@ import todoList from "../assets/images/todoList.jpg";
 import femaleImg from "../assets/images/female.jpg";
 import api from "../utils/api";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export default function MyPage() {
   const [user, setUser] = useState();
@@ -33,7 +34,11 @@ export default function MyPage() {
   }, [user]);
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <button onClick={getUserInfo}>통신</button>
       <UpperDiv>
         <TitleSpan>마이페이지</TitleSpan>
@@ -83,7 +88,7 @@ export default function MyPage() {
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   justify-content: center;

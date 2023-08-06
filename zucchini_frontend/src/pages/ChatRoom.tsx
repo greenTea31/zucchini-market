@@ -2,13 +2,113 @@ import SimpleCalendar from "../components/Schedule/SimpleCalendar";
 import styled from "styled-components";
 import female from "../assets/images/female.jpg";
 import Modal from "../components/Common/Modal";
-import { useState } from "react";
-import Chatting from "../components/Chatting";
+import { useEffect, useRef, useState } from "react";
+import Chatting from "../components/Chat/Chatting";
 import ClosedButton from "../components/Button/ClosedButton";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { Client } from "@stomp/stompjs";
+import Imessage from "../types/Imessage";
+import { motion } from "framer-motion";
 
 export default function ChatRoom() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const { register, handleSubmit, reset } = useForm();
+
+  const [messages, setMessages] = useState<Imessage[]>([]);
+
+  const onSubmit = async (data: any) => {
+    if (!client.current) return;
+
+    client.current.publish({
+      destination: "/pub/chat",
+      // headers: {
+      //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // },
+      body: JSON.stringify({
+        roomNo: 1,
+        content: data.content,
+      }),
+    });
+
+    // 로그인 기능 구현되면 밑에 주석 풀기 (DB에 저장하는 코드)
+
+    // try {
+    //   const response = await axios.post("http://localhost:8080/api/room", {
+    //     roomNo: apply_id,
+    //     content: data.content,
+    //   });
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    reset();
+  };
+
+  async function getMessageList() {
+    // 임시 주석
+    // const response = await axios.get("http://localhost:8080/room/3/message");
+    // setMessages(response.data);
+
+    // 밑에 테스트 데이터로 일단 대체함
+    const testData: Imessage[] = [
+      {
+        sender: "hello",
+        content: "world",
+        isRead: false,
+        createdAt: "2021-08-26T15:00:00.000+00:00",
+      },
+      {
+        sender: "olleh",
+        content: "world",
+        isRead: false,
+        createdAt: "2021-08-26T15:00:00.000+00:00",
+      },
+    ];
+
+    setMessages(testData);
+  }
+
+  const { apply_id } = useParams();
+  const client = useRef<Client | null>(null);
+
+  const subscribe = () => {
+    if (!client.current) return;
+    // client.current.subscribe("/sub/chat/" + apply_id, (body) => { 현재 방번호까지 구현 되면 진행하기 (로그인이 되야 됨)
+    client.current.subscribe("/sub/chat/" + 1, (body) => {
+      const json_body = JSON.parse(body.body);
+      console.log(json_body);
+      setMessages((prevMessages) => [...prevMessages, json_body]);
+    });
+  };
+
+  const connect = () => {
+    console.log("연결성공기원");
+    client.current = new Client({
+      brokerURL: "ws://localhost:8080/api/ws",
+      onConnect: () => {
+        console.log("success");
+        subscribe();
+      },
+    });
+    client.current.activate();
+  };
+
+  const disconnect = () => {
+    if (!client.current) return;
+    client.current.deactivate();
+  };
+
+  useEffect(() => {
+    connect();
+
+    return () => disconnect();
+  }, []);
+
+  useEffect(() => {
+    getMessageList();
+  }, []);
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -21,7 +121,11 @@ export default function ChatRoom() {
   };
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Modal isOpen={buyOpen} toggle={buyToggle}>
         <ModalDiv>
           <ClosedButton />
@@ -122,13 +226,15 @@ export default function ChatRoom() {
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"
+                  d="M6.7y5 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"
                 />
               </Svg>
             </SvgDiv>
           </ChatTitleDiv>
           <ChatMainDiv>
-            <Chatting />
+            {messages.map((message, index) => (
+              <Chatting message={message} />
+            ))}
           </ChatMainDiv>
           <ChatInputDiv>
             <Svg
@@ -145,21 +251,28 @@ export default function ChatRoom() {
                 d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
               />
             </Svg>
-            <StyledInput placeholder="메시지를 입력해주세요.."></StyledInput>
-            <Svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
-              />
-            </Svg>
+            <StyledForm onSubmit={handleSubmit(onSubmit)}>
+              <StyledInput
+                {...register("content")}
+                placeholder="메시지를 입력해주세요.."
+              ></StyledInput>
+              <SubmitBtn type="submit">
+                <Svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+                  />
+                </Svg>
+              </SubmitBtn>
+            </StyledForm>
           </ChatInputDiv>
         </RightDiv>
       </BodyDiv>
@@ -167,7 +280,7 @@ export default function ChatRoom() {
   );
 }
 
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 0 5rem;
@@ -209,7 +322,7 @@ const LowerDiv = styled.div`
 const TitleSpan = styled.span`
   font-size: 1.4rem;
   font-weight: 600;
-  margin-bottom: 0.7rem;
+  margin: 1.5rem 0;
 `;
 
 const StyledBtnDiv = styled.div`
@@ -314,12 +427,36 @@ const ChatTitleDiv = styled.div`
 const ChatMainDiv = styled.div`
   height: 32rem;
   background-color: #cccccc;
+  overflow-y: scroll;
+  padding: 1rem;
+
+  /* 스크롤바의 스타일 지정 */
+  &::-webkit-scrollbar {
+    width: 8px; /* 스크롤바의 너비 */
+    background-color: #e8e2d9; /* 스크롤바의 배경색 */
+  }
+
+  /* 스크롤바의 thumb 스타일 지정 */
+  &::-webkit-scrollbar-thumb {
+    background-color: #acb4a8; /* 스크롤바 thumb 색상 */
+    border-radius: 3px; /*스크롤바 thumb의 모서리 둥글기*/
+  }
+
+  /* 스크롤바의 thumb에 호버했을 때 스타일 지정 */
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #818a7e; /* 스크롤바 thumb 호버 색상 */
+  }
+
+  /* 스크롤바의 thumb에 클릭했을 때 스타일 지정 */
+  &::-webkit-scrollbar-thumb:active {
+    background-color: #656c62; /* 스크롤바 thumb 클릭 색상 */
+  }
 `;
 
 const ChatInputDiv = styled.div`
   height: 3rem;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
   padding: 0 0.7rem;
   background-color: #f3f3f3;
@@ -352,7 +489,7 @@ const ChatDiv = styled.div`
 `;
 
 const StyledInput = styled.input`
-  width: 23rem;
+  width: 33rem;
   height: 2rem;
   padding: 0 0.7rem;
   background-color: transparent;
@@ -410,4 +547,19 @@ const GreenBtn = styled.button`
     border: solid 2px #cde990;
     color: #cde990;
   }
+`;
+
+const SubmitBtn = styled.button`
+  border: transparent;
+  background-color: transparent;
+  padding-left: 0.5rem;
+  padding-top: 0.3rem;
+`;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0.5rem;
 `;

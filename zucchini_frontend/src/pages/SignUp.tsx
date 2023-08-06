@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "@hookform/error-message";
 import FullWidthButton from "../components/Button/FullWidthButton";
+import { motion } from "framer-motion";
 
 export default function SignUp() {
   // react-hook-form
@@ -55,7 +56,11 @@ export default function SignUp() {
   };
 
   return (
-    <StyledAll>
+    <StyledAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <StyledDiv>
         <StyledTitle>회원가입</StyledTitle>
         <StyledSpanDiv>
@@ -109,7 +114,7 @@ export default function SignUp() {
             {...register("nickname", { required: true })}
           />
           <Input
-            type="number"
+            type="text"
             placeholder="휴대폰번호(- 없이 입력해주세요)"
             {...register("phoneNumber", { required: true })}
           />
@@ -146,7 +151,7 @@ export default function SignUp() {
     </StyledAll>
   );
 }
-const StyledAll = styled.div`
+const StyledAll = styled(motion.div)`
   display: flex;
   justify-content: center;
   height: auto;
@@ -192,6 +197,11 @@ const Input = styled.input`
   padding-left: 1rem;
   margin: 0.3rem;
   font-size: 1rem;
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
 `;
 
 const StyledMessage = styled.div`
@@ -199,6 +209,7 @@ const StyledMessage = styled.div`
   justify-content: start;
   padding-left: 1rem;
   color: tomato;
+  font-size: 0.9rem;
 `;
 
 const StyledButtonDiv = styled.div`

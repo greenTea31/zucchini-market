@@ -1,20 +1,22 @@
 import styled from "styled-components";
 import watch from "../assets/images/watch.png";
-import female from "../assets/images/female.jpg";
+import gradeFive from "../assets/images/5.png";
 import Modal from "../components/Common/Modal";
 import { useState, useEffect } from "react";
 import SimpleCalendar from "../components/Schedule/SimpleCalendar";
-import GoBackButton from "../components/Button/GoBackButton";
 import axios from "axios";
 import { QueryClient } from "@tanstack/query-core";
 import { QUERY_KEY } from "../constants/queryKey";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router";
 import IToken from "../types/IToken";
+import ClosedButton from "../components/Button/ClosedButton";
+import { motion } from "framer-motion";
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
   const [item, setItem] = useState<any>(); // item 상태 추가
+  const [like, setLike] = useState(false);
   const navigate = useNavigate();
   // accessToken필요할 때
   // const queryClient = useQueryClient();
@@ -24,14 +26,14 @@ export default function ItemDetail() {
   const toggle = () => {
     setIsOpen(!isOpen);
   };
-  const location = useLocation();
-  //
 
+  const location = useLocation();
+  // 아이템 가져오기
   useEffect(() => {
-    const fetchData = async () => {
+    const getItem = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/item/${location.pathname.split("/")[2]}`
+          `http://localhost:8080/api/item/${location.pathname.split("/")[2]}`
         );
         console.log(response);
         setItem(response.data);
@@ -39,9 +41,23 @@ export default function ItemDetail() {
         console.error("Error fetching data:", error);
       }
     };
-
-    fetchData();
+    getItem();
   }, [location.pathname]);
+
+  const toggleLike = () => {
+    // 좋아요 통신
+    // /api/user/item/like/{itemNo} 좋아요 등록
+    // /api/user/item/like/{itemNo} 좋아요 취소
+    setLike((prev) => !prev);
+
+    //     ax
+    //     if (prev) {
+    //       /api/user/item/like/{itemNo} -post
+    //     } else {
+    //       /api/user/item/like/{itemNo} -delete
+
+    // }
+  };
 
   const toChatRoom = async () => {
     try {
@@ -65,57 +81,74 @@ export default function ItemDetail() {
   };
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
-          <StyledSvg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </StyledSvg>
+          <ClosedButton onClick={toggle} />
         </ModalDiv>
         <ModalSpan>화상통화 일정 선택</ModalSpan>
-        <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
+        <SubSpan>일정은 상품당 한 번씩만 선택 가능합니다</SubSpan>
         <CalendarDiv>
           <SimpleCalendar />
         </CalendarDiv>
-        <StyledBtn>확인</StyledBtn>
-        <StyledBtn>취소</StyledBtn>
       </Modal>
-      {/* <GoBackButton /> */}
+      {/* <GoBackButton onClick={toPrev}/> */}
       <div>
-        <SvgButton>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="red"
-            className="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-            />
-          </svg>
+        <SvgButton onClick={toggleLike}>
+          {like ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="red"
+              className="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="red"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="red"
+              className="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+              />
+            </svg>
+          )}
         </SvgButton>
       </div>
       <UpperDiv>
         <UpperLeftDiv>
+          {/* src 태그 안에 제품 사진 */}
           <StyledImg src={watch}></StyledImg>
         </UpperLeftDiv>
         <UpperRightDiv>
-          <CategorySpan>전자제품</CategorySpan>
+          {/* item.categoryList 돌면서 뿌려주기*/}
+          <CategorySpan>
+            {item?.categoryList.map((category: any, index: number) => {
+              return (
+                <span key={index}>
+                  {category}
+                  {index < item?.categoryList.length - 1 ? "·" : null}
+                </span>
+              );
+            })}
+          </CategorySpan>
           <TitleSpan>{item?.title}</TitleSpan>
           <ContentSpan>{item?.content}</ContentSpan>
           <PriceSpan>{item?.price}원</PriceSpan>
@@ -162,40 +195,27 @@ export default function ItemDetail() {
         <LowerRightDiv>
           <SellerTitle>판매자 정보</SellerTitle>
           <SellerDiv>
-            <SellerImg src={female}></SellerImg>
+            {/* 등급 관련 이미지 넣기.. */}
+            <ImgDiv>
+              <SellerImg src={gradeFive}></SellerImg>
+            </ImgDiv>
             <SellerSpanDiv>
               <SellerName>{item?.seller.nickname}</SellerName>
               <span>{item?.seller.grade}</span>
               <SubSpan>판매중 3 · 거래완료 2</SubSpan>
             </SellerSpanDiv>
-            <SelectDiv>
-              {/* 구매자 판매자 따라 조건부 렌더링 필요... */}
-              <StatusSelect>
-                <option>판매중</option>
-                <option>예약중</option>
-                <option>판매완료</option>
-              </StatusSelect>
-            </SelectDiv>
           </SellerDiv>
         </LowerRightDiv>
       </LowerDiv>
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;
   margin: 0 10rem 13rem 10rem;
   font-family: "IBM Plex Sans KR", sans-serif;
-`;
-
-const StyledSvg = styled.svg`
-  height: 1.5rem;
-  width: 1.5rem;
-  cursor: pointer;
-  color: #849c80;
-  margin-bottom: 1rem;
 `;
 
 const RedSvg = styled.svg`
@@ -310,12 +330,20 @@ const SellerDiv = styled.div`
   padding-left: 1rem;
 `;
 
-const SellerImg = styled.img`
+const ImgDiv = styled.div`
   width: 6.5rem;
   height: 6.5rem;
   border-radius: 5rem;
   border: solid 1px black;
   margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SellerImg = styled.img`
+  width: 4.3rem;
+  height: 4.3rem;
 `;
 
 const SellerSpanDiv = styled.div`

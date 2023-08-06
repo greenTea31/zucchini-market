@@ -1,112 +1,131 @@
-import Calendar from "react-calendar";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import ScheduleEach from "../components/Schedule/ScheduleEach";
 import axios from "axios";
+import Loading from "../components/Loading/Loading";
+import { motion } from "framer-motion";
+interface Item {
+  id: number;
+}
 
 export default function ScheduleList() {
-  const [schedules, setSchedules] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<Item[] | null>(null);
 
-  async function getScheduleList() {
-    const response = await axios.get("http://localhost:8080/reservation");
-    setSchedules(response.data);
+  const [items, setItems] = useState([]);
+
+  function getItems() {
+    axios.get(``).then((response) => {
+      setItems(response.data);
+    });
   }
 
   useEffect(() => {
-    getScheduleList();
+    getItems();
   }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+
+    axios
+      .get("http://localhost:8080/api/mypage/schedule")
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+    setIsLoading(false); // 이거 없앨거에용
+  }, [data]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <ContainerDiv>
-      <TitleSpanDiv>
-        <TitleSpan>나의 일정</TitleSpan>
-      </TitleSpanDiv>
-      <LowerDiv>
-        <LeftDiv>
-          <Calendar
-            formatDay={(locale, date) =>
-              date.toLocaleString("en", { day: "numeric" })
-            }
-          />
-        </LeftDiv>
-        <RightDiv>
-          <ScheduleDiv>
-            <span>15:30</span>
-            <span>갤럭시북 2 PRO</span>
-            <StyledBtn>
-              <Link to={"/conference"} target="_blank">
-                입장
-              </Link>
-            </StyledBtn>
-          </ScheduleDiv>
-          <ScheduleDiv>
-            <span>20:00</span>
-            <span>인스탁스 미니 11</span>
-          </ScheduleDiv>
-        </RightDiv>
-      </LowerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <ChatListDiv>
+        <TitleDiv>
+          <TitleSpan>나의 일정</TitleSpan>
+        </TitleDiv>
+        <div>
+          <TodayDiv>
+            <p>Today : 2023-08-03</p>
+          </TodayDiv>
+          {data && data.length > 0 ? (
+            data.map((item) => <ScheduleEach key={item.id} item={item} />)
+          ) : (
+            <p>일정이 없습니다.</p>
+          )}
+        </div>
+      </ChatListDiv>
     </ContainerDiv>
   );
 }
-
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
-  padding: 5rem 13rem;
+  align-items: center;
+  padding: 5rem;
   margin: 0 6rem 13rem 6rem;
   font-family: "IBM Plex Sans KR", sans-serif;
 `;
 
-const TitleSpanDiv = styled.div`
-  text-align: center;
-  margin-bottom: 1.7rem;
-`;
-
 const TitleSpan = styled.span`
-  font-size: 2.5rem;
-  font-weight: 500;
+  font-size: 2rem;
+  font-weight: 600;
 `;
 
-const LowerDiv = styled.div`
-  height: 35rem;
-  padding: 1rem 0;
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-`;
+const ChatListDiv = styled.div`
+  height: 40rem;
+  width: 37rem;
+  padding: 3rem;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  overflow-y: auto;
 
-const LeftDiv = styled.div`
-  width: 50%;
-  display: flex;
-  justify-content: center;
-`;
-
-const RightDiv = styled.div`
-  width: 50%;
-`;
-
-const ScheduleDiv = styled.div`
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 10px 100px -20px,
-    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
-    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
-  height: 7rem;
-  margin-bottom: 2rem;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  font-size: 1.3rem;
-`;
-
-const StyledBtn = styled.button`
-  font-size: 1rem;
-  padding: 0.5rem 0.8rem;
-  cursor: pointer;
-  background-color: #ffd4d4;
-  border: solid 2px #ffd4d4;
-  border-radius: 0.4rem;
-
-  &:hover {
-    background-color: white;
-    border: solid 2px #ffd4d4;
+  /* 스크롤바의 스타일 지정 */
+  &::-webkit-scrollbar {
+    width: 8px; /* 스크롤바의 너비 */
+    background-color: #e8e2d9; /* 스크롤바의 배경색 */
   }
+
+  /* 스크롤바의 thumb 스타일 지정 */
+  &::-webkit-scrollbar-thumb {
+    background-color: #acb4a8; /* 스크롤바 thumb 색상 */
+    border-radius: 3px; /*스크롤바 thumb의 모서리 둥글기*/
+  }
+
+  /* 스크롤바의 thumb에 호버했을 때 스타일 지정 */
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #818a7e; /* 스크롤바 thumb 호버 색상 */
+  }
+
+  /* 스크롤바의 thumb에 클릭했을 때 스타일 지정 */
+  &::-webkit-scrollbar-thumb:active {
+    background-color: #656c62; /* 스크롤바 thumb 클릭 색상 */
+  }
+`;
+
+const TitleDiv = styled.div`
+  padding: 1rem 0 3rem 0;
+  text-align: center;
+`;
+
+const TodayDiv = styled.div`
+  border-bottom: solid 2px #254021;
+  padding-bottom: 0.5rem;
 `;
