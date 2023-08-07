@@ -4,13 +4,16 @@ import com.zucchini.domain.item.dto.request.ItemRequest;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
 import com.zucchini.domain.item.service.ItemService;
+import com.zucchini.global.common.PageResponse;
+import com.zucchini.global.common.PageSizeEnums;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,16 +22,32 @@ public class ItemController {
 
     private final ItemService itemService;
 
+//    /**
+//     * 상품 전체 조회
+//     * @param keyword : 검색어
+//     * @return List<FindItemListResponse> : 상품 전체 리스트
+//     * 200 : 조회 성공
+//     * 500 : 서버 에러
+//     */
+//    @GetMapping
+//    public ResponseEntity<List<FindItemListResponse>> findItem(@RequestParam String keyword) {
+//        return ResponseEntity.ok(itemService.findItemList(keyword));
+//    }
+
     /**
-     * 상품 전체 조회
-     * @param keyword : 검색어
-     * @return List<FindItemListResponse> : 상품 전체 리스트
+     * 상품 전체 조회 (페이징)
+     * @param category
+     * @param keyword
+     * @param page
+     * @return
      * 200 : 조회 성공
      * 500 : 서버 에러
      */
     @GetMapping
-    public ResponseEntity<List<FindItemListResponse>> findItem(@RequestParam String keyword) {
-        return ResponseEntity.ok(itemService.findItemList(keyword));
+    public ResponseEntity<PageResponse<FindItemListResponse>> findItem(@RequestParam String category, @RequestParam String keyword, @RequestParam int page) {
+        // page - 1 하는 이유 -> querydsl에서 페이지는 0부터 시작함
+        Pageable pageable = PageRequest.of(page-1, PageSizeEnums.ITEM_PAGE_SIZE.getValue());
+        return ResponseEntity.ok(itemService.findItemList(category, keyword, pageable));
     }
 
     /**

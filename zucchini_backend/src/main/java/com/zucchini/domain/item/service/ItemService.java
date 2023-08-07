@@ -3,6 +3,8 @@ package com.zucchini.domain.item.service;
 import com.zucchini.domain.item.dto.request.ItemRequest;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
+import com.zucchini.global.common.PageResponse;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +17,14 @@ public interface ItemService {
      * @return List<FindItemListResponse> : 상품 전체 리스트
      */
     List<FindItemListResponse> findItemList(String keyword);
+
+    /**
+     * 상품 전체 조회 (페이징)
+     * @param keyword : 검색어
+     * @return PageResponse<FindItemListResponse> : 페이지 상품 전체 리스트
+     */
+    PageResponse<FindItemListResponse> findItemList(String category, String keyword, Pageable pageable);
+
 
     /**
      * 상품 상세 조회

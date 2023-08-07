@@ -19,8 +19,11 @@ import com.zucchini.domain.room.service.RoomService;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.repository.UserItemLikeRepository;
 import com.zucchini.domain.user.repository.UserRepository;
+import com.zucchini.global.common.PageResponse;
 import com.zucchini.global.exception.UserException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -71,6 +74,39 @@ public class ItemServiceImpl implements ItemService {
                         .view(item.getView())
                         .build()
         ).collect(Collectors.toList());
+    }
+
+    /**
+     * 상품 전체 조회 (페이징)
+     * @param category : 카테고리
+     * @param keyword : 검색어
+     * @param pageable : 페이지 정보
+     * @return PageResponse<FindItemListResponse>
+     */
+    @Override
+    public PageResponse<FindItemListResponse> findItemList(String category, String keyword, Pageable pageable) {
+        Page<Item> pageItemList = null;
+        if(category.equals("")){
+            // 카테고리가 비어있는 경우
+            pageItemList = itemRepository.findPageItems(keyword, pageable);
+        }else{
+            // 카테고리가 비어있지 않은 경우
+            pageItemList = itemCategoryRepository.findPageItemsByCategory(category, keyword, pageable);
+        }
+        return new PageResponse<>(pageItemList.getContent().stream().map(
+                item -> FindItemListResponse.builder()
+                        .no(item.getNo())
+                        .title(item.getTitle())
+                        .updatedAt(item.getUpdatedAt())
+                        .content(item.getContent())
+                        .price(item.getPrice())
+                        .status(item.getStatus())
+                        .image(getItemImage(item.getNo()))
+                        .likeCount(userItemLikeRepository.countById_ItemNo(item.getNo()))
+                        .categoryList(getCategory(item.getCategoryList()))
+                        .view(item.getView())
+                        .build()
+        ).collect(Collectors.toList()), pageItemList.getTotalPages());
     }
 
     /**
