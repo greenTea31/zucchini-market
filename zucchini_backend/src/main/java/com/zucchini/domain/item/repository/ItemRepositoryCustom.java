@@ -1,6 +1,8 @@
 package com.zucchini.domain.item.repository;
 
 import com.zucchini.domain.item.domain.Item;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -21,5 +23,13 @@ public interface ItemRepositoryCustom {
      * @return Item : 상품 상세 정보
      */
     Item findItemByUser(int itemNo);
+
+    /**
+     * 상품 전체 조회(페이징)
+     * @param keyword : 검색어
+     * @param pageable : 페이지 정보
+     * @return
+     */
+    Page<Item> findPageItems(String keyword, Pageable pageable);
 
 }
