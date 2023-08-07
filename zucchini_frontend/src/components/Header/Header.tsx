@@ -4,18 +4,18 @@ import Menu from "./components/Menu";
 import { useState } from "react";
 import MenuWindow from "./components/MenuWindow";
 import navigation from "./constants/navigation";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const location = useLocation();
   return (
     <HeaderContainer>
       <HeaderLeft>
         <Link to={"/"}>
           <Logo>애호박마켓</Logo>
         </Link>
-        <Navigation list={navigation} />
+        {location.pathname !== "/" && <Navigation list={navigation} />}
       </HeaderLeft>
 
       <HeaderRight>
