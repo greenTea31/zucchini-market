@@ -51,6 +51,10 @@ export default function ScheduleList() {
     return <Loading />;
   }
 
+  // 오늘 날짜 출력
+  const time = Date.now();
+  const today = new Date(time);
+
   return (
     <ContainerDiv
       initial={{ opacity: 0 }}
@@ -63,12 +67,12 @@ export default function ScheduleList() {
         </TitleDiv>
         <div>
           <TodayDiv>
-            <p>Today : 2023-08-03</p>
+            <p>Today : {today.toLocaleDateString()}</p>
           </TodayDiv>
           {data && data.length > 0 ? (
             data.map((item) => <ScheduleEach key={item.id} item={item} />)
           ) : (
-            <p>일정이 없습니다.</p>
+            <AlertP>일정이 없습니다.</AlertP>
           )}
         </div>
       </ChatListDiv>
@@ -128,4 +132,8 @@ const TitleDiv = styled.div`
 const TodayDiv = styled.div`
   border-bottom: solid 2px #254021;
   padding-bottom: 0.5rem;
+`;
+
+const AlertP = styled.p`
+  margin-top: 1rem;
 `;

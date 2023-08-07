@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AnimatePresence } from "framer-motion";
 
 const Layout = styled.div`
-  /* min-width: 90rem; */
+  min-width: 90rem;
   font-family: "IBM Plex Sans KR", sans-serif;
 `;
 

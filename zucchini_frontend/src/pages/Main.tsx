@@ -80,7 +80,7 @@ export default function Main() {
             </div>
             <div>
               <LowerBtn>
-                <Link to={"/mypage/buy"}>영상 목록</Link>
+                <Link to={"/aboutreplay"}>설명 보기</Link>
               </LowerBtn>
             </div>
           </ContentDiv>
@@ -166,8 +166,6 @@ const MainUpper = styled.div`
   flex-direction: row;
   justify-content: center;
   background-color: #aacb73;
-
-  
 `;
 
 const MainLower = styled.div`
