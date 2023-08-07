@@ -11,6 +11,7 @@ import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
@@ -30,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {
 
+
     private ConferenceRepository conferenceRepository;
     private ReservationRepository reservationRepository;
     private UserRepository userRepository;
@@ -46,10 +48,12 @@ public class SessionServiceImpl implements SessionService {
 //    @Value("${openvidu.secret}")
     private String SECRET;
 
+    @Autowired
     public SessionServiceImpl(@Value("${openvidu.secret}") String secret, @Value("${openvidu.url}") String openviduUrl, ConferenceRepository conferenceRepository,
                               ReservationRepository reservationRepository, UserRepository userRepository, RedisTemplate<String, String> redisTemplate) {
         this.conferenceRepository = conferenceRepository;
         this.reservationRepository = reservationRepository;
+        this.userRepository = userRepository;
         this.SECRET = secret;
         this.OPENVIDU_URL = openviduUrl;
         this.openVidu = new OpenVidu(OPENVIDU_URL, SECRET);
@@ -59,6 +63,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public SessionResponse findConferenceSession(int no, HttpSession httpSession, HttpResponse response)
             throws OpenViduJavaClientException, OpenViduHttpException {
+        log.info("no========================={}", no);
         Optional<Conference> conference = conferenceRepository.findById(no);
         // 없는 컨퍼런스면 예외 처리
         if(!conference.isPresent()) throw new NoSuchElementException("컨퍼런스가 없습니다.");
@@ -87,6 +92,7 @@ public class SessionServiceImpl implements SessionService {
         // 검색하는 방이 존재하지 않을 경우
         if (this.mapSessions.get(no) == null) {
             // session 값 생성
+            log.info("openvidu==============={}", this.openVidu);
             Session session = this.openVidu.createSession();
             log.info("방이 없는 경우에 진입 roomId: {}, sessionId: {}", no,session.getSessionId());
             try{
