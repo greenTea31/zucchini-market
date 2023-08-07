@@ -57,9 +57,9 @@ public interface RoomService {
 
     /**
      * 특정 방에 메세지를 추가합니다.
-     * @param addMessageRequest(방 번호, 보낸 사람, 내용)
+     * @param addMessageRequest(방 번호, 보낸 사람, 읽음 여부)
      */
-    void addMessage(int roomNo, AddMessageRequest addMessageRequest);
+    void addMessage(int roomNo, AddMessageRequest addMessageRequest, boolean isJoined);
 
     void changeRoomItemNo(int itemNo);
 
