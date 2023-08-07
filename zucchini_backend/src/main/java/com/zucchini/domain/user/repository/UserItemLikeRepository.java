@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface UserItemLikeRepository extends JpaRepository<UserItemLike, UserItemLikeId> {
+public interface UserItemLikeRepository extends JpaRepository<UserItemLike, UserItemLikeId>, UserItemLikeRepositoryCustom {
 
     /**
      * 해당 회원이 찜한 상품 목록 조회
