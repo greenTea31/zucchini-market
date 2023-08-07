@@ -3,7 +3,7 @@ package com.zucchini.domain.session.service;
 import com.zucchini.domain.session.dto.response.SessionResponse;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
-import org.apache.http.HttpResponse;
+import org.apache.hc.core5.http.HttpResponse;
 
 import javax.servlet.http.HttpSession;
 
