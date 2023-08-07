@@ -10,10 +10,15 @@ interface IItem {
 
 interface INavigation {
   list: IItem[];
+  loggedOutList: IItem[];
   onItemClick: () => void;
 }
 
-export default function MenuNavigation({ list, onItemClick }: INavigation) {
+export default function MenuNavigation({
+  list,
+  loggedOutList,
+  onItemClick,
+}: INavigation) {
   const controls = useAnimation();
 
   useEffect(() => {
@@ -28,21 +33,37 @@ export default function MenuNavigation({ list, onItemClick }: INavigation) {
 
   return (
     <NavigationContainer>
-      {list.map((element, index) => (
-        <NavigationItem
-          onClick={() => {
-            onItemClick();
-            controls.start({ opacity: 0, x: -20 });
-          }}
-          initial={{ opacity: 0, x: -20 }}
-          animate={controls}
-          custom={index}
-          to={element.navLink}
-          key={index}
-        >
-          {element.navName}
-        </NavigationItem>
-      ))}
+      {localStorage.getItem("USER")
+        ? list.map((element, index) => (
+            <NavigationItem
+              onClick={() => {
+                onItemClick();
+                controls.start({ opacity: 0, x: -20 });
+              }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={controls}
+              custom={index}
+              to={element.navLink}
+              key={index}
+            >
+              {element.navName}
+            </NavigationItem>
+          ))
+        : loggedOutList.map((element, index) => (
+            <NavigationItem
+              onClick={() => {
+                onItemClick();
+                controls.start({ opacity: 0, x: -20 });
+              }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={controls}
+              custom={index}
+              to={element.navLink}
+              key={index}
+            >
+              {element.navName}
+            </NavigationItem>
+          ))}
     </NavigationContainer>
   );
 }

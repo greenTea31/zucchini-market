@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from "react-router";
 import IToken from "../types/IToken";
 import ClosedButton from "../components/Button/ClosedButton";
 import { motion } from "framer-motion";
+import api from "../utils/api";
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,31 +45,42 @@ export default function ItemDetail() {
     getItem();
   }, [location.pathname]);
 
+  // 하트(찜)
   const toggleLike = () => {
-    // 좋아요 통신
-    // /api/user/item/like/{itemNo} 좋아요 등록
-    // /api/user/item/like/{itemNo} 좋아요 취소
     setLike((prev) => !prev);
 
-    //     ax
-    //     if (prev) {
-    //       /api/user/item/like/{itemNo} -post
-    //     } else {
-    //       /api/user/item/like/{itemNo} -delete
-
-    // }
+    if (like) {
+      api({
+        method: "post",
+        url: `user/item/like/${location.pathname.split("/")[2]}`,
+      });
+    } else {
+      api({
+        method: "delete",
+        url: `user/item/like/${location.pathname.split("/")[2]}`,
+      });
+    }
   };
 
   const toChatRoom = async () => {
     try {
       // 채팅방 생성
-      const response = await axios.post("http://localhost:8080/room", {
+      const response = await api({
+        method: "post",
+        url: "http://localhost:8080/room",
         headers: {
           Authorization: `Bearer ${
             (queryClient.getQueryData([QUERY_KEY.user]) as IToken).accessToken
           }`,
         },
       });
+      //   axios.post("http://localhost:8080/room", {
+      //   headers: {
+      //     Authorization: `Bearer ${
+      //       (queryClient.getQueryData([QUERY_KEY.user]) as IToken).accessToken
+      //     }`,
+      //   },
+      // });
 
       // 응답 확인
       console.log(response.data);
@@ -138,7 +150,7 @@ export default function ItemDetail() {
           <StyledImg src={watch}></StyledImg>
         </UpperLeftDiv>
         <UpperRightDiv>
-          {/* item.categoryList 돌면서 뿌려주기*/}
+          {/* item.categoryList 돌면서 뿌려주기 '카테고리1·카테고리2·카테고리3형식 */}
           <CategorySpan>
             {item?.categoryList.map((category: any, index: number) => {
               return (
