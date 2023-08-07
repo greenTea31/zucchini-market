@@ -8,6 +8,8 @@ import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.domain.user.dto.response.UserInfoResponse;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.domain.user.service.UserService;
+import com.zucchini.global.common.PageResponse;
+import com.zucchini.global.common.PageSizeEnums;
 import com.zucchini.global.config.jwt.JwtHeaderUtilEnums;
 import com.zucchini.global.config.security.CustomUserDetails;
 import com.zucchini.global.domain.TokenDto;
@@ -15,6 +17,8 @@ import com.zucchini.global.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -272,16 +276,30 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+//    /**
+//     * 상품 찜 목록 조회
+//     * @param keyword : 검색어
+//     * @return List<FindItemListResponse> : 상품 찜 목록 조회 응답 DTO 리스트
+//     * 200 : 찜 목록 조회 성공
+//     * 500 : 서버 내 에러
+//     */
+//    @GetMapping("/item/like")
+//    public ResponseEntity<List<FindItemListResponse>> findLikeItemList(@RequestParam String keyword) {
+//        List<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(keyword);
+//        return ResponseEntity.ok(userLikeItemList);
+//    }
+
     /**
-     * 상품 찜 목록 조회
+     * 상품 찜 목록 조회(페이징)
      * @param keyword : 검색어
      * @return List<FindItemListResponse> : 상품 찜 목록 조회 응답 DTO 리스트
      * 200 : 찜 목록 조회 성공
      * 500 : 서버 내 에러
      */
     @GetMapping("/item/like")
-    public ResponseEntity<List<FindItemListResponse>> findLikeItemList(@RequestParam String keyword) {
-        List<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(keyword);
+    public ResponseEntity<PageResponse<FindItemListResponse>> findLikeItemList(@RequestParam String keyword, @RequestParam int page) {
+        Pageable pageable = PageRequest.of(page - 1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
+        PageResponse<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(keyword, pageable);
         return ResponseEntity.ok(userLikeItemList);
     }
 
