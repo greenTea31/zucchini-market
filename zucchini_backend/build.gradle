@@ -45,6 +45,12 @@ dependencies {
 	implementation "com.querydsl:querydsl-jpa:5.0.0"
 	implementation "com.querydsl:querydsl-apt:5.0.0"
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// openvidu
+	implementation 'io.openvidu:openvidu-java-client:2.21.1'
+	implementation 'org.springframework.boot:spring-boot-devtools'
+
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 def querydslDir = "$buildDir/generated/querydsl"
