@@ -111,7 +111,7 @@ public class RoomServiceImpl implements RoomService{
 
     /**
      * room을 입력받아 현재 로그인한 유저의 거래 상대자가 누군지 파악합니다.
-     * @param item
+     * @param room
      * @return User : 현재 로그인한 유저의 거래 상대자
      */
     private User getOpponent(Room room) {
@@ -259,14 +259,16 @@ public class RoomServiceImpl implements RoomService{
      * @param addMessageRequest 메시지 정보 (채팅방 번호, 보낸 사람, 내용)
      */
     @Override
-    public void addMessage(int roomNo, AddMessageRequest addMessageRequest) {
+    public void addMessage(int roomNo, AddMessageRequest addMessageRequest, boolean isJoined) {
         // 로그인한 유저 정보 얻어옴
-        String currentPrincipalId = getCurrentId();
+//        String currentPrincipalId = getCurrentId();
 
         // 로그인한 유저가 그 방에 참가해 있는지 RoomUser Table 조회하면서 확인함
         // 참가해있지 않으면 예외 발생시킴
         Room room = roomRepository.findById(roomNo).orElseThrow(() -> new NoSuchElementException("해당 방이 없습니다."));
-        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다."));
+        User user = userRepository.findById(addMessageRequest.getSenderNo()).orElseThrow(() -> new UserException("잘못된 접근입니다."));
+//        User user = userRepository.findById(addMessageRequest.getSenderNo()).orElseThrow(() -> new UserException("잘못된 접근입니다.");
+
         boolean joined = roomUserRepository.existsByRoomAndUser(room, user);
 
         if (!joined) {
@@ -279,6 +281,10 @@ public class RoomServiceImpl implements RoomService{
                 .sender(user)
                 .content(addMessageRequest.getContent())
                 .build();
+
+        if (isJoined) {
+            message.read();
+        }
 
         messageRepository.save(message);
     }

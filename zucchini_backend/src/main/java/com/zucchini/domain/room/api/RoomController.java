@@ -106,10 +106,10 @@ public class RoomController {
      * @param addMessageRequest : 추가할 메시지 정보를 담은 요청 객체
      * @return ResponseEntity<Integer> : 201 Created 상태코드를 반환
      */
-    @PostMapping("/{roomNo}/message")
-    public ResponseEntity<Integer> addMessage(@PathVariable int roomNo, @Valid @RequestBody AddMessageRequest addMessageRequest) {
-        roomService.addMessage(roomNo, addMessageRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+//    @PostMapping("/{roomNo}/message")
+//    public ResponseEntity<Integer> addMessage(@PathVariable int roomNo, @Valid @RequestBody AddMessageRequest addMessageRequest) {
+//        roomService.addMessage(roomNo, addMessageRequest);
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
 
 }
