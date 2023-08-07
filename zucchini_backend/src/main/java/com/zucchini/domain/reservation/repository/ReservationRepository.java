@@ -1,6 +1,5 @@
 package com.zucchini.domain.reservation.repository;
 
-import com.zucchini.domain.conference.domain.Conference;
 import com.zucchini.domain.reservation.domain.Reservation;
 import com.zucchini.domain.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -58,6 +57,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
      */
     @Query("SELECT r FROM Reservation r JOIN FETCH r.conference c WHERE c.no = :conferenceNo AND r.user = :user")
     List<Reservation> findByConferenceNoAndUser(@Param("conferenceNo") int conferenceNo, @Param("user") User user);
+
+    /**
+     * 컨퍼런스 번호에 해당되는 예약 조회 쿼리
+     * @param conferenceNo
+     * @return
+     */
+    @Query(value = "select r from Reservation r where r.conferenceNo = :conferenceNo")
+    List<Reservation> findByConferenceNo(@Param("conferenceNo") int conferenceNo);
 
 
 }
