@@ -13,6 +13,7 @@ import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.domain.user.repository.UserItemLikeRepository;
 import com.zucchini.domain.user.repository.UserRepository;
+import com.zucchini.global.common.PageResponse;
 import com.zucchini.global.config.cache.CacheKey;
 import com.zucchini.global.config.jwt.JwtExpirationEnums;
 import com.zucchini.global.config.security.CustomUserDetails;
@@ -23,6 +24,8 @@ import com.zucchini.global.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
@@ -430,6 +433,32 @@ public class UserServiceImpl implements UserService {
                         .categoryList(getCategory(userItemLike.getCategoryList()))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 찜 목록 조회(페이징)
+     * @param keyword : 검색어
+     * @param pageable : 페이지 정보
+     * @return PageResponse<FindItemListResponse> : 상품 목록 조회 DTO 리스트
+     */
+    @Override
+    public PageResponse<FindItemListResponse> findUserLikeItemList(String keyword, Pageable pageable) {
+        String loginId = getCurrentId();
+        Page<Item> pageItemList = userItemLikeRepository.findPageUserLikeItems(loginId, keyword, pageable);
+
+        return new PageResponse<>(pageItemList.getContent().stream()
+                .map(userItemLike -> FindItemListResponse.builder()
+                        .no(userItemLike.getNo())
+                        .title(userItemLike.getTitle())
+                        .updatedAt(userItemLike.getUpdatedAt())
+                        .content(userItemLike.getContent())
+                        .price(userItemLike.getPrice())
+                        .status(userItemLike.getStatus())
+                        .image(getItemImage(userItemLike.getNo()))
+                        .likeCount(userItemLikeRepository.countById_ItemNo(userItemLike.getNo()))
+                        .categoryList(getCategory(userItemLike.getCategoryList()))
+                        .build())
+                .collect(Collectors.toList()), pageItemList.getTotalPages());
     }
 
     /**

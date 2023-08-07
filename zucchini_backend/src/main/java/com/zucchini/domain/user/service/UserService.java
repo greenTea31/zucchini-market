@@ -4,7 +4,9 @@ import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
 import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
+import com.zucchini.global.common.PageResponse;
 import com.zucchini.global.domain.TokenDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -108,6 +110,14 @@ public interface UserService {
      * @return List<FindItemListResponse> : 상품 목록 조회 DTO 리스트
      */
     List<FindItemListResponse> findUserLikeItemList(String keyword);
+
+    /**
+     * 찜 목록 조회(페이징)
+     * @param keyword : 검색어
+     * @param pageable : 페이지 정보
+     * @return PageResponse<FindItemListResponse> : 상품 목록 조회 DTO 리스트
+     */
+    PageResponse<FindItemListResponse> findUserLikeItemList(String keyword, Pageable pageable);
 
     /**
      * 상품 찜 취소

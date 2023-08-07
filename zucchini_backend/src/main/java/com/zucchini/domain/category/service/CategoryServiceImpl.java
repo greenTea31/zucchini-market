@@ -6,6 +6,8 @@ import com.zucchini.domain.category.repository.CategoryRepository;
 import com.zucchini.domain.category.repository.ItemCategoryRepository;
 import com.zucchini.domain.item.domain.Item;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     /**
-     * 카테고리에 속한 상품 목록 조회
+     * 카테고리에 속한 상품 목록 전체 조회
      * @param category : 카테고리
      * @return List<Item> : 상품 목록
      */
@@ -43,6 +45,19 @@ public class CategoryServiceImpl implements CategoryService{
     @Transactional(readOnly = true)
     public List<Item> findCategoryItemList(String category) {
         return itemCategoryRepository.findAllByCategory(category);
+    }
+
+    /**
+     * 카테고리에 속한 상품 목록 페이징 조회
+     * @param category : 카테고리
+     * @param keyword : 검색어
+     * @param pageable : 페이지 정보
+     * @return
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Item> findCategoryPageItemList(String category, String keyword, Pageable pageable) {
+        return itemCategoryRepository.findPageItemsByCategory(category, keyword, pageable);
     }
 
 }

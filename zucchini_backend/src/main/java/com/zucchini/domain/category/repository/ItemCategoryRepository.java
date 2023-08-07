@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ItemCategoryRepository extends JpaRepository<ItemCategory, ItemCategoryId> {
+public interface ItemCategoryRepository extends JpaRepository<ItemCategory, ItemCategoryId>, ItemCategoryRepositoryCustom {
 
     /**
      * 카테고리에 해당하는 아이템 목록 조회

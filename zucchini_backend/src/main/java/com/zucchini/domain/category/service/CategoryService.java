@@ -2,6 +2,8 @@ package com.zucchini.domain.category.service;
 
 import com.zucchini.domain.category.dto.response.FindCategoryResponse;
 import com.zucchini.domain.item.domain.Item;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -19,5 +21,7 @@ public interface CategoryService {
      * @return List<Item> : 상품 목록
      */
     List<Item> findCategoryItemList(String category);
+
+    Page<Item> findCategoryPageItemList(String category, String keyword, Pageable pageable);
 
 }
