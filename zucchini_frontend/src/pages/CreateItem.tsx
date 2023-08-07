@@ -36,7 +36,20 @@ export default function CreateItem() {
   const [selectedTimes, setSelectedTimes] = useState<any>([]);
 
   // 카테고리 전부
-  const [allCategories, setAllCategories] = useState([]);
+  const [allCategories, setAllCategories] = useState([
+    "디지털기기",
+    "가구/인테리어",
+    "유아동",
+    "여성의류/잡화",
+    "남성의류/잡화",
+    "생활가전/주방",
+    "도서/게임/음반",
+    "뷰티/미용",
+    "식물",
+    "반려동물용품",
+    "티켓/교환권",
+    "기타 중고물품",
+  ]);
   // 선택한 카테고리
   const [selectedCategories, setSelectedCategories] = useState<any>([]);
   // 처음 렌더링될 때, 카테고리 가져올 거예영
@@ -80,7 +93,17 @@ export default function CreateItem() {
     // 30분 반올림하는 것도 추가해야대여....
     // gmt??tlqkf...
     setSelectedTimes([...selectedTimes, clickedTime]);
-    alert("추가되었습니다");
+    alert("일정이 추가되었습니다.");
+  };
+
+  // 선택한 시간 삭제
+  const removeTime = (timeToRemove: Date) => {
+    const updatedTimes = selectedTimes.filter(
+      (time: Date) => time !== timeToRemove
+    ); // 배열의 각 요소인 time(Date 객체)가 timeToRemove와 같지 않은지 검사
+    // 같지 않다면 true, 같으면 false 반환
+    // timeToRemove와 같지 않은 요소들만 남긴 새로운 배열 생성
+    setSelectedTimes(updatedTimes); // 새로운 배열 업데이트
   };
 
   //진짜 제출
@@ -121,13 +144,35 @@ export default function CreateItem() {
             toggle={toggle}
           />
         </CalendarDiv>
-        {/* 선택된 시간 보여주기 */}
-        {/* css 부탁해요~~ */}
-        <div>
+        <TimeContainerDiv>
           {selectedTimes.map((selectedTime: Date) => {
-            return <div>{selectedTime.toString()}</div>;
+            const formattedTime = dayjs(selectedTime).format(
+              "YYYY년 MM월 DD일 HH시 mm분"
+            );
+            return (
+              <TimeDiv key={formattedTime}>
+                {formattedTime}
+                {/* <TimeBtn> */}
+                <TimeSvg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="red"
+                  className="w-6 h-6"
+                  onClick={() => removeTime(selectedTime)}
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </TimeSvg>
+                {/* </TimeBtn> */}
+              </TimeDiv>
+            );
           })}
-        </div>
+        </TimeContainerDiv>
         <StyledBtn onClick={addTime}>추가</StyledBtn>
         <StyledBtn onClick={() => toggle()}>완료</StyledBtn>
       </Modal>
@@ -162,6 +207,10 @@ export default function CreateItem() {
             type="text"
             placeholder=", 없이 입력해주세요"
             suffix={" 원"}
+            style={{
+              fontSize: "1rem",
+              paddingLeft: "0.5rem",
+            }}
             thousandSeparator=","
             {...register("price", { required: "가격을 입력해주세요" })}
           />
@@ -196,7 +245,7 @@ export default function CreateItem() {
               물품의 종류를 선택해주세요
             </option>
             <option value="" disabled selected hidden>
-              카테고리
+              물품의 종류를 선택해주세요
             </option>
             {allCategories.map((category) => {
               return <option>{category}</option>;
@@ -320,6 +369,7 @@ const StyledButton = styled.button`
   background-color: #cde990;
   border: #cde990;
   color: #254021;
+  font-size: 1rem;
 
   &:hover {
     border: 2px solid #cde990;
@@ -353,8 +403,34 @@ const StyledBtn = styled.button`
   border-radius: 0.4rem;
   cursor: pointer;
   margin-right: 0.4rem;
+  margin-top: 1rem;
+  font-size: 1rem;
 
   &:hover {
     background-color: white;
   }
+`;
+
+const TimeContainerDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 35rem;
+`;
+
+const TimeDiv = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  border: solid 1px black;
+  padding: 1rem;
+  width: 15rem;
+`;
+
+const TimeSvg = styled.svg`
+  height: 1.3rem;
+  width: 1.3rem;
+  cursor: pointer;
 `;

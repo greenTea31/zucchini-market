@@ -24,6 +24,7 @@ import NotFound from "./pages/NotFound";
 import TermsOfUse from "./components/Footer/TermsOfUse";
 import PrivacyPolicy from "./components/Footer/PrivacyPolicy";
 import PrivateRoute from "./components/Common/PrivateRoute";
+import AboutReplay from "./pages/AboutReplay";
 
 const router = createBrowserRouter([
   {
@@ -121,6 +122,10 @@ const router = createBrowserRouter([
       {
         path: "/privacypolicy",
         element: <PrivacyPolicy />,
+      },
+      {
+        path: "/aboutreplay",
+        element: <AboutReplay />,
       },
     ],
     errorElement: <NotFound />,
