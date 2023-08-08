@@ -2,8 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { http } from "../utils/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY } from "../constants/queryKey";
-import { saveUser } from "./useLocalStorage";
+import { getUser, removeUser, saveUser } from "./useLocalStorage";
 import IToken from "../types/IToken";
+import axios from "axios";
+import { BASE_URL } from "../constants/url";
+import api from "../utils/api";
 
 interface IUser {
   id: string;
@@ -38,3 +41,17 @@ export function useLogin() {
 
   return mutation;
 }
+
+export async function logout() {
+  const accessToken = getUser();
+
+  if (accessToken) {
+    await api({
+      method: "POST",
+      url: "user/logout",
+    });
+    removeUser();
+  }
+}
+
+export function regenerateToken() {}

@@ -18,11 +18,11 @@ function Root() {
   return (
     <Layout>
       <AnimatePresence>
-        <ReactQueryDevtools initialIsOpen={false} />
+        <ReactQueryDevtools initialIsOpen={false} key={"reactQueryDevTools"} />
         <ScrollToTop />
-        {exclude.includes(location.pathname) ? null : <Header />}
-        <Outlet />
-        <Footer />
+        {exclude.includes(location.pathname) ? null : <Header key="header" />}
+        <Outlet key="body" />
+        <Footer key="footer" />
       </AnimatePresence>
     </Layout>
   );

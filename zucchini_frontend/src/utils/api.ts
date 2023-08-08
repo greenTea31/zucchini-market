@@ -12,6 +12,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const accessToken = getUser(); // localStorage에서 토큰을 가져옵니다. 적절한 방법으로 토큰을 가져와주세요.
+    console.log(accessToken);
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
