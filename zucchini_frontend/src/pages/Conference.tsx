@@ -5,6 +5,7 @@ import Chatting from "../components/Chat/Chatting";
 import { useState } from "react";
 import Modal from "../components/Common/Modal";
 import ClosedButton from "../components/Button/ClosedButton";
+import axios from "axios";
 
 export default function Conference() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +26,26 @@ export default function Conference() {
     content: "",
     isRead: false,
     createdAt: "",
+  };
+
+  // 신고 관련
+  const [reportReason, setReportReason] = useState("");
+
+  const handleReport = () => {
+    // 신고 데이터 전송
+    axios
+      .post("http://localhost:8080/api/report", {
+        reporter: "swan",
+        reported: "abc",
+        reason: reportReason,
+        room_no: 12,
+      })
+      .then((response) => {
+        console.log("신고 성공: ", response.data);
+      })
+      .catch((error) => {
+        console.error("신고 실패: ", error);
+      });
   };
 
   return (
@@ -59,10 +80,14 @@ export default function Conference() {
             <option>사기 신고</option>
             <option>기타</option>
           </ModalSelect>
-          <ModalTextarea placeholder="상세 사유를 입력해주세요.."></ModalTextarea>
+          <ModalTextarea
+            placeholder="상세 사유를 입력해주세요.."
+            value={reportReason}
+            onChange={(e) => setReportReason(e.target.value)}
+          ></ModalTextarea>
         </SpanDiv>
         <ButtonDiv>
-          <RedBtn>신고</RedBtn>
+          <RedBtn onClick={handleReport}>신고</RedBtn>
           <GreenBtn>취소</GreenBtn>
         </ButtonDiv>
       </Modal>

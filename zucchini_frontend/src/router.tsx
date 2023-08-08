@@ -25,6 +25,7 @@ import TermsOfUse from "./components/Footer/TermsOfUse";
 import PrivacyPolicy from "./components/Footer/PrivacyPolicy";
 import PrivateRoute from "./components/Common/PrivateRoute";
 import AboutReplay from "./pages/AboutReplay";
+import AboutSchedule from "./pages/AboutSchedule";
 
 const router = createBrowserRouter([
   {
@@ -126,6 +127,10 @@ const router = createBrowserRouter([
       {
         path: "/aboutreplay",
         element: <AboutReplay />,
+      },
+      {
+        path: "/aboutschedule",
+        element: <AboutSchedule />,
       },
     ],
     errorElement: <NotFound />,

@@ -17,6 +17,7 @@ export default function ItemList() {
   const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
+
   function getItems() {
     axios
       .get(`http://localhost:8080/item?keyword=${keyword}`)
@@ -31,18 +32,6 @@ export default function ItemList() {
 
   useEffect(() => {
     getItems();
-  }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-    // 통신....
-    axios
-      .get("http://localhost:8080/api/item")
-      .then((res) => {
-        setData(res.data);
-        // console.log(res.data);
-      })
-      .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
