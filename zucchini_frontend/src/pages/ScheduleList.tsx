@@ -40,13 +40,6 @@ export default function ScheduleList() {
       });
   }, []);
 
-  useEffect(() => {
-    if (data) {
-      setIsLoading(false);
-    }
-    setIsLoading(false); // 이거 없앨거에용
-  }, [data]);
-
   if (isLoading) {
     return <Loading />;
   }

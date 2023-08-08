@@ -80,7 +80,7 @@ export default function Main() {
             </div>
             <div>
               <LowerBtn>
-                <Link to={"/aboutreplay"}>설명 보기</Link>
+                <Link to={"/aboutreplay"}>영상 기록</Link>
               </LowerBtn>
             </div>
           </ContentDiv>
@@ -146,7 +146,7 @@ export default function Main() {
             </SubDiv>
             <div>
               <LowerBtn>
-                <Link to={"/mypage/schedule"}>일정 목록</Link>
+                <Link to={"/aboutschedule"}>일정 조율</Link>
               </LowerBtn>
             </div>
           </ContentDiv>
