@@ -29,11 +29,11 @@ export default function Main() {
             </SpanContent>
           </TitleDiv>
           <BtnDiv>
-            <Link to={"/signup"}>
-              <SignUpBtn>회원가입</SignUpBtn>
+            <Link to={"/item"}>
+              <ItemBtn>상품 구경</ItemBtn>
             </Link>
-            <Link to={"/login"}>
-              <LoginBtn>로그인</LoginBtn>
+            <Link to={"/mypage/schedule"}>
+              <ScheduleBtn>화상 일정</ScheduleBtn>
             </Link>
           </BtnDiv>
         </UpperLeft>
@@ -234,7 +234,7 @@ const BtnDiv = styled.div`
   margin-top: 1rem;
 `;
 
-const SignUpBtn = styled.button`
+const ItemBtn = styled.button`
   width: 8rem;
   height: 2.8rem;
   border: none;
@@ -253,12 +253,14 @@ const SignUpBtn = styled.button`
   }
 `;
 
-const LoginBtn = styled.button`
+const ScheduleBtn = styled.button`
   width: 8rem;
   height: 2.8rem;
   border: solid 1px white;
   color: white;
   background-color: #aacb73;
+  box-shadow: 0 0 10px white;
+
   font-weight: 600;
   border-radius: 2rem;
   font-size: 1rem;
