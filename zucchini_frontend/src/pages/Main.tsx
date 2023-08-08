@@ -29,11 +29,12 @@ export default function Main() {
             </SpanContent>
           </TitleDiv>
           <BtnDiv>
-            <Link to={"/signup"}>
-              <SignUpBtn>회원가입</SignUpBtn>
+            <Link to={"/item"}>
+              <SignUpBtn>상품보기</SignUpBtn>
             </Link>
-            <Link to={"/login"}>
-              <LoginBtn>로그인</LoginBtn>
+            {/* 로그인이 되어있다면 영상일정 화면, 안되어있다면 로그인 페이지 이동 */}
+            <Link to={"/mypage/schedule"}>
+              <LoginBtn>영상일정</LoginBtn>
             </Link>
           </BtnDiv>
         </UpperLeft>
@@ -80,7 +81,7 @@ export default function Main() {
             </div>
             <div>
               <LowerBtn>
-                <Link to={"/aboutreplay"}>설명 보기</Link>
+                <Link to={"/aboutreplay"}>영상 기록</Link>
               </LowerBtn>
             </div>
           </ContentDiv>
@@ -146,7 +147,7 @@ export default function Main() {
             </SubDiv>
             <div>
               <LowerBtn>
-                <Link to={"/mypage/schedule"}>일정 목록</Link>
+                <Link to={"/aboutschedule"}>일정 조율</Link>
               </LowerBtn>
             </div>
           </ContentDiv>

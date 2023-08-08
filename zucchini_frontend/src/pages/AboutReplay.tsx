@@ -1,9 +1,14 @@
 import styled from "styled-components";
 import replayImg from "../assets/images/AboutReplay.png";
+import { motion } from "framer-motion";
 
 export default function AboutReplay() {
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <LeftDiv>
         <AboutImg src={replayImg} />
       </LeftDiv>
@@ -57,7 +62,7 @@ export default function AboutReplay() {
             </CircleDiv>
             <AboutTitleP>실제 물품 비교</AboutTitleP>
             <AboutContentP>
-              거래 후 영상 내용과 실제 매물을 비교하여 사기 여부를 알 수 있어요.
+              영상 내용과 실제 매물을 비교하여 사기 여부를 알 수 있어요.
             </AboutContentP>
           </AboutDiv>
         </AboutContainer>
@@ -66,7 +71,7 @@ export default function AboutReplay() {
   );
 }
 
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: row;
   background: #e4f8c2;
@@ -106,16 +111,17 @@ const ContentP = styled.p`
 const AboutContainer = styled.div`
   display: flex;
   margin-top: 2rem;
-  gap: 2rem;
+  gap: 1rem;
 `;
 
 const AboutDiv = styled.div`
-  gap: 1.2rem;
+  gap: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
   align-items: center;
+  width: 19rem;
 `;
 
 const AboutTitleP = styled.p`

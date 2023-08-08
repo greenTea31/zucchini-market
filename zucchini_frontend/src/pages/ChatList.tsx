@@ -17,6 +17,7 @@ export default function ChatList() {
   // 들어오자마자 실행하려면 useEffect()
   async function getChatList() {
     const response = await axios.get("http://localhost:8080/room");
+    setIsLoading(true);
     setChats(response.data);
   }
 
@@ -28,15 +29,6 @@ export default function ChatList() {
 
   useEffect(() => {
     getChatList();
-  }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    axios
-      .get("http://localhost:8080/api/mypage/chat")
-      .then((res) => setData(res.data))
-      .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {

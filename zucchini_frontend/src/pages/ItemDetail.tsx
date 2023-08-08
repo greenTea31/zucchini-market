@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import watch from "../assets/images/watch.png";
 import gradeFive from "../assets/images/5.png";
 import Modal from "../components/Common/Modal";
 import { useState, useEffect } from "react";
@@ -147,7 +146,7 @@ export default function ItemDetail() {
       <UpperDiv>
         <UpperLeftDiv>
           {/* src 태그 안에 제품 사진 */}
-          <StyledImg src={watch}></StyledImg>
+          <StyledImg src={item?.image}></StyledImg>
         </UpperLeftDiv>
         <UpperRightDiv>
           {/* item.categoryList 돌면서 뿌려주기 '카테고리1·카테고리2·카테고리3형식 */}

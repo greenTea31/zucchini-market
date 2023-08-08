@@ -12,7 +12,6 @@ interface Item {
 
 export default function LikeList() {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<Item[] | null>(null);
 
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
@@ -21,32 +20,13 @@ export default function LikeList() {
       .get(`http://localhost:8080/user/item/like?keyword=${keyword}`)
       .then((response) => {
         setItems(response.data);
+        setIsLoading(true);
       });
   }
 
   useEffect(() => {
     getItems();
   }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    axios
-      .get("http://localhost:8080/api/mypage/like")
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (data) {
-      setIsLoading(false);
-    }
-    setIsLoading(false); // 없앨거에용
-  }, [data]);
 
   if (isLoading) {
     return <Loading />;
@@ -65,7 +45,7 @@ export default function LikeList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {data && data.length > 0 ? (
+          {items ? (
             items.map((item, index) => <ItemEach item={item} />)
           ) : (
             <p>찜한 내역이 없습니다.</p>
