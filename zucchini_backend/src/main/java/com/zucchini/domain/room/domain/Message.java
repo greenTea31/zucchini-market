@@ -41,10 +41,11 @@ public class Message {
     private boolean isRead;
 
     @Builder
-    public Message(Room room, User sender, String content) {
+    public Message(Room room, User sender, String content, boolean isRead) {
         this.room = room;
         this.sender = sender;
         this.content = content;
+        this.isRead = isRead;
     }
 
     /**

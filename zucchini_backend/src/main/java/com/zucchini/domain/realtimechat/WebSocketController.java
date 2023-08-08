@@ -56,6 +56,9 @@ public class WebSocketController {
         sessionRoomMapping.put(sessionId, roomNo);
         roomUserCount.put(roomNo, roomUserCount.getOrDefault(roomNo, 0) + 1);
         log.info("연결 : roomUserCount: {}", roomUserCount.get(roomNo));
+        if (roomUserCount.get(roomNo) == 3) {
+            simpMessagingTemplate.convertAndSend("/sub/chat/readStatus/" + roomNo, true);
+        }
     }
 
     /**
