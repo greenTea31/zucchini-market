@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import api from "../../utils/api";
+import axios from "axios";
 
-export default function Category() {
+export default function Category({ setSelectedCategory }: any) {
+  // const [clickedButton, setClickedButton] = useState();
+
+  // 임시.
   const [allCategoryList, setAllCategoryList] = useState([
     "디지털기기",
     "가구/인테리어",
@@ -83,14 +87,30 @@ export default function Category() {
     }
   }, [isScrollingLeft, isScrollingRight]);
 
+  // 카테고리 선택
+  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // console.log(event.currentTarget.textContent);
+    setSelectedCategory(event.currentTarget.textContent);
+  };
+
+  // 전체보기 누르면 초기화
+  const entireCategory = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setSelectedCategory("");
+  };
+
   return (
     <CategoryDiv
       ref={containerRef}
       onMouseEnter={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
+      <CategoryBtn onClick={entireCategory}>전체보기</CategoryBtn>
       {allCategoryList.map((category: any, index: number) => {
-        return <CategoryBtn key={index}>{category}</CategoryBtn>;
+        return (
+          <CategoryBtn key={index} onClick={onClick}>
+            {category}
+          </CategoryBtn>
+        );
       })}
     </CategoryDiv>
   );

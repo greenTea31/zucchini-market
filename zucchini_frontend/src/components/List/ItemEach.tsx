@@ -28,22 +28,22 @@ interface IProps {
   item: IItem;
 }
 
-export default function ItemEach(props: IProps) {
+export default function ItemEach({ item }: IProps) {
   return (
     <ItemDiv>
       {/* 이미지 {props?.item?.image}로 변경 */}
       <ItemImg src={watch} />
       {/* ItemList, BuyList, SellList에서 각각 쓰이는 컴포넌트이므로 버튼은 조건부 렌더링 필요 */}
-      <ReplayButton>상태표시{props?.item?.status} | 다시보기</ReplayButton>
-      <ItemTitle>{props?.item?.title}</ItemTitle>
+      <ReplayButton>상태표시{item?.status} | 다시보기</ReplayButton>
+      <ItemTitle>{item?.title}</ItemTitle>
       <ItemTitle>365,000원</ItemTitle>
       <ItemContent>
-        찜 {props?.item?.likeCount} | 조회 {props?.item?.view}
+        찜 {item?.likeCount} | 조회 {item?.view}
       </ItemContent>
       <ItemContent>
-        {moment(props?.item?.updatedAt).format("YYYY-MM-DD hh:mm:ss")}
+        {moment(item?.updatedAt).format("YYYY-MM-DD hh:mm:ss")}
       </ItemContent>
-      <ItemContent>{props?.item?.category}</ItemContent>
+      <ItemContent>{item?.category}</ItemContent>
     </ItemDiv>
   );
 }

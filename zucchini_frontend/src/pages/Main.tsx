@@ -30,11 +30,10 @@ export default function Main() {
           </TitleDiv>
           <BtnDiv>
             <Link to={"/item"}>
-              <SignUpBtn>상품보기</SignUpBtn>
+              <ItemBtn>상품 구경</ItemBtn>
             </Link>
-            {/* 로그인이 되어있다면 영상일정 화면, 안되어있다면 로그인 페이지 이동 */}
             <Link to={"/mypage/schedule"}>
-              <LoginBtn>영상일정</LoginBtn>
+              <ScheduleBtn>화상 일정</ScheduleBtn>
             </Link>
           </BtnDiv>
         </UpperLeft>
@@ -235,7 +234,7 @@ const BtnDiv = styled.div`
   margin-top: 1rem;
 `;
 
-const SignUpBtn = styled.button`
+const ItemBtn = styled.button`
   width: 8rem;
   height: 2.8rem;
   border: none;
@@ -254,12 +253,14 @@ const SignUpBtn = styled.button`
   }
 `;
 
-const LoginBtn = styled.button`
+const ScheduleBtn = styled.button`
   width: 8rem;
   height: 2.8rem;
   border: solid 1px white;
   color: white;
   background-color: #aacb73;
+  box-shadow: 0 0 10px white;
+
   font-weight: 600;
   border-radius: 2rem;
   font-size: 1rem;
