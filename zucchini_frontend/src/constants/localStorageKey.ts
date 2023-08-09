@@ -1,1 +1,2 @@
 export const USER_LOCAL_STORAGE_KEY = "USER";
+export const USER_INFO_LOCAL_STORAGE_KEY = "USER_INFO";

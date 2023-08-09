@@ -2,7 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { http } from "../utils/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY } from "../constants/queryKey";
-import { getUser, removeUser, saveUser } from "./useLocalStorage";
+import { getUser, removeUser } from "./useLocalStorage";
+import { useUserInfo } from "./useUserInfo";
+import { saveUser } from "./useLocalStorage";
 import IToken from "../types/IToken";
 import axios from "axios";
 import { BASE_URL } from "../constants/url";
@@ -22,6 +24,7 @@ async function login(data: IUser) {
 export function useLogin() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { mutate: getUserInfo } = useUserInfo();
   const mutation = useMutation({
     mutationFn: (data: any) => login(data),
     onMutate: (variables: any) => {
@@ -31,6 +34,7 @@ export function useLogin() {
       // 성공시 실행
       queryClient.setQueryData([QUERY_KEY.user], data);
       saveUser(data);
+      getUserInfo(data);
       navigate("/");
     },
     onError: (error: any) => {
