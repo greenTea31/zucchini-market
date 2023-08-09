@@ -90,3 +90,6 @@ springfox:
   documentation:
     swagger:
       use-model-v3: 'false'
+openvidu:
+  url: 'http://localhost:4443'
+  secret: 'MY_SECRET'

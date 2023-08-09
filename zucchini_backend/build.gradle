@@ -9,7 +9,7 @@ group = 'com.zucchini'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '1.8'
+	sourceCompatibility = '11'
 }
 
 configurations {
@@ -45,6 +45,12 @@ dependencies {
 	implementation "com.querydsl:querydsl-jpa:5.0.0"
 	implementation "com.querydsl:querydsl-apt:5.0.0"
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// openvidu
+	implementation 'io.openvidu:openvidu-java-client:2.28.0'
+	implementation 'org.springframework.boot:spring-boot-devtools'
+
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 def querydslDir = "$buildDir/generated/querydsl"

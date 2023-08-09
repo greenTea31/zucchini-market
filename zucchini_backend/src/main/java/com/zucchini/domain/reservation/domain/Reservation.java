@@ -46,4 +46,18 @@ public class Reservation {
         this.isAttended = false;
     }
 
+    /**
+     * 비즈니스 메서드
+     */
+
+    // 회원의 활성화된 세션 참석 시 true
+    public void attend(){
+        this.isAttended = true;
+    }
+
+    // 회원의 활성화된 세션 나가기 시 false
+    public void leave(){
+        this.isAttended = false;
+    }
+
 }
