@@ -4,7 +4,7 @@ import colors from "../../constants/color";
 
 interface IIcon extends HTMLAttributes<HTMLDivElement> {
   onClick?: MouseEventHandler<HTMLDivElement>;
-  Size?: "small" | "large";
+  kind?: "small" | "large";
   Round?: "none" | "full";
   Type?:
     | "none"
@@ -18,7 +18,7 @@ interface IIcon extends HTMLAttributes<HTMLDivElement> {
 
 export default function Icon({
   onClick,
-  Size = "small",
+  kind = "small",
   Round = "none",
   Type = "none",
   ...props
@@ -26,19 +26,19 @@ export default function Icon({
   return (
     <ClickArea
       onClick={onClick}
-      Size={Size}
+      kind={kind}
       Round={Round}
       Type={Type}
       {...props}
     >
-      <Container Size={Size} Round={Round} Type={Type} {...props}></Container>
+      <Container kind={kind} Round={Round} Type={Type} {...props}></Container>
     </ClickArea>
   );
 }
 
 const Container = styled.div<IIcon>((props) => ({
   // 사이즈
-  ...SIZE_VARIANT_CONTAINER[props.Size || "small"],
+  ...SIZE_VARIANT_CONTAINER[props.kind || "small"],
 
   // 라운드
   ...ROUND[props.Round || "none"],
@@ -53,7 +53,7 @@ const ClickArea = styled.div<IIcon>((props) => ({
   alignItems: "center",
 
   // 사이즈
-  ...SIZE_VARIANT_CLICK_AREA[props.Size || "small"],
+  ...SIZE_VARIANT_CLICK_AREA[props.kind || "small"],
 
   // 라운드
   ...ROUND[props.Round || "none"],

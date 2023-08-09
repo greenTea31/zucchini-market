@@ -15,7 +15,7 @@ export default function ScheduleEach(props: IProps) {
     <VideoDiv>
       <p>10:30 - 11:00</p>
       <TitleP>삼성 갤럭시북 PRO 2 팔아요</TitleP>
-      <Button Size={"small"} Variant={"pinkTonal"}>
+      <Button kind={"small"} Variant={"pinkTonal"}>
         참여
       </Button>
     </VideoDiv>

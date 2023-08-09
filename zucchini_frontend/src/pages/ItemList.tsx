@@ -14,13 +14,25 @@ import { Pagination } from "@mui/material";
 // }
 
 export default function ItemList() {
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [data, setData] = useState<Item[] | null>(null);
-  const [items, setItems] = useState([]); // 전체 아이템 or 필터링된 아이템
-  const [keyword, setKeyword] = useState(""); // 검색어
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<Item[] | null>(null);
+  const [items, setItems] = useState([]);
+  const [category, setCategory] = useState("");
+  const [keyword, setKeyword] = useState("");
+  
   const [selectedCategory, setSelectedCategory] = useState(""); // 선택한 카테고리
   const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
   const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
+
+  function getItems() {
+    axios
+      .get(
+        `http://localhost:8080/api/item?page=${page}&category=${category}&keyword=${keyword}`
+      )
+      .then((response) => {
+        setItems(response.data);
+      });
+  }
 
   const getItems = async () => {
     try {
@@ -85,7 +97,7 @@ export default function ItemList() {
             {selectedCategory ? selectedCategory : "전체보기"}
           </SubTitle>
           <Link to={"/item/register"}>
-            <Button Size="small" Variant="pinkTonal" Rounded="medium">
+            <Button kind="small" Variant="pinkTonal" Rounded="medium">
               + 글 등록
             </Button>
           </Link>

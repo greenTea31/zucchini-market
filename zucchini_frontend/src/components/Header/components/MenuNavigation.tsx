@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
+import { logout } from "../../../hooks/useLogin";
+import { getUser } from "../../../hooks/useLocalStorage";
 
 interface IItem {
   navName: string;
@@ -20,6 +22,7 @@ export default function MenuNavigation({
   onItemClick,
 }: INavigation) {
   const controls = useAnimation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     controls.start((i) => ({
@@ -34,21 +37,42 @@ export default function MenuNavigation({
   return (
     <NavigationContainer>
       {localStorage.getItem("USER")
-        ? list.map((element, index) => (
-            <NavigationItem
-              onClick={() => {
-                onItemClick();
-                controls.start({ opacity: 0, x: -20 });
-              }}
-              initial={{ opacity: 0, x: -20 }}
-              animate={controls}
-              custom={index}
-              to={element.navLink}
-              key={index}
-            >
-              {element.navName}
-            </NavigationItem>
-          ))
+        ? list.map((element, index) => {
+            if (element.navName === "로그아웃") {
+              return (
+                <NavigationItem
+                  onClick={() => {
+                    logout();
+                    onItemClick();
+                    navigate("/login");
+                  }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={controls}
+                  custom={index}
+                  to={element.navLink}
+                  key={index}
+                >
+                  {element.navName}
+                </NavigationItem>
+              );
+            }
+
+            return (
+              <NavigationItem
+                onClick={() => {
+                  onItemClick();
+                  controls.start({ opacity: 0, x: -20 });
+                }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={controls}
+                custom={index}
+                to={element.navLink}
+                key={index}
+              >
+                {element.navName}
+              </NavigationItem>
+            );
+          })
         : loggedOutList.map((element, index) => (
             <NavigationItem
               onClick={() => {

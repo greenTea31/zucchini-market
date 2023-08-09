@@ -20,7 +20,7 @@ const menuNavigation = [
     navName: "판매 내역",
   },
   {
-    navLink: "",
+    navLink: "/login",
     navName: "로그아웃",
   },
 ];

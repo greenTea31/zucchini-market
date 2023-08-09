@@ -4,19 +4,19 @@ import colors from "../../constants/color";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   Variant?: "tonal" | "outline";
-  Size?: "big";
+  kind?: "big";
   Rounded?: "small" | "medium" | "large";
 }
 
 export function Input({
-  Size = "big",
+  kind = "big",
   Variant = "tonal",
   Rounded,
   ...props
 }: InputProps) {
   return (
     <StyledInput
-      Size={Size}
+      kind={kind}
       Variant={Variant}
       Rounded={Rounded}
       {...props}
@@ -31,7 +31,7 @@ const StyledInput = styled.input<InputProps>((props) => ({
   cursor: "pointer",
 
   // 버튼 사이즈
-  ...SIZE_VARIANT[props.Size || "big"],
+  ...SIZE_VARIANT[props.kind || "big"],
 
   // 스타일 타입
   ...TYPE_VARIANTS[props.Variant || "tonal"],
