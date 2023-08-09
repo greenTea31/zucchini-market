@@ -14,11 +14,38 @@ import { motion } from "framer-motion";
 import api from "../utils/api";
 import moment from "moment";
 import NoImage from "../assets/images/NoImage.png";
+import { getUser } from "../hooks/useLocalStorage";
+
+interface ISeller {
+  nickname: string;
+  grade: number;
+}
+
+interface IDate {
+  date: string;
+  status: number;
+}
+
+interface IItem {
+  no: number;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  content: string;
+  price: number;
+  status: number;
+  imageList: string[];
+  likeCount: number;
+  seller: ISeller;
+  dateList: IDate[];
+  categoryList: string[];
+  view: number;
+}
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
   const [isReporting, setIsReporting] = useState(false); // 신고모달
-  const [item, setItem] = useState<any>(); // item 상태 추가
+  const [item, setItem] = useState<IItem>(); // item 상태 추가
   const [like, setLike] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
@@ -101,18 +128,25 @@ export default function ItemDetail() {
   };
 
   const toChatRoom = async () => {
+    const token = "Bearer " + getUser();
     try {
       // 채팅방 생성
       const response = await api({
         method: "post",
-        url: "http://localhost:8080/room",
+        url: "/room",
+        headers: {
+          Authorization: token,
+        },
+        data: {
+          itemNo: location.pathname.split("/")[2],
+        },
       });
 
       // 응답 확인
       console.log(response.data);
 
       // useNavigate를 이용해 채팅방 이동
-      navigate("/chat");
+      navigate(`/chat/${response.data}`);
     } catch (error) {
       console.error(error);
     }
@@ -144,7 +178,7 @@ export default function ItemDetail() {
         <ModalSpan>화상통화 일정 선택</ModalSpan>
         <SubSpan>일정은 상품당 한 번씩만 선택 가능합니다</SubSpan>
         <CalendarDiv>
-          <SimpleCalendar />
+          <SimpleCalendar dates={item?.dateList as IDate[]} />
         </CalendarDiv>
       </Modal>
 
@@ -222,8 +256,8 @@ export default function ItemDetail() {
           <ContentSpan>{item?.content}</ContentSpan>
           <PriceSpan>{item?.price}원</PriceSpan>
           <SubSpan>
-            {timeDifferenceInMinutes(new Date(item?.createdAt))}분 전 · 조회{" "}
-            {item?.view} · 찜 {item?.likeCount}
+            {timeDifferenceInMinutes(new Date(item?.createdAt as string))}분 전
+            · 조회 {item?.view} · 찜 {item?.likeCount}
           </SubSpan>
           <SubSpan>
             <button type="button" onClick={toggleReport} style={buttonStyle}>
