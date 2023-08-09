@@ -21,10 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -42,12 +39,16 @@ public class SessionServiceImpl implements SessionService {
     // Collection to pair session names and tokens (the inner Map pairs tokens and
     // role associated)
     private Map<Integer, Map<String, OpenViduRole>> mapSessionNamesTokens = new ConcurrentHashMap<>();
+    // 컨퍼런스 넘버에 대한 아이디에 대한 토큰 받아오는 역할
+    private Map<Integer, Map<String, String>> mapSessionIdTokens = new ConcurrentHashMap<>();
 
 //    @Value("${openvidu.url}")
     private String OPENVIDU_URL;
     // Secret shared with our OpenVidu server
 //    @Value("${openvidu.secret}")
     private String SECRET;
+
+    private final long thirtyMillis = 30 * 60 * 1000; // 30분
 
     @Autowired
     public SessionServiceImpl(@Value("${openvidu.secret}") String secret, @Value("${openvidu.url}") String openviduUrl, ConferenceRepository conferenceRepository,
@@ -73,7 +74,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public SessionResponse findConferenceSession(int no, HttpSession httpSession, HttpResponse response)
             throws OpenViduJavaClientException, OpenViduHttpException {
-        log.info("no========================={}", no);
+        log.info("no========================="+ no);
         Optional<Conference> conference = conferenceRepository.findById(no);
         // 없는 컨퍼런스면 예외 처리
         if(!conference.isPresent()) throw new NoSuchElementException("컨퍼런스가 없습니다.");
@@ -90,10 +91,14 @@ public class SessionServiceImpl implements SessionService {
         }
         // 해당 컨퍼런스 번호로 한 예약은 회원마다 유일함
         Reservation reservation = reservationList.get(0);
-        if(reservation.isAttended()){
-            // 이미 접속중인 상태
-            throw new IllegalArgumentException("이미 해당 컨퍼런스에 접속한 상태입니다.");
-        }
+//        if(reservation.isAttended()){
+//            // 이미 접속중인 상태
+//            throw new IllegalArgumentException("이미 해당 컨퍼런스에 접속한 상태입니다.");
+//        }
+        // 예약된 날짜부터 30분까지는 입장 가능하게 변경(임시)
+//        Date curDate = new Date();
+//        if(curDate.getTime()-conference.get().getConfirmedDate().getTime() > thirtyMillis)
+//            throw new IllegalArgumentException("입장 만료되었습니다.");
         // 회원의 참석 여부 true로 갱신
         reservation.attend();
         reservationRepository.save(reservation);
@@ -113,7 +118,7 @@ public class SessionServiceImpl implements SessionService {
     public void leaveConferenceSession(LeaveSessionRequest leaveSessionRequest) {
         int no = leaveSessionRequest.getConferenceNo();
         String token = leaveSessionRequest.getToken();
-
+        log.info("no========================="+ no);
         // 쿼리 최적화 하려면...?
         Optional<Conference> conference = conferenceRepository.findById(no);
         // 없는 컨퍼런스면 예외 처리
@@ -141,9 +146,21 @@ public class SessionServiceImpl implements SessionService {
                 cnt++;
             }
         }
+        log.info("방에 참여중인 사람 수 ->>>>>>>>{}", cnt);
         if(cnt == 0){
-            // 본인이 퇴장 시 아무도 세션에 참가하지 않게 됨 -> 세션 삭제
             this.mapSessions.remove(no);
+            // 토큰삭제도 필요~~
+                this.mapSessionNamesTokens.remove(no);
+                this.mapSessionIdTokens.remove(no);
+            // 예약된 날짜부터 30분까지는 입장 가능하게 변경(임시)
+//            Date curDate = new Date();
+//            // 본인이 퇴장 시 아무도 세션에 참가하지 않게 됨 -> 세션 삭제
+//            if(curDate.getTime()-conference.get().getConfirmedDate().getTime() > thirtyMillis) {
+//                this.mapSessions.remove(no);
+//                // 토큰삭제도 필요~~
+//                this.mapSessionNamesTokens.remove(no);
+//                this.mapSessionIdTokens.remove(no);
+//            }
             // 일단 둘다 종료시 컨퍼런스도 종료되게 구현? -> 컨퍼런스 비활성화 관련 고민(실수로 둘다 종료된 경우는?)
 //            conferenceRepository.delete(conference.get());
         }
@@ -174,6 +191,10 @@ public class SessionServiceImpl implements SessionService {
                 this.mapSessions.put(no, session);
                 this.mapSessionNamesTokens.put(no, new ConcurrentHashMap<>());
                 this.mapSessionNamesTokens.get(no).put(token, role);
+
+                Map<String, String> map = new ConcurrentHashMap<>();
+                map.put(getCurrentId(), token);
+                this.mapSessionIdTokens.put(no, map);
             }catch (Exception e){
                 httpSession.setAttribute("error",e);
             }
@@ -182,6 +203,14 @@ public class SessionServiceImpl implements SessionService {
             try{
                 token = this.mapSessions.get(no).createConnection(connectionProperties).getToken();
                 this.mapSessionNamesTokens.get(no).put(token, role);
+                this.mapSessionIdTokens.get(no).put(getCurrentId(), token);
+//                if(this.mapSessionIdTokens.get(no).get(getCurrentId()) != null) {
+//                    token = this.mapSessionIdTokens.get(no).get(getCurrentId());
+//                }else {
+//                    token = this.mapSessions.get(no).createConnection(connectionProperties).getToken();
+//                    this.mapSessionNamesTokens.get(no).put(token, role);
+//                    this.mapSessionIdTokens.get(no).put(getCurrentId(), token);
+//                }
             }catch (Exception e){
                 httpSession.setAttribute("error",e);
             }
