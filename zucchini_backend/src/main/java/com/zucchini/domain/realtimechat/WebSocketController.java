@@ -56,7 +56,7 @@ public class WebSocketController {
         sessionRoomMapping.put(sessionId, roomNo);
         roomUserCount.put(roomNo, roomUserCount.getOrDefault(roomNo, 0) + 1);
         log.info("연결 : roomUserCount: {}", roomUserCount.get(roomNo));
-        if (roomUserCount.get(roomNo) == 3) {
+        if (roomUserCount.get(roomNo) == 2) {
             simpMessagingTemplate.convertAndSend("/sub/chat/readStatus/" + roomNo, true);
         }
     }
@@ -92,7 +92,7 @@ public class WebSocketController {
         log.info("sender : " + chatMessage.getSenderNo() + ", content : " + chatMessage.getContent());
 
         // 채팅방에 안들어가도 기본값이 1임 이유는 모르겠음
-        boolean readCheck = roomUserCount.get(chatMessage.getRoomNo()) == 3;
+        boolean readCheck = roomUserCount.get(chatMessage.getRoomNo()) == 2;
         roomService.addMessage(chatMessage.getRoomNo(), chatMessage, readCheck);
 
         MessageResponse messageResponse = MessageResponse.builder()
