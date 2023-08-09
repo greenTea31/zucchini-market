@@ -1,6 +1,7 @@
 export default interface IMessage {
   sender: string;
+  senderNo: number;
   content: string;
-  isRead: boolean;
+  read: boolean;
   createdAt: string;
 }

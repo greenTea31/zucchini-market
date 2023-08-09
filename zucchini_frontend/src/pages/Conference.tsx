@@ -327,9 +327,7 @@ export default function Conference() {
             <ChatTitleDiv>
               <ParticipantInfoName>채팅</ParticipantInfoName>
             </ChatTitleDiv>
-            <ChatDiv>
-              <Chatting message={message} />
-            </ChatDiv>
+            <ChatDiv>{/* <Chatting message={message} /> */}</ChatDiv>
             <ChatInputDiv>
               <Svg
                 xmlns="http://www.w3.org/2000/svg"
