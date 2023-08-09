@@ -9,6 +9,7 @@ import Loading from "../components/Loading/Loading";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { Pagination } from "@mui/material";
+import api from "../utils/api";
 // interface Item {
 //   id: number;
 // }
@@ -24,14 +25,12 @@ export default function ItemList() {
 
   const getItems = async () => {
     try {
-      await axios
-        .get(
-          `http://localhost:8080/item?category=${selectedCategory}&keyword=${keyword}&page=${page}`
-        )
-        .then((response) => {
-          setItems(response.data.content);
-          setTotalPages(response.data.totalPages);
-        });
+      const response = await api.get(
+        `/item?category=${selectedCategory}&keyword=${keyword}&page=${page}`
+      );
+
+      setItems(response.data.content);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -51,9 +50,9 @@ export default function ItemList() {
     setPage(page);
   };
 
-  useEffect(() => {
-    console.log(page);
-  }, [page]);
+  // useEffect(() => {
+  //   console.log(page);
+  // }, [page]);
 
   // 로딩페이지
   // 로딩 백에서 했대유...
@@ -100,7 +99,7 @@ export default function ItemList() {
       </LowerDiv>
       <FooterDiv>
         {/* count에 totalPages 주세요, 10은 임시 */}
-        <Pagination count={10} onChange={onChange} page={page} />
+        <Pagination count={totalPages} onChange={onChange} page={page} />
       </FooterDiv>
     </ContainerDiv>
   );
@@ -139,9 +138,13 @@ const SubTitle = styled.span`
 `;
 
 const ItemsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  /* display: flex;
+  justify-content: start;
+  flex-wrap: wrap; */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3개의 동일한 칼럼을 생성 */
+  gap: 1rem; /* 그리드 간격 설정 */
+  padding: 1rem;
 `;
 
 const FooterDiv = styled.div`
