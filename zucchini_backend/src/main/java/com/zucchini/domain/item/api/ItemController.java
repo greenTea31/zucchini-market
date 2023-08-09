@@ -81,8 +81,8 @@ public class ItemController {
      * 403 : 권한 없음 (로그인 하지 않음)
      * 500 : 서버 에러
      */
-    @PostMapping("/add")
-    public ResponseEntity<Integer> addItem(@Valid @RequestBody ItemRequest item) {
+    @PostMapping
+    public ResponseEntity<Integer> addItem(@Valid @ModelAttribute ItemRequest item) {
         int itemNo = itemService.addItem(item);
         return ResponseEntity.status(HttpStatus.CREATED).body(itemNo);
     }
