@@ -14,8 +14,25 @@ import { Button } from "../components/Common/Button";
 import useAuth from "../hooks/useAuth";
 import { NumericFormat } from "react-number-format";
 import { motion } from "framer-motion";
+import AWS from "aws-sdk";
 
 export default function CreateItem() {
+  const [myBucket, setMyBucket] = useState<AWS.S3>();
+  const [uploadURL, setUploadURL] = useState<string>("");
+  useEffect(() => {
+    AWS.config.update({
+      accessKeyId: "AKIA2ZDVZIZHOHIYLSNH",
+      secretAccessKey: "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",
+    });
+
+    const myBucket = new AWS.S3({
+      params: { Bucket: "zucchinifile" },
+      region: "ap-northeast-2",
+    });
+
+    setMyBucket(myBucket);
+  }, []);
+
   const token = useAuth();
 
   const {
@@ -106,26 +123,63 @@ export default function CreateItem() {
     setSelectedTimes(updatedTimes); // 새로운 배열 업데이트
   };
 
+  const uploadFile = (file: IFileTypes) => {
+    const param = {
+      ACL: "public-read",
+      ContentType: "image/jpeg",
+      Body: file.object,
+      Bucket: "zucchinifile",
+      Key: file.id + file.object.name,
+    };
+    if (!myBucket) {
+      return;
+    }
+    myBucket.putObject(param).send((error, data) => {
+      if (error) {
+        console.error(error);
+      } else {
+        const url = myBucket.getSignedUrl("getObject", {
+          Key: param.Key,
+        });
+        setUploadURL(url);
+      }
+    });
+  };
+
   //진짜 제출
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
+    console.log("등록등록");
     alert(JSON.stringify(data));
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("content", data.content);
     formData.append("price", data.price);
-    formData.append("categoryList", data.category);
+    // 카테고리
     for (let i = 0; i < selectedCategories.length; i++) {
       formData.append("categoryList", selectedCategories[i]);
+    }
+    // 이미지파일들
+    // bucket에 요청을 보내고
+    // await ~~~
+    // get url 받고 그걸 넣는다.
+    for (let i = 0; i < files.length; i++) {
+      uploadFile(files[i]);
+      formData.append("imageList", uploadURL);
     }
     for (let i = 0; i < selectedTimes.length; i++) {
       formData.append("dateList", selectedTimes[i]);
     }
+
+    await axios({
+      method: "post",
+      url: "http://localhost:8080/api/item",
+      data: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   };
 
-  //   const formData = new FormData();
-  //   //스케줄에만
-  //   formData.append();
-  // };
   return (
     <ContainerAll
       initial={{ opacity: 0 }}
