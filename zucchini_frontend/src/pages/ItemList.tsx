@@ -14,13 +14,17 @@ interface Item {
 
 export default function ItemList() {
   const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
+  const [category, setCategory] = useState("");
   const [keyword, setKeyword] = useState("");
 
   function getItems() {
     axios
-      .get(`http://localhost:8080/item?keyword=${keyword}`)
+      .get(
+        `http://localhost:8080/api/item?page=${page}&category=${category}&keyword=${keyword}`
+      )
       .then((response) => {
         setItems(response.data);
       });
@@ -60,7 +64,7 @@ export default function ItemList() {
         <TitleDiv>
           <SubTitle>전체보기</SubTitle>
           <Link to={"/item/register"}>
-            <Button Size="small" Variant="pinkTonal" Rounded="medium">
+            <Button kind="small" Variant="pinkTonal" Rounded="medium">
               + 글 등록
             </Button>
           </Link>

@@ -183,7 +183,7 @@ export default function UpdateItem() {
             {selectedCategories.map((category: any) => {
               return (
                 <Button
-                  Size="extraSmall"
+                  kind="extraSmall"
                   Variant="filled"
                   style={{
                     padding: "8px",

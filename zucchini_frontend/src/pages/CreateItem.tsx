@@ -225,7 +225,7 @@ export default function CreateItem() {
             {selectedCategories.map((category: any) => {
               return (
                 <Button
-                  Size="extraSmall"
+                  kind="extraSmall"
                   Variant="filled"
                   style={{
                     padding: "8px",

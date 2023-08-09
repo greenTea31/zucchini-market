@@ -14,7 +14,7 @@ interface IUser {
 }
 
 async function login(data: IUser) {
-  const response = await http.post("user/login", data);
+  const response = http.post("user/login", data);
 
   return response;
 }
@@ -52,6 +52,18 @@ export async function logout() {
     });
     removeUser();
   }
+}
+
+export async function refreshToken() {
+  const response = await axios({
+    method: "POST",
+    url: `${BASE_URL}user/reissue`,
+    withCredentials: true,
+  });
+
+  const token = await response.data;
+
+  saveUser(token);
 }
 
 export function regenerateToken() {}
