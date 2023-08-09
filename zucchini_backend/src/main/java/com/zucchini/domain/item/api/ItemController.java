@@ -1,5 +1,7 @@
 package com.zucchini.domain.item.api;
 
+import com.zucchini.domain.category.dto.response.FindCategoryResponse;
+import com.zucchini.domain.category.service.CategoryService;
 import com.zucchini.domain.item.dto.request.ItemRequest;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +24,7 @@ import javax.validation.Valid;
 public class ItemController {
 
     private final ItemService itemService;
+    private final CategoryService categoryService;
 
 //    /**
 //     * 상품 전체 조회
@@ -33,6 +37,11 @@ public class ItemController {
 //    public ResponseEntity<List<FindItemListResponse>> findItem(@RequestParam String keyword) {
 //        return ResponseEntity.ok(itemService.findItemList(keyword));
 //    }
+
+    @GetMapping("/category")
+    public ResponseEntity<List<FindCategoryResponse>> findCategoryList(){
+        return ResponseEntity.ok(categoryService.findCategoryList());
+    }
 
     /**
      * 상품 전체 조회 (페이징)
