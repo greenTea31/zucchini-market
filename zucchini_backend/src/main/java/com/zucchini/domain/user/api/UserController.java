@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -112,8 +113,17 @@ public class UserController {
 
         TokenDto token = userService.login(loginRequest);
 
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
+                .maxAge(7 * 24 * 60 * 60)
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
+                .path("/")
+                .build();
+//        response.setHeader("Set-Cookie", cookie.toString());
+
         return ResponseEntity.ok()
-                .header("Set-Cookie", jwtCookieName + "=" + token.getRefreshToken() + "; HttpOnly; Max-Age=" + 1000L * 60 * 60 * 24 + "; SameSite=None; Secure")
+                .header("Set-Cookie", cookie.toString())
                 .body(token);
     }
 
