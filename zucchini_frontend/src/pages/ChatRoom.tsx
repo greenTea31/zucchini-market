@@ -198,7 +198,7 @@ export default function ChatRoom() {
             <SimpleCalendar />
             <StyledBtnDiv>
               <StyledBtn>
-                <Link to={"/conference"} target={"_blank"}>
+                <Link to={"/scheduleList"} target={"_blank"}>
                   영상 통화하기
                 </Link>
               </StyledBtn>

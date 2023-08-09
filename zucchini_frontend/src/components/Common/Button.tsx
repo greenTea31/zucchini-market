@@ -16,19 +16,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     | "blueTonal"
     | "redFilled"
     | "purpleFilled";
-  kind?: "extraSmall" | "small" | "medium" | "big";
+  Size?: "extraSmall" | "small" | "medium" | "big";
   Rounded?: "small" | "medium" | "large";
 }
 
 export function Button({
-  kind = "medium",
+  Size = "medium",
   Variant = "tonal",
   Rounded,
   ...props
 }: ButtonProps) {
   return (
     <StyledButton
-      kind={kind}
+      Size={Size}
       Variant={Variant}
       Rounded={Rounded}
       {...props}
@@ -43,7 +43,7 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
   cursor: "pointer",
 
   // 버튼 사이즈
-  ...SIZE_VARIANT[props.kind || "medium"],
+  ...SIZE_VARIANT[props.Size || "medium"],
 
   // 스타일 타입
   ...TYPE_VARIANTS[props.Variant || "tonal"],
