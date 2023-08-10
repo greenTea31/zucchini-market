@@ -11,13 +11,29 @@ import axios from "axios";
 import { Client } from "@stomp/stompjs";
 import Imessage from "../types/Imessage";
 import { motion } from "framer-motion";
+import { getUser } from "../hooks/useLocalStorage";
+import api from "../utils/api";
 
 export default function ChatRoom() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const [user, setUser] = useState({
+    no: 0,
+    nickname: "",
+  });
+
   const { register, handleSubmit, reset } = useForm();
 
   const [messages, setMessages] = useState<Imessage[]>([]);
+  const { no } = useParams();
+  const chatMainDivRef = useRef<HTMLDivElement>(null);
+
+  // messages 배열이 변경될 때마다 스크롤을 맨 아래로 이동
+  useEffect(() => {
+    if (chatMainDivRef.current) {
+      chatMainDivRef.current.scrollTop = chatMainDivRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const onSubmit = async (data: any) => {
     if (!client.current) return;
@@ -28,7 +44,8 @@ export default function ChatRoom() {
       //   Authorization: `Bearer ${localStorage.getItem("token")}`,
       // },
       body: JSON.stringify({
-        roomNo: 1,
+        roomNo: no,
+        senderNo: user.no,
         content: data.content,
       }),
     });
@@ -46,28 +63,19 @@ export default function ChatRoom() {
     reset();
   };
 
+  async function getUserInformation() {
+    const response = await api.get("/user/findMyNo");
+    setUser(response.data);
+    console.log(user.no); // 왜 0뜸? 모름
+    console.log(user.nickname); // 마찬가지
+  }
+
   async function getMessageList() {
-    // 임시 주석
-    // const response = await axios.get("http://localhost:8080/room/3/message");
-    // setMessages(response.data);
-
-    // 밑에 테스트 데이터로 일단 대체함
-    const testData: Imessage[] = [
-      {
-        sender: "hello",
-        content: "world",
-        isRead: false,
-        createdAt: "2021-08-26T15:00:00.000+00:00",
-      },
-      {
-        sender: "olleh",
-        content: "world",
-        isRead: false,
-        createdAt: "2021-08-26T15:00:00.000+00:00",
-      },
-    ];
-
-    setMessages(testData);
+    const response = await api.get(`/room/${no}/message`);
+    setMessages(response.data);
+    console.log(response.data);
+    messages.map((message) => console.log(message.read));
+    console.log("대체왜안뜸??????????????????????");
   }
 
   const { apply_id } = useParams();
@@ -76,20 +84,34 @@ export default function ChatRoom() {
   const subscribe = () => {
     if (!client.current) return;
     // client.current.subscribe("/sub/chat/" + apply_id, (body) => { 현재 방번호까지 구현 되면 진행하기 (로그인이 되야 됨)
-    client.current.subscribe("/sub/chat/" + 1, (body) => {
+    client.current.subscribe("/sub/chat/" + no, (body) => {
       const json_body = JSON.parse(body.body);
       console.log(json_body);
       setMessages((prevMessages) => [...prevMessages, json_body]);
     });
+
+    // 읽음 상태 변경 구독
+    client.current.subscribe("/sub/chat/readStatus/" + no, () => {
+      setMessages((prevMessages) =>
+        prevMessages.map((message) => ({
+          ...message,
+          read: true, // 상태를 읽음으로 변경
+        }))
+      );
+    });
   };
 
   const connect = () => {
-    console.log("연결성공기원");
+    if (!no) return;
+    console.log("연결이 성공적으로 수행되었습니다.");
     client.current = new Client({
       brokerURL: "ws://localhost:8080/api/ws",
       onConnect: () => {
-        console.log("success");
         subscribe();
+      },
+      connectHeaders: {
+        Authorization: `Bearer ${getUser()}`,
+        headerNo: no, // 방 번호 추가
       },
     });
     client.current.activate();
@@ -101,6 +123,8 @@ export default function ChatRoom() {
   };
 
   useEffect(() => {
+    console.log(getUser());
+    getUserInformation();
     connect();
 
     return () => disconnect();
@@ -148,13 +172,13 @@ export default function ChatRoom() {
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
+            strokeWidth="1.5"
             stroke="currentColor"
             className="w-6 h-6"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               d="M6 18L18 6M6 6l12 12"
             />
           </StyledSvg>
@@ -174,7 +198,7 @@ export default function ChatRoom() {
             <SimpleCalendar />
             <StyledBtnDiv>
               <StyledBtn>
-                <Link to={"/conference"} target={"_blank"}>
+                <Link to={"/scheduleList"} target={"_blank"}>
                   영상 통화하기
                 </Link>
               </StyledBtn>
@@ -206,12 +230,12 @@ export default function ChatRoom() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="w-6 h-6"
               >
                 <path
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                   d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"
                 />
               </Svg>
@@ -219,21 +243,24 @@ export default function ChatRoom() {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
                 className="w-6 h-6"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   d="M6.7y5 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"
                 />
               </Svg>
             </SvgDiv>
           </ChatTitleDiv>
-          <ChatMainDiv>
+          <ChatMainDiv ref={chatMainDivRef}>
             {messages.map((message, index) => (
-              <Chatting message={message} />
+              <Chatting
+                message={message}
+                isUser={message.senderNo === user.no}
+              />
             ))}
           </ChatMainDiv>
           <ChatInputDiv>
@@ -241,13 +268,13 @@ export default function ChatRoom() {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
               className="w-6 h-6"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
               />
             </Svg>
@@ -257,17 +284,18 @@ export default function ChatRoom() {
                 placeholder="메시지를 입력해주세요.."
               ></StyledInput>
               <SubmitBtn type="submit">
+                {/* 제출 안되면 이부분 엎어야 함 */}
                 <Svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="currentColor"
                   className="w-6 h-6"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
                   />
                 </Svg>

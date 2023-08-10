@@ -30,7 +30,7 @@ export default function NotFound() {
           <ContentP>감사합니다.</ContentP>
         </StyledDiv>
         <Link to={"/"}>
-          <Button Size={"small"}>홈으로 이동</Button>
+          <Button kind={"small"}>홈으로 이동</Button>
         </Link>
       </ContainerDiv>
       <Footer />

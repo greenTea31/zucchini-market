@@ -6,7 +6,6 @@ import UpdateUser from "./pages/UpdateUser";
 import Main from "./pages/Main";
 import MyPage from "./pages/MyPage";
 import ItemList from "./pages/ItemList";
-import Test from "./pages/test";
 import CreateItem from "./pages/CreateItem";
 import LikeList from "./pages/LikeList";
 import BuyList from "./pages/BuyList";
@@ -85,7 +84,7 @@ const router = createBrowserRouter([
         element: <ChatList />,
       },
       {
-        path: "/chat",
+        path: "/chat/:no",
         element: <ChatRoom />,
       },
       {
@@ -109,11 +108,11 @@ const router = createBrowserRouter([
         element: <UpdateItem />,
       },
       {
-        path: "/test",
-        element: <Test />,
+        path: "/scheculeList",
+        element: <ScheduleList />,
       },
       {
-        path: "/conference",
+        path: "/conference/:conferenceNo",
         element: <Conference />,
       },
       {

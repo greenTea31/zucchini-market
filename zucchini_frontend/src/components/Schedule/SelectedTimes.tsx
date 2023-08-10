@@ -93,7 +93,7 @@ export default function Times({ clickedDate, mark, setFixedSchedule }: any) {
       {times.map((time) => {
         return (
           <div>
-            <Button Size="extraSmall" onClick={onClick}>
+            <Button kind="extraSmall" onClick={onClick}>
               {/* time형식이 date일테니 time.getTime을 format으로... */}
               {time}
             </Button>

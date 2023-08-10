@@ -204,8 +204,8 @@ export default function CreateItem() {
                   onClick={() => removeTime(selectedTime)}
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </TimeSvg>
@@ -269,7 +269,7 @@ export default function CreateItem() {
             {selectedCategories.map((category: any) => {
               return (
                 <Button
-                  Size="extraSmall"
+                  kind="extraSmall"
                   Variant="filled"
                   style={{
                     padding: "8px",

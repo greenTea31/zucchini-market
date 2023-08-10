@@ -1,9 +1,12 @@
 import styled from "styled-components";
 import { Button } from "../Common/Button";
+import { Link } from "react-router-dom";
+import moment from "moment";
 
 interface IItem {
-  id: number;
-  // 여기 채워넣어야 함
+  title: string;
+  confirmedDate: string;
+  conferenceNo: number;
 }
 
 interface IProps {
@@ -13,11 +16,17 @@ interface IProps {
 export default function ScheduleEach(props: IProps) {
   return (
     <VideoDiv>
-      <p>10:30 - 11:00</p>
-      <TitleP>삼성 갤럭시북 PRO 2 팔아요</TitleP>
-      <Button Size={"small"} Variant={"pinkTonal"}>
-        참여
-      </Button>
+      <TimeP>
+        {moment(props?.item?.confirmedDate).format("YYYY년 MM월 DD일")}
+        <br />
+        {moment(props?.item?.confirmedDate).format("hh시 mm분")}
+      </TimeP>
+      <TitleP>{props?.item?.title}</TitleP>
+      <Link to={`/conference/${props?.item?.conferenceNo}`}>
+        <Button Size={"small"} Variant={"pinkTonal"}>
+          참여
+        </Button>
+      </Link>
     </VideoDiv>
   );
 }
@@ -33,4 +42,9 @@ const VideoDiv = styled.div`
 
 const TitleP = styled.p`
   font-weight: 500;
+`;
+
+const TimeP = styled.p`
+  line-height: 1.5rem;
+  text-align: center;
 `;

@@ -47,7 +47,6 @@ export default function SignUp() {
 
   useEffect(() => {
     // agree됐는지 확인용
-    console.log(agree);
   }, [agree]);
 
   // 체크박스 동의
@@ -123,10 +122,11 @@ export default function SignUp() {
             placeholder="이메일"
             {...register("email", { required: true })}
           />
-          <GenderSelect {...register("gender", { required: true })}>
-            <option value="" selected>
-              -- 성별 선택 --
-            </option>
+          <GenderSelect
+            defaultValue={""}
+            {...register("gender", { required: true })}
+          >
+            <option value="">-- 성별 선택 --</option>
             <option value="female">여성</option>
             <option value="male">남성</option>
             <option value="none">선택 안함</option>
@@ -242,7 +242,7 @@ const CheckboxDiv = styled.div`
   font-size: smaller;
 `;
 
-const BoldA = styled.a`
+const BoldA = styled.div`
   color: blue;
   font-size: 1rem;
 `;

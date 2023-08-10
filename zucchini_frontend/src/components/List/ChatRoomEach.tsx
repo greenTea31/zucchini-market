@@ -3,12 +3,12 @@ import styled from "styled-components";
 import cycle from "../../assets/images/cycle.png";
 
 interface IChat {
-  img: String;
-  sender: String;
-  senderGrade: String;
-  lastMsg: String;
-  lastMsgTime: String;
-  unread: String;
+  itemImage: String;
+  opponentNickname: String;
+  opponentGrade: String;
+  lastMessage: String;
+  lastMessageCreatedAt: String;
+  unreadCount: number;
 }
 
 interface IProps {
@@ -21,12 +21,12 @@ export default function ChatRoomEach(props: IProps) {
       <ChatDiv>
         <ChatImg src={cycle}></ChatImg>
         <ChatInfoDiv>
-          <InfoTitleSpan>{props.chat.sender}</InfoTitleSpan>
-          <MessageSpan>{props.chat.lastMsg}</MessageSpan>
+          <InfoTitleSpan>{props.chat.opponentNickname}</InfoTitleSpan>
+          <MessageSpan>{props.chat.lastMessage}</MessageSpan>
         </ChatInfoDiv>
         <ChatTimeDiv>
-          <MessageSpan>{props.chat.lastMsgTime}</MessageSpan>
-          <ColorDiv>{props.chat.unread}</ColorDiv>
+          <MessageSpan>{props.chat.lastMessageCreatedAt}</MessageSpan>
+          <ColorDiv>{props.chat.unreadCount}</ColorDiv>
         </ChatTimeDiv>
       </ChatDiv>
       <hr />
