@@ -1,41 +1,51 @@
 #chatContainer {
-  position: absolute;
-  z-index: 0;
-  width: 100%;
   height: 100%;
+  font-family: "IBM Plex Sans KR", sans-serif;
+  letter-spacing: 1px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end !important;
 }
 
 #chatToolbar {
-  height: 30px;
-  background-color: #3d3d3d;
+  height: 3rem;
+  background-color: #aacb73;
   box-sizing: border-box;
-  font-weight: bold;
-  font-size: 14px;
+  font-size: 1.1rem;
+  font-weight: 500;
   text-align: center;
-  padding-top: 4px;
+  padding-top: 1rem;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
   color: #ffffff;
 }
 
+#chatInput {
+  padding-left: 1rem;
+}
+
 #closeButton {
   position: absolute;
-  right: 0;
-  top: -8px;
+  right: 3rem;
+  top: 1rem;
 }
 
 #liveChat {
-  background-color: #b8b8b8;
-  position: absolute;
+  background-color: #e8e8e8;
+  /* border: solid purple 3px; */
+  /* position: absolute; */
   z-index: 99999;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  /* top: 0; */
+  /* left: 0; */
+  /* right: 0; */
+  /* bottom: 0; */
   margin: auto;
   height: calc(100% - 30px);
-  width: calc(100% - 30px);
+  width: calc(100% - 17rem);
+  min-width: 25rem;
   border-radius: 20px;
+  display: flex !important;
+  flex-direction: column;
 }
 
 .message-wrap {
@@ -48,16 +58,9 @@
   position: relative;
   padding: 7px 0;
 }
-.user-img {
-  position: absolute;
-  border-radius: 45px;
-  width: 60px;
-  height: 60px;
-  top: 15px;
-}
 
 .msg-detail {
-  width: calc(100% - 65px);
+  width: calc(100% - 10px);
   display: inline-block;
 }
 
@@ -95,7 +98,7 @@ span.triangle {
 
 .text {
   word-break: break-all;
-  color: #000000;
+  color: white;
 }
 
 /* Start message from other user */
@@ -104,24 +107,33 @@ span.triangle {
   text-align: left;
 }
 
-.message.left .msg-detail {
-  padding-left: 65px;
-}
+/* 대화창 왼쪽 사진 패딩... */
+/* .message.left .msg-detail {
+  /* padding-left: 65px; */
+/* } */
 
-.message.left .user-img {
+/* .message.left .user-img {
   left: -5px;
   border: 1px solid #f0f0f094;
-}
+} */
 
 .message.left .msg-detail .msg-content {
-  background-color: #f0f0f0;
+  background-color: #ffffff;
   float: left;
+  padding: 1rem;
+  border-radius: 0.4rem;
+  word-wrap: break-word;
+
+  .text {
+    color: black;
+  }
 }
+
 .message.left .msg-detail .msg-content span.triangle {
-  background-color: #f0f0f0;
+  background-color: #ffffff;
   border-bottom-width: 0;
   border-left-width: 0;
-  left: -5px;
+  left: -4px;
 }
 
 /* End message from other user */
@@ -131,53 +143,58 @@ span.triangle {
 .message.right .msg-detail .msg-info {
   text-align: right;
 }
-.message.right .user-img {
+/* .message.right .user-img {
   right: -5px;
-  border: 1px solid #c8ffe8ab;
-}
+  border: 1px solid white;
+} */
 
 .message.right .msg-detail .msg-content {
-  background-color: #c8ffe8;
+  background-color: #a32fff;
+  padding: 1rem;
+  border-radius: 0.4rem;
   float: right;
+  word-wrap: break-word;
 }
 .message.right .msg-detail .msg-content span.triangle {
-  background-color: #c8ffe8;
+  background-color: #a32fff;
   border-bottom-width: 0;
   border-left-width: 0;
-  right: -5px;
+  right: -4px;
 }
 
 /* End my messages */
 
 #messageInput {
-  position: absolute;
-  bottom: 0px;
+  /* position: absolute; */
+  /* bottom: 0px; */
   width: 100%;
-  background-color: #ffffff;
+  background-color: #f6f6f6;
   text-align: center;
   padding: 10px 0px;
   height: 30px;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
+  display: flex;
+  flex-direction: row;
 }
 #messageInput input {
-  width: 90%;
+  width: 85%;
   height: 100%;
   border: none;
   outline: none;
   font-size: 14px;
-  margin-left: -6%;
+  background-color: #f6f6f6;
   color: #000000;
 }
 
 #sendButton {
-  background-color: #81e9b0;
-  position: absolute;
-  right: 10px;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  border: 1px solid #7ae2a9;
+  background-color: #ffd4d4;
+  /* position: absolute; */
+  /* right: 10px; */
+  /* top: 0; */
+  /* bottom: 3px; */
+  /* margin: auto; */
+  border: 1px solid #ffd4d4;
   box-shadow: none !important;
 }
 #sendButton {
