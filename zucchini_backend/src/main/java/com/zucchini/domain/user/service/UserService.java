@@ -133,4 +133,11 @@ public interface UserService {
      */
     List<UserDealHistoryResponse> findUserDealHistoryList(String keyword, boolean flag);
 
+    /**
+     * 닉네임 중복 검사
+     * @param nickname
+     * @return
+     */
+    Boolean nicknameCheck(String nickname);
+
 }
