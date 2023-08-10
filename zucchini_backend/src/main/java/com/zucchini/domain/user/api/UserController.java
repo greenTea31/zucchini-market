@@ -66,7 +66,7 @@ public class UserController {
      * 200 : 중복 검사 성공
      * 500 : 서버 내 에러
      */
-    @GetMapping("/check/{id}")
+    @GetMapping("/idCheck/{id}")
     public ResponseEntity<Boolean> idCheck(@PathVariable String id) {
         return ResponseEntity.ok(userService.idCheck(id));
     }
@@ -78,7 +78,7 @@ public class UserController {
      * 200 : 중복 검사 성공
      * 500 : 서버 내 에러
      */
-    @GetMapping("/check/{nickname}")
+    @GetMapping("/nicknameCheck/{nickname}")
     public ResponseEntity<Boolean> nicknameCheck(@PathVariable String nickname) {
         return ResponseEntity.ok(userService.nicknameCheck(nickname));
     }
