@@ -52,12 +52,8 @@ export default function CreateItem() {
       await client.send(command);
 
       // 이미지의 공개 URL 생성
-      // const imageURL = `https://zucchinifile.s3.ap-northeast-2.amazonaws.com/${v1()
-      //   .toString()
-      //   .replace("-", "")}.${file.object.name}`;
       const imageURL = `https://zucchinifile.s3.ap-northeast-2.amazonaws.com/${keyName}`;
       return imageURL;
-      // setUploadURL(imageURL);
     } catch (err) {
       console.error(err);
     }
@@ -108,10 +104,18 @@ export default function CreateItem() {
 
   // 카테고리 추가
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (!selectedCategories.includes(event.currentTarget.value)) {
-      setSelectedCategories([...selectedCategories, event.currentTarget.value]);
+    const selectedCategory =
+      event.target.options[event.target.selectedIndex].textContent;
+    console.log(selectedCategory);
+    if (!selectedCategories.includes(selectedCategory)) {
+      setSelectedCategories([...selectedCategories, selectedCategory]);
     }
   };
+
+  useEffect(() => {
+    console.log(selectedCategories);
+  }, [selectedCategories]);
+
   // 카테고리 삭제
   const discardCategory = (event: React.MouseEvent<HTMLButtonElement>) => {
     console.log(event.currentTarget.value);
@@ -160,16 +164,14 @@ export default function CreateItem() {
       formData.append("categoryList", `${num}`);
     }
     // 이미지 파일 url
-    for (let i = 0; i < files.length; i++) {
-      // await uploadFile(files[i]);
-      // formData.append("imageList", uploadURL);
-      const uploadedURLs = await Promise.all(files.map(uploadFile));
+    // await uploadFile(files[i]);
+    // formData.append("imageList", uploadURL);
+    const uploadedURLs = await Promise.all(files.map(uploadFile));
 
-      // 업로드된 URL들을 formData에 추가
-      uploadedURLs.forEach((url: any) => {
-        formData.append("imageList", url);
-      });
-    }
+    // 업로드된 URL들을 formData에 추가
+    uploadedURLs.forEach((url: any) => {
+      formData.append("imageList", url);
+    });
 
     // 일정들
     for (let i = 0; i < selectedTimes.length; i++) {
