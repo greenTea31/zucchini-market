@@ -1,6 +1,6 @@
 #header {
   color: #ffffff;
-  background-color: #333333;
+  background-color: #aacb73;
   padding: 0 14px 0 0;
   position: absolute;
   top: 0;
@@ -15,7 +15,7 @@
 
 #titleContent {
   max-width: 100px;
-  background-color: #494949;
+  background-color: #aacb73;
   margin: 5px -18px;
   padding: 0px 15px;
   font-size: 16px;
@@ -28,6 +28,7 @@
   text-align: center;
   margin: auto;
   min-width: 400px;
+  margin-top: 0.7rem;
 }
 .navButton {
   height: 40px !important;
@@ -37,22 +38,83 @@
 #navChatButton {
   position: absolute;
   right: 0;
+  margin: 0.6rem 1.1rem 0 0;
 }
 .stream-container {
   padding: 0;
 }
 
 .bounds {
-  background-color: #494949;
-  overflow: hidden;
+  background-color: #ffffff;
+  /* overflow: scroll; */
   position: absolute;
   left: 0;
   right: 0;
-  top: 40px;
+  top: 7rem;
   bottom: 0;
   height: inherit;
   min-width: 400px !important;
   width: inherit;
+}
+
+#buttonBar {
+  background-color: white;
+  height: 3rem;
+}
+
+#titleCon {
+  margin-top: 3rem;
+  background-color: white;
+}
+
+#videoContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 75rem;
+  padding-left: 2rem;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.redButton {
+  background-color: red;
+  border: solid 2px red;
+  border-radius: 2rem;
+  color: white;
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: white;
+    color: red;
+  }
+}
+
+.greenButton {
+  background-color: green;
+  border: solid 2px green;
+  border-radius: 2rem;
+  color: white;
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: white;
+    color: green;
+  }
+}
+
+#middleContainer {
+  /* border: solid black 3px; */
+  display: flex;
+  flex-direction: row;
 }
 
 /*!
@@ -65,20 +127,36 @@
   min-height: 0px !important;
 }
 
+#layout {
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: space-around;
+}
+#liveChatContainer {
+  position: fixed !important;
+  top: 6rem !important;
+  left: 77rem !important;
+  display: flex;
+  flex-direction: row;
+  width: 30rem !important;
+}
+
 /**
    * OT Base styles
    */
 
 /* Root OT object, this is where our CSS reset happens */
-.OT_root,
+/* .OT_root,
 .OT_root * {
   margin: 0;
   padding: 0;
   border: 0;
   font-size: 100%;
-  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 1px;
+
+  font-family: Arial, Helvetica, sans-serif; 
   vertical-align: baseline;
-}
+} */
 
 .OT_dialog-centering {
   display: table;
@@ -92,14 +170,14 @@
 }
 
 .OT_dialog {
-  position: relative;
+  /* position: relative; */
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin-right: auto;
   margin-left: auto;
 
   color: #fff;
-  font-family: "Didact Gothic", sans-serif;
+  /* font-family: "Didact Gothic", sans-serif; */
   font-size: 13px;
   line-height: 1.4;
 }
@@ -235,7 +313,7 @@
 
 .OT_centered {
   position: fixed;
-  left: 50%;
+  /* left: 50%; */
   top: 50%;
   margin: 0;
 }
@@ -312,7 +390,7 @@
   right: 0;
   display: block;
   height: 34px;
-  position: absolute;
+  /* position: absolute; */
 }
 
 .OT_publisher .OT_bar,
@@ -341,7 +419,7 @@
   background: rgba(0, 0, 0, 0.4);
   top: auto;
   bottom: 0;
-  left: 34px;
+  /* left: 34px; */
   padding: 0 4px;
   color: rgba(255, 255, 255, 0.8);
   font-size: 15px;
@@ -372,7 +450,7 @@
   border-radius: 30px;
   position: absolute;
   top: 14px;
-  left: 14px;
+  /* left: 14px; */
   background-color: #575757;
   -webkit-box-shadow: 0 0 5px 1px #575757;
   box-shadow: 0 0 5px 1px #575757;
@@ -460,7 +538,7 @@
 
 .OT_publisher .OT_name,
 .OT_subscriber .OT_name {
-  left: 10px;
+  /* left: 10px; */
   right: 37px;
   height: 34px;
   padding-left: 0;
@@ -491,7 +569,7 @@
 .OT_publisher.OT_mini .OT_mute.OT_mode-auto.OT_mode-on-hold,
 .OT_subscriber.OT_mini .OT_mute.OT_mode-auto.OT_mode-on-hold {
   top: 50%;
-  left: 50%;
+  /* left: 50%; */
   right: auto;
   margin-top: -18px;
   margin-left: -18.5px;
@@ -612,7 +690,7 @@
   position: absolute;
   width: 32px;
   height: 32px;
-  left: 50%;
+  /* left: 50%; */
   top: 50%;
   margin-left: -16px;
   margin-top: -16px;

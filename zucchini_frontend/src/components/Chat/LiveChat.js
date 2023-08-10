@@ -35,12 +35,12 @@ export default class LiveChat extends Component {
         });
         const document = window.document;
         setTimeout(() => {
-          const userImg = document.getElementById(
-            "userImg-" + (this.state.messageList.length - 1)
-          );
+          // const userImg = document.getElementById(
+          //   "userImg-" + (this.state.messageList.length - 1)
+          // );
           const video = document.getElementById("video-" + data.streamId);
-          const avatar = userImg.getContext("2d");
-          avatar.drawImage(video, 200, 120, 285, 285, 0, 0, 60, 60);
+          // const avatar = userImg.getContext("2d");
+          // avatar.drawImage(video, 200, 120, 285, 285, 0, 0, 60, 60);
           this.props.messageReceived();
         }, 50);
         this.setState({ messageList: messageList });
@@ -96,6 +96,12 @@ export default class LiveChat extends Component {
       <div id="chatContainer">
         <div id="liveChat" style={styleChat}>
           <div id="chatToolbar">
+            {/* <span>
+              {this.props.user.getStreamManager().stream.session.sessionId} -
+              CHAT
+            </span> */}
+            {/* 여기는...채팅창 이름 */}
+            <span>채팅하기</span>
             <IconButton id="closeButton" onClick={this.close}>
               <HighlightOff color="secondary" />
             </IconButton>
@@ -112,12 +118,12 @@ export default class LiveChat extends Component {
                     : " right")
                 }
               >
-                <canvas
+                {/* <canvas
                   id={"userImg-" + i}
                   width="60"
                   height="60"
                   className="user-img"
-                />
+                /> */}
                 <div className="msg-detail">
                   <div className="msg-info">
                     <p> {data.nickname}</p>
@@ -133,7 +139,7 @@ export default class LiveChat extends Component {
 
           <div id="messageInput">
             <input
-              placeholder="Send a messge"
+              placeholder="메시지를 입력해주세요.."
               id="chatInput"
               value={this.state.message}
               onChange={this.handleChange}

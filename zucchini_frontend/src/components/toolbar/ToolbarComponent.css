@@ -1,14 +1,15 @@
 #header {
   color: #ffffff;
-  height: 40px;
-  background-color: #333333;
+  height: 4rem;
+  background-color: #aacb73;
   padding: 0 14px 0 0;
-  position: absolute;
+  /* position: absolute; */
   top: 0;
   left: 0;
   z-index: 999999;
   min-width: 400px !important;
 }
+
 .toolbar {
   padding: 0 !important;
 }
@@ -19,17 +20,22 @@
 }
 
 #navSessionInfo {
-  position: absolute;
+  /* position: absolute; */
+}
+
+#videoTitle {
+  margin-left: 1rem;
+  font-size: 1.5rem;
 }
 
 #navButtons {
-  position: absolute;
+  /* position: absolute; */
   left: 0;
   right: 0;
   min-width: 400px;
 }
 #navChatButton {
-  position: absolute;
+  /* position: absolute; */
   right: 10px;
   top: 0;
 }
@@ -64,7 +70,7 @@
 #point {
   width: 10px;
   height: 10px;
-  position: absolute;
+  /* position: absolute; */
   top: 12px;
   right: 33px;
   border-radius: 50%;
@@ -81,4 +87,16 @@
   #navChatButton {
     display: none;
   }
+}
+
+#titleHeader {
+  display: flex;
+  margin-top: 0.7rem;
+  align-items: center;
+  padding-left: 2rem;
+}
+
+#titleSvg {
+  height: 3rem;
+  width: 3rem;
 }

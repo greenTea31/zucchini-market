@@ -1,6 +1,7 @@
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import React, { Component } from "react";
+import DialogExtensionComponent from "../dialog-extension/DialogExtension.js";
 import StreamComponent from "../stream/StreamComponent.js";
 import "./ConferenceRoom.css";
 
@@ -9,6 +10,7 @@ import UserModel from "../../models/user-model.js";
 import ToolbarComponent from "../toolbar/ToolbarComponent.js";
 import LiveChat from "../Chat/LiveChat.js";
 import { getUser } from "../../hooks/useLocalStorage";
+import SubComponent from "../toolbar/SubComponent.js";
 
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL =
@@ -468,33 +470,85 @@ class ConferenceRoom extends Component {
           toggleChat={this.toggleChat}
         />
 
-        <div id="layout" className="bounds">
-          {localUser !== undefined &&
-            localUser.getStreamManager() !== undefined && (
-              <div className="OT_root OT_publisher custom-class" id="localUser">
-                <StreamComponent
-                  user={localUser}
-                  handleNickname={this.nicknameChanged}
-                />
-              </div>
-            )}
-          {this.state.subscribers.map((sub, i) => (
-            <div
-              key={i}
-              className="OT_root OT_publisher custom-class"
-              id="remoteUsers"
-            >
-              <StreamComponent
-                user={sub}
-                streamId={sub.streamManager.stream.streamId}
-              />
+        <div
+          id="layout"
+          className="bounds"
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <div id="videoContainer">
+            <div id="middleContainer">
+              {localUser !== undefined &&
+              localUser.getStreamManager() !== undefined ? (
+                <div
+                  className="OT_root OT_publisher custom-class"
+                  id="localUser"
+                >
+                  <StreamComponent
+                    user={localUser}
+                    handleNickname={this.nicknameChanged}
+                  />
+                </div>
+              ) : (
+                <div
+                  className="OT_root OT_publisher custom-class"
+                  style={{
+                    backgroundColor: "lightGray",
+                    height: "30rem",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    fontSize: "1.3rem",
+                  }}
+                >
+                  <p>아직 입장하지 않았습니다..</p>
+                </div>
+              )}
+              {this.state.subscribers.length < 1 ? (
+                <div
+                  className="OT_root OT_publisher custom-class"
+                  style={{
+                    backgroundColor: "lightGray",
+                    height: "30rem",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    fontSize: "1.3rem",
+                  }}
+                >
+                  <p>아직 입장하지 않았습니다..</p>
+                </div>
+              ) : (
+                this.state.subscribers.map((sub, i) => (
+                  <div
+                    key={i}
+                    className="OT_root OT_publisher custom-class"
+                    id="remoteUsers"
+                  >
+                    <StreamComponent
+                      user={sub}
+                      streamId={sub.streamManager.stream.streamId}
+                    />
+                  </div>
+                ))
+              )}
             </div>
-          ))}
+            <div class="buttonContainer">
+              <button class="redButton">종료하기</button>
+              <SubComponent
+                camStatusChanged={this.camStatusChanged}
+                micStatusChanged={this.micStatusChanged}
+                toggleFullscreen={this.toggleFullscreen}
+                switchCamera={this.switchCamera}
+              />
+              <button class="greenButton">구매하기</button>
+            </div>
+          </div>
           {localUser !== undefined &&
             localUser.getStreamManager() !== undefined && (
               <div
                 className="OT_root OT_publisher custom-class"
                 style={chatDisplay}
+                id="liveChatContainer"
               >
                 <LiveChat
                   user={localUser}
