@@ -27,10 +27,9 @@ export default function ItemList() {
 
   const getItems = async () => {
     try {
-      const response = await api.get(
-        `/item?category=${selectedCategory}&keyword=${keyword}&page=${page}`
+      const response = await axios.get(
+        `http://localhost:8080/api/item?category=${selectedCategory}&keyword=${keyword}&page=${page}`
       );
-
       setItems(response.data.content);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -77,8 +76,11 @@ export default function ItemList() {
     >
       <UpperDiv>
         <TitleSpan>중고거래 매물</TitleSpan>
-        <Category setSelectedCategory={setSelectedCategory} />
-        <Search setKeyword={setKeyword} getItems={getItems} />
+        <Category
+          setSelectedCategory={setSelectedCategory}
+          setKeyword={setKeyword}
+        />
+        <Search keyword={keyword} setKeyword={setKeyword} getItems={getItems} />
       </UpperDiv>
       <LowerDiv>
         <TitleDiv>
