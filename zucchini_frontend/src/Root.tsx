@@ -4,6 +4,7 @@ import styled from "styled-components";
 import ScrollToTop from "./constants/ScrollToTop";
 import Footer from "./components/Footer/Footer";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Link } from "react-router-dom";
 
 const Layout = styled.div`
   min-width: 90rem;
@@ -19,6 +20,7 @@ function Root() {
       <ReactQueryDevtools initialIsOpen={false} />
       <ScrollToTop />
       {exclude.includes(location.pathname) ? null : <Header />}
+      <Link to="/test">테스트</Link>
       <Outlet />
       <Footer />
     </Layout>
