@@ -1,7 +1,6 @@
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import React, { Component } from "react";
-import DialogExtensionComponent from "../dialog-extension/DialogExtension.js";
 import StreamComponent from "../stream/StreamComponent.js";
 import "./ConferenceRoom.css";
 
@@ -41,11 +40,8 @@ class ConferenceRoom extends Component {
     this.updateLayout = this.updateLayout.bind(this);
     this.camStatusChanged = this.camStatusChanged.bind(this);
     this.micStatusChanged = this.micStatusChanged.bind(this);
-    this.nicknameChanged = this.nicknameChanged.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.switchCamera = this.switchCamera.bind(this);
-    this.screenShare = this.screenShare.bind(this);
-    this.stopScreenShare = this.stopScreenShare.bind(this);
     this.closeDialogExtension = this.closeDialogExtension.bind(this);
     this.toggleChat = this.toggleChat.bind(this);
     this.checkNotification = this.checkNotification.bind(this);
@@ -119,7 +115,7 @@ class ConferenceRoom extends Component {
         if (this.props.error) {
           this.props.error({
             error: error.error,
-            messgae: error.message,
+            message: error.message,
             code: error.code,
             status: error.status,
           });
@@ -139,7 +135,7 @@ class ConferenceRoom extends Component {
         if (this.props.error) {
           this.props.error({
             error: error.error,
-            messgae: error.message,
+            message: error.message,
             code: error.code,
             status: error.status,
           });
@@ -259,15 +255,6 @@ class ConferenceRoom extends Component {
     this.setState({ localUser: localUser });
   }
 
-  nicknameChanged(nickname) {
-    let localUser = this.state.localUser;
-    localUser.setNickname(nickname);
-    this.setState({ localUser: localUser });
-    this.sendSignalUserChanged({
-      nickname: this.state.localUser.getNickname(),
-    });
-  }
-
   deleteSubscriber(stream) {
     const remoteUsers = this.state.subscribers;
     const userStream = remoteUsers.filter(
@@ -285,9 +272,7 @@ class ConferenceRoom extends Component {
   subscribeToStreamCreated() {
     this.state.session.on("streamCreated", (event) => {
       const subscriber = this.state.session.subscribe(event.stream, undefined);
-      // var subscribers = this.state.subscribers;
       subscriber.on("streamPlaying", (e) => {
-        this.checkSomeoneShareScreen();
         subscriber.videos[0].video.parentElement.classList.remove(
           "custom-class"
         );
@@ -310,9 +295,6 @@ class ConferenceRoom extends Component {
     this.state.session.on("streamDestroyed", (event) => {
       // Remove the stream from 'subscribers' array
       this.deleteSubscriber(event.stream);
-      setTimeout(() => {
-        this.checkSomeoneShareScreen();
-      }, 20);
       event.preventDefault();
       this.updateLayout();
     });
@@ -339,12 +321,9 @@ class ConferenceRoom extends Component {
           }
         }
       });
-      this.setState(
-        {
-          subscribers: remoteUsers,
-        },
-        () => this.checkSomeoneShareScreen()
-      );
+      this.setState({
+        subscribers: remoteUsers,
+      });
     });
   }
 
@@ -433,77 +412,8 @@ class ConferenceRoom extends Component {
     }
   }
 
-  screenShare() {
-    const videoSource =
-      navigator.userAgent.indexOf("Firefox") !== -1 ? "window" : "screen";
-    const publisher = this.OV.initPublisher(
-      undefined,
-      {
-        videoSource: videoSource,
-        publishAudio: localUser.isAudioActive(),
-        publishVideo: localUser.isVideoActive(),
-        mirror: false,
-      },
-      (error) => {
-        if (error && error.name === "SCREEN_EXTENSION_NOT_INSTALLED") {
-          this.setState({ showExtensionDialog: true });
-        } else if (error && error.name === "SCREEN_SHARING_NOT_SUPPORTED") {
-          alert("Your browser does not support screen sharing");
-        } else if (error && error.name === "SCREEN_EXTENSION_DISABLED") {
-          alert("You need to enable screen sharing extension");
-        } else if (error && error.name === "SCREEN_CAPTURE_DENIED") {
-          alert("You need to choose a window or application to share");
-        }
-      }
-    );
-
-    publisher.once("accessAllowed", () => {
-      this.state.session.unpublish(localUser.getStreamManager());
-      localUser.setStreamManager(publisher);
-      this.state.session.publish(localUser.getStreamManager()).then(() => {
-        localUser.setScreenShareActive(true);
-        this.setState({ localUser: localUser }, () => {
-          this.sendSignalUserChanged({
-            isScreenShareActive: localUser.isScreenShareActive(),
-          });
-        });
-      });
-    });
-    publisher.on("streamPlaying", () => {
-      this.updateLayout();
-      publisher.videos[0].video.parentElement.classList.remove("custom-class");
-    });
-  }
-
   closeDialogExtension() {
     this.setState({ showExtensionDialog: false });
-  }
-
-  stopScreenShare() {
-    this.state.session.unpublish(localUser.getStreamManager());
-    this.connectWebCam();
-  }
-
-  checkSomeoneShareScreen() {
-    let isScreenShared;
-    // return true if at least one passes the test
-    isScreenShared =
-      this.state.subscribers.some((user) => user.isScreenShareActive()) ||
-      localUser.isScreenShareActive();
-    const openviduLayoutOptions = {
-      maxRatio: 3 / 2,
-      minRatio: 9 / 16,
-      fixedRatio: isScreenShared,
-      bigClass: "OV_big",
-      bigPercentage: 0.8,
-      bigFixedRatio: false,
-      bigMaxRatio: 3 / 2,
-      bigMinRatio: 9 / 16,
-      bigFirst: true,
-      animate: true,
-    };
-    this.layout.setLayoutOptions(openviduLayoutOptions);
-    this.updateLayout();
   }
 
   toggleChat(property) {
@@ -553,17 +463,9 @@ class ConferenceRoom extends Component {
           showNotification={this.state.messageReceived}
           camStatusChanged={this.camStatusChanged}
           micStatusChanged={this.micStatusChanged}
-          screenShare={this.screenShare}
-          stopScreenShare={this.stopScreenShare}
-          toggleFullscreen={this.toggleFullscreen}
           switchCamera={this.switchCamera}
           leaveSession={this.leaveSession}
           toggleChat={this.toggleChat}
-        />
-
-        <DialogExtensionComponent
-          showDialog={this.state.showExtensionDialog}
-          cancelClicked={this.closeDialogExtension}
         />
 
         <div id="layout" className="bounds">
@@ -607,49 +509,18 @@ class ConferenceRoom extends Component {
     );
   }
 
-  /**
-   * --------------------------------------------
-   * GETTING A TOKEN FROM YOUR APPLICATION SERVER
-   * --------------------------------------------
-   * The methods below request the creation of a Session and a Token to
-   * your application server. This keeps your OpenVidu deployment secure.
-   *
-   * In this sample code, there is no user control at all. Anybody could
-   * access your application server endpoints! In a real production
-   * environment, your application server must identify the user to allow
-   * access to the endpoints.
-   *
-   * Visit https://docs.openvidu.io/en/stable/application-server to learn
-   * more about the integration of OpenVidu in your application server.
-   */
   async getToken() {
-    // const sessionId = await this.createSession(this.state.mySessionId);
     return await this.createToken(this.conferenceNo);
   }
 
-  // async createSession(sessionId) {
-  //   const response = await axios.post(
-  //     APPLICATION_SERVER_URL + "api/session",
-  //     { conferenceNo: sessionId },
-  //     {
-  //       headers: { "Content-Type": "application/json" },
-  //     }
-  //   );
-  //   return response.data; // The sessionId
-  // }
-
   async createToken(conferenceNo) {
-    console.log("conferenceNo===========================" + conferenceNo);
     const token = "Bearer " + getUser();
-    console.log("token==================================" + token);
     const response = await axios.get(
       APPLICATION_SERVER_URL + `api/session/${conferenceNo}`,
       {
         headers: { Authorization: token },
       }
     );
-    console.log("response========================");
-    console.log(response);
     return response.data.token; // The token
   }
 }
