@@ -2,7 +2,7 @@ import styled from "styled-components";
 import watch from "../../assets/images/watch.png";
 import ReplayButton from "../Button/ReplayButton";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Item {
   id: number;
@@ -34,12 +34,17 @@ export default function ItemEach({ item }: IProps) {
   const onClick = () => {
     navigate(`/item/${item.no}`);
   };
+
+  const location = useLocation();
+
   return (
     <ItemDiv onClick={onClick}>
       {/* 이미지 {props?.item?.image}로 변경 */}
       <ItemImg src={watch} />
       {/* ItemList, BuyList, SellList에서 각각 쓰이는 컴포넌트이므로 버튼은 조건부 렌더링 필요 */}
-      <ReplayButton>상태표시{item?.status} | 다시보기</ReplayButton>
+      {location.pathname === "/item" ? null : (
+        <ReplayButton>상태표시{item?.status} | 다시보기</ReplayButton>
+      )}
       <ItemTitle>{item?.title}</ItemTitle>
       <ItemTitle>365,000원</ItemTitle>
       <ItemContent>

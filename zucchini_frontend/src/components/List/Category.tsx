@@ -1,43 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import api from "../../utils/api";
 import axios from "axios";
 
-export default function Category({ setSelectedCategory }: any) {
+export default function Category({ setSelectedCategory, setKeyword }: any) {
   // const [clickedButton, setClickedButton] = useState();
 
-  // 임시.
-  const [allCategoryList, setAllCategoryList] = useState([
-    "디지털기기",
-    "가구/인테리어",
-    "유아동",
-    "여성의류/잡화",
-    "남성의류/잡화",
-    "생활가전/주방",
-    "도서/게임/음반",
-    "뷰티/미용",
-    "식물",
-    "반려동물용품",
-    "티켓/교환권",
-    "기타 중고물품",
-  ]);
+  const [allCategories, setAllCategories] = useState([]);
 
-  // 카테고리 가져오는 통신 로직 추가 필요
-  // useEffect(() => {
-  //   const getCategories = async () => {
-  //     try {
-  //       const response = await api({
-  //         method: "get",
-  //         url: "category",
-  //       });
-  //       // 이 밑에 내용이 맞는지...
-  //       setAllCategoryList(response.data.category);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-  //   getCategories();
-  // }, []);
+  // 처음 렌더링될 때, 카테고리 가져올 거예영
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/api/item/category"
+        );
+        console.log(response.data);
+        const categoryNames = response.data.map((item: any) => item.category);
+        setAllCategories(categoryNames);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    getCategories();
+  }, []);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
@@ -91,6 +76,7 @@ export default function Category({ setSelectedCategory }: any) {
   const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     // console.log(event.currentTarget.textContent);
     setSelectedCategory(event.currentTarget.textContent);
+    setKeyword("");
   };
 
   // 전체보기 누르면 초기화
@@ -105,7 +91,7 @@ export default function Category({ setSelectedCategory }: any) {
       onMouseLeave={handleMouseLeave}
     >
       <CategoryBtn onClick={entireCategory}>전체보기</CategoryBtn>
-      {allCategoryList.map((category: any, index: number) => {
+      {allCategories.map((category: any, index: number) => {
         return (
           <CategoryBtn key={index} onClick={onClick}>
             {category}
