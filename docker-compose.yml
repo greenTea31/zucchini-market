@@ -23,20 +23,45 @@ services:
     volumes:
       - /etc/nginx/conf.d:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt
-    restart: unless-stopped
+    restart: always
+    depends_on:
+      - frontend
+      - backend
+
+  redis:
+    image: redis
+    command: redis-server /usr/local/conf/redis.conf
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
+    labels:
+      - "name=redis"
+      - "mode=standalone"
 
   frontend:
     build:
       context: ./zucchini_frontend
       dockerfile: Dockerfile
     container_name: frontend-container
+    restart: always
     ports:
-      - "80:80"
+      - "3000:3000"
 
   backend:
     build:
       context: ./zucchini_backend
       dockerfile: Dockerfile
     container_name: backend-container
+    restart: always
     ports:
       - "8081:8080"
+    volumes:
+      - ./secret:/secret
+
+docker run -it --rm --name certbot \
+  -v '/data/certbot/conf:/etc/letsencrypt' \
+  -v '/data/certbot/www:/var/www/certbot' \
+  certbot/certbot certonly -d 'http://i9a209.p.ssafy.io' --manual --preferred-challenges dns --server https://acme-v02.api.letsencrypt.org/directory
