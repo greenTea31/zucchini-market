@@ -27,6 +27,7 @@ class ConferenceRoom extends Component {
     this.remotes = [];
     this.localUserAccessAllowed = false;
     this.state = {
+      sessionToken: undefined,
       mySessionId: sessionName,
       myUserName: userName,
       session: undefined,
@@ -107,6 +108,8 @@ class ConferenceRoom extends Component {
       try {
         var token = await this.getToken();
         console.log(token);
+        this.sessionToken = token;
+        console.log("세션 토큰---->", this.sessionToken);
         this.connect(token);
       } catch (error) {
         console.error(
