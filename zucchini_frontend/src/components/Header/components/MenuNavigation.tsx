@@ -36,7 +36,7 @@ export default function MenuNavigation({
 
   return (
     <NavigationContainer>
-      {localStorage.getItem("USER")
+      {sessionStorage.getItem("USER")
         ? list.map((element, index) => {
             if (element.navName === "로그아웃") {
               return (
