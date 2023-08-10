@@ -22,6 +22,7 @@ import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.common.PageResponse;
 import com.zucchini.global.exception.UserException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
@@ -189,6 +191,12 @@ public class ItemServiceImpl implements ItemService {
         // 조회수 증가
         item.viewUp();
 
+
+        // 현재 로그인한 유저가 이 게시글에 좋아요를 누른 상태인지 확인
+        String currentPrincipalId = getCurrentId();
+        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+        boolean isLike = userItemLikeRepository.existsByUserAndItem(user, item);
+
         return FindItemResponse.builder()
                 .no(item.getNo())
                 .title(item.getTitle())
@@ -203,6 +211,7 @@ public class ItemServiceImpl implements ItemService {
                 .dateList(dateList)
                 .categoryList(categoryList)
                 .view(item.getView())
+                .isLike(isLike)
                 .build();
 
     }
@@ -214,6 +223,8 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     public int addItem(ItemRequest item) {
+        log.info("addItem");
+        log.info("item : " + item);
         // 현재 로그인한 회원의 아이디
         String currentPrincipalId = getCurrentId();
         User user = userRepository.findById(currentPrincipalId).get();
@@ -241,6 +252,7 @@ public class ItemServiceImpl implements ItemService {
         int itemNo = itemEntity.getNo();
 
         // 이미지, 화상 가능 날짜, 카테고리 등록
+        log.info("item.getImageList() : " + item.getImageList());
         addImage(itemNo, item.getImageList());
         addDate(itemNo, item.getDateList());
         addCategory(itemNo, item.getCategoryList());
@@ -254,6 +266,9 @@ public class ItemServiceImpl implements ItemService {
      * @param getImageList : 등록할 이미지 리스트
      */
     private void addImage(int itemNo, List<String> getImageList) {
+        log.info("addImage");
+        log.info("itemNo : " + itemNo);
+        log.info("getImageList : " + getImageList);
         List<Image> imageList = new ArrayList<>();
 
         // 등록할 이미지가 없는 경우
@@ -262,6 +277,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         for (String image : getImageList) {
+            log.info("image : " + image);
             Image buildImage = Image.builder()
                     .itemNo(itemNo)
                     .link(image)

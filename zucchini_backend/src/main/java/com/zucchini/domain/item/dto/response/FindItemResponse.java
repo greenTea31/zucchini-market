@@ -40,6 +40,8 @@ public class FindItemResponse {
 
     private int view;
 
+    private boolean isLike;
+
     @Data
     @AllArgsConstructor
     public static class Seller {

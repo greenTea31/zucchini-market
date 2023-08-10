@@ -1,6 +1,7 @@
 package com.zucchini.domain.user.repository;
 
 import com.zucchini.domain.item.domain.Item;
+import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.domain.UserItemLike;
 import com.zucchini.domain.user.domain.UserItemLikeId;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,11 +43,7 @@ public interface UserItemLikeRepository extends JpaRepository<UserItemLike, User
     int countById_ItemNo(int itemNo);
 
     /**
-     * 회원이 찜한 아이템 목록 페이징
+     * 회원이 찜한 상품인지 확인
      */
-
-    /**
-     * 회원이 찜한 아이템 목록 검색 & 페이징
-     */
-
+    boolean existsByUserAndItem(User user, Item item);
 }
