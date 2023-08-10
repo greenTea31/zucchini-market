@@ -58,10 +58,3 @@ services:
     restart: always
     ports:
       - "8081:8080"
-    volumes:
-      - ./secret:/secret
-
-docker run -it --rm --name certbot \
-  -v '/data/certbot/conf:/etc/letsencrypt' \
-  -v '/data/certbot/www:/var/www/certbot' \
-  certbot/certbot certonly -d 'http://i9a209.p.ssafy.io' --manual --preferred-challenges dns --server https://acme-v02.api.letsencrypt.org/directory
