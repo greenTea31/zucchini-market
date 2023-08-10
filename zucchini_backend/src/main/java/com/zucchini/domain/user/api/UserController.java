@@ -174,7 +174,7 @@ public class UserController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity() {
+    public ResponseEntity Test() {
       return ResponseEntity.ok("Hello World");
     }
 }
