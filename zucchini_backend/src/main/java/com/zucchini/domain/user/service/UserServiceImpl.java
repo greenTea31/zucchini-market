@@ -292,6 +292,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public TokenDto login(LoginRequest loginRequest) {
         User user = userRepository.findById(loginRequest.getId()).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+        if(user.getIsLocked()) throw new UserException("정지된 회원입니다.");
         checkPassword(loginRequest.getPassword(), user.getPassword());
 
         String id = user.getId();
@@ -537,6 +538,16 @@ public class UserServiceImpl implements UserService {
         }
 
         return userDealHistoryResponseList;
+    }
+
+    /**
+     * 닉네임 중복 검사
+     * @param nickname
+     * @return
+     */
+    @Override
+    public Boolean nicknameCheck(String nickname) {
+        return !userRepository.findByNickname(nickname).isPresent();
     }
 
 }

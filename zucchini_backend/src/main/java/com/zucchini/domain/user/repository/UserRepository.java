@@ -21,4 +21,11 @@ public interface UserRepository extends JpaRepository<User, Integer>, UserReposi
      */
     List<User> findAllByIsDeletedFalseAndAuthorityFalse();
 
+    /**
+     * 닉네임으로 유저 조회
+     * @param nickname
+     * @return
+     */
+    Optional<User> findByNickname(String nickname);
+
 }

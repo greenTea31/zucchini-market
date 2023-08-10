@@ -73,6 +73,18 @@ public class UserController {
     }
 
     /**
+     * 닉네임 중복 검사
+     * @param nickname : 닉네임
+     * @return Boolean : 중복 여부
+     * 200 : 중복 검사 성공
+     * 500 : 서버 내 에러
+     */
+    @GetMapping("/idCheck/{nickname}")
+    public ResponseEntity<Boolean> nicknameCheck(@PathVariable String nickname) {
+        return ResponseEntity.ok(userService.nicknameCheck(nickname));
+    }
+
+    /**
      * 이메일 인증
      * @param request : 이메일 인증 요청 DTO
      * @return
