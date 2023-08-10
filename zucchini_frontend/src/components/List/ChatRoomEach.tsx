@@ -1,6 +1,7 @@
 import styled from "styled-components";
 //임시쏘오쓰
 import cycle from "../../assets/images/cycle.png";
+import dayjs from "dayjs";
 
 interface IChat {
   itemImage: String;
@@ -16,6 +17,11 @@ interface IProps {
 }
 
 export default function ChatRoomEach(props: IProps) {
+  // 'YYYY-MM-DD hh:mm:ss' 형식의 문자열로 직접 포맷팅
+  const formattedDate = props.chat.lastMessageCreatedAt as string;
+
+  // 문자열로 받아온 날짜를 Dayjs 객체로 변환
+  const dateObject = dayjs(formattedDate);
   return (
     <div>
       <ChatDiv>
@@ -25,7 +31,7 @@ export default function ChatRoomEach(props: IProps) {
           <MessageSpan>{props.chat.lastMessage}</MessageSpan>
         </ChatInfoDiv>
         <ChatTimeDiv>
-          <MessageSpan>{props.chat.lastMessageCreatedAt}</MessageSpan>
+          <MessageSpan>{dateObject.format("MM월 DD일")}</MessageSpan>
           <ColorDiv>{props.chat.unreadCount}</ColorDiv>
         </ChatTimeDiv>
       </ChatDiv>
@@ -53,7 +59,7 @@ const ChatInfoDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 68%;
+  width: 60%;
 `;
 
 const ChatTimeDiv = styled.div`

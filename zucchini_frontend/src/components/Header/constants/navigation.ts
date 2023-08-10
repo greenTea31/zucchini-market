@@ -5,7 +5,7 @@ const navigation = [
   },
   {
     navLink: "/scheduleList",
-    navName: "화상통화",
+    navName: "통화일정",
   },
   {
     navLink: `/mypage`,
