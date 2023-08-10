@@ -1,18 +1,21 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import ScheduleEach, { IItem } from "../components/Schedule/ScheduleEach";
+import ScheduleEach from "../components/Schedule/ScheduleEach";
 import axios from "axios";
 import Loading from "../components/Loading/Loading";
 import { motion } from "framer-motion";
+import { getUser } from "../hooks/useLocalStorage";
 interface Item {
-  id: number;
+  title: string;
+  confirmedDate: string;
+  conferenceNo: number;
 }
 
 export default function ScheduleList() {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<IItem[] | null>(null);
+  const [data, setData] = useState<Item[] | null>(null);
 
-  const [items, setItems] = useState<IItem>();
+  const [items, setItems] = useState([]);
 
   function getItems() {
     axios.get(``).then((response) => {
@@ -26,9 +29,12 @@ export default function ScheduleList() {
 
   useEffect(() => {
     setIsLoading(true);
+    const token = "Bearer " + getUser();
 
     axios
-      .get("http://localhost:8080/api/mypage/schedule")
+      .get("http://localhost:8080/api/reservation", {
+        headers: { Authorization: token },
+      })
       .then((res) => {
         setData(res.data);
       })
@@ -39,6 +45,13 @@ export default function ScheduleList() {
         setIsLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+    setIsLoading(false); // 이거 없앨거에용
+  }, [data]);
 
   if (isLoading) {
     return <Loading />;
@@ -63,7 +76,9 @@ export default function ScheduleList() {
             <p>Today : {today.toLocaleDateString()}</p>
           </TodayDiv>
           {data && data.length > 0 ? (
-            data.map((item, index) => <ScheduleEach key={index} item={item} />)
+            data.map((item) => (
+              <ScheduleEach key={item.conferenceNo} item={item} />
+            ))
           ) : (
             <AlertP>일정이 없습니다.</AlertP>
           )}

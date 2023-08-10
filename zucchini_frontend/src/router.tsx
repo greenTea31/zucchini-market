@@ -25,6 +25,7 @@ import PrivacyPolicy from "./components/Footer/PrivacyPolicy";
 import PrivateRoute from "./components/Common/PrivateRoute";
 import AboutReplay from "./pages/AboutReplay";
 import AboutSchedule from "./pages/AboutSchedule";
+import ConferenceRoom from "./components/Conference/ConferenceRoom";
 
 const router = createBrowserRouter([
   {
@@ -108,12 +109,12 @@ const router = createBrowserRouter([
         element: <UpdateItem />,
       },
       {
-        path: "/scheculeList",
+        path: "/scheduleList",
         element: <ScheduleList />,
       },
       {
         path: "/conference/:conferenceNo",
-        element: <Conference />,
+        element: <ConferenceRoom />,
       },
       {
         path: "/termsofuse",
