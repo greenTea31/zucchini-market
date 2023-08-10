@@ -24,3 +24,19 @@ services:
       - /etc/nginx/conf.d:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt
     restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./zucchini_frontend
+      dockerfile: Dockerfile
+    container_name: frontend-container
+    ports:
+      - "80:80"
+
+  backend:
+    build:
+      context: ./zucchini_backend
+      dockerfile: Dockerfile
+    container_name: backend-container
+    ports:
+      - "8081:8080"
