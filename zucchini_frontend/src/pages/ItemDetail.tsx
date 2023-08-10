@@ -13,11 +13,14 @@ import ClosedButton from "../components/Button/ClosedButton";
 import { motion } from "framer-motion";
 import api from "../utils/api";
 import moment from "moment";
+import NoImage from "../assets/images/NoImage.png";
+
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
   const [item, setItem] = useState<any>(); // item 상태 추가
   const [like, setLike] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
   // accessToken필요할 때
   // const queryClient = useQueryClient();
@@ -28,6 +31,18 @@ export default function ItemDetail() {
     setIsOpen(!isOpen);
   };
 
+  const nextImage = () => {
+    if (item?.imageList && item?.imageList.length > currentImageIndex + 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    }
+  };
+
+  const prevImage = () => {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    }
+  };
+
   const location = useLocation();
   // 아이템 가져오기
   useEffect(() => {
@@ -36,7 +51,6 @@ export default function ItemDetail() {
         const response = await axios.get(
           `http://localhost:8080/api/item/${location.pathname.split("/")[2]}`
         );
-        console.log(response);
         setItem(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -146,9 +160,18 @@ export default function ItemDetail() {
       </div>
       <UpperDiv>
         <UpperLeftDiv>
+          {item?.imageList && item?.imageList.length > 1 && (
+            <button onClick={prevImage}>이전</button>
+          )}
+
           {/* src 태그 안에 제품 사진 */}
-          <StyledImg src={item?.image}></StyledImg>
+          <StyledImg
+            src={item?.imageList ? item?.imageList[currentImageIndex] : NoImage}
+          ></StyledImg>
         </UpperLeftDiv>
+        {item?.imageList && item?.imageList.length > 1 && (
+          <button onClick={nextImage}>다음</button>
+        )}
         <UpperRightDiv>
           {/* item.categoryList 돌면서 뿌려주기 '카테고리1·카테고리2·카테고리3형식 */}
           <CategorySpan>

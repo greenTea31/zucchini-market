@@ -126,11 +126,12 @@ export default function DragDrop({ files, setFiles }: any) {
           />
 
           <ImgBtn
-            onClick={() =>
+            onClick={(event: any) => {
+              event.preventDefault();
               (
                 document.querySelector('input[type="file"]') as HTMLInputElement
-              )?.click()
-            }
+              )?.click();
+            }}
           >
             사진 가져오기
           </ImgBtn>
