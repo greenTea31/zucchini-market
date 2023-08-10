@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,7 +66,7 @@ public class UserController {
      * 200 : 중복 검사 성공
      * 500 : 서버 내 에러
      */
-    @GetMapping("/idCheck/{id}")
+    @GetMapping("/check/{id}")
     public ResponseEntity<Boolean> idCheck(@PathVariable String id) {
         return ResponseEntity.ok(userService.idCheck(id));
     }
@@ -79,7 +78,7 @@ public class UserController {
      * 200 : 중복 검사 성공
      * 500 : 서버 내 에러
      */
-    @GetMapping("/idCheck/{nickname}")
+    @GetMapping("/check/{nickname}")
     public ResponseEntity<Boolean> nicknameCheck(@PathVariable String nickname) {
         return ResponseEntity.ok(userService.nicknameCheck(nickname));
     }
