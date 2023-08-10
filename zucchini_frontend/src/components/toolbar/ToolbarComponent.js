@@ -11,9 +11,6 @@ import VideocamOff from "@material-ui/icons/VideocamOff";
 import Fullscreen from "@material-ui/icons/Fullscreen";
 import FullscreenExit from "@material-ui/icons/FullscreenExit";
 import SwitchVideoIcon from "@material-ui/icons/SwitchVideo";
-import PictureInPicture from "@material-ui/icons/PictureInPicture";
-import ScreenShare from "@material-ui/icons/ScreenShare";
-import StopScreenShare from "@material-ui/icons/StopScreenShare";
 import Tooltip from "@material-ui/core/Tooltip";
 import PowerSettingsNew from "@material-ui/icons/PowerSettingsNew";
 import QuestionAnswer from "@material-ui/icons/QuestionAnswer";
@@ -26,8 +23,6 @@ export default class ToolbarComponent extends Component {
     this.state = { fullscreen: false };
     this.camStatusChanged = this.camStatusChanged.bind(this);
     this.micStatusChanged = this.micStatusChanged.bind(this);
-    this.screenShare = this.screenShare.bind(this);
-    this.stopScreenShare = this.stopScreenShare.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.switchCamera = this.switchCamera.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
@@ -40,14 +35,6 @@ export default class ToolbarComponent extends Component {
 
   camStatusChanged() {
     this.props.camStatusChanged();
-  }
-
-  screenShare() {
-    this.props.screenShare();
-  }
-
-  stopScreenShare() {
-    this.props.stopScreenShare();
   }
 
   toggleFullscreen() {
@@ -98,24 +85,6 @@ export default class ToolbarComponent extends Component {
                 <VideocamOff color="secondary" />
               )}
             </IconButton>
-
-            <IconButton
-              color="inherit"
-              className="navButton"
-              onClick={this.screenShare}
-            >
-              {localUser !== undefined && localUser.isScreenShareActive() ? (
-                <PictureInPicture />
-              ) : (
-                <ScreenShare />
-              )}
-            </IconButton>
-
-            {localUser !== undefined && localUser.isScreenShareActive() && (
-              <IconButton onClick={this.stopScreenShare} id="navScreenButton">
-                <StopScreenShare color="secondary" />
-              </IconButton>
-            )}
 
             <IconButton
               color="inherit"
