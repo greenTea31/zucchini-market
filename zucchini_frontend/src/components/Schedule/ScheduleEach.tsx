@@ -3,7 +3,7 @@ import { Button } from "../Common/Button";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
-interface IItem {
+export interface IItem {
   title: string;
   confirmedDate: string;
   conferenceNo: number;
@@ -23,7 +23,7 @@ export default function ScheduleEach(props: IProps) {
       </TimeP>
       <TitleP>{props?.item?.title}</TitleP>
       <Link to={`/conference/${props?.item?.conferenceNo}`}>
-        <Button Size={"small"} Variant={"pinkTonal"}>
+        <Button kind={"small"} Variant={"pinkTonal"}>
           참여
         </Button>
       </Link>

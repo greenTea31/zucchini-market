@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import ScheduleEach from "../components/Schedule/ScheduleEach";
+import ScheduleEach, { IItem } from "../components/Schedule/ScheduleEach";
 import axios from "axios";
 import Loading from "../components/Loading/Loading";
 import { motion } from "framer-motion";
@@ -10,9 +10,9 @@ interface Item {
 
 export default function ScheduleList() {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<Item[] | null>(null);
+  const [data, setData] = useState<IItem[] | null>(null);
 
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<IItem>();
 
   function getItems() {
     axios.get(``).then((response) => {
@@ -63,7 +63,7 @@ export default function ScheduleList() {
             <p>Today : {today.toLocaleDateString()}</p>
           </TodayDiv>
           {data && data.length > 0 ? (
-            data.map((item) => <ScheduleEach key={item.id} item={item} />)
+            data.map((item, index) => <ScheduleEach key={index} item={item} />)
           ) : (
             <AlertP>일정이 없습니다.</AlertP>
           )}

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ErrorMessage } from "@hookform/error-message";
 import FullWidthButton from "../components/Button/FullWidthButton";
 import { motion } from "framer-motion";
+import { http } from "../utils/axios";
 
 export default function SignUp() {
   // react-hook-form
@@ -39,7 +40,8 @@ export default function SignUp() {
     // 폼 채우기는 버튼 활성화 여부로 거르므로 약관 동의 확인 후 리다이렉트 및 알럿
     if (agree) {
       // 회원가입 post 통신 로직
-      alert(JSON.stringify(data));
+      // alert(JSON.stringify(data));
+      http.post("user", data);
     } else {
       alert("약관에 동의해주세요");
     }
