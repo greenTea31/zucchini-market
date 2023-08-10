@@ -23,10 +23,11 @@ class ConferenceRoom extends Component {
     this.hasBeenUpdated = false;
     this.layout = new OpenViduLayout();
     let sessionName = this.conferenceNo;
-    let userName = JSON.parse(localStorage.getItem("USER_INFO")).nickname;
+    let userName = JSON.parse(sessionStorage.getItem("USER_INFO")).nickname;
     this.remotes = [];
     this.localUserAccessAllowed = false;
     this.state = {
+      sessionToken: undefined,
       mySessionId: sessionName,
       myUserName: userName,
       session: undefined,
@@ -107,6 +108,8 @@ class ConferenceRoom extends Component {
       try {
         var token = await this.getToken();
         console.log(token);
+        this.sessionToken = token;
+        console.log("세션 토큰---->", this.sessionToken);
         this.connect(token);
       } catch (error) {
         console.error(
@@ -223,7 +226,7 @@ class ConferenceRoom extends Component {
     );
   }
 
-  leaveSession() {
+  async leaveSession() {
     const mySession = this.state.session;
 
     if (mySession) {
@@ -242,6 +245,18 @@ class ConferenceRoom extends Component {
     if (this.props.leaveSession) {
       this.props.leaveSession();
     }
+    // 여기에 api 호출~~
+    const token = "Bearer " + getUser();
+    const response = await axios.put(
+      APPLICATION_SERVER_URL + `api/session`,
+      {
+        conferenceNo: this.conferenceNo,
+        token: this.sessionToken,
+      },
+      {
+        headers: { Authorization: token },
+      }
+    );
   }
   camStatusChanged() {
     localUser.setVideoActive(!localUser.isVideoActive());
