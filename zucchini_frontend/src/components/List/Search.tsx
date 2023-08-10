@@ -3,9 +3,10 @@ import styled from "styled-components";
 interface ISearch {
   setKeyword: React.Dispatch<React.SetStateAction<string>>;
   getItems: () => void;
+  keyword: string;
 }
 
-export default function Search({ setKeyword, getItems }: ISearch) {
+export default function Search({ setKeyword, getItems, keyword }: ISearch) {
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setKeyword(event.currentTarget.value);
   };
@@ -20,6 +21,7 @@ export default function Search({ setKeyword, getItems }: ISearch) {
       <StyledInput
         placeholder="검색어를 입력하세요.."
         onChange={onChange}
+        value={keyword}
       ></StyledInput>
       <StyledButton onClick={onClick}>
         <svg

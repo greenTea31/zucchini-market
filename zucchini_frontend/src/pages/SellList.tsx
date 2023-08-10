@@ -2,10 +2,10 @@ import styled from "styled-components";
 import CategorySecond from "../components/List/CategorySecond";
 import Search from "../components/List/Search";
 import ItemEach from "../components/List/ItemEach";
-import axios from "axios";
 import { useState, useEffect } from "react";
 import Loading from "../components/Loading/Loading";
 import { motion } from "framer-motion";
+import api from "../utils/api";
 interface Item {
   id: number;
 }
@@ -16,28 +16,32 @@ export default function SellList() {
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
 
-  function getItems() {
-    axios
-      .get(`http://localhost:8080/user/deal/sell?keyword=${keyword}`)
-      .then((response) => {
-        setItems(response.data);
-      });
+  async function getItems() {
+    try {
+      const response = await api.get(`/user/deal/sell?keyword=${keyword}`);
+      setItems(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      // 여기서 이걸 왜해야하는지 몰라서 자밋 주석
+      // setIsLoading(false);
+    }
   }
 
-  useEffect(() => {
-    getItems();
-  }, []);
+  // useEffect(() => {
+  //   getItems();
+  // }, []);
 
   useEffect(() => {
     setIsLoading(true);
-
-    axios
-      .get("http://localhost:8080/api/mypage/sell")
-      .then((res) => setData(res.data))
-      .catch((error) => console.log(error))
-      .finally(() => {
-        setIsLoading(false);
-      });
+    getItems();
+    // axios
+    //   .get("http://localhost:8080/api/mypage/sell")
+    //   .then((res) => setData(res.data))
+    //   .catch((error) => console.log(error))
+    //   .finally(() => {
+    //     setIsLoading(false);
+    //   });
   }, []);
 
   useEffect(() => {
@@ -60,7 +64,7 @@ export default function SellList() {
       <div>
         <TitleSpan>나의 판매 목록</TitleSpan>
         <CategorySecond />
-        <Search setKeyword={setKeyword} getItems={getItems} />
+        <Search setKeyword={setKeyword} getItems={getItems} keyword={keyword} />
       </div>
       <LowerDiv>
         <ItemsContainer>

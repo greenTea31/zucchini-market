@@ -3,9 +3,9 @@ import CategorySecond from "../components/List/CategorySecond";
 import Search from "../components/List/Search";
 import ItemEach from "../components/List/ItemEach";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Loading from "../components/Loading/Loading";
 import { motion } from "framer-motion";
+import api from "../utils/api";
 interface Item {
   id: number;
 }
@@ -15,13 +15,21 @@ export default function LikeList() {
 
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
-  function getItems() {
-    axios
-      .get(`http://localhost:8080/user/item/like?keyword=${keyword}`)
-      .then((response) => {
-        setItems(response.data);
-        setIsLoading(true);
-      });
+  async function getItems() {
+    try {
+      const response = await api.get(`/user/item/like?keyword=${keyword}`);
+      setItems(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    // cotIsLoading(true);
+    // axios
+    //   .get(`http://localhost:8080/user/item/like?keyword=${keyword}`)
+    //   .then((response) => {
+    //     setItems(response.data);
+    //     setIsLoading(true);
+    //   });
   }
 
   useEffect(() => {
@@ -41,7 +49,7 @@ export default function LikeList() {
       <div>
         <TitleSpan>나의 찜한 목록</TitleSpan>
         <CategorySecond />
-        <Search setKeyword={setKeyword} getItems={getItems} />
+        <Search setKeyword={setKeyword} getItems={getItems} keyword={keyword} />
       </div>
       <LowerDiv>
         <ItemsContainer>
