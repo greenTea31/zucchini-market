@@ -15,9 +15,9 @@ import api from "../utils/api";
 import moment from "moment";
 import NoImage from "../assets/images/NoImage.png";
 
-
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isReporting, setIsReporting] = useState(false); // 신고모달
   const [item, setItem] = useState<any>(); // item 상태 추가
   const [like, setLike] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -29,6 +29,9 @@ export default function ItemDetail() {
 
   const toggle = () => {
     setIsOpen(!isOpen);
+  };
+  const toggleReport = () => {
+    setIsReporting(!isReporting);
   };
 
   const nextImage = () => {
@@ -48,31 +51,52 @@ export default function ItemDetail() {
   useEffect(() => {
     const getItem = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/api/item/${location.pathname.split("/")[2]}`
+        const response = await api.get(
+          `item/${location.pathname.split("/")[2]}`
         );
         setItem(response.data);
+        console.log("좋아요 받아오기:" + response.data.like);
+        setLike(response.data.like);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     getItem();
-  }, [location.pathname]);
+  }, []);
+
+  // const watchLike = () => {
+  //   return like;
+  // };
+  useEffect(() => {
+    console.log("좋아요 상태 : " + like);
+  }, [like]);
 
   // 하트(찜)
-  const toggleLike = () => {
+  const toggleLike = async () => {
+    if (!localStorage.getItem("USER")) {
+      alert("로그인 해주세요!");
+      return;
+    }
     setLike((prev) => !prev);
 
-    if (like) {
-      api({
-        method: "post",
-        url: `user/item/like/${location.pathname.split("/")[2]}`,
-      });
+    if (!like) {
+      try {
+        await api({
+          method: "post",
+          url: `user/item/like/${location.pathname.split("/")[2]}`,
+        }).then((reponse: any) => console.log(reponse));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     } else {
-      api({
-        method: "delete",
-        url: `user/item/like/${location.pathname.split("/")[2]}`,
-      });
+      try {
+        await api({
+          method: "delete",
+          url: `user/item/like/${location.pathname.split("/")[2]}`,
+        }).then((reponse: any) => console.log(reponse));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
   };
 
@@ -82,19 +106,7 @@ export default function ItemDetail() {
       const response = await api({
         method: "post",
         url: "http://localhost:8080/room",
-        headers: {
-          Authorization: `Bearer ${
-            (queryClient.getQueryData([QUERY_KEY.user]) as IToken).accessToken
-          }`,
-        },
       });
-      //   axios.post("http://localhost:8080/room", {
-      //   headers: {
-      //     Authorization: `Bearer ${
-      //       (queryClient.getQueryData([QUERY_KEY.user]) as IToken).accessToken
-      //     }`,
-      //   },
-      // });
 
       // 응답 확인
       console.log(response.data);
@@ -104,6 +116,19 @@ export default function ItemDetail() {
     } catch (error) {
       console.error(error);
     }
+  };
+  const buttonStyle = {
+    backgroundColor: "transparent",
+    border: "none",
+    cursor: "pointer",
+  };
+
+  // 시간 차이 계산
+  const timeDifferenceInMinutes = (time: Date) => {
+    const currentTime = new Date();
+    const timeDifferenceInMilliseconds = currentTime.getTime() - time.getTime();
+
+    return Math.floor(timeDifferenceInMilliseconds / (1000 * 60));
   };
 
   return (
@@ -122,10 +147,19 @@ export default function ItemDetail() {
           <SimpleCalendar />
         </CalendarDiv>
       </Modal>
+
+      <Modal isOpen={isReporting} toggle={toggleReport}>
+        <ModalDiv>
+          <ClosedButton onClick={toggleReport} />
+        </ModalDiv>
+        <ModalSpan>신고하기</ModalSpan>
+        <SubSpan>신고 사유를 선택해주세요.</SubSpan>
+        {/* 신고사유 결정 */}
+      </Modal>
       {/* <GoBackButton onClick={toPrev}/> */}
       <div>
         <SvgButton onClick={toggleLike}>
-          {like ? (
+          {!like ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -188,25 +222,27 @@ export default function ItemDetail() {
           <ContentSpan>{item?.content}</ContentSpan>
           <PriceSpan>{item?.price}원</PriceSpan>
           <SubSpan>
-            {moment(item?.createdAt).format("YYYY년 MM월 DD일 hh시 mm분")} ·
-            조회 {item?.view} · 찜 {item?.likeCount}
+            {timeDifferenceInMinutes(new Date(item?.createdAt))}분 전 · 조회{" "}
+            {item?.view} · 찜 {item?.likeCount}
           </SubSpan>
           <SubSpan>
-            신고하기
-            <RedSvg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 24"
-              strokeWidth="1.5"
-              stroke="red"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-              />
-            </RedSvg>
+            <button type="button" onClick={toggleReport} style={buttonStyle}>
+              신고하기
+              <RedSvg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 24"
+                strokeWidth="1.5"
+                stroke="red"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                />
+              </RedSvg>
+            </button>
           </SubSpan>
           <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
           <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
