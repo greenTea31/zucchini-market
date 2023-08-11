@@ -21,9 +21,6 @@ RUN rm /etc/nginx/conf.d/default.conf
 # host pc 의 nginx.conf 를 아래 경로에 복사
 COPY ./nginx.conf /etc/nginx/conf.d
 
-# # letsencrypt 설정 파일을 복사
-# COPY /etc/letsencrypt/options-ssl-nginx.conf /etc/letsencrypt/
-
 # 3000 포트 오픈
 EXPOSE 3000 
 
