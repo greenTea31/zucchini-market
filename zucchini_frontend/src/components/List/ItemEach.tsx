@@ -70,6 +70,7 @@ const ItemDiv = styled.div`
   border: solid 1px #aeb9ad;
   border-radius: 2rem;
   position: relative;
+  cursor: pointer;
 `;
 
 const ItemImg = styled.img`

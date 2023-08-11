@@ -12,6 +12,7 @@ import IToken from "../types/IToken";
 import ClosedButton from "../components/Button/ClosedButton";
 import { motion } from "framer-motion";
 import api from "../utils/api";
+import moment from "moment";
 import NoImage from "../assets/images/NoImage.png";
 
 export default function ItemDetail() {
@@ -388,6 +389,7 @@ const SelectBtn = styled.button`
   border-radius: 0.4rem;
   cursor: pointer;
   margin-top: 0.15rem;
+  font-size: 1rem;
 `;
 
 const NoticeSpan = styled.span`

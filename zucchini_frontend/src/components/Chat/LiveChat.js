@@ -103,7 +103,7 @@ export default class LiveChat extends Component {
             {/* 여기는...채팅창 이름 */}
             <span>채팅하기</span>
             <IconButton id="closeButton" onClick={this.close}>
-              <HighlightOff color="secondary" />
+              <HighlightOff color="white" />
             </IconButton>
           </div>
           <div className="message-wrap" ref={this.chatScroll}>
