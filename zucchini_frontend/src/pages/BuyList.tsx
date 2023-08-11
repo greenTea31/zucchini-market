@@ -53,11 +53,16 @@ export default function BuyList() {
   }, []);
 
   useEffect(() => {
-    if (data) {
+    setIsLoading(true);
+
+    const timer = setTimeout(() => {
       setIsLoading(false);
-    }
-    setIsLoading(false); // 나중에 지울것임
-  }, [data]);
+    }, 800);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   if (isLoading) {
     return <Loading />;
