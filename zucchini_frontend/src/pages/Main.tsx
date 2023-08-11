@@ -111,7 +111,7 @@ export default function Main() {
               </SpanContent>
             </SubDiv>
             <div>
-              <Link to={"/scheduleList"} target={"_blank"}>
+              <Link to={"/aboutconference"}>
                 <LowerBtn>영상 통화</LowerBtn>
               </Link>
             </div>
