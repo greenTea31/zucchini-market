@@ -28,7 +28,6 @@ class ConferenceRoom extends Component {
     this.layout = new OpenViduLayout();
     let sessionName = this.conferenceNo;
     let userName = JSON.parse(sessionStorage.getItem("USER_INFO")).nickname;
-    let userName = JSON.parse(sessionStorage.getItem("USER_INFO")).nickname;
     this.remotes = [];
     this.localUserAccessAllowed = false;
     this.state = {
