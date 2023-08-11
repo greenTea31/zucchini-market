@@ -10,6 +10,8 @@ import java.util.List;
 public interface RoomService {
     /**
      * 아이템 번호와 구매자 사용자 아이디를 받아 새로운 방을 생성합니다.
+     * 이미 방이 있는 경우 방 번호 return
+     * - 상세페이지에서 채팅하기 버튼에 사용
      *
      * @param itemNo 아이템 번호
      * @return Http Status, 생성된 방의 번호(생성 성공시)
