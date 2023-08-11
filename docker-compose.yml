@@ -52,8 +52,8 @@ services:
       dockerfile: Dockerfile
     container_name: frontend-container
     restart: always
-    expose:
-      - "3000"
+    ports:
+      - "3000:3000"
     networks:
       - front-connection
 
