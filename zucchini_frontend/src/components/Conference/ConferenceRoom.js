@@ -12,9 +12,13 @@ import LiveChat from "../Chat/LiveChat.js";
 import { getUser } from "../../hooks/useLocalStorage";
 import SubComponent from "../toolbar/SubComponent.js";
 
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { Credentials } from "aws-sdk";
+import { v1, v3, v4, v5 } from "uuid";
+
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:8080/";
+  process.env.NODE_ENV === "production" ? "" : "http://localhost:8080/api/";
 
 class ConferenceRoom extends Component {
   constructor(props) {
@@ -227,6 +231,24 @@ class ConferenceRoom extends Component {
   }
 
   async leaveSession() {
+    // 여기에 api 호출~~
+    const token = "Bearer " + getUser();
+    const response = await axios.put(
+      APPLICATION_SERVER_URL + `session`,
+      {
+        conferenceNo: this.conferenceNo,
+        token: this.sessionToken,
+      },
+      {
+        headers: { Authorization: token },
+      }
+    );
+    console.log(response);
+    if (response.data.isFinished) {
+      console.log("비디오 저장!!");
+      // 비디오 저장 로직 호출
+      await this.storeVideo(response.data.videoNo, response.data.link);
+    }
     const mySession = this.state.session;
 
     if (mySession) {
@@ -245,19 +267,64 @@ class ConferenceRoom extends Component {
     if (this.props.leaveSession) {
       this.props.leaveSession();
     }
-    // 여기에 api 호출~~
-    const token = "Bearer " + getUser();
-    const response = await axios.put(
-      APPLICATION_SERVER_URL + `api/session`,
-      {
-        conferenceNo: this.conferenceNo,
-        token: this.sessionToken,
-      },
-      {
-        headers: { Authorization: token },
-      }
-    );
   }
+
+  // 비디오 db PK, 비디오 링크
+  async storeVideo(no, link) {
+    fetch(link)
+      .then((response) => response.blob())
+      .then(async (blob) => {
+        console.log("no------>", no);
+        console.log("link------->", link);
+        console.log("blob-------->", blob);
+        const file = new Blob([blob]);
+        console.log("file-------->", file);
+
+        const credentials = {
+          accessKeyId: "AKIA2ZDVZIZHOHIYLSNH",
+          secretAccessKey: "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",
+        };
+        const client = new S3Client({
+          region: "ap-northeast-2",
+          credentials: credentials,
+        });
+        const uploadFile = async (file) => {
+          // const uuid = v1().toString().replace("-", "");
+          // const keyName = `${uuid}.${file.object.name}`;
+          const keyName = "video/" + no + ".mp4"; // S3에 저장될 경로와 파일 이름
+          console.log("keyName------>", keyName);
+          const command = new PutObjectCommand({
+            Bucket: "zucchinifile",
+            Key: keyName,
+            Body: file,
+          });
+          try {
+            console.log("aws접속시작-------->");
+            await client.send(command);
+            // 비디오의 공개 URL 생성
+            console.log("aws접속종료-------->");
+            const videoURL = `https://zucchinifile.s3.ap-northeast-2.amazonaws.com/${keyName}`;
+            console.log("videoUrl-------->", videoURL);
+            // 여기에 api 호출~~
+            const token = "Bearer " + getUser();
+            const response = await axios.put(
+              APPLICATION_SERVER_URL + `video/${no}`,
+              {
+                link: videoURL,
+              },
+              {
+                headers: { Authorization: token },
+              }
+            );
+            console.log("비디오 저장 완료");
+          } catch (err) {
+            console.error(err);
+          }
+        };
+        await uploadFile(file);
+      });
+  }
+
   camStatusChanged() {
     localUser.setVideoActive(!localUser.isVideoActive());
     localUser.getStreamManager().publishVideo(localUser.isVideoActive());
@@ -587,11 +654,12 @@ class ConferenceRoom extends Component {
   async createToken(conferenceNo) {
     const token = "Bearer " + getUser();
     const response = await axios.get(
-      APPLICATION_SERVER_URL + `api/session/${conferenceNo}`,
+      APPLICATION_SERVER_URL + `session/${conferenceNo}`,
       {
         headers: { Authorization: token },
       }
     );
+    sessionStorage.setItem("sessionId", response.data.sessionId);
     return response.data.token; // The token
   }
 }
