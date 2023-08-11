@@ -48,7 +48,7 @@ services:
     container_name: frontend-container
     restart: always
     ports:
-      - "3000:3000"
+      - "80:3000"
 
   backend:
     build:
