@@ -46,6 +46,14 @@ export default function ChatList() {
     setIsLoading(false);
   }, [data]);
 
+  useEffect(() => {
+    const intervalId = setInterval(getChatList, 1000);
+
+    return () => {
+      clearInterval(intervalId); // 컴포넌트가 언마운트될 때 타이머를 정리
+    };
+  }, []); // 빈 의존성 배열을 사용하여 마운트될 때만 한 번 설정
+
   if (isLoading) {
     return <Loading />;
   }

@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import Loading from "../components/Loading/Loading";
 import { motion } from "framer-motion";
 import api from "../utils/api";
+import { Pagination } from "@mui/material";
 interface Item {
   id: number;
 }
@@ -16,10 +17,16 @@ export default function SellList() {
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
 
+  const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
+  const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
+
   async function getItems() {
     try {
-      const response = await api.get(`/user/deal/sell?keyword=${keyword}`);
-      setItems(response.data);
+      const response = await api.get(
+        `/user/deal/sell?keyword=${keyword}&page=${page}`
+      );
+      setItems(response.data.content);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -34,7 +41,6 @@ export default function SellList() {
 
   useEffect(() => {
     setIsLoading(true);
-    getItems();
     // axios
     //   .get("http://localhost:8080/api/mypage/sell")
     //   .then((res) => setData(res.data))
@@ -43,6 +49,14 @@ export default function SellList() {
     //     setIsLoading(false);
     //   });
   }, []);
+
+  useEffect(() => {
+    getItems();
+  }, [page]);
+
+  const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setPage(page);
+  };
 
   useEffect(() => {
     if (data) {
@@ -68,13 +82,16 @@ export default function SellList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {data && data.length > 0 ? (
+          {items && items.length > 0 ? (
             items.map((item, index) => <ItemEach item={item} />)
           ) : (
             <p>판매한 내역이 없습니다.</p>
           )}
         </ItemsContainer>
       </LowerDiv>
+      <FooterDiv>
+        <Pagination count={totalPages} page={page} onChange={onChange} />
+      </FooterDiv>
     </ContainerDiv>
   );
 }
@@ -101,4 +118,10 @@ const ItemsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+`;
+
+const FooterDiv = styled.div`
+  display: flex;
+  justify-content: end;
+  align-self: center;
 `;
