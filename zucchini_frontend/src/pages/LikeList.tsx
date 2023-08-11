@@ -33,7 +33,15 @@ export default function LikeList() {
   }
 
   useEffect(() => {
-    getItems();
+    setIsLoading(true);
+
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   if (isLoading) {

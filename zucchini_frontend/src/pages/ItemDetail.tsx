@@ -220,7 +220,7 @@ export default function ItemDetail() {
           </CategorySpan>
           <TitleSpan>{item?.title}</TitleSpan>
           <ContentSpan>{item?.content}</ContentSpan>
-          <PriceSpan>{item?.price}원</PriceSpan>
+          <PriceSpan>{item?.price.toLocaleString("ko-KR")}원</PriceSpan>
           <SubSpan>
             {timeDifferenceInMinutes(new Date(item?.createdAt))}분 전 · 조회{" "}
             {item?.view} · 찜 {item?.likeCount}
