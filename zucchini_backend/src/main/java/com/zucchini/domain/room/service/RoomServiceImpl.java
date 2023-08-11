@@ -17,6 +17,7 @@ import com.zucchini.global.exception.UserException;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.config.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class RoomServiceImpl implements RoomService{
 
     private final RoomRepository roomRepository;
@@ -59,6 +61,11 @@ public class RoomServiceImpl implements RoomService{
         User loginUser = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다."));
         Item item = itemRepository.findById(itemNo).orElseThrow(() -> new NoSuchElementException("해당 아이템이 없습니다."));
         User seller = item.getSeller();
+
+        Room findRoom = roomRepository.findByItemAndUser(itemNo, loginUser);
+        if (findRoom != null) {
+            return findRoom.getNo();
+        }
 
         // Room 생성
         Room room = Room.builder().item(item).build();
@@ -121,8 +128,8 @@ public class RoomServiceImpl implements RoomService{
         int currentPrincialNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
 
         // 방 번호를 입력받아 그 방에 속한 유저들중 자신이 아닌 사람을 반환합니다.
-          User user = roomUserRepository.findOpponentByRoomAndUser(room.getNo(), currentPrincialNo);
-          return user;
+        User user = roomUserRepository.findOpponentByRoomAndUser(room.getNo(), currentPrincialNo);
+        return user;
     }
 
     /**
@@ -157,9 +164,9 @@ public class RoomServiceImpl implements RoomService{
             roomResponse.setLastMessage(message.getContent());
             roomResponse.setLastMessageCreatedAt(message.getCreatedAt());
 
-             if (room.getItem() != null) {
-                 roomResponse.setIsDeleted(true);
-             }
+            if (room.getItem() != null) {
+                roomResponse.setIsDeleted(true);
+            }
 
             // 마지막 메세지의 보낸 사람이 조회자 본인이면 그 방의 안 읽은 메세지 수는 무조건 0개
             // 아니면 그 방의 메세지중 is_read가 false인 값을 리턴함
