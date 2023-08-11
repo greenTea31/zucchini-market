@@ -32,7 +32,11 @@ export default function ChatRoomEach(props: IProps) {
         </ChatInfoDiv>
         <ChatTimeDiv>
           <MessageSpan>{dateObject.format("MM월 DD일")}</MessageSpan>
-          <ColorDiv>{props.chat.unreadCount}</ColorDiv>
+          {props.chat.unreadCount >= 1 ? (
+            <ColorDiv>{props.chat.unreadCount}</ColorDiv>
+          ) : (
+            <NoneDiv></NoneDiv>
+          )}
         </ChatTimeDiv>
       </ChatDiv>
       <hr />
@@ -82,6 +86,17 @@ const MessageSpan = styled.span`
 
 const ColorDiv = styled.div`
   background-color: #a32fff;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 0.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+`;
+
+const NoneDiv = styled.div`
+  background-color: white;
   height: 2rem;
   width: 2rem;
   border-radius: 0.4rem;

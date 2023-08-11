@@ -18,7 +18,6 @@ export default function RightChat({ children }: ChatProps) {
 const RightBubble = styled.div`
   padding: 1rem 1.5rem;
   width: fit-content;
-  margin-bottom: 0.7rem;
   max-width: 13rem;
   border-radius: 2rem 2rem 0 2rem;
   background-color: #a32fff;
