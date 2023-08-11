@@ -30,4 +30,12 @@ public interface VideoService {
      * @param no : 비디오 no(PK)
      */
     void deleteVideo(int no);
+
+    /**
+     * 비디오 링크 수정
+     * @param no
+     * @param link
+     */
+    void modifyVideo(int no, String link);
+
 }

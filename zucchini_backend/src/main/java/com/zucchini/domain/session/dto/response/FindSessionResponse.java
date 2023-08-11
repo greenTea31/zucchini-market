@@ -8,18 +8,20 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SessionResponse {
+public class FindSessionResponse {
 
     private boolean user;
     private OpenViduRole role;
     private String nickName;
     private String token;
+    private String sessionId;
 
-    public SessionResponse(OpenViduRole role, String token, String nickName) {
+    public FindSessionResponse(OpenViduRole role, String token, String nickName, String sessionId) {
         this.user = true;
         this.role = role;
         this.nickName = nickName;
         this.token = token;
+        this.sessionId = sessionId;
     }
 
 }

@@ -1,7 +1,8 @@
 package com.zucchini.domain.session.api;
 
 import com.zucchini.domain.session.dto.request.LeaveSessionRequest;
-import com.zucchini.domain.session.dto.response.SessionResponse;
+import com.zucchini.domain.session.dto.response.FindSessionResponse;
+import com.zucchini.domain.session.dto.response.LeaveSessionResponse;
 import com.zucchini.domain.session.service.SessionService;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -30,9 +31,9 @@ public class SessionController {
      * @throws OpenViduHttpException
      */
     @GetMapping("/{conferenceNo}")
-    public ResponseEntity<SessionResponse> findConferenceSession(@PathVariable int conferenceNo,
-                                                     HttpSession httpSession,
-                                                     HttpResponse response) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<FindSessionResponse> findConferenceSession(@PathVariable int conferenceNo,
+                                                                     HttpSession httpSession,
+                                                                     HttpResponse response) throws OpenViduJavaClientException, OpenViduHttpException {
 
         System.out.println(conferenceNo+" -> 세션 진입 확인");
 
@@ -45,10 +46,18 @@ public class SessionController {
      * @return
      */
     @PutMapping("")
-    public ResponseEntity<Void> leaveConferenceSession(@Valid @RequestBody LeaveSessionRequest leaveSessionRequest) {
-        sessionService.leaveConferenceSession(leaveSessionRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<LeaveSessionResponse> leaveConferenceSession(@Valid @RequestBody LeaveSessionRequest leaveSessionRequest) {
+        try {
+            return ResponseEntity.ok().body(sessionService.leaveConferenceSession(leaveSessionRequest));
+        } catch (OpenViduJavaClientException e) {
+            throw new RuntimeException(e);
+        } catch (OpenViduHttpException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    /**
+     * 화상방에 판매자 입장 시 비디오 녹화 시작?
+     */
 
 }
