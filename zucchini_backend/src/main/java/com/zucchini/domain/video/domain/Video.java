@@ -57,4 +57,9 @@ public class Video {
         this.deleteTime = new Date(this.deleteTime.getTime() + oneDayInMillis);
     }
 
+    // 비디오 링크 저장
+    public void setLink(String link) {
+        this.link = link;
+    }
+
 }
