@@ -2,7 +2,9 @@ package com.zucchini.domain.room.service;
 
 import com.zucchini.domain.room.dto.AddMessageRequest;
 import com.zucchini.domain.room.dto.MessageResponse;
+import com.zucchini.domain.room.dto.RoomItemResponse;
 import com.zucchini.domain.room.dto.RoomResponse;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -38,6 +40,13 @@ public interface RoomService {
     void removeRoom(int roomNo);
 
     /**
+     * 특정 아이템과 관련된 모든 채팅방의 아이템 번호를 초기화하는 메소드.
+     *
+     * @param itemNo 아이템 번호
+     */
+    void changeRoomItemNo(int itemNo);
+
+    /**
      * 주어진 사용자와 관련된 모든 방을 조회합니다.
      *
      * @return 사용자와 관련된 방의 목록
@@ -63,6 +72,13 @@ public interface RoomService {
      */
     void addMessage(int roomNo, AddMessageRequest addMessageRequest, boolean isJoined);
 
-    void changeRoomItemNo(int itemNo);
+    /**
+     * 특정 방과 관련된 상품 정보 가져오기
+     * @param roomNo
+     * @return RoomItemResponse : 채팅창에 필요한 상품 정보
+     */
+    RoomItemResponse getRoomItem(int roomNo);
+
+
 
 }

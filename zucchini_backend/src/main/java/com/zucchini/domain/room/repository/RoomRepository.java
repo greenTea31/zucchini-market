@@ -26,4 +26,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     @Query(value = "SELECT r FROM RoomUser ru JOIN ru.room r WHERE r.item.no = :itemNo AND ru.user = :user")
     Room findByItemAndUser(int itemNo, User user);
 
+    @Query(value = "SELECT i FROM Room r JOIN r.item i WHERE r.no = :roomNo")
+    Item findItemByRoom(int roomNo);
+
 }
