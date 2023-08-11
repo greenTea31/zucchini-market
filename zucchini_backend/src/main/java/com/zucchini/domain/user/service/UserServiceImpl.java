@@ -150,6 +150,7 @@ public class UserServiceImpl implements UserService {
     private String getCurrentId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails principal = (UserDetails) authentication.getPrincipal();
+        log.info("principal : {}", principal.getUsername());
         return principal.getUsername();
     }
 
