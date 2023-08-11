@@ -17,8 +17,11 @@ services:
   nginx:
     image: nginx
     container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "3000:80"
       - "443:443"
     volumes:
       - /etc/nginx/conf.d:/etc/nginx/conf.d
