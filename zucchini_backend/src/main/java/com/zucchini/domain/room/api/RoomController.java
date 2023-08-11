@@ -1,9 +1,6 @@
 package com.zucchini.domain.room.api;
 
-import com.zucchini.domain.room.dto.AddMessageRequest;
-import com.zucchini.domain.room.dto.AddRoomRequest;
-import com.zucchini.domain.room.dto.MessageResponse;
-import com.zucchini.domain.room.dto.RoomResponse;
+import com.zucchini.domain.room.dto.*;
 import com.zucchini.domain.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -111,5 +108,15 @@ public class RoomController {
 //        roomService.addMessage(roomNo, addMessageRequest);
 //        return ResponseEntity.status(HttpStatus.CREATED).build();
 //    }
+
+    /**
+     * 특정 방과 관련된 상품 정보 가져오기
+     * @param roomNo
+     * @return RoomItemResponse : 채팅창에 필요한 상품 정보
+     */
+    @GetMapping("/item/{roomNo}")
+    public ResponseEntity<RoomItemResponse> getRoomItem(@PathVariable int roomNo) {
+        return ResponseEntity.ok(roomService.getRoomItem(roomNo));
+    }
 
 }

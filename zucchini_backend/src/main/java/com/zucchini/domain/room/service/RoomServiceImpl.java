@@ -1,6 +1,9 @@
 package com.zucchini.domain.room.service;
 
+import com.zucchini.domain.image.service.ImageService;
 import com.zucchini.domain.item.domain.Item;
+import com.zucchini.domain.item.domain.ItemDate;
+import com.zucchini.domain.item.dto.response.DateResponse;
 import com.zucchini.domain.item.repository.ItemRepository;
 import com.zucchini.domain.report.repository.ReportRepository;
 import com.zucchini.domain.room.domain.Message;
@@ -8,6 +11,7 @@ import com.zucchini.domain.room.domain.Room;
 import com.zucchini.domain.room.domain.RoomUser;
 import com.zucchini.domain.room.dto.AddMessageRequest;
 import com.zucchini.domain.room.dto.MessageResponse;
+import com.zucchini.domain.room.dto.RoomItemResponse;
 import com.zucchini.domain.room.dto.RoomResponse;
 import com.zucchini.domain.room.repository.MessageRepository;
 import com.zucchini.domain.room.repository.RoomRepository;
@@ -25,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +43,7 @@ public class RoomServiceImpl implements RoomService{
     private final RoomUserRepository roomUserRepository;
     private final MessageRepository messageRepository;
     private final ReportRepository reportRepository;
+    private final ImageService imageService;
 
     /**
      * 현재 로그인한 유저의 ID를 반환하는 메소드
@@ -294,6 +300,51 @@ public class RoomServiceImpl implements RoomService{
         }
 
         messageRepository.save(message);
+    }
+
+    /**
+     * 특정 방과 관련된 상품 정보 가져오기
+     * @param roomNo
+     * @return RoomItemResponse : 채팅창에 필요한 상품 정보
+     */
+    @Override
+    public RoomItemResponse getRoomItem(int roomNo) {
+        Item item = roomRepository.findItemByRoom(roomNo);
+
+        RoomItemResponse roomItemResponse = RoomItemResponse.builder()
+                .no(item.getNo())
+                .title(item.getTitle())
+                .price(item.getPrice())
+                .image(getItemImage(item.getNo()))
+                .seller(item.getSeller())
+                .dateList(getItemDate(item.getDateList()))
+                .build();
+
+        return roomItemResponse;
+    }
+
+    /**
+     * 상품 대표 이미지 한개 가져오기 (첫번째 이미지)
+     * @param itemNo : 아이템 번호 (PK)
+     * @return imageList.get(0) : 이미지 링크
+     */
+    private String getItemImage(int itemNo) {
+        List<String> imageList = imageService.findImageLinkList(itemNo);
+        // 이미지가 없는 경우 null 반환
+        if (imageList.isEmpty())
+            return null;
+        // 첫 번째 사진 반환
+        return imageList.get(0);
+    }
+
+    private List<DateResponse> getItemDate(List<ItemDate> itemDateList) {
+        List<DateResponse> dateList = itemDateList.stream().map(
+                itemDate -> DateResponse.builder()
+                        .date(itemDate.getDate())
+                        .status(itemDate.getStatus())
+                        .build()
+        ).collect(Collectors.toList());
+        return dateList;
     }
 
 }
