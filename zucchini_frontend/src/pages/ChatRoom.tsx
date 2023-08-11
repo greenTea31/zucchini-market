@@ -6,13 +6,32 @@ import { useEffect, useRef, useState } from "react";
 import Chatting from "../components/Chat/Chatting";
 import ClosedButton from "../components/Button/ClosedButton";
 import { Link, useParams } from "react-router-dom";
+import { useLocation } from "react-router";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { Client } from "@stomp/stompjs";
 import Imessage from "../types/Imessage";
 import { motion } from "framer-motion";
 import { getUser } from "../hooks/useLocalStorage";
 import api from "../utils/api";
+
+interface ISeller {
+  nickname: string;
+  grade: number;
+}
+
+interface IDate {
+  date: string;
+  status: number;
+}
+
+interface IItem {
+  no: number;
+  title: string;
+  price: number;
+  image: string;
+  seller: ISeller;
+  dateList: IDate[];
+}
 
 export default function ChatRoom() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +40,8 @@ export default function ChatRoom() {
     no: 0,
     nickname: "",
   });
+
+  const [item, setItem] = useState<IItem>();
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -34,6 +55,10 @@ export default function ChatRoom() {
       chatMainDivRef.current.scrollTop = chatMainDivRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    getItemInformation();
+  }, []);
 
   const onSubmit = async (data: any) => {
     if (!client.current) return;
@@ -62,6 +87,14 @@ export default function ChatRoom() {
     // }
     reset();
   };
+
+  const location = useLocation();
+  async function getItemInformation() {
+    const response = await api.get(
+      `/room/item/${location.pathname.split("/item/")[1]}`
+    );
+    setItem(response.data);
+  }
 
   async function getUserInformation() {
     const response = await api.get("/user/findMyNo");
@@ -187,7 +220,7 @@ export default function ChatRoom() {
         <ModalSubSpan>
           <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
         </ModalSubSpan>
-        <SimpleCalendar />
+        <SimpleCalendar dates={item?.dateList as IDate[]} />
         <ModalBtn>확인</ModalBtn>
         <ModalBtn>취소</ModalBtn>
       </Modal>
@@ -195,7 +228,7 @@ export default function ChatRoom() {
         <LeftDiv>
           <UpperDiv>
             <TitleSpan>판매자가 선택한 일정</TitleSpan>
-            <SimpleCalendar />
+            <SimpleCalendar dates={item?.dateList as IDate[]} />
             <StyledBtnDiv>
               <StyledBtn>
                 <Link to={"/scheduleList"} target={"_blank"}>
