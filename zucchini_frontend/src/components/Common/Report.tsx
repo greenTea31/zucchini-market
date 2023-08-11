@@ -1,23 +1,60 @@
 import styled from "styled-components";
+import api from "../../utils/api";
+import { useState } from "react";
 
-export default function Report() {
+// 신고당하는사람, 아이템넘버, 신고사유리스트(아이템상세페이지/채팅 상황따라 다름), roomNo(null가능)
+export default function Report({
+  reportedNickname,
+  itemNo,
+  reasons,
+  roomNo,
+}: any) {
+  // 신고 옵션
+  const [reportCategory, setReportCategory] = useState("");
+  // 상세 사유
+  const [reportReason, setReportReason] = useState("");
+
+  const realReason = () => {
+    return reportCategory + " : " + reportReason;
+  };
+
+  const handleReport = async () => {
+    // 신고 데이터 전송\
+    try {
+      await api({
+        method: "post",
+        url: "report",
+        data: {
+          reported: reportedNickname,
+          reason: realReason(),
+          itemNo: itemNo,
+          roomNo: roomNo,
+        },
+      }).then((response: any) => console.log("신고 성공: " + response.data));
+    } catch (error) {
+      console.error("신고실패" + error);
+    }
+  };
   return (
-    <SpanDiv>
-      <ModalSelect>
-        <option>-- 신고하는 이유를 선택해주세요 --</option>
-        <option>비매너 사용자</option>
-        <option>욕설 신고</option>
-        <option>성희롱 신고</option>
-        <option>거래 / 환불 분쟁 신고</option>
-        <option>사기 신고</option>
-        <option>기타</option>
-      </ModalSelect>
-      <ModalTextarea
-        placeholder="상세 사유를 입력해주세요.."
-        // value={reportReason}
-        // onChange={(e) => setReportReason(e.target.value)}
-      ></ModalTextarea>
-    </SpanDiv>
+    <>
+      <SpanDiv>
+        <ModalSelect onChange={(e) => setReportCategory(e.currentTarget.value)}>
+          <option>-- 신고하는 이유를 선택해주세요 --</option>
+          {reasons.map((reason: any) => {
+            return <option>{reason}</option>;
+          })}
+        </ModalSelect>
+        <ModalTextarea
+          placeholder="상세 사유를 입력해주세요.."
+          value={reportReason}
+          onChange={(e) => setReportReason(e.target.value)}
+        ></ModalTextarea>
+      </SpanDiv>
+      <ButtonDiv>
+        <RedBtn onClick={handleReport}>신고</RedBtn>
+        <GreenBtn>취소</GreenBtn>
+      </ButtonDiv>
+    </>
   );
 }
 const SpanDiv = styled.div`
@@ -40,4 +77,44 @@ const ModalTextarea = styled.textarea`
   border-radius: 0.4rem;
   padding: 0.5rem;
   font-size: 1rem;
+`;
+const ButtonDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+`;
+
+const GreenBtn = styled.button`
+  width: 16rem;
+  height: 2.8rem;
+  border-radius: 0.4rem;
+  background-color: green;
+  border: solid 2px green;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: white;
+    border: solid 2px green;
+    color: green;
+  }
+`;
+
+const RedBtn = styled.button`
+  width: 16rem;
+  height: 2.8rem;
+  border-radius: 0.4rem;
+  background-color: #f54040;
+  border: solid 2px red;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: white;
+    border: solid 2px red;
+    color: red;
+  }
 `;
