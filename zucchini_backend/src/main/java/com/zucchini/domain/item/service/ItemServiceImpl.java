@@ -194,8 +194,12 @@ public class ItemServiceImpl implements ItemService {
 
         // 현재 로그인한 유저가 이 게시글에 좋아요를 누른 상태인지 확인
         String currentPrincipalId = getCurrentId();
-        User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-        boolean isLike = userItemLikeRepository.existsByUserAndItem(user, item);
+        boolean isLike = false;
+
+        if (!currentPrincipalId.equals("anonymousUser")) {
+            User user = userRepository.findById(currentPrincipalId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+            isLike = userItemLikeRepository.existsByUserAndItem(user, item);
+        }
 
         return FindItemResponse.builder()
                 .no(item.getNo())
@@ -419,7 +423,17 @@ public class ItemServiceImpl implements ItemService {
      */
     private String getCurrentId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("authentication : " + authentication);
+
+        // 로그인 하지 않은 유저면 String "anonymousUser" 반환
+        if (authentication.getPrincipal().equals("anonymousUser")) {
+            return "anonymousUser";
+        }
+
+        log.info("authentication.getPrincipal() : " + authentication.getPrincipal());
+
         UserDetails principal = (UserDetails) authentication.getPrincipal();
+        log.info("principal.getUsername() : " + principal.getUsername());
         return principal.getUsername();
     }
 
