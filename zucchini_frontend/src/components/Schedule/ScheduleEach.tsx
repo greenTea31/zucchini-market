@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Button } from "../Common/Button";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import dayjs from "dayjs";
 
 export interface IItem {
   title: string;
@@ -14,6 +15,9 @@ interface IProps {
 }
 
 export default function ScheduleEach(props: IProps) {
+  const date1 = dayjs(props?.item?.confirmedDate);
+  const now = dayjs();
+
   return (
     <VideoDiv>
       <TimeP>
@@ -22,11 +26,15 @@ export default function ScheduleEach(props: IProps) {
         {moment(props?.item?.confirmedDate).format("hh시 mm분")}
       </TimeP>
       <TitleP>{props?.item?.title}</TitleP>
-      <Link to={`/conference/${props?.item?.conferenceNo}`}>
-        <Button kind={"small"} Variant={"pinkTonal"}>
-          참여
-        </Button>
-      </Link>
+      {date1.diff(now, "minute") <= 10 ? (
+        <Link to={`/conference/${props?.item?.conferenceNo}`}>
+          <Button kind={"small"} Variant={"pinkTonal"}>
+            참여
+          </Button>
+        </Link>
+      ) : (
+        <NoneButton>없음</NoneButton>
+      )}
     </VideoDiv>
   );
 }
@@ -47,4 +55,12 @@ const TitleP = styled.p`
 const TimeP = styled.p`
   line-height: 1.5rem;
   text-align: center;
+`;
+
+const NoneButton = styled.button`
+  font-size: 15px;
+  padding: 11px 16px;
+  border: transparent;
+  color: transparent;
+  background-color: transparent;
 `;

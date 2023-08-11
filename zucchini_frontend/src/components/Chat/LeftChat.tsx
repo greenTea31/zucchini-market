@@ -16,7 +16,6 @@ export default function LeftChat({ children }: ChatProps) {
 const LeftBubble = styled.div`
   padding: 1rem 1.5rem;
   width: fit-content;
-  margin-bottom: 0.7rem;
   max-width: 13rem;
   border-radius: 0 2rem 2rem 2rem;
   background-color: white;

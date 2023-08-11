@@ -15,7 +15,7 @@ import api from "../utils/api";
 // }
 
 export default function ItemList() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   // const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
   const [category, setCategory] = useState("");
@@ -63,10 +63,21 @@ export default function ItemList() {
   //   }
   //   setIsLoading(false); // 여기는 지울거에용
   // }, [data]);
+  useEffect(() => {
+    setIsLoading(true);
 
-  // if (isLoading) {
-  //   return <Loading />;
-  // }
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <ContainerDiv
