@@ -73,7 +73,7 @@ export default function ItemDetail() {
 
   // 하트(찜)
   const toggleLike = async () => {
-    if (!localStorage.getItem("USER")) {
+    if (!sessionStorage.getItem("USER")) {
       alert("로그인 해주세요!");
       return;
     }
