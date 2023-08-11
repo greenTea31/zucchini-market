@@ -17,15 +17,15 @@ export default function ScheduleList() {
 
   const [items, setItems] = useState([]);
 
-  function getItems() {
-    axios.get(``).then((response) => {
-      setItems(response.data);
-    });
-  }
+  // function getItems() {
+  //   axios.get(``).then((response) => {
+  //     setItems(response.data);
+  //   });
+  // }
 
-  useEffect(() => {
-    getItems();
-  }, []);
+  // useEffect(() => {
+  //   getItems();
+  // }, []);
 
   useEffect(() => {
     setIsLoading(true);

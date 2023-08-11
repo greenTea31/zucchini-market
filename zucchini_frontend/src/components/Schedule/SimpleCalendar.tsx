@@ -11,7 +11,16 @@ import axios from "axios";
 import { useLocation } from "react-router";
 import dayjs from "dayjs";
 
-export default function SimpleCalendar() {
+interface IDate {
+  date: string;
+  status: number;
+}
+
+interface IProps {
+  dates: IDate[];
+}
+
+export default function SimpleCalendar(props: IProps) {
   // 마우스로 선택한 날짜 받는 state(tmp data)
   const [clickedDate, setClickedDate] = useState(new Date());
 
@@ -22,24 +31,16 @@ export default function SimpleCalendar() {
   const [myFixedSchedule, setMyFixedSchedule] = useState();
 
   // 초기값은 임시. 원래 [] 해당 아이템에 대한 판매자가 등록한 날짜 모두 불러오기
-  const [mark, setMark] = useState(["2023-07-20", "2023-07-22", "2023-07-24"]);
+  const [mark, setMark] = useState<Date[]>([]);
   const location = useLocation();
   //첫 렌더링에만!
   useEffect(() => {
     const getSchedule = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/date/${location.pathname.split("/")[2]}`
-        );
-        console.log(response.data);
-        // reponse.data형식이 객체라서 그 안에서 date를 뽑아줘야할 듯.
-        // date정보만 새 배열로 만들자. = dates(timestamp로 시간 정보까지 들어있다)
-        const dates = response.data.map((item: any) => new Date(item.date));
-        // mark배열에 넣어주자.
-        setMark(dates);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      const dates = props?.dates?.map(
+        (item: IDate) => new Date(item.date as string)
+      );
+      console.log(dates);
+      setMark(dates);
     };
 
     getSchedule();
@@ -54,7 +55,7 @@ export default function SimpleCalendar() {
 
   // 클릭하면 해당 날짜의 타임리스트 보여주거나 다시 돌아가거나
   useEffect(() => {
-    if (mark.includes(dayjs(clickedDate).format("YYYY-MM-DD"))) {
+    if (mark.includes(clickedDate)) {
       setShowTime(true);
     } else {
       setShowTime(false);
@@ -73,7 +74,7 @@ export default function SimpleCalendar() {
         }
         // x는 Date타입으로 받아올 거니까 > x.getTime?으로
         tileClassName={({ date }) => {
-          if (mark.find((x) => x === dayjs(date).format("YYYY-MM-DD"))) {
+          if (mark.find((x) => x === date)) {
             return "possible";
           }
           // else if로 원래 안 되는 날짜()
