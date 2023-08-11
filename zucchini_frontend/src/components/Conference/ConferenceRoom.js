@@ -23,7 +23,7 @@ class ConferenceRoom extends Component {
     this.hasBeenUpdated = false;
     this.layout = new OpenViduLayout();
     let sessionName = this.conferenceNo;
-    let userName = JSON.parse(localStorage.getItem("USER_INFO")).nickname;
+    let userName = JSON.parse(sessionStorage.getItem("USER_INFO")).nickname;
     this.remotes = [];
     this.localUserAccessAllowed = false;
     this.state = {
@@ -223,7 +223,7 @@ class ConferenceRoom extends Component {
     );
   }
 
-  leaveSession() {
+  async leaveSession() {
     const mySession = this.state.session;
 
     if (mySession) {
@@ -242,6 +242,18 @@ class ConferenceRoom extends Component {
     if (this.props.leaveSession) {
       this.props.leaveSession();
     }
+    // 여기에 api 호출~~
+    const token = "Bearer " + getUser();
+    const response = await axios.put(
+      APPLICATION_SERVER_URL + `api/session`,
+      {
+        conferenceNo: this.conferenceNo,
+        token: this.sessionToken,
+      },
+      {
+        headers: { Authorization: token },
+      }
+    );
   }
   camStatusChanged() {
     localUser.setVideoActive(!localUser.isVideoActive());
@@ -482,6 +494,7 @@ class ConferenceRoom extends Component {
                 <div
                   className="OT_root OT_publisher custom-class"
                   id="localUser"
+                  style={{ height: "30rem" }}
                 >
                   <StreamComponent
                     user={localUser}
@@ -523,6 +536,7 @@ class ConferenceRoom extends Component {
                     key={i}
                     className="OT_root OT_publisher custom-class"
                     id="remoteUsers"
+                    style={{ height: "30rem" }}
                   >
                     <StreamComponent
                       user={sub}
@@ -533,14 +547,14 @@ class ConferenceRoom extends Component {
               )}
             </div>
             <div class="buttonContainer">
-              <button class="redButton">종료하기</button>
+              {/* <button class="redButton">종료하기</button> */}
               <SubComponent
                 camStatusChanged={this.camStatusChanged}
                 micStatusChanged={this.micStatusChanged}
                 toggleFullscreen={this.toggleFullscreen}
                 switchCamera={this.switchCamera}
               />
-              <button class="greenButton">구매하기</button>
+              {/* <button class="greenButton">구매하기</button> */}
             </div>
           </div>
           {localUser !== undefined &&
