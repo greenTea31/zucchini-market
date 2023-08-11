@@ -26,6 +26,7 @@ import PrivateRoute from "./components/Common/PrivateRoute";
 import AboutReplay from "./pages/AboutReplay";
 import AboutSchedule from "./pages/AboutSchedule";
 import ConferenceRoom from "./components/Conference/ConferenceRoom";
+import AboutConference from "./pages/AboutConference";
 
 const router = createBrowserRouter([
   {
@@ -131,6 +132,10 @@ const router = createBrowserRouter([
       {
         path: "/aboutschedule",
         element: <AboutSchedule />,
+      },
+      {
+        path: "/aboutconference",
+        element: <AboutConference />,
       },
     ],
     errorElement: <NotFound />,
