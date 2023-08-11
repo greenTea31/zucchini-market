@@ -16,6 +16,7 @@ export default class ToolbarComponent extends Component {
   constructor(props) {
     super(props);
     this.state = { fullscreen: false, isReportModalOpen: false };
+    this.leaveSession = this.leaveSession.bind(this);
     this.toggleReportModal = this.toggleReportModal.bind(this);
     this.toggleChat = this.toggleChat.bind(this);
   }
@@ -28,6 +29,10 @@ export default class ToolbarComponent extends Component {
     this.setState((prevState) => ({
       isReportModalOpen: !prevState.isReportModalOpen,
     }));
+  }
+
+  leaveSession() {
+    this.props.leaveSession();
   }
 
   render() {
@@ -66,7 +71,7 @@ export default class ToolbarComponent extends Component {
                 </svg>
                 구매하기
               </button>
-              <button class="headerRButton">
+              <button class="headerRButton" onClick={this.leaveSession}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
