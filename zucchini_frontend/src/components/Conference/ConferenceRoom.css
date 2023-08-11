@@ -78,7 +78,7 @@
 
 .buttonContainer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 1rem;
 }
 
@@ -92,7 +92,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: white;
+    background-color: transparent;
     color: red;
   }
 }
@@ -107,7 +107,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: white;
+    background-color: transparent;
     color: green;
   }
 }

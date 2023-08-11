@@ -547,14 +547,14 @@ class ConferenceRoom extends Component {
               )}
             </div>
             <div class="buttonContainer">
-              <button class="redButton">종료하기</button>
+              {/* <button class="redButton">종료하기</button> */}
               <SubComponent
                 camStatusChanged={this.camStatusChanged}
                 micStatusChanged={this.micStatusChanged}
                 toggleFullscreen={this.toggleFullscreen}
                 switchCamera={this.switchCamera}
               />
-              <button class="greenButton">구매하기</button>
+              {/* <button class="greenButton">구매하기</button> */}
             </div>
           </div>
           {localUser !== undefined &&
