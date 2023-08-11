@@ -28,6 +28,7 @@ class ConferenceRoom extends Component {
     this.layout = new OpenViduLayout();
     let sessionName = this.conferenceNo;
     let userName = JSON.parse(sessionStorage.getItem("USER_INFO")).nickname;
+    let userName = JSON.parse(sessionStorage.getItem("USER_INFO")).nickname;
     this.remotes = [];
     this.localUserAccessAllowed = false;
     this.state = {
@@ -112,6 +113,8 @@ class ConferenceRoom extends Component {
       try {
         var token = await this.getToken();
         console.log(token);
+        this.sessionToken = token;
+        console.log("세션 토큰---->", this.sessionToken);
         this.sessionToken = token;
         console.log("세션 토큰---->", this.sessionToken);
         this.connect(token);
