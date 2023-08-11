@@ -21,7 +21,7 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "80:80"
       - "443:443"
     volumes:
       - /etc/nginx/conf.d:/etc/nginx/conf.d
