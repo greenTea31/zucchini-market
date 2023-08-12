@@ -44,10 +44,13 @@ function getImage(grade: number) {
       return zucchiniImg4;
     case 5:
       return zucchiniImg5;
+    default:
+      return zucchiniImg5;
   }
 }
 
 export default function UserPage() {
+  const [username, setUsername] = useState("");
   const [keyword, setKeyword] = useState("");
   const [items, setItems] = useState([]);
   const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
@@ -58,9 +61,9 @@ export default function UserPage() {
   async function getItems() {
     try {
       const response = await api.get(
-        `/user/deal/sell?keyword=${keyword}&page=${page}`
+        `/user/deal/sell/${username}?keyword=${keyword}&page=${page}`
       );
-      setUser(response.data.user);
+      setUsername(response.data.username);
       setItems(response.data.content);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -117,7 +120,7 @@ export default function UserPage() {
         </ImgDiv>
         <AboutDiv>
           <AboutP>닉네임: {user.nickname}</AboutP>
-          <AboutP>거래 등급: {user.grade}</AboutP>
+          <AboutP>거래 등급: Lv.{user.grade}</AboutP>
           <AboutP>거래 횟수: {user.deal_count}</AboutP>
           <Button kind={"small"} Variant="redFilled" onClick={toggle}>
             신고하기
