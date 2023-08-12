@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import gradeFive from "../assets/images/5.png";
 import Modal from "../components/Common/Modal";
+import Report from "../components/Common/Report";
 import { useState, useEffect } from "react";
 import SimpleCalendar from "../components/Schedule/SimpleCalendar";
 import axios from "axios";
@@ -165,6 +166,16 @@ export default function ItemDetail() {
     return Math.floor(timeDifferenceInMilliseconds / (1000 * 60));
   };
 
+  // 신고사유
+  const reportReasons = [
+    "판매금지물품",
+    "허위 매물",
+    "전문판매업자",
+    "도배",
+    "욕설, 비방",
+    "성희롱",
+  ];
+
   return (
     <ContainerDiv
       initial={{ opacity: 0 }}
@@ -188,7 +199,12 @@ export default function ItemDetail() {
         </ModalDiv>
         <ModalSpan>신고하기</ModalSpan>
         <SubSpan>신고 사유를 선택해주세요.</SubSpan>
-        {/* 신고사유 결정 */}
+        <Report
+          reportedNickname={item?.seller.nickname}
+          itemNo={item?.no}
+          reasons={reportReasons}
+          roomNo={null}
+        />
       </Modal>
       {/* <GoBackButton onClick={toPrev}/> */}
       <div>
@@ -412,7 +428,7 @@ const PriceSpan = styled.span`
 
 const SubSpan = styled.span`
   color: gray;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
 `;
 
 const SelectBtn = styled.button`

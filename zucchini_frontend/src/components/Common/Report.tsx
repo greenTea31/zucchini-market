@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import api from "../../utils/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // 신고당하는사람, 아이템넘버, 신고사유리스트(아이템상세페이지/채팅 상황따라 다름), roomNo(null가능)
 export default function Report({
@@ -36,10 +36,10 @@ export default function Report({
     }
   };
   return (
-    <>
+    <ReportDiv>
       <SpanDiv>
         <ModalSelect onChange={(e) => setReportCategory(e.currentTarget.value)}>
-          <option>-- 신고하는 이유를 선택해주세요 --</option>
+          <option disabled>-- 신고 사유를 선택해주세요 --</option>
           {reasons.map((reason: any) => {
             return <option>{reason}</option>;
           })}
@@ -54,9 +54,13 @@ export default function Report({
         <RedBtn onClick={handleReport}>신고</RedBtn>
         <GreenBtn>취소</GreenBtn>
       </ButtonDiv>
-    </>
+    </ReportDiv>
   );
 }
+
+const ReportDiv = styled.div`
+  margin: 2rem;
+`;
 const SpanDiv = styled.div`
   display: flex;
   flex-direction: column;
