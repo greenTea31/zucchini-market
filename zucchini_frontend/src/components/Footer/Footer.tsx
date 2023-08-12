@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Modal from "../Common/Modal";
 import { useState } from "react";
 import ClosedButton from "../Button/ClosedButton";
@@ -12,17 +12,12 @@ export default function Footer() {
     setIsOpen(!isOpen);
   };
 
-  const navigate = useNavigate();
-  const goBack = () => {
-    navigate(-1);
-  };
-
   return (
     <>
       <ContainerDiv>
         <Modal isOpen={isOpen} toggle={toggle}>
           <ModalDiv>
-            <ClosedButton />
+            <ClosedButton onClick={toggle} />
           </ModalDiv>
           <ModalSpan>문의하기</ModalSpan>
           <SpanDiv>
@@ -40,7 +35,7 @@ export default function Footer() {
           </SpanDiv>
           <ButtonDiv>
             <FullWidthButton>문의</FullWidthButton>
-            <FullWidthButton onClick={goBack}>취소</FullWidthButton>
+            <FullWidthButton onClick={toggle}>취소</FullWidthButton>
           </ButtonDiv>
         </Modal>
         <FooterDiv>

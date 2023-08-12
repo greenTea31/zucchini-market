@@ -39,7 +39,7 @@ export default function Report({
     <ReportDiv>
       <SpanDiv>
         <ModalSelect onChange={(e) => setReportCategory(e.currentTarget.value)}>
-          <option disabled>-- 신고 사유를 선택해주세요 --</option>
+          <option>-- 신고 사유를 선택해주세요 --</option>
           {reasons.map((reason: any) => {
             return <option>{reason}</option>;
           })}
