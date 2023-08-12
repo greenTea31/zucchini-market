@@ -16,6 +16,7 @@ public class UserItemLikeId implements Serializable {
 
     @Column(name = "user_no")
     private Integer userNo;
+
     @Column(name = "item_no")
     private Integer itemNo;
 

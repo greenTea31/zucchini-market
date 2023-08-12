@@ -29,6 +29,11 @@ public class Room {
         this.item = item;
     }
 
+    /**
+     * 비즈니스 메소드
+     */
+
+    // 현재 방이 어떤 Item을 거래하는 채팅방인지를 설정함
     public void setItem(Item item) {
         this.item = item;
     }

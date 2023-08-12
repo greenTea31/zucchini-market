@@ -29,7 +29,9 @@ public class VideoServiceImpl implements VideoService {
     private final long oneWeekInMillis = 24 * 60 * 60 * 1000 * 7; // 7일의 밀리초 값
 
     /**
-     * 비디오 생성
+     * 비디오 등록
+     * @param addVideoRequest : 비디오 등록 request
+     * @return int : 등록된 비디오 no(PK)
      */
     @Override
     public int addVideo(AddVideoRequest addVideoRequest) {
@@ -47,6 +49,8 @@ public class VideoServiceImpl implements VideoService {
 
     /**
      * 해당 시간이 자정인지 확인 후 자정이 아니면 다음날 자정 시간으로 변경해서 반환
+     * @param date : 종료 시간
+     * @return Date : 자정 시간으로 변경된 종료 시간
      */
     private Date getMidnight(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -70,13 +74,15 @@ public class VideoServiceImpl implements VideoService {
 
     /**
      * 비디오 조회
+     * @param no : 비디오 no(PK)
+     * @return FindVideoResponse : 비디오 조회 response
      */
     @Override
+    @Transactional(readOnly = true)
     public FindVideoResponse findVideo(int no) {
         Optional<Video> video = videoRepository.findByItemNo(no);
         if(!video.isPresent()) throw new NoSuchElementException("해당 비디오가 존재하지 않습니다.");
         // 해당 아이템의 판매자 구매자가 아닌 경우 비디오 조회 권한이 없음
-//        Optional<Item> item = itemRepository.findById(video.get().getItemNo());
         Item item = itemRepository.findItemWithFetchJoinById(video.get().getItem().getNo());
         String loginId = getCurrentId();
         // 최적화 방법 -> fetch join
@@ -91,6 +97,10 @@ public class VideoServiceImpl implements VideoService {
                 .build();
     }
 
+    /**
+     * 스프링 시큐리티 인증을 통과하여 저장된 회원의 인증 객체에서 아이디 추출
+     * @return String : 아이디
+     */
     private String getCurrentId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails principal = (UserDetails) authentication.getPrincipal();
@@ -99,14 +109,22 @@ public class VideoServiceImpl implements VideoService {
 
     /**
      * 비디오 삭제
+     * @param no : 비디오 no(PK)
      */
     @Override
     public void deleteVideo(int no) {
         videoRepository.deleteById(no);
     }
 
+    @Override
+    public void modifyVideo(int no, String link) {
+        Video video = videoRepository.findById(no).get();
+        video.setLink(link);
+    }
+
     /**
      * 비디오 기한 7일 연장
+     * @param no : 비디오 no(PK)
      */
     @Override
     public void extendVideoDeadLine(int no) {
@@ -117,6 +135,12 @@ public class VideoServiceImpl implements VideoService {
         video.get().extendDeleteTime();
     }
 
+    /**
+     * 연장 가능 여부
+     * @param endTime : 비디오 종료 시간
+     * @param deleteTime : 비디오 삭제 유효기간
+     * @return boolean : 연장 가능 여부
+     */
     private boolean isExtended(Date endTime, Date deleteTime){
         return deleteTime.getTime() - getMidnight(endTime).getTime() > oneWeekInMillis;
     }

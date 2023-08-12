@@ -8,6 +8,9 @@ import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 상품 등록, 수정 시 사용하는 request
+ */
 @Data
 public class ItemRequest {
 

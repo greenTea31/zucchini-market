@@ -9,6 +9,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+/**
+ * 회원 가입 request
+ */
 @Getter @Setter
 public class AddUserRequest {
 
@@ -33,7 +36,6 @@ public class AddUserRequest {
     @NotBlank
     @Pattern(regexp="^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$", message="전화번호 형식이 올바르지 않습니다.")
     private String phone;
-
 
     private boolean gender;
 

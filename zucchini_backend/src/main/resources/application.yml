@@ -57,13 +57,11 @@ logging:
     org:
       org.hibernate.SQL: DEBUG
       org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-      sringframework:
-        boot: DEBUG
-        security: DEBUG
+      org.springframework.boot: DEBUG
+      org.springframework.security: DEBUG
+      org.springframework.web: DEBUG
       apache:
         tiles: INFO
-      springframework:
-        web: DEBUG
     root: INFO
     com:
       samsung:
@@ -76,7 +74,7 @@ server:
       enabled: "true"
       force: "true"
       charset: UTF-8
-    contextPath: /
+    contextPath: /api
   address: localhost
   port: "8080"
   compression:
@@ -85,9 +83,14 @@ server:
 build:
   date: "@build.date@"
 jwt:
+  expiration: '1296000000'
+  cookieName: zucchiniCookie
   expiration: "1296000000"
   secret: dyAeHubOOc8KaOfYB6XEQoEj1QzRlVgtjNL8PYs1A1tymZvvqkcEU7L1imkKHeDa
 springfox:
   documentation:
     swagger:
-      use-model-v3: "false"
+      use-model-v3: 'false'
+openvidu:
+  url: 'http://localhost:4443'
+  secret: 'MY_SECRET'

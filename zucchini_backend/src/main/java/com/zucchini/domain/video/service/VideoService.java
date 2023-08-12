@@ -5,8 +5,37 @@ import com.zucchini.domain.video.dto.response.FindVideoResponse;
 
 public interface VideoService {
 
+    /**
+     * 비디오 등록
+     * @param addVideoRequest : 비디오 등록 request
+     * @return int : 등록된 비디오 no(PK)
+     */
     int addVideo(AddVideoRequest addVideoRequest);
+
+    /**
+     * 비디오 기한 연장
+     * @param no : 비디오 no(PK)
+     */
     void extendVideoDeadLine(int no);
+
+    /**
+     * 비디오 조회
+     * @param no : 비디오 no(PK)
+     * @return FindVideoResponse : 비디오 조회 response
+     */
     FindVideoResponse findVideo(int no);
+
+    /**
+     * 비디오 삭제
+     * @param no : 비디오 no(PK)
+     */
     void deleteVideo(int no);
+
+    /**
+     * 비디오 링크 수정
+     * @param no
+     * @param link
+     */
+    void modifyVideo(int no, String link);
+
 }

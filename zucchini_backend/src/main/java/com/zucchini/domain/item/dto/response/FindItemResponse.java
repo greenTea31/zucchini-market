@@ -7,6 +7,9 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 상품 상세 조회 response
+ */
 @Data
 @Builder
 public class FindItemResponse {
@@ -36,6 +39,8 @@ public class FindItemResponse {
     private List<String> categoryList;
 
     private int view;
+
+    private boolean isLike;
 
     @Data
     @AllArgsConstructor

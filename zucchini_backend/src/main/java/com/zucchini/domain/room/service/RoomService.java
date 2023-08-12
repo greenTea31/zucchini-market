@@ -2,7 +2,9 @@ package com.zucchini.domain.room.service;
 
 import com.zucchini.domain.room.dto.AddMessageRequest;
 import com.zucchini.domain.room.dto.MessageResponse;
+import com.zucchini.domain.room.dto.RoomItemResponse;
 import com.zucchini.domain.room.dto.RoomResponse;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.List;
 public interface RoomService {
     /**
      * 아이템 번호와 구매자 사용자 아이디를 받아 새로운 방을 생성합니다.
+     * 이미 방이 있는 경우 방 번호 return
+     * - 상세페이지에서 채팅하기 버튼에 사용
      *
      * @param itemNo 아이템 번호
      * @return Http Status, 생성된 방의 번호(생성 성공시)
@@ -36,6 +40,13 @@ public interface RoomService {
     void removeRoom(int roomNo);
 
     /**
+     * 특정 아이템과 관련된 모든 채팅방의 아이템 번호를 초기화하는 메소드.
+     *
+     * @param itemNo 아이템 번호
+     */
+    void changeRoomItemNo(int itemNo);
+
+    /**
      * 주어진 사용자와 관련된 모든 방을 조회합니다.
      *
      * @return 사용자와 관련된 방의 목록
@@ -57,10 +68,17 @@ public interface RoomService {
 
     /**
      * 특정 방에 메세지를 추가합니다.
-     * @param addMessageRequest(방 번호, 보낸 사람, 내용)
+     * @param addMessageRequest(방 번호, 보낸 사람, 읽음 여부)
      */
-    void addMessage(int roomNo, AddMessageRequest addMessageRequest);
+    void addMessage(int roomNo, AddMessageRequest addMessageRequest, boolean isJoined);
 
-    void changeRoomItemNo(int itemNo);
+    /**
+     * 특정 방과 관련된 상품 정보 가져오기
+     * @param roomNo
+     * @return RoomItemResponse : 채팅창에 필요한 상품 정보
+     */
+    RoomItemResponse getRoomItem(int roomNo);
+
+
 
 }
