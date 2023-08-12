@@ -38,7 +38,7 @@ public class ReportServiceImpl implements ReportService {
         String currentPrincipalId = nowLogInDetail.getId();
 
         // User에 reported가 없으면 예외 -> 필요
-        User reporteduser = userRepository.findById(report.getReported()).orElseThrow(() -> new NoSuchElementException("신고할 회원이 없습니다."));
+        User reporteduser = userRepository.findByNickname(report.getReported()).orElseThrow(() -> new NoSuchElementException("신고할 회원이 없습니다."));
 
         // item table에 itemNo가 없으면 예외
         Item item = itemRepository.findById(report.getItemNo()).orElseThrow(() -> new NoSuchElementException("해당 아이템이 없습니다."));
