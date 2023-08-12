@@ -118,7 +118,7 @@ public class SessionServiceImpl implements SessionService {
 
         String token = getToken(user, role, no, httpSession);
         String sessionId = this.mapSessions.get(no).getSessionId();
-        if(token == ""){
+        if(token.equals("")){
             // 사용자 토큰 발급 문제!!!! 현재 세션에 아무도 있지 않다고 판단하고 새로 세션을 생성
             Session session = this.mapSessions.remove(no);
             this.sessionRecordingIds.remove(session.getSessionId());
