@@ -23,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -31,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class SessionServiceImpl implements SessionService {
 
 
@@ -98,10 +100,12 @@ public class SessionServiceImpl implements SessionService {
         if(!conference.get().isActive()) {
             // 컨퍼런스 세션 활성화
             conference.get().setActive();
-            conferenceRepository.save(conference.get());
+//            conferenceRepository.save(conference.get());
         }
         // 해당 컨퍼런스 번호로 한 예약은 회원마다 유일함
         Reservation reservation = reservationList.get(0);
+        log.info("현재 회원의 no-------------->{}", user.getNo());
+        log.info("현재 회원의 reservation-------------->{}", reservation.getNo());
 //        if(reservation.isAttended()){
 //            // 이미 접속중인 상태
 //            throw new IllegalArgumentException("이미 해당 컨퍼런스에 접속한 상태입니다.");
@@ -112,7 +116,7 @@ public class SessionServiceImpl implements SessionService {
 //            throw new IllegalArgumentException("입장 만료되었습니다.");
         // 회원의 참석 여부 true로 갱신
         reservation.attend();
-        reservationRepository.save(reservation);
+//        reservationRepository.save(reservation);
 
         OpenViduRole role = OpenViduRole.PUBLISHER;
 
@@ -125,6 +129,7 @@ public class SessionServiceImpl implements SessionService {
             this.sessionRecordings.remove(session.getSessionId());
             //한번더 토큰발급 진행
             token = getToken(user, role, no, httpSession);
+            log.info("세션 토큰 재발급----------->{}",token);
             sessionId = this.mapSessions.get(no).getSessionId();
         }else {
             // 컨퍼런스에 판매자 구매자 모두 접속한 경우 -> 동영상 녹화 시작!!
@@ -224,9 +229,11 @@ public class SessionServiceImpl implements SessionService {
         if(reservationList.size() == 0) throw new IllegalArgumentException("권한이 없습니다");
 
         // 토큰 유효성 검사
-        if(this.mapSessionNamesTokens.get(no).remove(token) == null) throw new IllegalArgumentException("토큰이 잘못되었습니다.");
+//        if(this.mapSessionNamesTokens.get(no).remove(token) == null) throw new IllegalArgumentException("토큰이 잘못되었습니다.");
         // 자기 자신의 예약
         Reservation reservation = reservationList.get(0);
+        log.info("현재 회원의 no-------------->{}", user.getNo());
+        log.info("현재 회원의 reservation-------------->{}", reservation.getNo());
         // 컨퍼런스에 참석중인 사람이 몇명인지 확인
         int cnt = getAttendedUserCount(no);
         log.info("방에 참여중인 사람 수 ->>>>>>>>{}", cnt);
@@ -250,7 +257,7 @@ public class SessionServiceImpl implements SessionService {
             // 일단 둘다 종료시 컨퍼런스도 종료되게 구현? -> 컨퍼런스 비활성화 관련 고민(실수로 둘다 종료된 경우는?)
 //            conferenceRepository.delete(conference.get());
             // 세션이 종료되었으므로 녹화 중단 후 저장
-            leaveSessionResponse = stopRecording(sessionId, no);
+            leaveSessionResponse = stopRecording(sessionId, conference.get().getItem().getNo());
         }else {
             leaveSessionResponse = new LeaveSessionResponse();
             leaveSessionResponse.setIsFinished(false);
@@ -258,7 +265,7 @@ public class SessionServiceImpl implements SessionService {
 
         // 회원의 접속 여부 false로 갱신
         reservation.leave();
-        reservationRepository.save(reservation);
+//        reservationRepository.save(reservation);
 
         return leaveSessionResponse;
     }
