@@ -40,20 +40,6 @@ export default function BuyList() {
 
   useEffect(() => {
     setIsLoading(true);
-    init();
-
-    // axios
-    //   .get("http://localhost:8080/api/mypage/buy")
-    //   .then((res) => {
-    //     setData(res.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-  }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
 
     const timer = setTimeout(() => {
       setIsLoading(false);

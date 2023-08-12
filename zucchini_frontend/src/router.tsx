@@ -27,6 +27,7 @@ import AboutReplay from "./pages/AboutReplay";
 import AboutSchedule from "./pages/AboutSchedule";
 import ConferenceRoom from "./components/Conference/ConferenceRoom";
 import AboutConference from "./pages/AboutConference";
+import UserPage from "./pages/UserPage";
 
 const router = createBrowserRouter([
   {
@@ -136,6 +137,10 @@ const router = createBrowserRouter([
       {
         path: "/aboutconference",
         element: <AboutConference />,
+      },
+      {
+        path: "/userpage",
+        element: <UserPage />,
       },
     ],
     errorElement: <NotFound />,
