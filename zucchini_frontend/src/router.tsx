@@ -13,7 +13,7 @@ import SellList from "./pages/SellList";
 import ChatList from "./pages/ChatList";
 import ItemDetail from "./pages/ItemDetail";
 import ChatRoom from "./pages/ChatRoom";
-import Conference from "./pages/Conference";
+import Conference from "./components/Conference/Conference";
 import ReplayBuyVideo from "./pages/ReplayBuyVideo";
 import ReplaySellVideo from "./pages/ReplaySellVideo";
 import ScheduleList from "./pages/ScheduleList";
@@ -116,7 +116,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/conference/:conferenceNo",
-        element: <ConferenceRoom />,
+        element: <Conference />,
       },
       {
         path: "/termsofuse",

@@ -1,16 +1,15 @@
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import React, { Component } from "react";
-import DialogExtensionComponent from "../dialog-extension/DialogExtension.js";
 import StreamComponent from "../stream/StreamComponent.js";
 import "./ConferenceRoom.css";
 
 import OpenViduLayout from "../../layout/openvidu-layout.js";
 import UserModel from "../../models/user-model.js";
 import ToolbarComponent from "../toolbar/ToolbarComponent.js";
+import TopbarComponent from "../toolbar/TopbarComponent";
 import LiveChat from "../Chat/LiveChat.js";
 import { getUser } from "../../hooks/useLocalStorage";
-import SubComponent from "../toolbar/SubComponent.js";
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { Credentials } from "aws-sdk";
@@ -24,6 +23,7 @@ class ConferenceRoom extends Component {
   constructor(props) {
     super(props);
     this.conferenceNo = window.location.pathname.split("/conference/")[1];
+    this.title = props.title;
     this.hasBeenUpdated = false;
     this.layout = new OpenViduLayout();
     let sessionName = this.conferenceNo;
@@ -544,12 +544,9 @@ class ConferenceRoom extends Component {
 
     return (
       <div className="container" id="container">
-        <ToolbarComponent
-          user={localUser}
+        <TopbarComponent
+          title={this.title}
           showNotification={this.state.messageReceived}
-          camStatusChanged={this.camStatusChanged}
-          micStatusChanged={this.micStatusChanged}
-          switchCamera={this.switchCamera}
           leaveSession={this.leaveSession}
           toggleChat={this.toggleChat}
         />
@@ -620,7 +617,8 @@ class ConferenceRoom extends Component {
             </div>
             <div class="buttonContainer">
               {/* <button class="redButton">종료하기</button> */}
-              <SubComponent
+              <ToolbarComponent
+                user={localUser}
                 camStatusChanged={this.camStatusChanged}
                 micStatusChanged={this.micStatusChanged}
                 toggleFullscreen={this.toggleFullscreen}
