@@ -173,4 +173,8 @@ public class UserController {
         return ResponseEntity.ok(buyDealHistory);
     }
 
+    @GetMapping("/test")
+    public ResponseEntity Test() {
+      return ResponseEntity.ok("Hello World");
+    }
 }
