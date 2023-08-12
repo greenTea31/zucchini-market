@@ -117,6 +117,7 @@ public class SessionServiceImpl implements SessionService {
         OpenViduRole role = OpenViduRole.PUBLISHER;
 
         String token = getToken(user, role, no, httpSession);
+        String sessionId = this.mapSessions.get(no).getSessionId();
         if(token == ""){
             // 사용자 토큰 발급 문제!!!! 현재 세션에 아무도 있지 않다고 판단하고 새로 세션을 생성
             Session session = this.mapSessions.remove(no);
@@ -124,12 +125,13 @@ public class SessionServiceImpl implements SessionService {
             this.sessionRecordings.remove(session.getSessionId());
             //한번더 토큰발급 진행
             token = getToken(user, role, no, httpSession);
-        }
-        String sessionId = this.mapSessions.get(no).getSessionId();
-        // 컨퍼런스에 판매자 구매자 모두 접속한 경우 -> 동영상 녹화 시작!!
-        if(getAttendedUserCount(no) == 1){
-            // 일단은 오디오 비디오 모두 true인 것으로 설정
-            startRecording(sessionId, true, true);
+            sessionId = this.mapSessions.get(no).getSessionId();
+        }else {
+            // 컨퍼런스에 판매자 구매자 모두 접속한 경우 -> 동영상 녹화 시작!!
+            if(getAttendedUserCount(no) == 1){
+                // 일단은 오디오 비디오 모두 true인 것으로 설정
+                startRecording(sessionId, true, true);
+            }
         }
         return new FindSessionResponse(role, token, user.getNickname(), sessionId);
     }
