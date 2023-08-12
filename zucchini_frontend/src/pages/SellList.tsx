@@ -13,7 +13,6 @@ interface Item {
 
 export default function SellList() {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
 
@@ -29,26 +28,12 @@ export default function SellList() {
       setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching data:", error);
-    } finally {
-      // 여기서 이걸 왜해야하는지 몰라서 자밋 주석
-      // setIsLoading(false);
     }
   }
 
   // useEffect(() => {
   //   getItems();
   // }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-    // axios
-    //   .get("http://localhost:8080/api/mypage/sell")
-    //   .then((res) => setData(res.data))
-    //   .catch((error) => console.log(error))
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   });
-  }, []);
 
   useEffect(() => {
     getItems();
