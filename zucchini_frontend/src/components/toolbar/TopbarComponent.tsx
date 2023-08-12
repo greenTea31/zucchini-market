@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./ToolbarComponent.css";
 
 import AppBar from "@material-ui/core/AppBar";
@@ -30,8 +31,10 @@ export default function ToolbarComponent(props: IProps) {
     setIsReportModalOpen(!isReportModalOpen);
   }
 
+  const navigate = useNavigate();
   function leaveSession() {
     props.leaveSession();
+    navigate("/scheduleList", { replace: true });
   }
 
   return (
