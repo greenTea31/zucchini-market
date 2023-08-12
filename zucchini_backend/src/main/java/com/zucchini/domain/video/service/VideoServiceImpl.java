@@ -120,7 +120,6 @@ public class VideoServiceImpl implements VideoService {
     public void modifyVideo(int no, String link) {
         Video video = videoRepository.findById(no).get();
         video.setLink(link);
-        videoRepository.save(video);
     }
 
     /**

@@ -54,7 +54,7 @@ public class Item {
     private User seller;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "buyer", nullable = false)
+    @JoinColumn(name = "buyer")
     private User buyer;
 
     @OneToMany(mappedBy = "item")
