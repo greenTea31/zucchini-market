@@ -316,19 +316,6 @@ public class UserController {
     }
 
     /**
-     * 상품 찜 취소
-     * @param itemNo : 상품 번호
-     * @return
-     * 200 : 찜 취소 성공
-     * 500 : 서버 내 에러
-     */
-    @DeleteMapping("/item/like/{itemNo}")
-    public ResponseEntity<Void> removeLikeItem(@PathVariable int itemNo) {
-        userService.removeUserLikeItem(itemNo);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
      * 판매 내역 조회
      * @param keyword : 검색어
      * @return List<UserDealHistoryResponse> : 거래 내역 응답 DTO 리스트
@@ -337,8 +324,9 @@ public class UserController {
      * 500 : 서버 내 에러
      */
     @GetMapping("/deal/sell")
-    public ResponseEntity<List<UserDealHistoryResponse>> findSellDealHistory(@RequestParam String keyword) {
-        List<UserDealHistoryResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false);
+    public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page) {
+        Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
+        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, null);
         return ResponseEntity.ok(sellDealHistory);
     }
 
@@ -351,9 +339,37 @@ public class UserController {
      * 500 : 서버 내 에러
      */
     @GetMapping("/deal/buy")
-    public ResponseEntity<List<UserDealHistoryResponse>> findBuyDealHistory(@RequestParam String keyword) {
-        List<UserDealHistoryResponse> buyDealHistory = userService.findUserDealHistoryList(keyword, true);
+    public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page) {
+        Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
+        PageResponse<FindItemListResponse> buyDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, null);
         return ResponseEntity.ok(buyDealHistory);
+    }
+
+    @GetMapping("/deal/sell/{username}")
+    public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username) {
+        Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
+        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, username);
+        return ResponseEntity.ok(sellDealHistory);
+    }
+
+    @GetMapping("/deal/buy/{username}")
+    public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username) {
+        Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
+        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, username);
+        return ResponseEntity.ok(sellDealHistory);
+    }
+
+    /**
+     * 상품 찜 취소
+     * @param itemNo : 상품 번호
+     * @return
+     * 200 : 찜 취소 성공
+     * 500 : 서버 내 에러
+     */
+    @DeleteMapping("/item/like/{itemNo}")
+    public ResponseEntity<Void> removeLikeItem(@PathVariable int itemNo) {
+        userService.removeUserLikeItem(itemNo);
+        return ResponseEntity.ok().build();
     }
 
     /**
