@@ -119,7 +119,9 @@ public class SessionServiceImpl implements SessionService {
         String token = getToken(user, role, no, httpSession);
         if(token == ""){
             // 사용자 토큰 발급 문제!!!! 현재 세션에 아무도 있지 않다고 판단하고 새로 세션을 생성
-            this.mapSessions.remove(no);
+            Session session = this.mapSessions.remove(no);
+            this.sessionRecordingIds.remove(session.getSessionId());
+            this.sessionRecordings.remove(session.getSessionId());
             //한번더 토큰발급 진행
             token = getToken(user, role, no, httpSession);
         }
@@ -158,6 +160,11 @@ public class SessionServiceImpl implements SessionService {
 
 //        System.out.println("Stoping recording | {recordingId}=" + recordingId);
         String recordingId = this.sessionRecordingIds.get(sessionId);
+        if(recordingId == null) { // 아직 시작된 녹화가 없는 상태(ex : 판매자가 화상방에 입장했다가 구매자가 들어오기도 전에 나가버린 경우)
+            LeaveSessionResponse leaveSessionResponse = new LeaveSessionResponse();
+            leaveSessionResponse.setIsFinished(false);
+            return leaveSessionResponse;
+        }
         Recording recording = this.openVidu.stopRecording(recordingId);
         this.sessionRecordings.remove(recording.getSessionId());
         // 받은 비디오 url 링크를 db에 저장
