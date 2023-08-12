@@ -12,10 +12,12 @@ const root = ReactDOM.createRoot(
 const queryClient = new QueryClient();
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <>
     <GlobalStyles />
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
     </QueryClientProvider>
-  </React.StrictMode>
+  </>
+  // </React.StrictMode>
 );

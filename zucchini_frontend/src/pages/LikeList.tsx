@@ -3,73 +3,95 @@ import CategorySecond from "../components/List/CategorySecond";
 import Search from "../components/List/Search";
 import ItemEach from "../components/List/ItemEach";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Loading from "../components/Loading/Loading";
-
+import { motion } from "framer-motion";
+import api from "../utils/api";
+import { Pagination } from "@mui/material";
 interface Item {
   id: number;
 }
 
 export default function LikeList() {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<Item[] | null>(null);
 
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
-  function getItems() {
-    axios
-      .get(`http://localhost:8080/user/item/like?keyword=${keyword}`)
-      .then((response) => {
-        setItems(response.data);
-      });
+
+  const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
+  const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
+
+  async function getItems() {
+    try {
+      const response = await api.get(
+        `/user/item/like?keyword=${keyword}&page=${page}`
+      );
+      setItems(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    // cotIsLoading(true);
+    // axios
+    //   .get(`http://localhost:8080/user/item/like?keyword=${keyword}`)
+    //   .then((response) => {
+    //     setItems(response.data);
+    //     setIsLoading(true);
+    //   });
   }
 
   useEffect(() => {
     getItems();
-  }, []);
+  }, [page]);
 
-  useEffect(() => {
+  //페이지 버튼 누를 때마다 세팅
+  const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setPage(page);
+  };
+
+    useEffect(() => {
     setIsLoading(true);
 
-    axios
-      .get("http://localhost:8080/api/mypage/like")
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (data) {
+    const timer = setTimeout(() => {
       setIsLoading(false);
-    }
-    setIsLoading(false);
-  }, [data]);
+    }, 800);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   if (isLoading) {
     return <Loading />;
   }
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div>
         <TitleSpan>나의 찜한 목록</TitleSpan>
         <CategorySecond />
-        <Search setKeyword={setKeyword} getItems={getItems} />
+        <Search setKeyword={setKeyword} getItems={getItems} keyword={keyword} />
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {items.map((item, index) => (
-            <ItemEach item={item} />
-          ))}
+          {items && items.length > 0 ? (
+            items.map((item, index) => <ItemEach item={item} />)
+          ) : (
+            <p>찜한 내역이 없습니다.</p>
+          )}
         </ItemsContainer>
       </LowerDiv>
+      <FooterDiv>
+        <Pagination count={totalPages} page={page} onChange={onChange} />
+      </FooterDiv>
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;
@@ -94,28 +116,8 @@ const ItemsContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const ItemDiv = styled.div`
+const FooterDiv = styled.div`
   display: flex;
-  flex-direction: column;
-  width: 16rem;
-  padding: 0.7rem 0.7rem 1.7rem 0.7rem;
-  margin-bottom: 1rem;
-  border: solid 1px #aeb9ad;
-  border-radius: 2rem;
-`;
-
-const ItemImg = styled.img`
-  border-radius: 1.5rem;
-`;
-
-const ItemTitle = styled.span`
-  font-weight: 500;
-  font-size: 1.1rem;
-  line-height: 1.4rem;
-  margin: 0.4rem 0.1rem;
-`;
-
-const ItemContent = styled.span`
-  color: gray;
-  margin: 0.2rem;
+  justify-content: end;
+  align-self: center;
 `;

@@ -1,0 +1,214 @@
+#chatContainer {
+  height: 38rem;
+  font-family: "IBM Plex Sans KR", sans-serif;
+  letter-spacing: 1px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end !important;
+}
+
+#chatToolbar {
+  height: 3rem;
+  background-color: #aacb73;
+  box-sizing: border-box;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-align: center;
+  padding-top: 1rem;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  color: #ffffff;
+}
+
+#chatInput {
+  padding-left: 1rem;
+}
+
+#closeButton {
+  position: absolute;
+  right: 3rem;
+  top: 1rem;
+}
+
+#liveChat {
+  background-color: #e8e8e8;
+  /* position: absolute; */
+  z-index: 99999;
+  /* top: 0; */
+  /* left: 0; */
+  /* right: 0; */
+  /* bottom: 0; */
+  margin: auto;
+  height: calc(100% - 30px);
+  width: calc(100% - 17rem);
+  min-width: 25rem;
+  border-radius: 20px;
+  display: flex !important;
+  flex-direction: column;
+}
+
+.message-wrap {
+  padding: 0 15px;
+  height: calc(100% - 80px);
+  overflow: auto;
+}
+
+.message {
+  position: relative;
+  padding: 7px 0;
+}
+
+.msg-detail {
+  width: calc(100% - 10px);
+  display: inline-block;
+}
+
+.msg-detail p {
+  margin: 0;
+  font-size: 15px;
+}
+
+.msg-info p {
+  font-size: 0.8em;
+  color: #000000;
+  font-style: italic;
+}
+
+.msg-content {
+  position: relative;
+  margin-top: 5px;
+  border-radius: 5px;
+  padding: 8px;
+  color: #000000;
+  width: auto;
+  max-width: 80%;
+}
+
+span.triangle {
+  border-radius: 2px;
+  height: 8px;
+  width: 8px;
+  top: 12px;
+  display: block;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  position: absolute;
+}
+
+.text {
+  word-break: break-all;
+  color: white;
+}
+
+/* Start message from other user */
+
+.message > .left .msg-detail .msg-info {
+  text-align: left;
+}
+
+/* 대화창 왼쪽 사진 패딩... */
+/* .message.left .msg-detail {
+  /* padding-left: 65px; */
+/* } */
+
+/* .message.left .user-img {
+  left: -5px;
+  border: 1px solid #f0f0f094;
+} */
+
+.message.left .msg-detail .msg-content {
+  background-color: #ffffff;
+  float: left;
+  padding: 1rem;
+  border-radius: 0.4rem;
+  word-wrap: break-word;
+
+  .text {
+    color: black;
+  }
+}
+
+.message.left .msg-detail .msg-content span.triangle {
+  background-color: #ffffff;
+  border-bottom-width: 0;
+  border-left-width: 0;
+  left: -4px;
+}
+
+/* End message from other user */
+
+/* Start my messages */
+
+.message.right .msg-detail .msg-info {
+  text-align: right;
+}
+/* .message.right .user-img {
+  right: -5px;
+  border: 1px solid white;
+} */
+
+.message.right .msg-detail .msg-content {
+  background-color: #a32fff;
+  padding: 1rem;
+  border-radius: 0.4rem;
+  float: right;
+  word-wrap: break-word;
+}
+.message.right .msg-detail .msg-content span.triangle {
+  background-color: #a32fff;
+  border-bottom-width: 0;
+  border-left-width: 0;
+  right: -4px;
+}
+
+/* End my messages */
+
+#messageInput {
+  /* position: absolute; */
+  /* bottom: 0px; */
+  width: 100%;
+  background-color: #f6f6f6;
+  text-align: center;
+  padding: 10px 0px;
+  height: 30px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  display: flex;
+  flex-direction: row;
+}
+#messageInput input {
+  width: 85%;
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background-color: #f6f6f6;
+  color: #000000;
+}
+
+#sendButton {
+  background-color: #ffd4d4;
+  /* position: absolute; */
+  right: 10px;
+  /* top: 0; */
+  bottom: 4px;
+  /* margin: auto; */
+  border: 1px solid #ffd4d4;
+  box-shadow: none !important;
+}
+#sendButton {
+  margin-left: 3px !important;
+  margin-bottom: 2px !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #6b6b6b;
+}
+
+.liveChatLight ::-webkit-scrollbar-thumb {
+  background-color: #eeeeee !important;
+}

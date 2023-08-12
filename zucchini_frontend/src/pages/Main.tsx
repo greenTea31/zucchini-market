@@ -1,16 +1,21 @@
 import styled from "styled-components";
 import img from "../assets/images/Main.png";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function Main() {
   return (
-    <MainAll>
+    <MainAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <MainUpper>
         <UpperLeft>
           <TitleDiv>
-            <SpanTitle>안전하고</SpanTitle>
-            <SpanTitle>신뢰성 있는</SpanTitle>
-            <SpanTitle>중고거래 플랫폼</SpanTitle>
+            <SpanTitle key={"1"}>안전하고</SpanTitle>
+            <SpanTitle key={"2"}>신뢰성 있는</SpanTitle>
+            <SpanTitle key={"3"}>중고거래 플랫폼</SpanTitle>
           </TitleDiv>
           <TitleDiv>
             <SpanContent>
@@ -24,11 +29,11 @@ export default function Main() {
             </SpanContent>
           </TitleDiv>
           <BtnDiv>
-            <Link to={"/signup"}>
-              <SignUpBtn>회원가입</SignUpBtn>
+            <Link to={"/item"}>
+              <ItemBtn>상품 구경</ItemBtn>
             </Link>
-            <Link to={"/login"}>
-              <LoginBtn>로그인</LoginBtn>
+            <Link to={"/mypage/schedule"}>
+              <ScheduleBtn>화상 일정</ScheduleBtn>
             </Link>
           </BtnDiv>
         </UpperLeft>
@@ -51,13 +56,13 @@ export default function Main() {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="currentColor"
                   className="w-6 h-6"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
                   />
                 </svg>
@@ -75,7 +80,7 @@ export default function Main() {
             </div>
             <div>
               <LowerBtn>
-                <Link to={"/mypage/buy"}>영상 목록</Link>
+                <Link to={"/aboutreplay"}>영상 기록</Link>
               </LowerBtn>
             </div>
           </ContentDiv>
@@ -86,12 +91,12 @@ export default function Main() {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="currentColor"
                   className="w-6 h-6"
                 >
                   <path
-                    stroke-linecap="round"
+                    strokeLinecap="round"
                     d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"
                   />
                 </svg>
@@ -106,7 +111,7 @@ export default function Main() {
               </SpanContent>
             </SubDiv>
             <div>
-              <Link to={"/conference"} target={"_blank"}>
+              <Link to={"/aboutconference"}>
                 <LowerBtn>영상 통화</LowerBtn>
               </Link>
             </div>
@@ -118,13 +123,13 @@ export default function Main() {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="currentColor"
                   className="w-6 h-6"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"
                   />
                 </svg>
@@ -141,7 +146,7 @@ export default function Main() {
             </SubDiv>
             <div>
               <LowerBtn>
-                <Link to={"/mypage/schedule"}>일정 목록</Link>
+                <Link to={"/aboutschedule"}>일정 조율</Link>
               </LowerBtn>
             </div>
           </ContentDiv>
@@ -151,7 +156,7 @@ export default function Main() {
   );
 }
 
-const MainAll = styled.div`
+const MainAll = styled(motion.div)`
   font-family: "IBM Plex Sans KR", sans-serif;
 `;
 
@@ -229,7 +234,7 @@ const BtnDiv = styled.div`
   margin-top: 1rem;
 `;
 
-const SignUpBtn = styled.button`
+const ItemBtn = styled.button`
   width: 8rem;
   height: 2.8rem;
   border: none;
@@ -248,12 +253,14 @@ const SignUpBtn = styled.button`
   }
 `;
 
-const LoginBtn = styled.button`
+const ScheduleBtn = styled.button`
   width: 8rem;
   height: 2.8rem;
   border: solid 1px white;
   color: white;
   background-color: #aacb73;
+  box-shadow: 0 0 10px white;
+
   font-weight: 600;
   border-radius: 2rem;
   font-size: 1rem;

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import ScrollToTop from "./constants/ScrollToTop";
 import Footer from "./components/Footer/Footer";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const Layout = styled.div`
@@ -17,12 +18,13 @@ function Root() {
   const exclude = ["/conference", "/signup/agreement"];
   return (
     <Layout>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <ScrollToTop />
-      {exclude.includes(location.pathname) ? null : <Header />}
-      <Link to="/test">테스트</Link>
-      <Outlet />
-      <Footer />
+      <AnimatePresence>
+        <ReactQueryDevtools initialIsOpen={false} key={"reactQueryDevTools"} />
+        <ScrollToTop />
+        {exclude.includes(location.pathname) ? null : <Header key="header" />}
+        <Outlet key="body" />
+        <Footer key="footer" />
+      </AnimatePresence>
     </Layout>
   );
 }

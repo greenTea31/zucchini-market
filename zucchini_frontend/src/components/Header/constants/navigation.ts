@@ -4,8 +4,8 @@ const navigation = [
     navName: "상품보기",
   },
   {
-    navLink: "/conference",
-    navName: "화상통화",
+    navLink: "/scheduleList",
+    navName: "통화일정",
   },
   {
     navLink: `/mypage`,

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import { motion } from "framer-motion";
 
 export default function UpdateUser() {
   const {
@@ -27,7 +28,11 @@ export default function UpdateUser() {
     alert(JSON.stringify(data));
   };
   return (
-    <StyledAll>
+    <StyledAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <StyledDiv>
         <StyledTitle>회원정보 수정</StyledTitle>
         <StyledSpanDiv>
@@ -85,14 +90,15 @@ export default function UpdateUser() {
           <StyledButtonDiv>
             <StyledButton>수정</StyledButton>
             {/* 취소버튼 어디로 갈 지 안 정함 */}
-            <StyledButton>취소</StyledButton>
+            {/* <StyledButton>취소</StyledButton> */}
           </StyledButtonDiv>
+          <RedBtn>탈퇴</RedBtn>
         </StyledForm>
       </StyledDiv>
     </StyledAll>
   );
 }
-const StyledAll = styled.div`
+const StyledAll = styled(motion.div)`
   display: flex;
   justify-content: center;
   height: auto;
@@ -158,5 +164,20 @@ const StyledButton = styled.button`
   &:hover {
     background-color: #cde990;
     cursor: pointer;
+  }
+`;
+
+const RedBtn = styled.button`
+  background-color: white;
+  border-radius: 0.4rem;
+  color: red;
+  height: 2.9rem;
+  border: 2px solid red;
+  cursor: pointer;
+  margin: 0.3rem;
+  &:hover {
+    background-color: red;
+    cursor: pointer;
+    color: white;
   }
 `;

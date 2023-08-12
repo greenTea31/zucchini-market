@@ -1,5 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEY } from "../constants/queryKey";
+import { getUser } from "./useLocalStorage";
 
 interface IToken {
   grantType: string;
@@ -8,8 +7,7 @@ interface IToken {
 }
 
 export default function useAuth() {
-  const queryClient = useQueryClient();
-  const Token = queryClient.getQueryData([QUERY_KEY.user]) as IToken;
+  const Token = getUser();
 
   if (!Token) {
     return false;

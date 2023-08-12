@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { http } from "../utils/axios";
 import { useLogin } from "../hooks/useLogin";
 import FullWidthButton from "../components/Button/FullWidthButton";
+import { motion } from "framer-motion";
 
 export default function LogIn() {
   const {
@@ -21,7 +22,11 @@ export default function LogIn() {
   };
 
   return (
-    <StyledAll>
+    <StyledAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <StyledDiv>
         <StyledTitle>로그인</StyledTitle>
         <StyledForm onSubmit={handleSubmit(onSubmit)}>
@@ -64,7 +69,7 @@ async function login(data: any) {
   return response;
 }
 
-const StyledAll = styled.div`
+const StyledAll = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -114,26 +119,13 @@ const Input = styled.input`
   border-radius: 0.4rem;
   padding-left: 1rem;
   margin: 0.3rem;
+  font-size: 1rem;
 `;
 
 const StyledButtonDiv = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 0.7rem;
-`;
-
-const StyledButton = styled.button`
-  height: 3rem;
-  border: 2px solid #cde990;
-  border-radius: 0.4rem;
-  background-color: white;
-  margin: 0.3rem;
-  font-size: 1rem;
-
-  &:hover {
-    background-color: #cde990;
-    cursor: pointer;
-  }
 `;
 
 const StyledLink = styled(Link)`
