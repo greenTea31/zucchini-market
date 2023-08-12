@@ -464,6 +464,48 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 거래 내역 조회
+     * 회원의 거래내역, 구매내역인지 판매내역인지 판별하고, 거래 상태를 조회함
+     * 아이템 테이블에서 buyer, seller 보면서 나랑 겹치는거 있는지 확인 (내가 buyer인지 seller인지)
+     * 그리고 status 보면서 거래상태 값 리턴해주면 됨
+     * flag 넘어오는거 false면 판매내역, true면 구매내역으로 구현
+     * @param keyword : 검색어
+     * @param flag : 상품 분류(구매, 판매)
+     * @return List<UserDealHistoryResponse> : 거래 내역 조회 DTO 리스트
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<FindItemListResponse> findUserDealHistoryList(String keyword, boolean flag, Pageable pageable, String name) {
+        String id = null;
+
+        if (name == null) {
+            id = getCurrentId();
+        } else {
+            User user = userRepository.findByNickname(name).orElseThrow(() -> new NoSuchElementException("해당하는 회원이 존재하지 않습니다."));
+            id = user.getId();
+        }
+
+        Page<Item> pageItemList = null;
+
+        if (flag) {
+            pageItemList = userRepository.findPageBuyListByUser(id, keyword, pageable);
+        } else {
+            pageItemList = userRepository.findPageSellListByUser(id, keyword, pageable);
+        }
+
+        return new PageResponse<>(pageItemList.getContent().stream().map(item -> FindItemListResponse.builder().no(item.getNo())
+                .title(item.getTitle())
+                .updatedAt(item.getUpdatedAt())
+                .content(item.getContent())
+                .price(item.getPrice())
+                .status(item.getStatus())
+                .image(getItemImage(item.getNo()))
+                .likeCount(userItemLikeRepository.countById_ItemNo(item.getNo()))
+                .categoryList(getCategory(item.getCategoryList()))
+                .build()).collect(Collectors.toList()), pageItemList.getTotalPages());
+    }
+
+    /**
      * 상품 이미지 조회
      * @param itemNo : 상품 번호
      * @return String : 이미지 링크
@@ -496,49 +538,6 @@ public class UserServiceImpl implements UserService {
     public void removeUserLikeItem(int itemNo) {
         String id = getCurrentId();
         userItemLikeRepository.deleteByUserIdAndItemNo(id, itemNo);
-    }
-
-    /**
-     * 거래 내역 조회
-     * 회원의 거래내역, 구매내역인지 판매내역인지 판별하고, 거래 상태를 조회함
-     * 아이템 테이블에서 buyer, seller 보면서 나랑 겹치는거 있는지 확인 (내가 buyer인지 seller인지)
-     * 그리고 status 보면서 거래상태 값 리턴해주면 됨
-     * flag 넘어오는거 false면 판매내역, true면 구매내역으로 구현
-     * @param keyword : 검색어
-     * @param flag : 상품 분류(구매, 판매)
-     * @return List<UserDealHistoryResponse> : 거래 내역 조회 DTO 리스트
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserDealHistoryResponse> findUserDealHistoryList(String keyword, boolean flag) {
-        // 로그인 정보 얻어옴
-        String id = getCurrentId();
-        List<Item> itemList;
-
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
-
-        // item 모든 테이블 확인하면서 flag에 따라 seller 혹은 buyer가 현재 id랑 동일한 것을 찾음
-        if (flag) {
-            itemList = itemRepository.findAllByBuyer(user, keyword);
-        } else {
-            itemList = itemRepository.findAllBySeller(user, keyword);
-        }
-
-        List<UserDealHistoryResponse> userDealHistoryResponseList = new ArrayList<>();
-
-        for (Item item : itemList) {
-            String thumbnailLink = null;
-
-            if (!item.getImageList().isEmpty()) {
-                thumbnailLink = item.getImageList().get(0).getLink();
-            }
-
-            UserDealHistoryResponse userDealHistoryResponse = UserDealHistoryResponse.builder().title(item.getTitle())
-                    .price(item.getPrice()).status(item.getStatus()).thumbnailLink(thumbnailLink).name(item.getSeller().getNickname()).build();
-            userDealHistoryResponseList.add(userDealHistoryResponse);
-        }
-
-        return userDealHistoryResponseList;
     }
 
     /**

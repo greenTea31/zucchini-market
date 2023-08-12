@@ -131,7 +131,7 @@ public interface UserService {
      * @param flag : 상품 분류(구매, 판매)
      * @return List<UserDealHistoryResponse> : 거래 내역 조회 DTO 리스트
      */
-    List<UserDealHistoryResponse> findUserDealHistoryList(String keyword, boolean flag);
+    PageResponse<FindItemListResponse> findUserDealHistoryList(String keyword, boolean flag, Pageable pageable, String name);
 
     /**
      * 닉네임 중복 검사
