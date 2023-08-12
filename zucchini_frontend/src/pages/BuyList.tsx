@@ -2,9 +2,9 @@ import styled from "styled-components";
 import Search from "../components/List/Search";
 import ItemEach from "../components/List/ItemEach";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Loading from "../components/Loading/Loading";
-
+import { motion } from "framer-motion";
+import api from "../utils/api";
 interface Item {
   id: number;
 }
@@ -14,47 +14,55 @@ export default function BuyList() {
   const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
-  function getItems() {
-    axios
-      .get(`http://localhost:8080/user/deal/buy?keyword=${keyword}`)
-      .then((response) => {
-        setItems(response.data);
-      });
+  async function getItems() {
+    // axios
+    //   .get(`http://localhost:8080/user/deal/buy?keyword=${keyword}`)
+    //   .then((response) => {
+    //     setItems(response.data);
+    //   });
+
+    const response = await api.get(`/user/deal/buy?keyword=${keyword}`);
+    setItems(response.data);
   }
 
   useEffect(() => {
     getItems();
   }, []);
 
+  async function init() {
+    try {
+      const response = await api.get(`/user/deal/buy?keyword=`);
+      setItems(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
   useEffect(() => {
     setIsLoading(true);
 
-    axios
-      .get("http://localhost:8080/api/mypage/buy")
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (data) {
+    const timer = setTimeout(() => {
       setIsLoading(false);
-    }
-    setIsLoading(false); // 나중에 지울것임
-  }, [data]);
+    }, 800);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   if (isLoading) {
     return <Loading />;
   }
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div>
         <TitleSpan>나의 구매 목록</TitleSpan>
-        <Search setKeyword={setKeyword} getItems={getItems} />
+        <Search setKeyword={setKeyword} getItems={getItems} keyword={keyword} />
         <NoticeDiv>
           <AlertSvg
             xmlns="http://www.w3.org/2000/svg"
@@ -74,15 +82,17 @@ export default function BuyList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {items.map((item, index) => (
-            <ItemEach item={item} />
-          ))}
+          {data && data.length > 0 ? (
+            items.map((item, index) => <ItemEach item={item} />)
+          ) : (
+            <p>구매한 내역이 없습니다.</p>
+          )}
         </ItemsContainer>
       </LowerDiv>
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;

@@ -7,79 +7,119 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading/Loading";
 import axios from "axios";
-
-interface Item {
-  id: number;
-}
+import { motion } from "framer-motion";
+import { Pagination } from "@mui/material";
+import api from "../utils/api";
+// interface Item {
+//   id: number;
+// }
 
 export default function ItemList() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<Item[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  // const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
+  const [category, setCategory] = useState("");
   const [keyword, setKeyword] = useState("");
-  function getItems() {
-    axios
-      .get(`http://localhost:8080/item?keyword=${keyword}`)
-      .then((response) => {
-        setItems(response.data);
-      });
-  }
 
+  const [selectedCategory, setSelectedCategory] = useState(""); // 선택한 카테고리
+  const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
+  const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
+
+  const getItems = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/item?category=${selectedCategory}&keyword=${keyword}&page=${page}`
+      );
+      setItems(response.data.content);
+      setTotalPages(response.data.totalPages);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  // 키워드 변경 확인
   useEffect(() => {
     console.log(keyword);
   }, [keyword]);
-
+  // 카테고리랑 페이지 변경될 때마다.
+  // 검색 시는 Search에서 처리함.
   useEffect(() => {
     getItems();
-  }, []);
+  }, [selectedCategory, page]);
 
+  //페이지 버튼 누를 때마다 세팅
+  const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setPage(page);
+  };
+
+  // useEffect(() => {
+  //   console.log(page);
+  // }, [page]);
+
+  // 로딩페이지
+  // 로딩 백에서 했대유...
+  // useEffect(() => {
+  //   if (data) {
+  //     setIsLoading(false);
+  //   }
+  //   setIsLoading(false); // 여기는 지울거에용
+  // }, [data]);
   useEffect(() => {
     setIsLoading(true);
-    // 통신....
-    axios
-      .get("http://localhost:8080/api/item")
-      .then((res) => {
-        setData(res.data);
-        // console.log(res.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
 
-  useEffect(() => {
-    if (data) {
+    const timer = setTimeout(() => {
       setIsLoading(false);
-    }
-    setIsLoading(false); // 여기는 지울거에용
-  }, [data]);
+    }, 800);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   if (isLoading) {
     return <Loading />;
   }
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <UpperDiv>
         <TitleSpan>중고거래 매물</TitleSpan>
-        <Category />
-        <Search setKeyword={setKeyword} getItems={getItems} />
+        <Category
+          setSelectedCategory={setSelectedCategory}
+          setKeyword={setKeyword}
+        />
+        <Search keyword={keyword} setKeyword={setKeyword} getItems={getItems} />
       </UpperDiv>
       <LowerDiv>
         <TitleDiv>
-          <SubTitle>전체보기</SubTitle>
+          <SubTitle>
+            {selectedCategory ? selectedCategory : "전체보기"}
+          </SubTitle>
           <Link to={"/item/register"}>
-            <Button Size="small" Variant="pinkTonal" Rounded="medium">
+            <Button kind="small" Variant="pinkTonal" Rounded="medium">
               + 글 등록
             </Button>
           </Link>
         </TitleDiv>
         <ItemsContainer>
-          {items && items.map((item, index) => <ItemEach item={item} />)}
+          {items ? (
+            items.map((item, index) => <ItemEach item={item} />)
+          ) : (
+            <p>등록된 매물이 없습니다.</p>
+          )}
         </ItemsContainer>
       </LowerDiv>
+      <FooterDiv>
+        {/* count에 totalPages 주세요, 10은 임시 */}
+        <Pagination count={totalPages} onChange={onChange} page={page} />
+      </FooterDiv>
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;
@@ -113,7 +153,17 @@ const SubTitle = styled.span`
 `;
 
 const ItemsContainer = styled.div`
+  /* display: flex;
+  justify-content: start;
+  flex-wrap: wrap; */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3개의 동일한 칼럼을 생성 */
+  gap: 1rem; /* 그리드 간격 설정 */
+  padding: 1rem;
+`;
+
+const FooterDiv = styled.div`
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  justify-content: end;
+  align-self: center;
 `;

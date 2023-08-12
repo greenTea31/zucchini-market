@@ -6,7 +6,6 @@ import UpdateUser from "./pages/UpdateUser";
 import Main from "./pages/Main";
 import MyPage from "./pages/MyPage";
 import ItemList from "./pages/ItemList";
-import Test from "./pages/test";
 import CreateItem from "./pages/CreateItem";
 import LikeList from "./pages/LikeList";
 import BuyList from "./pages/BuyList";
@@ -14,13 +13,21 @@ import SellList from "./pages/SellList";
 import ChatList from "./pages/ChatList";
 import ItemDetail from "./pages/ItemDetail";
 import ChatRoom from "./pages/ChatRoom";
-import Conference from "./pages/Conference";
+import Conference from "./components/Conference/Conference";
 import ReplayBuyVideo from "./pages/ReplayBuyVideo";
 import ReplaySellVideo from "./pages/ReplaySellVideo";
 import ScheduleList from "./pages/ScheduleList";
 import UpdateItem from "./pages/UpdateItem";
 import SignUpAgreement from "./pages/SignUpAgreement";
 import NotFound from "./pages/NotFound";
+import TermsOfUse from "./components/Footer/TermsOfUse";
+import PrivacyPolicy from "./components/Footer/PrivacyPolicy";
+import PrivateRoute from "./components/Common/PrivateRoute";
+import AboutReplay from "./pages/AboutReplay";
+import AboutSchedule from "./pages/AboutSchedule";
+import ConferenceRoom from "./components/Conference/ConferenceRoom";
+import AboutConference from "./pages/AboutConference";
+import UserPage from "./pages/UserPage";
 
 const router = createBrowserRouter([
   {
@@ -80,7 +87,7 @@ const router = createBrowserRouter([
         element: <ChatList />,
       },
       {
-        path: "/chat",
+        path: "/chat/:no",
         element: <ChatRoom />,
       },
       {
@@ -93,19 +100,47 @@ const router = createBrowserRouter([
       },
       {
         path: "/item/register",
-        element: <CreateItem />,
+        element: (
+          // <PrivateRoute>
+          <CreateItem />
+          // </PrivateRoute>
+        ),
       },
       {
         path: "/item/:no/modify",
         element: <UpdateItem />,
       },
       {
-        path: "/test",
-        element: <Test />,
+        path: "/scheduleList",
+        element: <ScheduleList />,
       },
       {
-        path: "/conference",
+        path: "/conference/:conferenceNo",
         element: <Conference />,
+      },
+      {
+        path: "/termsofuse",
+        element: <TermsOfUse />,
+      },
+      {
+        path: "/privacypolicy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/aboutreplay",
+        element: <AboutReplay />,
+      },
+      {
+        path: "/aboutschedule",
+        element: <AboutSchedule />,
+      },
+      {
+        path: "/aboutconference",
+        element: <AboutConference />,
+      },
+      {
+        path: "/userpage",
+        element: <UserPage />,
       },
     ],
     errorElement: <NotFound />,

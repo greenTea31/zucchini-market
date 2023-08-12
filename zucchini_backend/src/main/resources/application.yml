@@ -1,11 +1,11 @@
 management:
   health:
     diskspace:
-      enabled: 'true'
+      enabled: "true"
     default:
-      enabled: 'true'
+      enabled: "true"
     db:
-      enabled: 'true'
+      enabled: "true"
   servlet:
     context-path: /manage
 spa:
@@ -14,7 +14,7 @@ spring:
   web:
     resources:
       static-locations: classpath:/dist/
-      add-mappings: 'false'
+      add-mappings: "false"
   jpa:
     hibernate:
       naming:
@@ -31,16 +31,16 @@ spring:
     hikari:
       password: ssafy
       username: ssafy
-    url: jdbc:mysql://localhost:3306/zucchini?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
+    url: jdbc:mysql://i9a209.p.ssafy.io:3308/zucchini?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
   data:
     web:
       pageable:
-        one-indexed-parameters: 'true'
+        one-indexed-parameters: "true"
   mvc:
-    throw-exception-if-no-handler-found: 'true'
+    throw-exception-if-no-handler-found: "true"
   devtools:
     livereload:
-      enabled: 'true'
+      enabled: "true"
   mail:
     host: smtp.gmail.com
     port: 587
@@ -71,20 +71,21 @@ logging:
 server:
   servlet:
     encoding:
-      enabled: 'true'
-      force: 'true'
+      enabled: "true"
+      force: "true"
       charset: UTF-8
     contextPath: /api
   address: localhost
-  port: '8080'
+  port: "8080"
   compression:
-    enabled: 'true'
+    enabled: "true"
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
 build:
-  date: '@build.date@'
+  date: "@build.date@"
 jwt:
   expiration: '1296000000'
   cookieName: zucchiniCookie
+  expiration: "1296000000"
   secret: dyAeHubOOc8KaOfYB6XEQoEj1QzRlVgtjNL8PYs1A1tymZvvqkcEU7L1imkKHeDa
 springfox:
   documentation:

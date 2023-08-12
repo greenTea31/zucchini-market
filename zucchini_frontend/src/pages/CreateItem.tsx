@@ -1,13 +1,66 @@
 import styled from "styled-components";
 import Modal from "../components/Common/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SimpleCalendarRegister from "../components/Schedule/SimpleCalendarRegister";
-import ImageUpload from "../FileUpload/ImageUpload";
+// import ImageUpload from "../FileUpload/ImageUpload";
 import DragDrop from "../FileUpload/DragDrop";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import ClosedButton from "../components/Button/ClosedButton";
+import dayjs from "dayjs";
+import axios from "axios";
+import IFileTypes from "../types/IFileTypes";
+import { Button } from "../components/Common/Button";
+import useAuth from "../hooks/useAuth";
+import { NumericFormat } from "react-number-format";
+import { motion } from "framer-motion";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { Credentials } from "aws-sdk";
+import { v1, v3, v4, v5 } from "uuid";
+import api from "../utils/api";
+import { useNavigate } from "react-router";
 
 export default function CreateItem() {
+  // sdk-s3
+  /*
+   * 실제 AWS 액세스 키와 시크릿 키로 대체해야 합니다.
+   * 이렇게 설정하면 AWS 서비스에 액세스하기 위한 인증 정보가 제공되어
+   * "Credential is missing" 에러가 해결될 것입니다.
+   * 액세스 키와 시크릿 키를 코드에 하드코딩하는 것은 보안상 좋지 않을 수 있으므로,
+   * 실제 프로덕션 환경에서는 환경 변수나 다른 보안 메커니즘을 사용하여 안전하게 관리하는 것이 좋습니다.
+   */
+  const [uploadURL, setUploadURL] = useState("");
+  //@ts-ignore
+  const credentials: Credentials = {
+    accessKeyId: "AKIA2ZDVZIZHOHIYLSNH",
+    secretAccessKey: "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",
+  };
+  const client = new S3Client({
+    region: "ap-northeast-2",
+    credentials: credentials,
+  });
+  const uploadFile = async (file: IFileTypes) => {
+    const uuid = v1().toString().replace("-", "");
+    const keyName = `${uuid}.${file.object.name}`;
+
+    const command = new PutObjectCommand({
+      Bucket: "zucchinifile",
+      Key: keyName,
+      Body: file.object,
+    });
+    try {
+      await client.send(command);
+
+      // 이미지의 공개 URL 생성
+      const imageURL = `https://zucchinifile.s3.ap-northeast-2.amazonaws.com/${keyName}`;
+      return imageURL;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const token = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -18,77 +71,169 @@ export default function CreateItem() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const [selectedTimes, setSelectedTimes] = useState([]);
+  const [files, setFiles] = useState<IFileTypes[]>([]);
+  // 마우스로 선택한 날짜 받는 state
+  const [clickedTime, setClickedTime] = useState(new Date());
+
+  // 판매자가 선택한 시간들 차곡차곡 담아주기
+  const [selectedTimes, setSelectedTimes] = useState<any>([]);
+  // 카테고리 전부
+  const [allCategories, setAllCategories] = useState<any>([]);
+  // 선택한 카테고리
+  const [selectedCategories, setSelectedCategories] = useState<any>([]);
+
+  // 처음 렌더링될 때, 카테고리 가져올 거예영
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await api.get("item/category");
+        console.log(response.data);
+        const categoryNames = response.data.map((item: any) => item.category);
+        setAllCategories(categoryNames);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    getCategories();
+  }, []);
 
   const toggle = () => {
     setIsOpen(!isOpen);
+    console.log("눌려?");
   };
 
-  //화상 일정 선택 완료
-  const clickSubmit = () => {
-    // 그냥 나가면 될까?
-    // selectedTimes는 이미 채워진 상태
-    if (selectedTimes.length !== 0) {
-      alert("등록완료");
-      toggle();
-    } else {
-      alert("선택된 일정이 없습니다.");
+  // 카테고리 추가
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCategory =
+      event.target.options[event.target.selectedIndex].textContent;
+    console.log(selectedCategory);
+    if (!selectedCategories.includes(selectedCategory)) {
+      setSelectedCategories([...selectedCategories, selectedCategory]);
     }
   };
 
-  const onSubmit = (data: any) => {
-    alert(JSON.stringify(data));
-    const formData = new FormData();
-    //스케줄에만
-    formData.append("title", data.title);
-    formData.append("content", data.content);
-    formData.append("category", data.category);
+  useEffect(() => {
+    console.log(selectedCategories);
+  }, [selectedCategories]);
 
-    selectedTimes.map((selectedTime, index) =>
-      formData.append("schedule" + index, selectedTime)
-    ); // 이상한 거 나도 알아요 고쳐야지
+  // 카테고리 삭제
+  const discardCategory = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log(event.currentTarget.value);
+    let reselect = selectedCategories.filter(
+      (e: any) => e !== event.currentTarget.value
+    );
+    setSelectedCategories(reselect);
   };
 
-  //   const formData = new FormData();
-  //   //스케줄에만
-  //   formData.append();
-  // };
+  const addTime = () => {
+    // 이미 해당 아이템에서 선택해서 넣어준 시간일 경우
+    if (selectedTimes.includes(clickedTime)) {
+      alert("이미 선택된 시간입니다");
+      return;
+    }
+    // 중복 체크 통과하면 넣어준다.
+    // 30분 반올림하는 것도 추가해야대여....
+    // gmt??tlqkf...
+    setSelectedTimes([...selectedTimes, clickedTime]);
+    alert("일정이 추가되었습니다.");
+  };
+
+  // 선택한 시간 삭제
+  const removeTime = (timeToRemove: Date) => {
+    const updatedTimes = selectedTimes.filter(
+      (time: Date) => time !== timeToRemove
+    ); // 배열의 각 요소인 time(Date 객체)가 timeToRemove와 같지 않은지 검사
+    // 같지 않다면 true, 같으면 false 반환
+    // timeToRemove와 같지 않은 요소들만 남긴 새로운 배열 생성
+    setSelectedTimes(updatedTimes); // 새로운 배열 업데이트
+  };
+
+  const navigate = useNavigate();
+  //진짜 제출
+  const onSubmit = async (data: any) => {
+    console.log("등록등록");
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("content", data.content);
+    formData.append("price", data.price);
+    // alert(data.title);
+    alert(data.price);
+    // 카테고리
+    for (let i = 0; i < selectedCategories.length; i++) {
+      const num = allCategories.indexOf(selectedCategories[i]) + 1;
+      formData.append("categoryList", `${num}`);
+    }
+    // 이미지 파일 url
+    // await uploadFile(files[i]);
+    // formData.append("imageList", uploadURL);
+    const uploadedURLs = await Promise.all(files.map(uploadFile));
+
+    // 업로드된 URL들을 formData에 추가
+    uploadedURLs.forEach((url: any) => {
+      formData.append("imageList", url);
+    });
+
+    // 일정들
+    for (let i = 0; i < selectedTimes.length; i++) {
+      formData.append("dateList", selectedTimes[i]);
+    }
+    await api.post("/item", formData);
+
+    navigate("/item");
+  };
+  useEffect(() => {
+    console.log(uploadURL);
+  }, [uploadURL]);
+
   return (
-    <ContainerAll>
+    <ContainerAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
-          <StyledSvg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </StyledSvg>
+          <ClosedButton onClick={toggle} />
         </ModalDiv>
         <ModalSpan>화상통화 일정 선택</ModalSpan>
         <CalendarDiv>
-          {/* 판매자 등록을 위한 달력 따로 */}
           <SimpleCalendarRegister
-            selectedTimes={selectedTimes}
-            setSelectedTimes={setSelectedTimes}
+            clickedTime={clickedTime}
+            setClickedTime={setClickedTime}
+            toggle={toggle}
           />
         </CalendarDiv>
-        {/* 선택된 시간 보여주기 */}
-        {/* css 부탁해요~~ */}
-        <div>
+        <TimeContainerDiv>
           {selectedTimes.map((selectedTime: Date) => {
-            return <div>{selectedTime.toString()}</div>;
+            const formattedTime = dayjs(selectedTime).format(
+              "YYYY년 MM월 DD일 HH시 mm분"
+            );
+            return (
+              <TimeDiv key={formattedTime}>
+                {formattedTime}
+                {/* <TimeBtn> */}
+                <TimeSvg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="red"
+                  className="w-6 h-6"
+                  onClick={() => removeTime(selectedTime)}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </TimeSvg>
+                {/* </TimeBtn> */}
+              </TimeDiv>
+            );
           })}
-        </div>
-        <StyledBtn onClick={clickSubmit}>확인</StyledBtn>
-        <StyledBtn onClick={() => toggle()}>취소</StyledBtn>
+        </TimeContainerDiv>
+        <StyledBtn onClick={addTime}>추가</StyledBtn>
+        <StyledBtn onClick={() => toggle()}>완료</StyledBtn>
       </Modal>
       {/* <TimeSchedule isOpen={timeOpen} toggle={timeToggle} /> */}
       <ContainerForm onSubmit={handleSubmit(onSubmit)}>
@@ -102,49 +247,99 @@ export default function CreateItem() {
             })}
             maxLength={200}
           ></ContentInput>
-          {/* <StyledMessage>
+          <StyledMessage>
             <ErrorMessage errors={errors} name="title" />
-          </StyledMessage> */}
+          </StyledMessage>
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>상세 설명</ContentSpan>
           <ContentTextArea
             {...register("content", { required: "설명을 입력해주세요." })}
           ></ContentTextArea>
+          <StyledMessage>
+            <ErrorMessage errors={errors} name="content" />
+          </StyledMessage>
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>가격</ContentSpan>
+          {/* <NumericFormat
+            type="text"
+            placeholder=", 없이 입력해주세요"
+            suffix={" 원"}
+            style={{
+              fontSize: "1rem",
+              paddingLeft: "0.5rem",
+            }}
+            thousandSeparator=","
+            // {...register("price", { required: "가격을 입력해주세요" })}
+          /> */}
           <ContentInput
             type="number"
-            placeholder=", 없이 입력해주세요"
-            {...register("price", { required: true })}
+            {...register("price", { required: "가격을 입력해주세요" })}
           ></ContentInput>
+          <StyledMessage>
+            <ErrorMessage errors={errors} name="price" />
+          </StyledMessage>
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>카테고리</ContentSpan>
-          <CategorySelect {...register("category", { required: true })}>
-            <option selected>-- 물품의 종류를 선택해주세요 --</option>
-            <option>전자제품</option>
-            <option>가전제품</option>
-            <option>의류/잡화</option>
-            <option>서적/음반</option>
-            <option>애완용품</option>
-            <option>기타</option>
+          <div>
+            {selectedCategories.map((category: any) => {
+              return (
+                <Button
+                  kind="extraSmall"
+                  Variant="filled"
+                  style={{
+                    padding: "8px",
+                    margin: "0.2rem",
+                    width: "8rem",
+                    borderRadius: "10px",
+                  }}
+                  onClick={discardCategory}
+                  value={category}
+                >
+                  {category}
+                </Button>
+              );
+            })}
+          </div>
+          <CategorySelect onChange={onChange}>
+            <option value="" disabled selected hidden>
+              물품의 종류를 선택해주세요
+            </option>
+
+            {allCategories?.map((category: any) => {
+              return (
+                <option
+                  {...register("category", {
+                    required: "물품 종류을 입력해주세요",
+                  })}
+                >
+                  {category}
+                </option>
+              );
+            })}
           </CategorySelect>
+          <StyledMessage>
+            <ErrorMessage errors={errors} name="category" />
+          </StyledMessage>
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>사진 업로드</ContentSpan>
-          <DragDrop />
+          <DragDrop files={files} setFiles={setFiles} />
         </ContentDiv>
+
         <ButtonDiv>
-          <StyledButton onClick={toggle}>일정 선택</StyledButton>
+          <StyledButton type="button" onClick={toggle}>
+            일정 선택
+          </StyledButton>
           <StyledButton>등록</StyledButton>
         </ButtonDiv>
       </ContainerForm>
     </ContainerAll>
   );
 }
-const ContainerAll = styled.div`
+const ContainerAll = styled(motion.div)`
   display: flex;
   justify-content: center;
   /* padding: 5rem 0 13rem 0; */
@@ -182,9 +377,9 @@ const ContentSpan = styled.span`
 const ContentInput = styled.input`
   height: 2rem;
   width: 100%;
+  padding-left: 0.7rem;
   border-radius: 0.4rem;
   font-size: 1rem;
-
   border: transparent;
   background-color: #f4f4f4;
 
@@ -193,12 +388,19 @@ const ContentInput = styled.input`
     outline: none;
     background-color: white;
   }
+
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
 `;
 
 const StyledMessage = styled.div`
   display: flex;
   justify-content: start;
-  padding-left: 1rem;
+  padding-left: 0.3;
+  margin: 0.3rem;
   color: tomato;
 `;
 
@@ -208,8 +410,10 @@ const ContentTextArea = styled.textarea`
   border-radius: 0.4rem;
   border: transparent;
   font-size: 1rem;
-
+  padding-left: 0.7rem;
   background-color: #f4f4f4;
+  resize: none;
+  overflow-y: auto;
 
   &:focus {
     box-shadow: 0 0 10px #9ec4f2;
@@ -223,13 +427,6 @@ const CategorySelect = styled.select`
   width: 100%;
   border-radius: 0.4rem;
   color: #254021;
-`;
-
-const StyledSvg = styled.svg`
-  height: 1.5rem;
-  width: 1.5rem;
-  cursor: pointer;
-  color: #849c80;
 `;
 
 const ButtonDiv = styled.div`
@@ -246,6 +443,7 @@ const StyledButton = styled.button`
   background-color: #cde990;
   border: #cde990;
   color: #254021;
+  font-size: 1rem;
 
   &:hover {
     border: 2px solid #cde990;
@@ -279,8 +477,34 @@ const StyledBtn = styled.button`
   border-radius: 0.4rem;
   cursor: pointer;
   margin-right: 0.4rem;
+  margin-top: 1rem;
+  font-size: 1rem;
 
   &:hover {
     background-color: white;
   }
+`;
+
+const TimeContainerDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 35rem;
+`;
+
+const TimeDiv = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  border: solid 1px black;
+  padding: 1rem;
+  width: 15rem;
+`;
+
+const TimeSvg = styled.svg`
+  height: 1.3rem;
+  width: 1.3rem;
+  cursor: pointer;
 `;

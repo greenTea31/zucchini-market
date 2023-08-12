@@ -6,10 +6,40 @@ import buyList from "../assets/images/buyList.jpg";
 import sellList from "../assets/images/sellList.jpg";
 import todoList from "../assets/images/todoList.jpg";
 import femaleImg from "../assets/images/female.jpg";
+import api from "../utils/api";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export default function MyPage() {
+  const [user, setUser] = useState();
+  async function getUserInfo() {
+    const response = await api({
+      method: "POST",
+      url: "grade",
+      data: {
+        gradeRecipient: "abc",
+        itemNo: 6,
+        grade: 5,
+      },
+    });
+
+    console.log(response);
+    const data = response.data;
+
+    setUser(data);
+  }
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <button onClick={getUserInfo}>통신</button>
       <UpperDiv>
         <TitleSpan>마이페이지</TitleSpan>
         <SubTitleP>내 정보</SubTitleP>
@@ -58,7 +88,7 @@ export default function MyPage() {
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   justify-content: center;

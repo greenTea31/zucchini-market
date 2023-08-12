@@ -1,20 +1,54 @@
 import styled from "styled-components";
-import watch from "../assets/images/watch.png";
-import female from "../assets/images/female.jpg";
+import gradeFive from "../assets/images/5.png";
 import Modal from "../components/Common/Modal";
+import Report from "../components/Common/Report";
 import { useState, useEffect } from "react";
 import SimpleCalendar from "../components/Schedule/SimpleCalendar";
-import GoBackButton from "../components/Button/GoBackButton";
 import axios from "axios";
 import { QueryClient } from "@tanstack/query-core";
 import { QUERY_KEY } from "../constants/queryKey";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router";
 import IToken from "../types/IToken";
+import ClosedButton from "../components/Button/ClosedButton";
+import { motion } from "framer-motion";
+import api from "../utils/api";
+import moment from "moment";
+import NoImage from "../assets/images/NoImage.png";
+import { getUser } from "../hooks/useLocalStorage";
+
+interface ISeller {
+  nickname: string;
+  grade: number;
+}
+
+interface IDate {
+  date: string;
+  status: number;
+}
+
+interface IItem {
+  no: number;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  content: string;
+  price: number;
+  status: number;
+  imageList: string[];
+  likeCount: number;
+  seller: ISeller;
+  dateList: IDate[];
+  categoryList: string[];
+  view: number;
+}
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
-  const [item, setItem] = useState<any>(); // item 상태 추가
+  const [isReporting, setIsReporting] = useState(false); // 신고모달
+  const [item, setItem] = useState<IItem>(); // item 상태 추가
+  const [like, setLike] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
   // accessToken필요할 때
   // const queryClient = useQueryClient();
@@ -24,33 +58,88 @@ export default function ItemDetail() {
   const toggle = () => {
     setIsOpen(!isOpen);
   };
-  const location = useLocation();
-  //
+  const toggleReport = () => {
+    setIsReporting(!isReporting);
+  };
 
+  const nextImage = () => {
+    if (item?.imageList && item?.imageList.length > currentImageIndex + 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    }
+  };
+
+  const prevImage = () => {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    }
+  };
+
+  const location = useLocation();
+  // 아이템 가져오기
   useEffect(() => {
-    const fetchData = async () => {
+    const getItem = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/item/${location.pathname.split("/")[2]}`
+        const response = await api.get(
+          `item/${location.pathname.split("/")[2]}`
         );
-        console.log(response);
         setItem(response.data);
+        console.log("좋아요 받아오기:" + response.data.like);
+        setLike(response.data.like);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
+    getItem();
+  }, []);
 
-    fetchData();
-  }, [location.pathname]);
+  // const watchLike = () => {
+  //   return like;
+  // };
+  useEffect(() => {
+    console.log("좋아요 상태 : " + like);
+  }, [like]);
+
+  // 하트(찜)
+  const toggleLike = async () => {
+    if (!sessionStorage.getItem("USER")) {
+      alert("로그인 해주세요!");
+      return;
+    }
+    setLike((prev) => !prev);
+
+    if (!like) {
+      try {
+        await api({
+          method: "post",
+          url: `user/item/like/${location.pathname.split("/")[2]}`,
+        }).then((reponse: any) => console.log(reponse));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    } else {
+      try {
+        await api({
+          method: "delete",
+          url: `user/item/like/${location.pathname.split("/")[2]}`,
+        }).then((reponse: any) => console.log(reponse));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+  };
 
   const toChatRoom = async () => {
+    const token = "Bearer " + getUser();
     try {
       // 채팅방 생성
-      const response = await axios.post("http://localhost:8080/room", {
+      const response = await api({
+        method: "post",
+        url: "/room",
         headers: {
-          Authorization: `Bearer ${
-            (queryClient.getQueryData([QUERY_KEY.user]) as IToken).accessToken
-          }`,
+          Authorization: token,
+        },
+        data: {
+          itemNo: location.pathname.split("/")[2],
         },
       });
 
@@ -58,86 +147,152 @@ export default function ItemDetail() {
       console.log(response.data);
 
       // useNavigate를 이용해 채팅방 이동
-      navigate("/chat");
+      navigate(`/chat/${response.data}`);
     } catch (error) {
       console.error(error);
     }
   };
+  const buttonStyle = {
+    backgroundColor: "transparent",
+    border: "none",
+    cursor: "pointer",
+  };
+
+  // 시간 차이 계산
+  const timeDifferenceInMinutes = (time: Date) => {
+    const currentTime = new Date();
+    const timeDifferenceInMilliseconds = currentTime.getTime() - time.getTime();
+
+    return Math.floor(timeDifferenceInMilliseconds / (1000 * 60));
+  };
+
+  // 신고사유
+  const reportReasons = [
+    "판매금지물품",
+    "허위 매물",
+    "전문판매업자",
+    "도배",
+    "욕설, 비방",
+    "성희롱",
+  ];
 
   return (
-    <ContainerDiv>
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
-          <StyledSvg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </StyledSvg>
+          <ClosedButton onClick={toggle} />
         </ModalDiv>
         <ModalSpan>화상통화 일정 선택</ModalSpan>
-        <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
+        <SubSpan>일정은 상품당 한 번씩만 선택 가능합니다</SubSpan>
         <CalendarDiv>
-          <SimpleCalendar />
+          <SimpleCalendar dates={item?.dateList as IDate[]} />
         </CalendarDiv>
-        <StyledBtn>확인</StyledBtn>
-        <StyledBtn>취소</StyledBtn>
       </Modal>
-      {/* <GoBackButton /> */}
+
+      <Modal isOpen={isReporting} toggle={toggleReport}>
+        <ModalDiv>
+          <ClosedButton onClick={toggleReport} />
+        </ModalDiv>
+        <ModalSpan>신고하기</ModalSpan>
+        <SubSpan>신고 사유를 선택해주세요.</SubSpan>
+        <Report
+          reportedNickname={item?.seller.nickname}
+          itemNo={item?.no}
+          reasons={reportReasons}
+          roomNo={null}
+        />
+      </Modal>
+      {/* <GoBackButton onClick={toPrev}/> */}
       <div>
-        <SvgButton>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="red"
-            className="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-            />
-          </svg>
-        </SvgButton>
-      </div>
-      <UpperDiv>
-        <UpperLeftDiv>
-          <StyledImg src={watch}></StyledImg>
-        </UpperLeftDiv>
-        <UpperRightDiv>
-          <CategorySpan>전자제품</CategorySpan>
-          <TitleSpan>{item?.title}</TitleSpan>
-          <ContentSpan>{item?.content}</ContentSpan>
-          <PriceSpan>{item?.price}원</PriceSpan>
-          <SubSpan>
-            {item?.createdAt}분 전 · 조회 {item?.view} · 찜 {item?.likeCount}
-          </SubSpan>
-          <SubSpan>
-            신고하기
-            <RedSvg
+        <SvgButton onClick={toggleLike}>
+          {!like ? (
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
-              viewBox="0 0 20 24"
-              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
               stroke="red"
               className="w-6 h-6"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
               />
-            </RedSvg>
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="red"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="red"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+              />
+            </svg>
+          )}
+        </SvgButton>
+      </div>
+      <UpperDiv>
+        <UpperLeftDiv>
+          {item?.imageList && item?.imageList.length > 1 && (
+            <button onClick={prevImage}>이전</button>
+          )}
+
+          {/* src 태그 안에 제품 사진 */}
+          <StyledImg
+            src={item?.imageList ? item?.imageList[currentImageIndex] : NoImage}
+          ></StyledImg>
+        </UpperLeftDiv>
+        {item?.imageList && item?.imageList.length > 1 && (
+          <button onClick={nextImage}>다음</button>
+        )}
+        <UpperRightDiv>
+          {/* item.categoryList 돌면서 뿌려주기 '카테고리1·카테고리2·카테고리3형식 */}
+          <CategorySpan>
+            {item?.categoryList.map((category: any, index: number) => {
+              return (
+                <span key={index}>
+                  {category}
+                  {index < item?.categoryList.length - 1 ? "·" : null}
+                </span>
+              );
+            })}
+          </CategorySpan>
+          <TitleSpan>{item?.title}</TitleSpan>
+          <ContentSpan>{item?.content}</ContentSpan>
+          <PriceSpan>{item?.price.toLocaleString("ko-KR")}원</PriceSpan>
+          <SubSpan>
+            {timeDifferenceInMinutes(new Date(item?.createdAt as string))}분 전
+            · 조회 {item?.view} · 찜 {item?.likeCount}
+          </SubSpan>
+          <SubSpan>
+            <button type="button" onClick={toggleReport} style={buttonStyle}>
+              신고하기
+              <RedSvg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 24"
+                strokeWidth="1.5"
+                stroke="red"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                />
+              </RedSvg>
+            </button>
           </SubSpan>
           <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
           <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
@@ -162,40 +317,27 @@ export default function ItemDetail() {
         <LowerRightDiv>
           <SellerTitle>판매자 정보</SellerTitle>
           <SellerDiv>
-            <SellerImg src={female}></SellerImg>
+            {/* 등급 관련 이미지 넣기.. */}
+            <ImgDiv>
+              <SellerImg src={gradeFive}></SellerImg>
+            </ImgDiv>
             <SellerSpanDiv>
               <SellerName>{item?.seller.nickname}</SellerName>
               <span>{item?.seller.grade}</span>
               <SubSpan>판매중 3 · 거래완료 2</SubSpan>
             </SellerSpanDiv>
-            <SelectDiv>
-              {/* 구매자 판매자 따라 조건부 렌더링 필요... */}
-              <StatusSelect>
-                <option>판매중</option>
-                <option>예약중</option>
-                <option>판매완료</option>
-              </StatusSelect>
-            </SelectDiv>
           </SellerDiv>
         </LowerRightDiv>
       </LowerDiv>
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   padding: 5rem;
   margin: 0 10rem 13rem 10rem;
   font-family: "IBM Plex Sans KR", sans-serif;
-`;
-
-const StyledSvg = styled.svg`
-  height: 1.5rem;
-  width: 1.5rem;
-  cursor: pointer;
-  color: #849c80;
-  margin-bottom: 1rem;
 `;
 
 const RedSvg = styled.svg`
@@ -286,7 +428,7 @@ const PriceSpan = styled.span`
 
 const SubSpan = styled.span`
   color: gray;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
 `;
 
 const SelectBtn = styled.button`
@@ -297,6 +439,7 @@ const SelectBtn = styled.button`
   border-radius: 0.4rem;
   cursor: pointer;
   margin-top: 0.15rem;
+  font-size: 1rem;
 `;
 
 const NoticeSpan = styled.span`
@@ -310,12 +453,20 @@ const SellerDiv = styled.div`
   padding-left: 1rem;
 `;
 
-const SellerImg = styled.img`
+const ImgDiv = styled.div`
   width: 6.5rem;
   height: 6.5rem;
   border-radius: 5rem;
   border: solid 1px black;
   margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SellerImg = styled.img`
+  width: 4.3rem;
+  height: 4.3rem;
 `;
 
 const SellerSpanDiv = styled.div`

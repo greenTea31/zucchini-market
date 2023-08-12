@@ -3,39 +3,40 @@ import ChatRoomEach from "../components/List/ChatRoomEach";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Loading from "../components/Loading/Loading";
+import { motion } from "framer-motion";
+import api from "../utils/api";
+import { Link } from "react-router-dom";
 
 interface Item {
   id: number;
 }
 
+interface Chat {
+  no: number;
+  opponentNickname: string;
+  itemImage: string;
+  opponentGrade: String;
+  lastMessage: string;
+  unreadCount: number;
+  lastMessageCreatedAt: string;
+  isDeleted: boolean;
+}
+
 export default function ChatList() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<Item[] | null>(null);
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState<Chat[] | null>(null);
 
   // 들어오자마자 실행하려면 useEffect()
   async function getChatList() {
-    const response = await axios.get("http://localhost:8080/room");
+    const response = await api.get("/room");
+    // setIsLoading(true); // 있어야 하나?
     setChats(response.data);
   }
 
-  // function getChatList() {
-  //   axios.get("http://localhost:8080/room").then((response) => {
-  //     setChats(response.data);
-  //   });
-  // }
-
-  useEffect(() => {
-    getChatList();
-  }, []);
-
   useEffect(() => {
     setIsLoading(true);
-
-    axios
-      .get("http://localhost:8080/api/mypage/chat")
-      .then((res) => setData(res.data))
-      .catch((error) => console.log(error));
+    getChatList();
   }, []);
 
   useEffect(() => {
@@ -45,36 +46,53 @@ export default function ChatList() {
     setIsLoading(false);
   }, [data]);
 
+  useEffect(() => {
+    const intervalId = setInterval(getChatList, 1000);
+
+    return () => {
+      clearInterval(intervalId); // 컴포넌트가 언마운트될 때 타이머를 정리
+    };
+  }, []); // 빈 의존성 배열을 사용하여 마운트될 때만 한 번 설정
+
   if (isLoading) {
     return <Loading />;
   }
 
   return (
-    <ContainerDiv>
-      {/* <TitleSpan>나의 채팅 목록</TitleSpan> */}
+    <ContainerDiv
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <ChatListDiv>
         <TitleDiv>
           <TitleSpan>채팅 목록</TitleSpan>
         </TitleDiv>
         {/* 통신합시다^^ */}
-        {chats.map((chat, index) => (
-          <ChatRoomEach
-            chat={chat}
-            // chat={{
-            //   img: "물건물건 이미지 쏘오쓰",
-            //   sender: "거래자",
-            //   senderGrade: "거래자 등급",
-            //   lastMsg: "lastMessage",
-            //   lastMsgTime: "12:00",
-            //   unread: "1",
-            // }}
-          />
-        ))}
+        {chats && chats.length > 0 ? (
+          chats.map((chat) => (
+            <Link to={`/chat/${chat.no}`} key={chat.no}>
+              <ChatRoomEach
+                chat={chat}
+                // chat={{
+                //   img: "물건물건 이미지 쏘오쓰",
+                //   sender: "거래자",
+                //   senderGrade: "거래자 등급",
+                //   lastMsg: "lastMessage",
+                //   lastMsgTime: "12:00",
+                //   unread: "1",
+                // }}
+              />
+            </Link>
+          ))
+        ) : (
+          <p>채팅한 내역이 없습니다.</p>
+        )}
       </ChatListDiv>
     </ContainerDiv>
   );
 }
-const ContainerDiv = styled.div`
+const ContainerDiv = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -84,7 +102,8 @@ const ContainerDiv = styled.div`
 `;
 
 const TitleSpan = styled.span`
-  font-size: 1.4rem;
+  font-size: 2rem;
+  font-weight: 600;
 `;
 
 const ChatListDiv = styled.div`

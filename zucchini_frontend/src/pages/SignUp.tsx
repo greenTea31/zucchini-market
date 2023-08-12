@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "@hookform/error-message";
 import FullWidthButton from "../components/Button/FullWidthButton";
+import { motion } from "framer-motion";
+import { http } from "../utils/axios";
 
 export default function SignUp() {
   // react-hook-form
@@ -38,7 +40,8 @@ export default function SignUp() {
     // 폼 채우기는 버튼 활성화 여부로 거르므로 약관 동의 확인 후 리다이렉트 및 알럿
     if (agree) {
       // 회원가입 post 통신 로직
-      alert(JSON.stringify(data));
+      // alert(JSON.stringify(data));
+      http.post("user", data);
     } else {
       alert("약관에 동의해주세요");
     }
@@ -46,7 +49,6 @@ export default function SignUp() {
 
   useEffect(() => {
     // agree됐는지 확인용
-    console.log(agree);
   }, [agree]);
 
   // 체크박스 동의
@@ -55,7 +57,11 @@ export default function SignUp() {
   };
 
   return (
-    <StyledAll>
+    <StyledAll
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <StyledDiv>
         <StyledTitle>회원가입</StyledTitle>
         <StyledSpanDiv>
@@ -109,7 +115,7 @@ export default function SignUp() {
             {...register("nickname", { required: true })}
           />
           <Input
-            type="number"
+            type="text"
             placeholder="휴대폰번호(- 없이 입력해주세요)"
             {...register("phoneNumber", { required: true })}
           />
@@ -118,10 +124,11 @@ export default function SignUp() {
             placeholder="이메일"
             {...register("email", { required: true })}
           />
-          <GenderSelect {...register("gender", { required: true })}>
-            <option value="" selected>
-              -- 성별 선택 --
-            </option>
+          <GenderSelect
+            defaultValue={""}
+            {...register("gender", { required: true })}
+          >
+            <option value="">-- 성별 선택 --</option>
             <option value="female">여성</option>
             <option value="male">남성</option>
             <option value="none">선택 안함</option>
@@ -146,7 +153,7 @@ export default function SignUp() {
     </StyledAll>
   );
 }
-const StyledAll = styled.div`
+const StyledAll = styled(motion.div)`
   display: flex;
   justify-content: center;
   height: auto;
@@ -192,6 +199,11 @@ const Input = styled.input`
   padding-left: 1rem;
   margin: 0.3rem;
   font-size: 1rem;
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
 `;
 
 const StyledMessage = styled.div`
@@ -199,6 +211,7 @@ const StyledMessage = styled.div`
   justify-content: start;
   padding-left: 1rem;
   color: tomato;
+  font-size: 0.9rem;
 `;
 
 const StyledButtonDiv = styled.div`
@@ -231,7 +244,7 @@ const CheckboxDiv = styled.div`
   font-size: smaller;
 `;
 
-const BoldA = styled.a`
+const BoldA = styled.div`
   color: blue;
   font-size: 1rem;
 `;

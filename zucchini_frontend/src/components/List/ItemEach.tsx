@@ -1,15 +1,8 @@
 import styled from "styled-components";
-import watch from "../../assets/images/watch.png";
 import ReplayButton from "../Button/ReplayButton";
 import moment from "moment";
-
-interface Item {
-  id: number;
-}
-
-interface ItemEachProps {
-  data: Item;
-}
+import { useLocation, useNavigate } from "react-router-dom";
+import NoImage from "../../assets/images/NoImage.png";
 
 interface IItem {
   no: number;
@@ -28,22 +21,32 @@ interface IProps {
   item: IItem;
 }
 
-export default function ItemEach(props: IProps) {
+export default function ItemEach({ item }: IProps) {
+  const navigate = useNavigate();
+  const onClick = () => {
+    navigate(`/item/${item.no}`);
+  };
+
+  const location = useLocation();
+
   return (
-    <ItemDiv>
+    <ItemDiv onClick={onClick}>
       {/* 이미지 {props?.item?.image}로 변경 */}
-      <ItemImg src={watch} />
-      {/* ItemList, BuyList, SellList에서 각각 쓰이는 컴포넌트이므로 버튼은 조건부 렌더링 필요 */}
-      <ReplayButton>상태표시{props?.item?.status} | 다시보기</ReplayButton>
-      <ItemTitle>{props?.item?.title}</ItemTitle>
-      <ItemTitle>365,000원</ItemTitle>
+      {/* <ItemImg src={watch} /> */}
+      <ItemImg src={item?.image ? item?.image : NoImage} />
+      {/* ItemList,  BuyList, SellList에서 각각 쓰이는 컴포넌트이므로 버튼은 조건부 렌더링 필요 */}
+      {location.pathname === "/item" ? null : (
+        <ReplayButton>상태표시{item?.status} | 다시보기</ReplayButton>
+      )}
+      <ItemTitle>{item?.title}</ItemTitle>
+      <ItemTitle>{item?.price.toLocaleString("ko-KR")}원</ItemTitle>
       <ItemContent>
-        찜 {props?.item?.likeCount} | 조회 {props?.item?.view}
+        찜 {item?.likeCount} | 조회 {item?.view}
       </ItemContent>
       <ItemContent>
-        {moment(props?.item?.updatedAt).format("YYYY-MM-DD hh:mm:ss")}
+        {moment(item?.updatedAt).format("YYYY-MM-DD hh:mm:ss")}
       </ItemContent>
-      <ItemContent>{props?.item?.category}</ItemContent>
+      <ItemContent>{item?.category}</ItemContent>
     </ItemDiv>
   );
 }
@@ -57,6 +60,7 @@ const ItemDiv = styled.div`
   border: solid 1px #aeb9ad;
   border-radius: 2rem;
   position: relative;
+  cursor: pointer;
 `;
 
 const ItemImg = styled.img`

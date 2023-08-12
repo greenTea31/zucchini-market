@@ -1,0 +1,198 @@
+#header {
+  color: #ffffff;
+  height: 4rem;
+  background-color: #aacb73;
+  padding: 0 14px 0 0;
+  position: absolute;
+  z-index: 999999;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+#checkSvg {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.buttonDiv {
+  min-width: 17rem;
+  display: flex;
+  /* position: absolute; */
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.toolbar {
+  /* padding: 0 !important; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.chatContainer {
+  width: 4rem;
+  height: 4rem;
+}
+
+.headerLight {
+  color: #706969 !important;
+  background-color: #eeeeee !important;
+}
+
+.headerGButton {
+  background-color: transparent;
+  border: transparent;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.3rem;
+
+  &:hover {
+    color: green;
+  }
+}
+
+.headerRButton {
+  background-color: transparent;
+  border: transparent;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.3rem;
+
+  &:hover {
+    color: red;
+  }
+}
+
+#videoTitle {
+  margin-left: 1rem;
+  font-size: 1.5rem;
+  width: 31.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: break-all;
+}
+
+#navButtons {
+  min-width: 400px;
+}
+
+#point {
+  width: 10px;
+  height: 10px;
+  top: 12px;
+  right: 33px;
+  border-radius: 50%;
+  background-color: #ffa600;
+  border: 1px solid #000;
+  z-index: 99999;
+}
+.pointLight {
+  border: 1px solid #ffffff !important;
+}
+
+@media only screen and (max-width: 700px) {
+  #titleContent,
+  #navChatButton {
+    display: none;
+  }
+}
+
+#titleHeader {
+  display: flex;
+  align-items: center;
+}
+
+#titleSvg {
+  height: 3rem;
+  width: 3rem;
+}
+
+.modalDiv {
+  float: right;
+}
+
+.modalSpan {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  color: black;
+}
+
+.spanDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 2rem;
+}
+
+.buttonsDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.greenBtn {
+  width: 16rem;
+  height: 2.8rem;
+  border-radius: 0.4rem;
+  background-color: green;
+  border: solid 2px green;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: white;
+    border: solid 2px green;
+    color: green;
+  }
+}
+
+.redBtn {
+  width: 16rem;
+  height: 2.8rem;
+  border-radius: 0.4rem;
+  background-color: #f54040;
+  border: solid 2px red;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: white;
+    border: solid 2px red;
+    color: red;
+  }
+}
+
+.modalSelect {
+  height: 2.5rem;
+  width: 22rem;
+  border-radius: 0.4rem;
+  font-size: 1rem;
+  padding-left: 0.5rem;
+}
+
+.modalTextarea {
+  height: 10rem;
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+}

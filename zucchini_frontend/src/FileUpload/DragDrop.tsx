@@ -1,15 +1,10 @@
 import styled from "styled-components";
 import { ChangeEvent, useCallback, useRef, useState, useEffect } from "react";
+import IFileTypes from "../types/IFileTypes";
 
-interface IFileTypes {
-  id: number; // 파일의 고유값 id
-  object: File;
-}
-
-export default function DragDrop() {
+export default function DragDrop({ files, setFiles }: any) {
   // 드래그 중일 때와 아닐 때의 스타일을 구분하기 위한 state 변수
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [files, setFiles] = useState<IFileTypes[]>([]);
 
   // 드래그 이벤트를 감지하는 ref 참조변수 (label 태그에 들어갈 예정)
   const dragRef = useRef<HTMLLabelElement | null>(null);
@@ -131,11 +126,12 @@ export default function DragDrop() {
           />
 
           <ImgBtn
-            onClick={() =>
+            onClick={(event: any) => {
+              event.preventDefault();
               (
                 document.querySelector('input[type="file"]') as HTMLInputElement
-              )?.click()
-            }
+              )?.click();
+            }}
           >
             사진 가져오기
           </ImgBtn>

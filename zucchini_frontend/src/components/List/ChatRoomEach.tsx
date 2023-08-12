@@ -1,14 +1,15 @@
 import styled from "styled-components";
 //임시쏘오쓰
 import cycle from "../../assets/images/cycle.png";
+import dayjs from "dayjs";
 
 interface IChat {
-  img: String;
-  sender: String;
-  senderGrade: String;
-  lastMsg: String;
-  lastMsgTime: String;
-  unread: String;
+  itemImage: String;
+  opponentNickname: String;
+  opponentGrade: String;
+  lastMessage: String;
+  lastMessageCreatedAt: String;
+  unreadCount: number;
 }
 
 interface IProps {
@@ -16,17 +17,26 @@ interface IProps {
 }
 
 export default function ChatRoomEach(props: IProps) {
+  // 'YYYY-MM-DD hh:mm:ss' 형식의 문자열로 직접 포맷팅
+  const formattedDate = props.chat.lastMessageCreatedAt as string;
+
+  // 문자열로 받아온 날짜를 Dayjs 객체로 변환
+  const dateObject = dayjs(formattedDate);
   return (
     <div>
       <ChatDiv>
         <ChatImg src={cycle}></ChatImg>
         <ChatInfoDiv>
-          <InfoTitleSpan>{props.chat.sender}</InfoTitleSpan>
-          <MessageSpan>{props.chat.lastMsg}</MessageSpan>
+          <InfoTitleSpan>{props.chat.opponentNickname}</InfoTitleSpan>
+          <MessageSpan>{props.chat.lastMessage}</MessageSpan>
         </ChatInfoDiv>
         <ChatTimeDiv>
-          <MessageSpan>{props.chat.lastMsgTime}</MessageSpan>
-          <ColorDiv>{props.chat.unread}</ColorDiv>
+          <MessageSpan>{dateObject.format("MM월 DD일")}</MessageSpan>
+          {props.chat.unreadCount >= 1 ? (
+            <ColorDiv>{props.chat.unreadCount}</ColorDiv>
+          ) : (
+            <NoneDiv></NoneDiv>
+          )}
         </ChatTimeDiv>
       </ChatDiv>
       <hr />
@@ -53,7 +63,7 @@ const ChatInfoDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 68%;
+  width: 60%;
 `;
 
 const ChatTimeDiv = styled.div`
@@ -76,6 +86,17 @@ const MessageSpan = styled.span`
 
 const ColorDiv = styled.div`
   background-color: #a32fff;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 0.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+`;
+
+const NoneDiv = styled.div`
+  background-color: white;
   height: 2rem;
   width: 2rem;
   border-radius: 0.4rem;
