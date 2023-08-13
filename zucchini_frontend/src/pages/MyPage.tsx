@@ -10,28 +10,30 @@ import api from "../utils/api";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
+interface IUser {
+  id: string;
+  nickname: string;
+  name: string;
+  phone: string;
+  gender: boolean;
+  email: string;
+  reportCount: number;
+  grade: number;
+  dealCount: number;
+  isLocked: number;
+}
+
 export default function MyPage() {
-  const [user, setUser] = useState();
-  async function getUserInfo() {
-    const response = await api({
-      method: "POST",
-      url: "grade",
-      data: {
-        gradeRecipient: "abc",
-        itemNo: 6,
-        grade: 5,
-      },
-    });
-
-    console.log(response);
-    const data = response.data;
-
-    setUser(data);
-  }
+  const [user, setUser] = useState<IUser>();
 
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    setUser(JSON.parse(sessionStorage.getItem("USER_INFO") as string));
+    // console.log(user);
+  }, []);
+
+  // useEffect(() => {
+  //   console.log(user);
+  // }, [user]);
 
   return (
     <ContainerDiv
@@ -39,13 +41,13 @@ export default function MyPage() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <button onClick={getUserInfo}>통신</button>
       <UpperDiv>
         <TitleSpan>마이페이지</TitleSpan>
         <SubTitleP>내 정보</SubTitleP>
         <Img src={femaleImg}></Img>
-        <InfoP>닉네임 : 애호오박</InfoP>
-        <InfoP>등급 : Lv.1 애호박 씨앗</InfoP>
+        <InfoP>닉네임 : {user?.nickname}</InfoP>
+        {/* Lv.1 애호박 씨앗 */}
+        <InfoP>등급 : Lv.{user?.grade}</InfoP>
         <Link to={"/myPage/modify"}>
           <InfoBtn>내 정보 수정</InfoBtn>
         </Link>
