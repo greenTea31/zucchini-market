@@ -1,4 +1,5 @@
 package com.zucchini.domain.report.service;
+
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.repository.ItemRepository;
 import com.zucchini.domain.report.domain.Report;
@@ -6,12 +7,13 @@ import com.zucchini.domain.report.dto.AddReportRequest;
 import com.zucchini.domain.report.repository.ReportRepository;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.repository.UserRepository;
-import com.zucchini.global.config.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.NoSuchElementException;
@@ -33,9 +35,7 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public int addReport(@Valid AddReportRequest report) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
-        String currentPrincipalId = nowLogInDetail.getId();
+        String currentPrincipalId = getCurrentId();
 
         // User에 reported가 없으면 예외 -> 필요
         User reporteduser = userRepository.findByNickname(report.getReported()).orElseThrow(() -> new NoSuchElementException("신고할 회원이 없습니다."));
@@ -69,4 +69,15 @@ public class ReportServiceImpl implements ReportService {
         reportRepository.save(newReport);
         return newReport.getNo();
     }
+
+    /**
+     * 스프링 시큐리티 인증을 통과하여 저장된 회원의 인증 객체에서 아이디 추출
+     * @return String : 아이디
+     */
+    private String getCurrentId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        return principal.getUsername();
+    }
+
 }

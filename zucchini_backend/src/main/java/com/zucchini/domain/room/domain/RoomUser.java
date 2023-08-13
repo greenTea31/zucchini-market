@@ -18,7 +18,7 @@ public class RoomUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int no;
+    private Integer no;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_no")
