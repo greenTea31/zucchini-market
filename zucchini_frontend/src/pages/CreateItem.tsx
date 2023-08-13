@@ -86,9 +86,10 @@ export default function CreateItem() {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/item/category")
+        const response = await axios.get(
+          "http://localhost:8080/api/item/category"
+        );
         // const response = await api.get("item/category");
-        console.log(response.data);
         const categoryNames = response.data.map((item: any) => item.category);
         setAllCategories(categoryNames);
       } catch (error) {
@@ -288,6 +289,7 @@ export default function CreateItem() {
             {selectedCategories.map((category: any) => {
               return (
                 <Button
+                  type="button"
                   kind="extraSmall"
                   Variant="filled"
                   style={{
