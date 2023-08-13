@@ -102,7 +102,8 @@ export default function ItemDetail() {
   // 하트(찜)
   const toggleLike = async () => {
     if (!sessionStorage.getItem("USER")) {
-      alert("로그인 해주세요!");
+      alert("로그인이 필요합니다.");
+      navigate(`/login`);
       return;
     }
     setLike((prev) => !prev);
@@ -129,6 +130,11 @@ export default function ItemDetail() {
   };
 
   const toChatRoom = async () => {
+    if (!sessionStorage.getItem("USER")) {
+      alert("로그인이 필요합니다.");
+      navigate(`/login`);
+      return;
+    }
     const token = "Bearer " + getUser();
     try {
       // 채팅방 생성
@@ -245,17 +251,17 @@ export default function ItemDetail() {
       <UpperDiv>
         <UpperLeftDiv>
           {item?.imageList && item?.imageList.length > 1 && (
-            <button onClick={prevImage}>이전</button>
+            <BeforeButton onClick={prevImage}>이전</BeforeButton>
           )}
 
           {/* src 태그 안에 제품 사진 */}
           <StyledImg
             src={item?.imageList ? item?.imageList[currentImageIndex] : NoImage}
           ></StyledImg>
+          {item?.imageList && item?.imageList.length > 1 && (
+            <NextButton onClick={nextImage}>다음</NextButton>
+          )}
         </UpperLeftDiv>
-        {item?.imageList && item?.imageList.length > 1 && (
-          <button onClick={nextImage}>다음</button>
-        )}
         <UpperRightDiv>
           {/* item.categoryList 돌면서 뿌려주기 '카테고리1·카테고리2·카테고리3형식 */}
           <CategorySpan>
@@ -390,16 +396,28 @@ const UpperLeftDiv = styled.div`
   width: 50%;
 `;
 
-const UpperRightDiv = styled.div`
-  width: 50%;
-  padding: 1rem 1rem 0 1rem;
-  display: flex;
-  flex-direction: column;
+const BeforeButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+`;
+
+const NextButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 `;
 
 const StyledImg = styled.img`
   height: 100%;
   width: 100%;
+`;
+
+const UpperRightDiv = styled.div`
+  width: 50%;
+  padding: 1rem 1rem 0 1rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 const CategorySpan = styled.span`

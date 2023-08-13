@@ -15,7 +15,7 @@ interface Chat {
   no: number;
   opponentNickname: string;
   itemImage: string;
-  opponentGrade: String;
+  opponentGrade: string;
   lastMessage: string;
   unreadCount: number;
   lastMessageCreatedAt: string;
