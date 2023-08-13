@@ -4,6 +4,7 @@ import com.zucchini.domain.image.service.ImageService;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.domain.ItemDate;
 import com.zucchini.domain.item.dto.response.DateResponse;
+import com.zucchini.domain.item.dto.response.FindItemResponse;
 import com.zucchini.domain.item.repository.ItemRepository;
 import com.zucchini.domain.report.repository.ReportRepository;
 import com.zucchini.domain.room.domain.Message;
@@ -311,12 +312,15 @@ public class RoomServiceImpl implements RoomService{
     public RoomItemResponse getRoomItem(int roomNo) {
         Item item = roomRepository.findItemByRoom(roomNo);
 
+        RoomItemResponse.Seller seller = new RoomItemResponse.Seller(item.getSeller().getNickname()
+                , item.getSeller().getGrade());
+
         RoomItemResponse roomItemResponse = RoomItemResponse.builder()
                 .no(item.getNo())
                 .title(item.getTitle())
                 .price(item.getPrice())
                 .image(getItemImage(item.getNo()))
-                .seller(item.getSeller())
+                .seller(seller)
                 .dateList(getItemDate(item.getDateList()))
                 .build();
 
