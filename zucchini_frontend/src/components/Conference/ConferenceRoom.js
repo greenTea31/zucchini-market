@@ -79,6 +79,7 @@ class ConferenceRoom extends Component {
     this.joinSession();
   }
 
+  // 컴포넌트 페이지에서 빠져나오게 되면 이 함수가 실행됨
   componentWillUnmount() {
     window.removeEventListener("beforeunload", this.onbeforeunload);
     window.removeEventListener("resize", this.updateLayout);
@@ -234,6 +235,7 @@ class ConferenceRoom extends Component {
 
   async leaveSession() {
     // 여기에 api 호출~~
+    console.log("세션을 떠나요");
     const token = "Bearer " + getUser();
     const response = await axios.put(
       APPLICATION_SERVER_URL + `session`,
@@ -266,9 +268,9 @@ class ConferenceRoom extends Component {
       myUserName: "알수없음",
       localUser: undefined,
     });
-    if (this.props.leaveSession) {
-      this.props.leaveSession();
-    }
+    // if (this.props.leaveSession) {
+    //   this.props.leaveSession();
+    // }
   }
 
   // 비디오 db PK, 비디오 링크

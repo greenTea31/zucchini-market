@@ -5,9 +5,10 @@ import Modal from "../components/Common/Modal";
 import { useEffect, useRef, useState } from "react";
 import Chatting from "../components/Chat/Chatting";
 import ClosedButton from "../components/Button/ClosedButton";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 import { Client } from "@stomp/stompjs";
 import Imessage from "../types/Imessage";
 import { motion } from "framer-motion";
@@ -56,8 +57,20 @@ export default function ChatRoom() {
     }
   }, [messages]);
 
+  const location = useLocation();
+  // 아이템 가져오기
   useEffect(() => {
-    getItemInformation();
+    const getItem = async () => {
+      try {
+        const response = await api.get(
+          `/room/item/${location.pathname.split("/chat/")[1]}`
+        );
+        setItem(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    getItem();
   }, []);
 
   const onSubmit = async (data: any) => {
@@ -87,17 +100,6 @@ export default function ChatRoom() {
     // }
     reset();
   };
-
-  const location = useLocation();
-  async function getItemInformation() {
-    // console.log(`${location.pathname.split("/item/")[1]}`) // undefined뜸
-    const response = await api.get(
-      `/room/item/${location.pathname.split("/chat/")[1]}`
-      // `/room/item/${location.pathname.split("/item/")[1]}`
-
-    );
-    setItem(response.data);
-  }
 
   async function getUserInformation() {
     const response = await api.get("/user/findMyNo");
@@ -180,6 +182,11 @@ export default function ChatRoom() {
     setBuyOpen(!buyOpen);
   };
 
+  const navigate = useNavigate();
+  const moveItem = () => {
+    navigate(`/item/${item?.no}`);
+  };
+
   return (
     <ContainerDiv
       initial={{ opacity: 0 }}
@@ -246,20 +253,21 @@ export default function ChatRoom() {
             <SellerDiv>
               <SellerImg src={female}></SellerImg>
               <SellerSpanDiv>
-                <SellerName>백조이김</SellerName>
-                <span>Lv.1 애호박씨앗</span>
-                <SubSpan>판매중 3 · 거래완료 2</SubSpan>
+                <SellerName>{item?.seller?.nickname}</SellerName>
+                {/* <span>Lv.1 애호박씨앗</span> */}
+                <span>Lv.{item?.seller?.grade}</span>
+                {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
               </SellerSpanDiv>
               <SellerBtn onClick={buyToggle}>구매확정</SellerBtn>
             </SellerDiv>
           </LowerDiv>
         </LeftDiv>
         <RightDiv>
-          <ChatTitleDiv>
-            <ChatImg src={female}></ChatImg>
+          <ChatTitleDiv onClick={moveItem}>
+            <ChatImg src={item?.image}></ChatImg>
             <ChatDiv>
-              <SellerName>갤럭시북2 프로 360 32GB, 1TB 최고 사양</SellerName>
-              <SubSpan>백조이김</SubSpan>
+              <SellerName>{item?.title}</SellerName>
+              <SubSpan>{item?.price}원</SubSpan>
             </ChatDiv>
             <SvgDiv>
               <Svg
