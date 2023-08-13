@@ -56,8 +56,4 @@ public class SessionController {
         }
     }
 
-    /**
-     * 화상방에 판매자 입장 시 비디오 녹화 시작?
-     */
-
 }

@@ -5,7 +5,6 @@ import com.zucchini.domain.conference.repository.ConferenceRepository;
 import com.zucchini.domain.reservation.domain.Reservation;
 import com.zucchini.domain.reservation.repository.ReservationRepository;
 import com.zucchini.domain.session.dto.request.LeaveSessionRequest;
-import com.zucchini.domain.session.dto.request.StartRecordingRequest;
 import com.zucchini.domain.session.dto.response.FindSessionResponse;
 import com.zucchini.domain.session.dto.response.LeaveSessionResponse;
 import com.zucchini.domain.user.domain.User;
@@ -87,7 +86,6 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public FindSessionResponse findConferenceSession(int no, HttpSession httpSession, HttpResponse response)
             throws OpenViduJavaClientException, OpenViduHttpException {
-        log.info("no========================="+ no);
         Optional<Conference> conference = conferenceRepository.findById(no);
         // 없는 컨퍼런스면 예외 처리
         if(!conference.isPresent()) throw new NoSuchElementException("컨퍼런스가 없습니다.");
@@ -104,8 +102,6 @@ public class SessionServiceImpl implements SessionService {
         }
         // 해당 컨퍼런스 번호로 한 예약은 회원마다 유일함
         Reservation reservation = reservationList.get(0);
-        log.info("현재 회원의 no-------------->{}", user.getNo());
-        log.info("현재 회원의 reservation-------------->{}", reservation.getNo());
 //        if(reservation.isAttended()){
 //            // 이미 접속중인 상태
 //            throw new IllegalArgumentException("이미 해당 컨퍼런스에 접속한 상태입니다.");
@@ -129,7 +125,6 @@ public class SessionServiceImpl implements SessionService {
             this.sessionRecordings.remove(session.getSessionId());
             //한번더 토큰발급 진행
             token = getToken(user, role, no, httpSession);
-            log.info("세션 토큰 재발급----------->{}",token);
             sessionId = this.mapSessions.get(no).getSessionId();
         }else {
             // 컨퍼런스에 판매자 구매자 모두 접속한 경우 -> 동영상 녹화 시작!!
@@ -150,7 +145,6 @@ public class SessionServiceImpl implements SessionService {
         RecordingProperties properties = new RecordingProperties.Builder().outputMode(outputMode).hasAudio(hasAudio)
                 .hasVideo(hasVideo).build();
         Recording recording = this.openVidu.startRecording(sessionId, properties);
-        System.out.println("recordingId------>"+recording.getId());
         this.sessionRecordingIds.put(sessionId, recording.getId());
         this.sessionRecordings.put(sessionId, true);
         return recording;
@@ -165,7 +159,6 @@ public class SessionServiceImpl implements SessionService {
      */
     private LeaveSessionResponse stopRecording(String sessionId, int itemNo) throws OpenViduJavaClientException, OpenViduHttpException {
 
-//        System.out.println("Stoping recording | {recordingId}=" + recordingId);
         String recordingId = this.sessionRecordingIds.get(sessionId);
         if(recordingId == null) { // 아직 시작된 녹화가 없는 상태(ex : 판매자가 화상방에 입장했다가 구매자가 들어오기도 전에 나가버린 경우)
             LeaveSessionResponse leaveSessionResponse = new LeaveSessionResponse();
@@ -214,7 +207,6 @@ public class SessionServiceImpl implements SessionService {
     public LeaveSessionResponse leaveConferenceSession(LeaveSessionRequest leaveSessionRequest) throws OpenViduJavaClientException, OpenViduHttpException {
         int no = leaveSessionRequest.getConferenceNo();
         String token = leaveSessionRequest.getToken();
-        log.info("no========================="+ no);
         // 쿼리 최적화 하려면...?
         Optional<Conference> conference = conferenceRepository.findById(no);
         // 없는 컨퍼런스면 예외 처리
@@ -229,18 +221,15 @@ public class SessionServiceImpl implements SessionService {
         if(reservationList.size() == 0) throw new IllegalArgumentException("권한이 없습니다");
 
         // 토큰 유효성 검사
-//        if(this.mapSessionNamesTokens.get(no).remove(token) == null) throw new IllegalArgumentException("토큰이 잘못되었습니다.");
+        if(this.mapSessionNamesTokens.get(no).remove(token) == null) throw new IllegalArgumentException("토큰이 잘못되었습니다.");
         // 자기 자신의 예약
         Reservation reservation = reservationList.get(0);
-        log.info("현재 회원의 no-------------->{}", user.getNo());
-        log.info("현재 회원의 reservation-------------->{}", reservation.getNo());
         // 컨퍼런스에 참석중인 사람이 몇명인지 확인
         int cnt = getAttendedUserCount(no);
-        log.info("방에 참여중인 사람 수 ->>>>>>>>{}", cnt);
         LeaveSessionResponse leaveSessionResponse;
         if(cnt == 0){
-            String sessionId = this.mapSessions.remove(no).getSessionId();
-            log.info("세션 아이디  ->>>>>>>>{}", sessionId);
+            Session session = this.mapSessions.remove(no);
+            String sessionId = session.getSessionId();
 
             // 토큰삭제도 필요~~
                 this.mapSessionNamesTokens.remove(no);
@@ -270,18 +259,8 @@ public class SessionServiceImpl implements SessionService {
         return leaveSessionResponse;
     }
 
-    @Override
-    public Recording startRecording(StartRecordingRequest startRecordingRequest) throws OpenViduJavaClientException, OpenViduHttpException {
-        String sessionId = startRecordingRequest.getSessionId();
-        boolean hasAudio = startRecordingRequest.getHasAudio();
-        boolean hasVideo = startRecordingRequest.getHasVideo();
-        return startRecording(sessionId, hasAudio, hasVideo);
-    }
-
-
     private String getToken(User user, OpenViduRole role, int no, HttpSession httpSession) throws OpenViduJavaClientException, OpenViduHttpException {
         String serverData = "{\"serverData\": \"" + user.getNickname() + "\"}";
-        System.out.println("serverData : "+serverData);
 
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC)
                 .role(role).data(serverData).build();
@@ -291,9 +270,7 @@ public class SessionServiceImpl implements SessionService {
         // 검색하는 방이 존재하지 않을 경우
         if (this.mapSessions.get(no) == null) {
             // session 값 생성
-            log.info("openvidu==============={}", this.openVidu);
             Session session = this.openVidu.createSession();
-            log.info("방이 없는 경우에 진입 roomId: {}, sessionId: {}", no,session.getSessionId());
             try{
                 token = session.createConnection(connectionProperties).getToken();
                 // 방 관리 map에 저장 roomId랑 들어온 유저 저장
@@ -308,23 +285,14 @@ public class SessionServiceImpl implements SessionService {
                 httpSession.setAttribute("error",e);
             }
         }else{
-            log.info("방이 있는 경우에 진입 roomId: {}, sessionId: {}", no, mapSessions.get(no).getSessionId());
             try{
                 token = this.mapSessions.get(no).createConnection(connectionProperties).getToken();
                 this.mapSessionNamesTokens.get(no).put(token, role);
                 this.mapSessionIdTokens.get(no).put(getCurrentId(), token);
-//                if(this.mapSessionIdTokens.get(no).get(getCurrentId()) != null) {
-//                    token = this.mapSessionIdTokens.get(no).get(getCurrentId());
-//                }else {
-//                    token = this.mapSessions.get(no).createConnection(connectionProperties).getToken();
-//                    this.mapSessionNamesTokens.get(no).put(token, role);
-//                    this.mapSessionIdTokens.get(no).put(getCurrentId(), token);
-//                }
             }catch (Exception e){
                 httpSession.setAttribute("error",e);
             }
         }
-        System.out.println("token :"+ token );
         return token;
     }
 
