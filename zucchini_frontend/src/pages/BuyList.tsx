@@ -14,6 +14,8 @@ export default function BuyList() {
   const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
+  const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
   async function getItems() {
     // axios
     //   .get(`http://localhost:8080/user/deal/buy?keyword=${keyword}`)
@@ -21,13 +23,17 @@ export default function BuyList() {
     //     setItems(response.data);
     //   });
 
-    const response = await api.get(`/user/deal/buy?keyword=${keyword}`);
+    const response = await api.get(`/user/deal/buy?keyword=${keyword}&page=${page}`);
     setItems(response.data);
   }
 
   useEffect(() => {
     getItems();
-  }, []);
+  }, [page]);
+
+  const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setPage(page);
+  };
 
   async function init() {
     try {
