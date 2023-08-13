@@ -133,9 +133,11 @@ public class RoomServiceImpl implements RoomService{
         // 아 채팅만 하고있는데 getOpponent를 어떻게 알아....
         String currentPrincipalId = getCurrentId();
         int currentPrincialNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
+        log.info("currentPrincipalNo : {}", currentPrincialNo);
 
         // 방 번호를 입력받아 그 방에 속한 유저들중 자신이 아닌 사람을 반환합니다.
         User user = roomUserRepository.findOpponentByRoomAndUser(room.getNo(), currentPrincialNo);
+        log.info("user : {}", user);
         return user;
     }
 
@@ -153,6 +155,9 @@ public class RoomServiceImpl implements RoomService{
 
             // 그 방에서 작성된 마지막 메세지를 반환함
             Message message = messageRepository.findTopByRoomOrderByCreatedAtDesc(room);
+
+            // 그 방에서 작성된 메세지가 없으면 방 목록에 보여주지 않음
+            if (message == null) continue;
             Item item = room.getItem();
 
             User opponent = getOpponent(room);
