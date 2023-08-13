@@ -67,11 +67,11 @@ const router = createBrowserRouter([
         element: <SellList />,
       },
       {
-        path: "/mypage/buy/video",
+        path: "/mypage/buy/video/:no",
         element: <ReplayBuyVideo />,
       },
       {
-        path: "/mypage/sell/video",
+        path: "/mypage/sell/video/:no",
         element: <ReplaySellVideo />,
       },
       {
