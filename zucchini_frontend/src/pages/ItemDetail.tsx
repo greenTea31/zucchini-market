@@ -102,7 +102,8 @@ export default function ItemDetail() {
   // 하트(찜)
   const toggleLike = async () => {
     if (!sessionStorage.getItem("USER")) {
-      alert("로그인 해주세요!");
+      alert("로그인이 필요합니다.");
+      navigate(`/login`);
       return;
     }
     setLike((prev) => !prev);
@@ -129,6 +130,11 @@ export default function ItemDetail() {
   };
 
   const toChatRoom = async () => {
+    if (!sessionStorage.getItem("USER")) {
+      alert("로그인이 필요합니다.");
+      navigate(`/login`);
+      return;
+    }
     const token = "Bearer " + getUser();
     try {
       // 채팅방 생성
