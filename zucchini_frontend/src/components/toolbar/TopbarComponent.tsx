@@ -33,7 +33,7 @@ export default function ToolbarComponent(props: IProps) {
 
   const navigate = useNavigate();
   function leaveSession() {
-    props.leaveSession();
+    // await props.leaveSession();
     navigate("/scheduleList", { replace: true });
   }
 
