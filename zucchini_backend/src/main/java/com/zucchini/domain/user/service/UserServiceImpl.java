@@ -10,7 +10,6 @@ import com.zucchini.domain.user.domain.UserItemLike;
 import com.zucchini.domain.user.domain.UserItemLikeId;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
-import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.domain.user.repository.UserItemLikeRepository;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.common.PageResponse;
@@ -448,19 +447,7 @@ public class UserServiceImpl implements UserService {
         String loginId = getCurrentId();
         Page<Item> pageItemList = userItemLikeRepository.findPageUserLikeItems(loginId, keyword, pageable);
 
-        return new PageResponse<>(pageItemList.getContent().stream()
-                .map(userItemLike -> FindItemListResponse.builder()
-                        .no(userItemLike.getNo())
-                        .title(userItemLike.getTitle())
-                        .updatedAt(userItemLike.getUpdatedAt())
-                        .content(userItemLike.getContent())
-                        .price(userItemLike.getPrice())
-                        .status(userItemLike.getStatus())
-                        .image(getItemImage(userItemLike.getNo()))
-                        .likeCount(userItemLikeRepository.countById_ItemNo(userItemLike.getNo()))
-                        .categoryList(getCategory(userItemLike.getCategoryList()))
-                        .build())
-                .collect(Collectors.toList()), pageItemList.getTotalPages());
+        return getFindItemListResponsePageResponse(pageItemList);
     }
 
     /**
@@ -493,6 +480,10 @@ public class UserServiceImpl implements UserService {
             pageItemList = userRepository.findPageSellListByUser(id, keyword, pageable);
         }
 
+        return getFindItemListResponsePageResponse(pageItemList);
+    }
+
+    private PageResponse<FindItemListResponse> getFindItemListResponsePageResponse(Page<Item> pageItemList) {
         return new PageResponse<>(pageItemList.getContent().stream().map(item -> FindItemListResponse.builder().no(item.getNo())
                 .title(item.getTitle())
                 .updatedAt(item.getUpdatedAt())
