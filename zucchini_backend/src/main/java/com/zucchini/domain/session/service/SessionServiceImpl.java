@@ -5,7 +5,6 @@ import com.zucchini.domain.conference.repository.ConferenceRepository;
 import com.zucchini.domain.reservation.domain.Reservation;
 import com.zucchini.domain.reservation.repository.ReservationRepository;
 import com.zucchini.domain.session.dto.request.LeaveSessionRequest;
-import com.zucchini.domain.session.dto.request.StartRecordingRequest;
 import com.zucchini.domain.session.dto.response.FindSessionResponse;
 import com.zucchini.domain.session.dto.response.LeaveSessionResponse;
 import com.zucchini.domain.user.domain.User;
@@ -198,6 +197,7 @@ public class SessionServiceImpl implements SessionService {
         List<Reservation> reservationList = reservationRepository.findByConferenceNo(no);
         // 한 컨퍼런스에 예약은 판매자 구매자 이렇게 2개만 가능
         for (int i = 0; i < 2; i++) {
+            log.info("reservation=======>{}",reservationList.get(i).isAttended());
             if(reservationList.get(i).isAttended() && reservationList.get(i).getUser().getNo() != user.getNo()){
                 // 자기 자신 제외
                 cnt++;
@@ -223,23 +223,26 @@ public class SessionServiceImpl implements SessionService {
 
         String userId = getCurrentId();
         User user = userRepository.findById(userId).get();
+        log.info("현재 회원의 아이디 =============>{}", userId);
         List<Reservation> reservationList = reservationRepository.findByConferenceNoAndUser(no, user);
 
         // 해당 컨퍼런스에 접근 권한이 없는 회원인 경우 예외 처리
         if(reservationList.size() == 0) throw new IllegalArgumentException("권한이 없습니다");
 
         // 토큰 유효성 검사
-//        if(this.mapSessionNamesTokens.get(no).remove(token) == null) throw new IllegalArgumentException("토큰이 잘못되었습니다.");
+        if(this.mapSessionNamesTokens.get(no).remove(token) == null) throw new IllegalArgumentException("토큰이 잘못되었습니다.");
         // 자기 자신의 예약
         Reservation reservation = reservationList.get(0);
         log.info("현재 회원의 no-------------->{}", user.getNo());
-        log.info("현재 회원의 reservation-------------->{}", reservation.getNo());
+        log.info("현재 회원의 reservation 참석상태-------------->{}", reservation.isAttended());
         // 컨퍼런스에 참석중인 사람이 몇명인지 확인
         int cnt = getAttendedUserCount(no);
         log.info("방에 참여중인 사람 수 ->>>>>>>>{}", cnt);
         LeaveSessionResponse leaveSessionResponse;
         if(cnt == 0){
-            String sessionId = this.mapSessions.remove(no).getSessionId();
+            log.info("방종 ->>>>>>>>");
+            Session session = this.mapSessions.remove(no);
+            String sessionId = session.getSessionId();
             log.info("세션 아이디  ->>>>>>>>{}", sessionId);
 
             // 토큰삭제도 필요~~
@@ -258,6 +261,7 @@ public class SessionServiceImpl implements SessionService {
 //            conferenceRepository.delete(conference.get());
             // 세션이 종료되었으므로 녹화 중단 후 저장
             leaveSessionResponse = stopRecording(sessionId, conference.get().getItem().getNo());
+            log.info("방 종료 비디오 링크 ->>>>>>>>{}", leaveSessionResponse.getLink());
         }else {
             leaveSessionResponse = new LeaveSessionResponse();
             leaveSessionResponse.setIsFinished(false);
@@ -269,15 +273,6 @@ public class SessionServiceImpl implements SessionService {
 
         return leaveSessionResponse;
     }
-
-    @Override
-    public Recording startRecording(StartRecordingRequest startRecordingRequest) throws OpenViduJavaClientException, OpenViduHttpException {
-        String sessionId = startRecordingRequest.getSessionId();
-        boolean hasAudio = startRecordingRequest.getHasAudio();
-        boolean hasVideo = startRecordingRequest.getHasVideo();
-        return startRecording(sessionId, hasAudio, hasVideo);
-    }
-
 
     private String getToken(User user, OpenViduRole role, int no, HttpSession httpSession) throws OpenViduJavaClientException, OpenViduHttpException {
         String serverData = "{\"serverData\": \"" + user.getNickname() + "\"}";
