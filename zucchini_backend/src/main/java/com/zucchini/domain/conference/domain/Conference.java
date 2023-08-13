@@ -19,7 +19,7 @@ public class Conference {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int no;
+    private Integer no;
 
     @Column(name = "is_active", nullable = false)
     private boolean active;
