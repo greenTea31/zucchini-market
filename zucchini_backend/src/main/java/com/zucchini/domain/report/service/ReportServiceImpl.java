@@ -39,7 +39,8 @@ public class ReportServiceImpl implements ReportService {
 
         // User에 reported가 없으면 예외 -> 필요
         User reporteduser = userRepository.findByNickname(report.getReported()).orElseThrow(() -> new NoSuchElementException("신고할 회원이 없습니다."));
-
+        // 프론트에서 넘어오는 reported는 nickname이라서 id로 변경해주는 작업이 필요함
+        report.setReported(reporteduser.getId());
         // item table에 itemNo가 없으면 예외
         Item item = itemRepository.findById(report.getItemNo()).orElseThrow(() -> new NoSuchElementException("해당 아이템이 없습니다."));
 
