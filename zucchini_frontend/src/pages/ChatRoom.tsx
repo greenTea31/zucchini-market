@@ -14,6 +14,7 @@ import Imessage from "../types/Imessage";
 import { motion } from "framer-motion";
 import { getUser } from "../hooks/useLocalStorage";
 import api from "../utils/api";
+import Report from "../components/Common/Report";
 
 interface ISeller {
   nickname: string;
@@ -36,6 +37,18 @@ interface IItem {
 
 export default function ChatRoom() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isReporting, setIsReporting] = useState(false); // 신고모달
+
+  const toggleReport = () => {
+    setIsReporting(!isReporting);
+  };
+  const reportReasons = [
+    "거래 / 환불 분쟁 신고",
+    "사기 ",
+    "전문판매업자",
+    "욕설, 비방",
+    "성희롱",
+  ];
 
   const [user, setUser] = useState({
     no: 0,
@@ -211,28 +224,26 @@ export default function ChatRoom() {
       </Modal>
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
-          <StyledSvg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </StyledSvg>
+          <ClosedButton onClick={toggle} />
         </ModalDiv>
         <ModalSpan>화상통화 일정 선택</ModalSpan>
         <ModalSubSpan>
           <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
         </ModalSubSpan>
         <SimpleCalendar dates={item?.dateList as IDate[]} />
-        <ModalBtn>확인</ModalBtn>
-        <ModalBtn>취소</ModalBtn>
+      </Modal>
+      <Modal isOpen={isReporting} toggle={toggleReport}>
+        <ModalDiv>
+          <ClosedButton onClick={toggleReport} />
+        </ModalDiv>
+        <ModalSpan>신고하기</ModalSpan>
+        <SubSpan>신고 사유를 선택해주세요.</SubSpan>
+        <Report
+          reportedNickname={item?.seller.nickname}
+          itemNo={item?.no}
+          reasons={reportReasons}
+          roomNo={null}
+        />
       </Modal>
       <BodyDiv>
         <LeftDiv>
@@ -249,6 +260,22 @@ export default function ChatRoom() {
             </StyledBtnDiv>
           </UpperDiv>
           <LowerDiv>
+            {/* 채팅방 상대방 정보를... */}
+            {user.nickname === item?.seller.nickname ? null : (
+              <>
+                <SellerTitle>판매자 정보</SellerTitle>
+                <SellerDiv>
+                  <SellerImg src={female}></SellerImg>
+                  <SellerSpanDiv>
+                    <SellerName>{item?.seller?.nickname}</SellerName>
+                    {/* <span>Lv.1 애호박씨앗</span> */}
+                    <span>Lv.{item?.seller?.grade}</span>
+                    {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
+                  </SellerSpanDiv>
+                  <SellerBtn onClick={buyToggle}>구매확정</SellerBtn>
+                </SellerDiv>
+              </>
+            )}
             <SellerTitle>판매자 정보</SellerTitle>
             <SellerDiv>
               <SellerImg src={female}></SellerImg>
@@ -258,6 +285,7 @@ export default function ChatRoom() {
                 <span>Lv.{item?.seller?.grade}</span>
                 {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
               </SellerSpanDiv>
+              <SellerBtn onClick={toggleReport}>신고하기</SellerBtn>
               <SellerBtn onClick={buyToggle}>구매확정</SellerBtn>
             </SellerDiv>
           </LowerDiv>
