@@ -90,8 +90,11 @@ export default function ChatRoom() {
 
   const location = useLocation();
   async function getItemInformation() {
+    // console.log(`${location.pathname.split("/item/")[1]}`) // undefined뜸
     const response = await api.get(
-      `/room/item/${location.pathname.split("/item/")[1]}`
+      `/room/item/${location.pathname.split("/chat/")[1]}`
+      // `/room/item/${location.pathname.split("/item/")[1]}`
+
     );
     setItem(response.data);
   }

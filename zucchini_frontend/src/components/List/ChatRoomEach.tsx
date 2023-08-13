@@ -2,13 +2,14 @@ import styled from "styled-components";
 //임시쏘오쓰
 import cycle from "../../assets/images/cycle.png";
 import dayjs from "dayjs";
+import NoImage from "../../assets/images/NoImage.png"
 
 interface IChat {
-  itemImage: String;
-  opponentNickname: String;
-  opponentGrade: String;
-  lastMessage: String;
-  lastMessageCreatedAt: String;
+  itemImage: string;
+  opponentNickname: string;
+  opponentGrade: string;
+  lastMessage: string;
+  lastMessageCreatedAt: string;
   unreadCount: number;
 }
 
@@ -25,7 +26,8 @@ export default function ChatRoomEach(props: IProps) {
   return (
     <div>
       <ChatDiv>
-        <ChatImg src={cycle}></ChatImg>
+        {/* <ChatImg src={cycle}></ChatImg> */}
+        <ChatImg src={props.chat.itemImage ? props.chat.itemImage : NoImage}></ChatImg>
         <ChatInfoDiv>
           <InfoTitleSpan>{props.chat.opponentNickname}</InfoTitleSpan>
           <MessageSpan>{props.chat.lastMessage}</MessageSpan>
