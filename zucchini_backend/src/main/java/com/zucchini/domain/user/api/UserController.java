@@ -4,7 +4,6 @@ import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
-import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.domain.user.dto.response.UserInfoResponse;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.domain.user.service.UserService;
