@@ -83,7 +83,6 @@ export default function ItemDetail() {
           `item/${location.pathname.split("/")[2]}`
         );
         setItem(response.data);
-        console.log("좋아요 받아오기:" + response.data.like);
         setLike(response.data.like);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -91,13 +90,6 @@ export default function ItemDetail() {
     };
     getItem();
   }, []);
-
-  // const watchLike = () => {
-  //   return like;
-  // };
-  useEffect(() => {
-    console.log("좋아요 상태 : " + like);
-  }, [like]);
 
   // 하트(찜)
   const toggleLike = async () => {
@@ -251,7 +243,25 @@ export default function ItemDetail() {
       <UpperDiv>
         <UpperLeftDiv>
           {item?.imageList && item?.imageList.length > 1 && (
-            <BeforeButton onClick={prevImage}>이전</BeforeButton>
+            <BeforeButton onClick={prevImage}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="white"
+                className="w-6 h-6"
+                style={{
+                  filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
+                }}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
+            </BeforeButton>
           )}
 
           {/* src 태그 안에 제품 사진 */}
@@ -259,7 +269,25 @@ export default function ItemDetail() {
             src={item?.imageList ? item?.imageList[currentImageIndex] : NoImage}
           ></StyledImg>
           {item?.imageList && item?.imageList.length > 1 && (
-            <NextButton onClick={nextImage}>다음</NextButton>
+            <NextButton onClick={nextImage}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="white"
+                className="w-6 h-6"
+                style={{
+                  filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
+                }}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </NextButton>
           )}
         </UpperLeftDiv>
         <UpperRightDiv>
@@ -393,19 +421,33 @@ const LowerRightDiv = styled.div`
 `;
 
 const UpperLeftDiv = styled.div`
+  display: flex;
   width: 50%;
+  position: relative; /* 상대 위치 설정 */
 `;
 
 const BeforeButton = styled.button`
   background-color: transparent;
   border: none;
   cursor: pointer;
+  position: absolute; /* 절대 위치 설정 */
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4rem; /* 크기 조정 */
+  height: 4rem; /* 크기 조정 */
 `;
 
 const NextButton = styled.button`
   background-color: transparent;
   border: none;
   cursor: pointer;
+  position: absolute; /* 절대 위치 설정 */
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4rem; /* 크기 조정 */
+  height: 4rem; /* 크기 조정 */
 `;
 
 const StyledImg = styled.img`
@@ -429,24 +471,27 @@ const TitleSpan = styled.span`
   font-size: 2rem;
   font-weight: 500;
   line-height: 2.3rem;
-  margin: 0.5rem 0;
+  margin: 0.5rem 0.3rem;
 `;
 
 const ContentSpan = styled.span`
   line-height: 1.3rem;
   margin-bottom: 1.5rem;
   height: 13.6rem;
+  margin-left: 0.3rem;
 `;
 
 const PriceSpan = styled.span`
   font-weight: 500;
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
+  margin-left: 0.3rem;
 `;
 
 const SubSpan = styled.span`
   color: gray;
   margin-bottom: 2rem;
+  margin-left: 0.3rem;
 `;
 
 const SelectBtn = styled.button`

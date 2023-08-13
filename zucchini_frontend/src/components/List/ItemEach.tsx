@@ -29,6 +29,10 @@ export default function ItemEach({ item }: IProps) {
 
   const location = useLocation();
 
+  const playVideo = () => {
+    navigate(`${location.pathname}/video/${item.no}`);
+  };
+
   return (
     <ItemDiv onClick={onClick}>
       {/* 이미지 {props?.item?.image}로 변경 */}
@@ -36,7 +40,9 @@ export default function ItemEach({ item }: IProps) {
       <ItemImg src={item?.image ? item?.image : NoImage} />
       {/* ItemList,  BuyList, SellList에서 각각 쓰이는 컴포넌트이므로 버튼은 조건부 렌더링 필요 */}
       {location.pathname === "/item" ? null : (
-        <ReplayButton>상태표시{item?.status} | 다시보기</ReplayButton>
+        <ReplayButton onClick={playVideo}>
+          상태표시{item?.status} | 다시보기
+        </ReplayButton>
       )}
       <ItemTitle>{item?.title}</ItemTitle>
       <ItemTitle>{item?.price.toLocaleString("ko-KR")}원</ItemTitle>
@@ -65,6 +71,10 @@ const ItemDiv = styled.div`
 
 const ItemImg = styled.img`
   border-radius: 1.5rem;
+  width: 100%; /* 이미지의 너비를 100%로 설정하여 컨테이너에 맞춤 */
+  height: 100%; /* 이미지의 높이를 100%로 설정하여 컨테이너에 맞춤 */
+  object-fit: contain; /* 이미지가 컨테이너를 완전히 채우면서 비율 유지 */
+  background-color: transparent; /* 빈 공간의 배경색을 투명하게 설정 */
 `;
 
 const ItemTitle = styled.span`
