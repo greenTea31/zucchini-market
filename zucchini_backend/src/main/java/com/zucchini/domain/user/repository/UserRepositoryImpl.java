@@ -76,7 +76,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         QUser u = QUser.user;
         QItem i = QItem.item;
 
-        List<Item> sellList = queryFactory
+        List<Item> buyList = queryFactory
                 .select(i)
                 .from(i)
                 .join(i.buyer, u)
@@ -90,10 +90,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(i.count())
                 .from(i)
-                .join(i.seller, u)
+                .join(i.buyer, u)
                 .where(u.id.eq(userId), i.title.contains(keyword));
 
-        return PageableExecutionUtils.getPage(sellList, pageable, countQuery::fetchOne);
+        return PageableExecutionUtils.getPage(buyList, pageable, countQuery::fetchOne);
     }
 
 }
