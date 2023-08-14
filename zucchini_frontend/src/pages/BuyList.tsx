@@ -12,7 +12,6 @@ interface Item {
 
 export default function BuyList() {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
@@ -26,7 +25,7 @@ export default function BuyList() {
 
     try {
       const response = await api.get(
-        `/user/deal/buy?keyword=${keyword}&page=${page}`
+        `/user/deal/buy?keyword=${keyword}&page=${page}&category=-1`
       );
       setItems(response.data.content);
       setTotalPages(response.data.totalPages);
@@ -42,15 +41,6 @@ export default function BuyList() {
   const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
     setPage(page);
   };
-
-  async function init() {
-    try {
-      const response = await api.get(`/user/deal/buy?keyword=`);
-      setItems(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
 
   useEffect(() => {
     setIsLoading(true);
