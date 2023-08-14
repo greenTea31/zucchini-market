@@ -307,9 +307,9 @@ public class UserController {
      * 500 : 서버 내 에러
      */
     @GetMapping("/item/like")
-    public ResponseEntity<PageResponse<FindItemListResponse>> findLikeItemList(@RequestParam String keyword, @RequestParam int page) {
+    public ResponseEntity<PageResponse<FindItemListResponse>> findLikeItemList(@RequestParam String keyword, @RequestParam int page, int category) {
         Pageable pageable = PageRequest.of(page - 1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
-        PageResponse<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(keyword, pageable);
+        PageResponse<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(keyword, pageable, category);
         return ResponseEntity.ok(userLikeItemList);
     }
 
@@ -322,9 +322,9 @@ public class UserController {
      * 500 : 서버 내 에러
      */
     @GetMapping("/deal/sell")
-    public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page) {
+    public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page, @RequestParam int category) {
         Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
-        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, null);
+        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, null, category);
         return ResponseEntity.ok(sellDealHistory);
     }
 
@@ -337,23 +337,23 @@ public class UserController {
      * 500 : 서버 내 에러
      */
     @GetMapping("/deal/buy")
-    public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page) {
+    public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page, @RequestParam int category) {
         Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
-        PageResponse<FindItemListResponse> buyDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, null);
+        PageResponse<FindItemListResponse> buyDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, null, category);
         return ResponseEntity.ok(buyDealHistory);
     }
 
     @GetMapping("/deal/sell/{username}")
-    public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username) {
+    public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username, @RequestParam int category) {
         Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
-        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, username);
+        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, username, category);
         return ResponseEntity.ok(sellDealHistory);
     }
 
     @GetMapping("/deal/buy/{username}")
-    public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username) {
+    public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username, @RequestParam int category) {
         Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
-        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, username);
+        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, username, category);
         return ResponseEntity.ok(sellDealHistory);
     }
 

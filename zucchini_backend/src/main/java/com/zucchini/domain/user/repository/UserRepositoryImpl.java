@@ -1,5 +1,6 @@
 package com.zucchini.domain.user.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zucchini.domain.item.domain.Item;
@@ -47,16 +48,21 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     }
 
     @Override
-    public Page<Item> findPageSellListByUser(String userId, String keyword, Pageable pageable) {
+    public Page<Item> findPageSellListByUser(String userId, String keyword, Pageable pageable, int category) {
         QUser u = QUser.user;
         QItem i = QItem.item;
+
+        BooleanExpression whereClause = u.id.eq(userId).and(i.title.contains(keyword));
+        if (category >= 0) {
+            whereClause = whereClause.and(i.status.eq(category));
+        }
 
         List<Item> sellList = queryFactory
                 .select(i)
                 .from(i)
                 .join(i.seller, u)
                 .fetchJoin()
-                .where(u.id.eq(userId), i.title.contains(keyword))
+                .where(whereClause)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(i.no.asc())
@@ -66,7 +72,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .select(i.count())
                 .from(i)
                 .join(i.seller, u)
-                .where(u.id.eq(userId), i.title.contains(keyword));
+                .where(whereClause);
 
         return PageableExecutionUtils.getPage(sellList, pageable, countQuery::fetchOne);
     }
