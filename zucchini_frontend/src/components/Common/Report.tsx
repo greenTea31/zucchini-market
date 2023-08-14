@@ -59,8 +59,9 @@ export default function Report({
 }
 
 const ReportDiv = styled.div`
-  margin: 2rem;
+  margin: 1rem;
 `;
+
 const SpanDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -82,6 +83,7 @@ const ModalTextarea = styled.textarea`
   padding: 0.5rem;
   font-size: 1rem;
 `;
+
 const ButtonDiv = styled.div`
   display: flex;
   flex-direction: column;

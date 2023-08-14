@@ -57,11 +57,10 @@ export default function UserPage() {
   const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
   const [isOpen, setIsOpen] = useState(false);
 
-  // 아래 api 부분 수정해야함,,,
   async function getItems() {
     try {
       const response = await api.get(
-        `/user/deal/sell/${username}?keyword=${keyword}&page=${page}`
+        `http://localhost:8080/api/user/deal/sell/${username}?keyword=${keyword}&page=${page}`
       );
       setUsername(response.data.username);
       setItems(response.data.content);
@@ -107,10 +106,10 @@ export default function UserPage() {
         <ModalSpan>신고하기</ModalSpan>
         <SubSpan>신고 사유를 선택해주세요.</SubSpan>
         <Report
-          // reportedNickname={item?.seller.nickname}
-          // itemNo={item.no}
+          reportedNickname={username}
+          itemNo={null}
           reasons={reportReasons}
-          // roomNo={null}
+          roomNo={null}
         />
       </Modal>
       <LeftDiv>
