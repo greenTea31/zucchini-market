@@ -19,10 +19,12 @@ export default function SellList() {
   const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
   const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
 
+  const [selectedCategory, setSelectedCategory] = useState(-1); // 선택한 카테고리
+
   async function getItems() {
     try {
       const response = await api.get(
-        `/user/deal/sell?keyword=${keyword}&page=${page}`
+        `/user/deal/sell?keyword=${keyword}&page=${page}&category=${selectedCategory}`
       );
       setItems(response.data.content);
       setTotalPages(response.data.totalPages);
@@ -31,13 +33,9 @@ export default function SellList() {
     }
   }
 
-  // useEffect(() => {
-  //   getItems();
-  // }, []);
-
   useEffect(() => {
     getItems();
-  }, [page]);
+  }, [selectedCategory, page]);
 
   const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
     setPage(page);
@@ -67,7 +65,7 @@ export default function SellList() {
     >
       <div>
         <TitleSpan>나의 판매 목록</TitleSpan>
-        <CategorySecond />
+        <CategorySecond setSelectedCategory={setSelectedCategory} />
         <Search setKeyword={setKeyword} getItems={getItems} keyword={keyword} />
       </div>
       <LowerDiv>
