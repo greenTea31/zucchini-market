@@ -8,11 +8,20 @@ export default function Report({
   itemNo,
   reasons,
   roomNo,
+  onCancel,
 }: any) {
   // 신고 옵션
   const [reportCategory, setReportCategory] = useState("");
   // 상세 사유
   const [reportReason, setReportReason] = useState("");
+
+  // 신고 모달 취소버튼
+  const [isVisible, setIsVisible] = useState(true);
+
+  const handleCancel = () => {
+    setIsVisible(false);
+    onCancel();
+  };
 
   const realReason = () => {
     return reportCategory + " : " + reportReason;
@@ -52,7 +61,7 @@ export default function Report({
       </SpanDiv>
       <ButtonDiv>
         <RedBtn onClick={handleReport}>신고</RedBtn>
-        <GreenBtn>취소</GreenBtn>
+        <GreenBtn onClick={handleCancel}>취소</GreenBtn>
       </ButtonDiv>
     </ReportDiv>
   );

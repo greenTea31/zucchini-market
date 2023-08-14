@@ -202,6 +202,7 @@ export default function ItemDetail() {
           itemNo={item?.no}
           reasons={reportReasons}
           roomNo={null}
+          onCancel={toggleReport}
         />
       </Modal>
       {/* <GoBackButton onClick={toPrev}/> */}
@@ -310,7 +311,7 @@ export default function ItemDetail() {
             · 조회 {item?.view} · 찜 {item?.likeCount}
           </SubSpan>
           <SubSpan>
-            <button type="button" onClick={toggleReport} style={buttonStyle}>
+            <TransBtn type="button" onClick={toggleReport} style={buttonStyle}>
               신고하기
               <RedSvg
                 xmlns="http://www.w3.org/2000/svg"
@@ -326,7 +327,7 @@ export default function ItemDetail() {
                   d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
                 />
               </RedSvg>
-            </button>
+            </TransBtn>
           </SubSpan>
           <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
           <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
@@ -490,7 +491,7 @@ const PriceSpan = styled.span`
 
 const SubSpan = styled.span`
   color: gray;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   margin-left: 0.3rem;
 `;
 
@@ -610,4 +611,9 @@ const SelectDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   margin-bottom: 1rem;
+`;
+
+const TransBtn = styled.button`
+  font-size: 1rem;
+  padding: 0;
 `;
