@@ -33,7 +33,9 @@ public class UserItemLikeRepositoryImpl implements UserItemLikeRepositoryCustom 
         QUser u = QUser.user;
         QItem i = QItem.item;
 
-        BooleanExpression whereClause = u.id.eq(userId).and(i.title.contains(keyword));
+        BooleanExpression whereClause = u.id.eq(userId).and(i.title.contains(keyword))
+                .and(u.isDeleted.eq(false))
+                .and(u.isLocked.eq(false));
         if (category >= 0) {
             whereClause = whereClause.and(i.status.eq(category));
         }
@@ -66,21 +68,5 @@ public class UserItemLikeRepositoryImpl implements UserItemLikeRepositoryCustom 
         // 카운트 쿼리 최적화 -> 페이지 크기보다 전체 개수가 적거나 마지막 페이지인 경우 카운트 쿼리를 수행하지 않음
         return PageableExecutionUtils.getPage(itemList, pageable, countQuery::fetchOne);
     }
-
-//    @EntityGraph(value = "Item.withImages", type = EntityGraph.EntityGraphType.LOAD)
-//    @Query(value = "select i from Item i " +
-//            "where i.buyer = :user and i.title like concat('%', :keyword, '%') ")
-//    List<Item> findAllByBuyer(User user, String keyword);
-//
-//    /**
-//     * 판매 목록 조회 (검색 기능 포함)
-//     * @param user : 회원
-//     * @param keyword : 검색어
-//     * @return List<Item> : 판매 목록 리스트
-//     */
-//    @EntityGraph(value = "Item.withImages", type = EntityGraph.EntityGraphType.LOAD)
-//    @Query(value = "select i from Item i " +
-//            "where i.seller = :user and i.title like concat('%', :keyword, '%') ")
-//    List<Item> findAllBySeller(User user, String keyword);
 
 }
