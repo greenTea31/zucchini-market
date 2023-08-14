@@ -35,7 +35,7 @@ interface IItem {
   dateList: IDate[];
 }
 
-export default function ChatRoom() {
+export default function ChatRoom({ chat }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [isReporting, setIsReporting] = useState(false); // 신고모달
 
@@ -200,6 +200,11 @@ export default function ChatRoom() {
     navigate(`/item/${item?.no}`);
   };
 
+  // 예약중으로 상태변경
+  const nextStatus = async () => {
+    await api.put(`/item/${item?.no}/deal`).then();
+  };
+
   return (
     <ContainerDiv
       initial={{ opacity: 0 }}
@@ -208,16 +213,17 @@ export default function ChatRoom() {
     >
       <Modal isOpen={buyOpen} toggle={buyToggle}>
         <ModalDiv>
-          <ClosedButton />
+          <ClosedButton onClick={buyToggle} />
         </ModalDiv>
-        <ModalSpan>구매 확정하기</ModalSpan>
+        <ModalSpan>거래 예약하기</ModalSpan>
         <SpanDiv>
-          <span>구매하신 물건에 이상이 없는지 확인하셨나요?</span>
-          <span>구매 확정을 누르시면 영상 다시보기가 불가합니다.</span>
-          <span>중고 매물을 꼼꼼하게 확인 후 확정을 눌러주세요.</span>
+          <span>지금 채팅 중인 분과 거래 하시겠습니까?</span>
+          <span>
+            확인 버튼을 누르시면 해당 상품이 '예약중' 상태로 변경됩니다.
+          </span>
         </SpanDiv>
         <ButtonDiv>
-          <GreenBtn>
+          <GreenBtn onClick={nextStatus}>
             <Link to={"/mypage/buy"}>확정</Link>
           </GreenBtn>
         </ButtonDiv>
@@ -262,9 +268,26 @@ export default function ChatRoom() {
           </UpperDiv>
           <LowerDiv>
             {/* 채팅방 상대방 정보를... */}
-            {user.nickname === item?.seller.nickname ? null : (
+            {user.nickname === item?.seller.nickname ? (
               <>
-                <SellerTitle>판매자 정보</SellerTitle>
+                <SellerTitle>상대방 정보</SellerTitle>
+                <SellerDiv>
+                  <SellerImg src={female}></SellerImg>
+                  <SellerSpanDiv>
+                    <SellerName>{chat.opponentNickname}</SellerName>
+                    {/* <span>Lv.1 애호박씨앗</span> */}
+                    <span>Lv.{chat.opponentGrade}</span>
+                    {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
+                  </SellerSpanDiv>
+                  <BtnDiv>
+                    <ReportBtn onClick={toggleReport}>신고하기</ReportBtn>
+                    <SellerBtn onClick={buyToggle}>거래 예약</SellerBtn>
+                  </BtnDiv>
+                </SellerDiv>
+              </>
+            ) : (
+              <>
+                {/* <SellerTitle>상대방 정보</SellerTitle> */}
                 <SellerDiv>
                   <SellerImg src={female}></SellerImg>
                   <SellerSpanDiv>
@@ -273,22 +296,12 @@ export default function ChatRoom() {
                     <span>Lv.{item?.seller?.grade}</span>
                     {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
                   </SellerSpanDiv>
-                  <SellerBtn onClick={buyToggle}>구매확정</SellerBtn>
+                  <BtnDiv>
+                    <ReportBtn onClick={toggleReport}>신고하기</ReportBtn>
+                  </BtnDiv>
                 </SellerDiv>
               </>
             )}
-            <SellerTitle>판매자 정보</SellerTitle>
-            <SellerDiv>
-              <SellerImg src={female}></SellerImg>
-              <SellerSpanDiv>
-                <SellerName>{item?.seller?.nickname}</SellerName>
-                {/* <span>Lv.1 애호박씨앗</span> */}
-                <span>Lv.{item?.seller?.grade}</span>
-                {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
-              </SellerSpanDiv>
-              <SellerBtn onClick={toggleReport}>신고하기</SellerBtn>
-              <SellerBtn onClick={buyToggle}>구매확정</SellerBtn>
-            </SellerDiv>
           </LowerDiv>
         </LeftDiv>
         <RightDiv>
@@ -404,6 +417,12 @@ const BodyDiv = styled.div`
 `;
 
 const LeftDiv = styled.div``;
+
+const BtnDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-top: 1rem;
+`;
 
 const RightDiv = styled.div`
   width: 40rem;
@@ -607,16 +626,32 @@ const StyledInput = styled.input`
 `;
 
 const SellerBtn = styled.button`
-  height: 3rem;
+  height: 2rem;
   width: 5.6rem;
-  border-radius: 0.4rem;
-  border: solid 2px #ffd4d4;
-  background-color: #ffd4d4;
+  border-radius: 0.3rem;
+  border: solid 2px #88a44c;
+  background-color: #cde990;
   letter-spacing: 0.1rem;
+  margin: 0.2rem;
   cursor: pointer;
 
   &:hover {
     background-color: white;
+  }
+`;
+
+const ReportBtn = styled.button`
+  height: 2rem;
+  width: 5.6rem;
+  border-radius: 0.3rem;
+  border: solid 2px tomato;
+  background-color: white;
+  letter-spacing: 0.1rem;
+  margin: 0.2rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ffd4d4;
   }
 `;
 
