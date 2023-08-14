@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Loading from "../components/Loading/Loading";
 import { motion } from "framer-motion";
 import api from "../utils/api";
+import { Pagination } from "@mui/material";
 interface Item {
   id: number;
 }
@@ -23,8 +24,15 @@ export default function BuyList() {
     //     setItems(response.data);
     //   });
 
-    const response = await api.get(`/user/deal/buy?keyword=${keyword}&page=${page}`);
-    setItems(response.data);
+    try {
+      const response = await api.get(
+        `/user/deal/buy?keyword=${keyword}&page=${page}`
+      );
+      setItems(response.data.content);
+      setTotalPages(response.data.totalPages);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   }
 
   useEffect(() => {
@@ -88,13 +96,16 @@ export default function BuyList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {data && data.length > 0 ? (
+          {items && items.length > 0 ? (
             items.map((item, index) => <ItemEach item={item} />)
           ) : (
             <p>구매한 내역이 없습니다.</p>
           )}
         </ItemsContainer>
       </LowerDiv>
+      <FooterDiv>
+        <Pagination count={totalPages} page={page} onChange={onChange} />
+      </FooterDiv>
     </ContainerDiv>
   );
 }
@@ -144,4 +155,10 @@ const AlertTitle = styled.span`
 
 const AlertSvg = styled.svg`
   color: #ff6600;
+`;
+
+const FooterDiv = styled.div`
+  display: flex;
+  justify-content: end;
+  align-self: center;
 `;
