@@ -39,7 +39,7 @@ export default function Report({
           itemNo: itemNo,
           roomNo: roomNo,
         },
-      }).then((response: any) => console.log("신고 성공: " + response.data));
+      }).then((response: any) => onCancel());
     } catch (error) {
       console.error("신고실패" + error);
     }
