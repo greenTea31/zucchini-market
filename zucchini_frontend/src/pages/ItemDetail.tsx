@@ -15,7 +15,8 @@ import { motion } from "framer-motion";
 import api from "../utils/api";
 import moment from "moment";
 import NoImage from "../assets/images/NoImage.png";
-import { getUser } from "../hooks/useLocalStorage";
+import { getUser, getUserInfo } from "../hooks/useLocalStorage";
+import dayjs from "dayjs";
 
 interface ISeller {
   nickname: string;
@@ -49,6 +50,8 @@ export default function ItemDetail() {
   const [item, setItem] = useState<IItem>(); // item 상태 추가
   const [like, setLike] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // const [likeCount, setLikeCount] = useState();
+
   const navigate = useNavigate();
   // accessToken필요할 때
   // const queryClient = useQueryClient();
@@ -120,6 +123,16 @@ export default function ItemDetail() {
       }
     }
   };
+  // 본인 정보 가져오기, 채팅, 일정 선택 버튼 렌더링 여부에 필요
+  const [userNickname, setUserNickname] = useState();
+
+  useEffect(() => {
+    const userInfo = JSON.parse(getUserInfo());
+    setUserNickname(userInfo.nickname);
+    console.log(userInfo.nickname);
+  }, []);
+
+  // 채팅방 이동
 
   const toChatRoom = async () => {
     if (!sessionStorage.getItem("USER")) {
@@ -164,6 +177,17 @@ export default function ItemDetail() {
     return Math.floor(timeDifferenceInMilliseconds / (1000 * 60));
   };
 
+  const minToHour = (minutes: number) => {
+    return Math.floor(minutes / 60);
+  };
+
+  const lessThanOneDay = (minutes: number) => {
+    if (minutes < 1440) {
+      return true;
+    }
+    return false;
+  };
+
   // 신고사유
   const reportReasons = [
     "판매금지물품",
@@ -173,6 +197,10 @@ export default function ItemDetail() {
     "욕설, 비방",
     "성희롱",
   ];
+
+  const toUserPage = () => {
+    navigate("/userpage");
+  };
 
   return (
     <ContainerDiv
@@ -298,7 +326,7 @@ export default function ItemDetail() {
               return (
                 <span key={index}>
                   {category}
-                  {index < item?.categoryList.length - 1 ? "·" : null}
+                  {index < item?.categoryList.length - 1 ? " · " : null}
                 </span>
               );
             })}
@@ -307,30 +335,47 @@ export default function ItemDetail() {
           <ContentSpan>{item?.content}</ContentSpan>
           <PriceSpan>{item?.price.toLocaleString("ko-KR")}원</PriceSpan>
           <SubSpan>
-            {timeDifferenceInMinutes(new Date(item?.createdAt as string))}분 전
+            {lessThanOneDay(
+              timeDifferenceInMinutes(new Date(item?.createdAt as string))
+            )
+              ? timeDifferenceInMinutes(new Date(item?.createdAt as string)) <
+                60
+                ? `${timeDifferenceInMinutes(
+                    new Date(item?.createdAt as string)
+                  )} 분 전`
+                : `${minToHour(
+                    timeDifferenceInMinutes(new Date(item?.createdAt as string))
+                  )}시간 전`
+              : dayjs(new Date(item?.createdAt as string)).format(
+                  "YYYY년 MM월 DD일"
+                )}
             · 조회 {item?.view} · 찜 {item?.likeCount}
           </SubSpan>
-          <SubSpan>
-            <TransBtn type="button" onClick={toggleReport} style={buttonStyle}>
-              신고하기
-              <RedSvg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 24"
-                strokeWidth="1.5"
-                stroke="red"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                />
-              </RedSvg>
-            </TransBtn>
-          </SubSpan>
-          <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
-          <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
+
+          {item?.seller.nickname !== userNickname && (
+            <>
+              <button type="button" onClick={toggleReport} style={buttonStyle}>
+                신고하기
+                <RedSvg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 24"
+                  strokeWidth="1.5"
+                  stroke="red"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                  />
+                </RedSvg>
+              </button>
+
+              <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
+              <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
+            </>
+          )}
         </UpperRightDiv>
       </UpperDiv>
       <LowerDiv>
@@ -351,7 +396,7 @@ export default function ItemDetail() {
         </LowerLeftDiv>
         <LowerRightDiv>
           <SellerTitle>판매자 정보</SellerTitle>
-          <SellerDiv>
+          <SellerDiv onClick={toUserPage}>
             {/* 등급 관련 이미지 넣기.. */}
             <ImgDiv>
               <SellerImg src={gradeFive}></SellerImg>
