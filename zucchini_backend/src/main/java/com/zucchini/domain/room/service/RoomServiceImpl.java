@@ -10,10 +10,7 @@ import com.zucchini.domain.report.repository.ReportRepository;
 import com.zucchini.domain.room.domain.Message;
 import com.zucchini.domain.room.domain.Room;
 import com.zucchini.domain.room.domain.RoomUser;
-import com.zucchini.domain.room.dto.AddMessageRequest;
-import com.zucchini.domain.room.dto.MessageResponse;
-import com.zucchini.domain.room.dto.RoomItemResponse;
-import com.zucchini.domain.room.dto.RoomResponse;
+import com.zucchini.domain.room.dto.*;
 import com.zucchini.domain.room.repository.MessageRepository;
 import com.zucchini.domain.room.repository.RoomRepository;
 import com.zucchini.domain.room.repository.RoomUserRepository;
@@ -123,6 +120,28 @@ public class RoomServiceImpl implements RoomService{
         return roomResponseList;
     }
 
+    /**
+     * 채팅방에 참가한 상대방의 정보 가져오기
+     * @param roomNo : 채팅방 번호
+     * @return RoomUserResponse : 채팅방에 참가한 상대방의 정보
+     */
+    public RoomUserResponse findRoomUser(int roomNo) {
+        String currentPrincipalId = getCurrentId();
+        int currentPrincialNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
+        log.info("currentPrincipalNo : {}", currentPrincialNo);
+
+        // 방 번호를 입력받아 그 방에 속한 유저들중 자신이 아닌 사람을 반환합니다.
+        User user = roomUserRepository.findOpponentByRoomAndUser(roomNo, currentPrincialNo);
+
+        RoomUserResponse roomUserResponse = RoomUserResponse.builder()
+                .opponentNickname(user.getNickname())
+                .opponentGrade(user.getGrade())
+                .build();
+
+        log.info("roomUserResponse : {}", roomUserResponse);
+
+        return roomUserResponse;
+    }
 
     /**
      * room을 입력받아 현재 로그인한 유저의 거래 상대자가 누군지 파악합니다.
