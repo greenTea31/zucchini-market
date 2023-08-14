@@ -384,8 +384,4 @@ public class UserController {
         return ResponseEntity.ok(userInfoResponse);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity Test() {
-      return ResponseEntity.ok("Hello World");
-    }
 }

@@ -45,7 +45,7 @@ public class SessionController {
      * @param leaveSessionRequest
      * @return
      */
-    @PutMapping("")
+    @PutMapping
     public ResponseEntity<LeaveSessionResponse> leaveConferenceSession(@Valid @RequestBody LeaveSessionRequest leaveSessionRequest) {
         try {
             return ResponseEntity.ok().body(sessionService.leaveConferenceSession(leaveSessionRequest));
