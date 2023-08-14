@@ -44,13 +44,13 @@ export default function SignUpAgreement() {
           </NumberSubSpan>
         </FirstDiv>
         <SecondDiv>
-          <input type="checkbox" id="agree" />
+          {/* <input type="checkbox" id="agree" /> */}
           본인은 위의 동의서 내용을 충분히 숙지하였으며, 개인정보 수집, 이용,
           제공하는 것에 동의합니다.
         </SecondDiv>
-        <AgreeSubSpan>
+        {/* <AgreeSubSpan>
           동의하기 버튼을 누르시면 회원가입 페이지로 이동합니다.
-        </AgreeSubSpan>
+        </AgreeSubSpan> */}
         <Logo />
       </AgreementDiv>
     </ContainerDiv>
