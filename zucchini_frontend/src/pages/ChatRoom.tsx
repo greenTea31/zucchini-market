@@ -36,10 +36,15 @@ interface IItem {
   seller: ISeller;
   dateList: IDate[];
 }
+interface OpponentInfo {
+  opponentNickname: string;
+  opponentGrade: string;
+}
 
-export default function ChatRoom({ chat }: any) {
+export default function ChatRoom() {
   const [isOpen, setIsOpen] = useState(false);
   const [isReporting, setIsReporting] = useState(false); // 신고모달
+  const [opponent, setOpponent] = useState<OpponentInfo>();
 
   const toggleReport = () => {
     setIsReporting(!isReporting);
@@ -88,6 +93,16 @@ export default function ChatRoom({ chat }: any) {
     getItem();
   }, []);
 
+  // 상대방 정보 불러오기 룸넘버 넘겨줘야함
+  useEffect(() => {
+    const getOpponent = async () => {
+      await api
+        .get(`room/user/${no}`)
+        .then((response) => setOpponent(response.data));
+    };
+    getOpponent();
+  }, []);
+
   const onSubmit = async (data: any) => {
     if (!client.current) return;
 
@@ -126,9 +141,7 @@ export default function ChatRoom({ chat }: any) {
   async function getMessageList() {
     const response = await api.get(`/room/${no}/message`);
     setMessages(response.data);
-    console.log(response.data);
     messages.map((message) => console.log(message.read));
-    console.log("대체왜안뜸??????????????????????");
   }
 
   const { apply_id } = useParams();
@@ -270,49 +283,23 @@ export default function ChatRoom({ chat }: any) {
           </UpperDiv>
           <LowerDiv>
             {/* 채팅방 상대방 정보를... */}
-            {user.nickname === item?.seller.nickname ? (
-              <>
-                <SellerTitle>상대방 정보</SellerTitle>
-                <SellerDiv>
-                  {/* <SellerImg src={female}></SellerImg> */}
-                  <SellerSpanDiv>
-                    <SellerName>{chat.opponentNickname}</SellerName>
-                    {/* <span>Lv.1 애호박씨앗</span> */}
-                    <span>Lv.{chat.opponentGrade}</span>
-                    {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
-                  </SellerSpanDiv>
-                  <BtnDiv>
-                    <ReportBtn onClick={toggleReport}>신고하기</ReportBtn>
-                    <SellerBtn onClick={buyToggle}>거래 예약</SellerBtn>
-                  </BtnDiv>
-                </SellerDiv>
-              </>
-            ) : (
-              <>
-                {/* <SellerTitle>상대방 정보</SellerTitle> */}
-                <SellerDiv>
-                  <SellerImgDiv>
-                    <GradeImage
-                      grade={item?.seller?.grade || 1}
-                      height={70}
-                      width={70}
-                    />
-                  </SellerImgDiv>
-                  <SellerSpanDiv>
-                    <SellerName>{item?.seller?.nickname}</SellerName>
-                    <span>
-                      <GradeDiv>
-                        Lv.{item?.seller?.grade}
-                        <GradeText grade={item?.seller?.grade || 1} />
-                      </GradeDiv>
-                    </span>
-                  </SellerSpanDiv>
-                  <BtnDiv>
-                    <ReportBtn onClick={toggleReport}>신고하기</ReportBtn>
-                  </BtnDiv>
-                </SellerDiv>
-              </>
-            )}
+
+            <SellerTitle>상대방 정보</SellerTitle>
+            <SellerDiv>
+              {/* <SellerImg src={female}></SellerImg> */}
+              <SellerSpanDiv>
+                <SellerName>{opponent?.opponentNickname}</SellerName>
+                {/* <span>Lv.1 애호박씨앗</span> */}
+                <span>Lv.{opponent?.opponentGrade}</span>
+                {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
+              </SellerSpanDiv>
+              <BtnDiv>
+                <ReportBtn onClick={toggleReport}>신고하기</ReportBtn>
+                {opponent?.opponentNickname !== item?.seller.nickname && (
+                  <SellerBtn onClick={buyToggle}>거래 예약</SellerBtn>
+                )}
+              </BtnDiv>
+            </SellerDiv>
           </LowerDiv>
         </LeftDiv>
         <RightDiv>

@@ -62,6 +62,11 @@ export default function ItemDetail() {
     setIsOpen(!isOpen);
   };
   const toggleReport = () => {
+    if (!sessionStorage.getItem("USER")) {
+      navigate("/login");
+      return;
+    }
+
     setIsReporting(!isReporting);
   };
 
@@ -128,6 +133,9 @@ export default function ItemDetail() {
 
   useEffect(() => {
     const userInfo = JSON.parse(getUserInfo());
+    if (userInfo === null) {
+      return;
+    }
     setUserNickname(userInfo.nickname);
     console.log(userInfo.nickname);
   }, []);
@@ -380,6 +388,12 @@ export default function ItemDetail() {
               <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
             </>
           )}
+          {item?.seller.nickname === userNickname && (
+            <>
+              <SelectBtn>수정하기</SelectBtn>
+              <SelectBtn>삭제하기</SelectBtn>
+            </>
+          )}
         </UpperRightDiv>
       </UpperDiv>
       <LowerDiv>
@@ -512,10 +526,13 @@ const NextButton = styled.button`
 const StyledImg = styled.img`
   height: 100%;
   width: 100%;
+  object-fit: contain;
+  background-color: black;
+  border-radius: 1rem;
 `;
 
 const UpperRightDiv = styled.div`
-  width: 50%;
+  width: 30rem;
   padding: 1rem 1rem 0 1rem;
   display: flex;
   flex-direction: column;
@@ -531,6 +548,12 @@ const TitleSpan = styled.span`
   font-weight: 500;
   line-height: 2.3rem;
   margin: 0.5rem 0.3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
 `;
 
 const ContentSpan = styled.span`
@@ -538,6 +561,8 @@ const ContentSpan = styled.span`
   margin-bottom: 1.5rem;
   height: 13.6rem;
   margin-left: 0.3rem;
+  word-break: inherit;
+  word-wrap: break-word;
 `;
 
 const PriceSpan = styled.span`
@@ -609,6 +634,7 @@ const SellerTitle = styled.span`
 
 const SellerName = styled.span`
   font-weight: 700;
+  cursor: pointer;
 `;
 
 const ModalDiv = styled.div`
