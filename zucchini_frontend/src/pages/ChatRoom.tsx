@@ -243,6 +243,7 @@ export default function ChatRoom() {
           itemNo={item?.no}
           reasons={reportReasons}
           roomNo={null}
+          onCancel={toggleReport}
         />
       </Modal>
       <BodyDiv>
@@ -295,7 +296,7 @@ export default function ChatRoom() {
             <ChatImg src={item?.image}></ChatImg>
             <ChatDiv>
               <SellerName>{item?.title}</SellerName>
-              <SubSpan>{item?.price}원</SubSpan>
+              <SubSpan>{item?.price.toLocaleString("ko-KR")}원</SubSpan>
             </ChatDiv>
             <SvgDiv>
               <Svg
@@ -584,8 +585,9 @@ const ChatImg = styled.img`
 const ChatDiv = styled.div`
   display: flex;
   flex-direction: column;
+  min-width: 29rem;
   padding-top: 0.5rem;
-  gap: 0.2rem;
+  gap: 0.4rem;
 `;
 
 const StyledInput = styled.input`

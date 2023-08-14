@@ -230,6 +230,7 @@ export default function ItemDetail() {
           itemNo={item?.no}
           reasons={reportReasons}
           roomNo={null}
+          onCancel={toggleReport}
         />
       </Modal>
       {/* <GoBackButton onClick={toPrev}/> */}
@@ -535,7 +536,7 @@ const PriceSpan = styled.span`
 
 const SubSpan = styled.span`
   color: gray;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   margin-left: 0.3rem;
 `;
 
@@ -655,4 +656,9 @@ const SelectDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   margin-bottom: 1rem;
+`;
+
+const TransBtn = styled.button`
+  font-size: 1rem;
+  padding: 0;
 `;

@@ -12,7 +12,6 @@ import axios from "axios";
 import IFileTypes from "../types/IFileTypes";
 import { Button } from "../components/Common/Button";
 import useAuth from "../hooks/useAuth";
-import { NumericFormat } from "react-number-format";
 import { motion } from "framer-motion";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { Credentials } from "aws-sdk";
@@ -159,7 +158,7 @@ export default function CreateItem() {
     formData.append("content", data.content);
     formData.append("price", data.price);
     // alert(data.title);
-    alert(data.price);
+    alert("매물이 등록되었습니다!");
     // 카테고리
     for (let i = 0; i < selectedCategories.length; i++) {
       const num = allCategories.indexOf(selectedCategories[i]) + 1;

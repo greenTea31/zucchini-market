@@ -49,7 +49,7 @@ export default function LikeList() {
     setPage(page);
   };
 
-    useEffect(() => {
+  useEffect(() => {
     setIsLoading(true);
 
     const timer = setTimeout(() => {
@@ -120,4 +120,5 @@ const FooterDiv = styled.div`
   display: flex;
   justify-content: end;
   align-self: center;
+  margin-top: 2rem;
 `;

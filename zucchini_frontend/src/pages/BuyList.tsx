@@ -161,4 +161,5 @@ const FooterDiv = styled.div`
   display: flex;
   justify-content: end;
   align-self: center;
+  margin-top: 2rem;
 `;

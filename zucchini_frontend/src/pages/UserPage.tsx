@@ -110,6 +110,7 @@ export default function UserPage() {
           itemNo={null}
           reasons={reportReasons}
           roomNo={null}
+          onCancel={toggle}
         />
       </Modal>
       <LeftDiv>
