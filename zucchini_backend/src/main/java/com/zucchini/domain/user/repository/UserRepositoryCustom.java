@@ -19,7 +19,7 @@ public interface UserRepositoryCustom {
      * @param pageable
      * @return
      */
-    Page<Item> findPageSellListByUser(String userId, String keyword, Pageable pageable);
+    Page<Item> findPageSellListByUser(String userId, String keyword, Pageable pageable, int category);
 
     /**
      * 회원의 구매 목록 조회(페이징)

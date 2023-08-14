@@ -12,6 +12,6 @@ public interface UserItemLikeRepositoryCustom {
      * @param pageable
      * @return
      */
-    Page<Item> findPageUserLikeItems(String userId, String keyword, Pageable pageable);
+    Page<Item> findPageUserLikeItems(String userId, String keyword, Pageable pageable, int category);
 
 }

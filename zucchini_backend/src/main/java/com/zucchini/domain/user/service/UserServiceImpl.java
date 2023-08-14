@@ -440,9 +440,9 @@ public class UserServiceImpl implements UserService {
      * @return PageResponse<FindItemListResponse> : 상품 목록 조회 DTO 리스트
      */
     @Override
-    public PageResponse<FindItemListResponse> findUserLikeItemList(String keyword, Pageable pageable) {
+    public PageResponse<FindItemListResponse> findUserLikeItemList(String keyword, Pageable pageable, int category) {
         String loginId = getCurrentId();
-        Page<Item> pageItemList = userItemLikeRepository.findPageUserLikeItems(loginId, keyword, pageable);
+        Page<Item> pageItemList = userItemLikeRepository.findPageUserLikeItems(loginId, keyword, pageable, category);
 
         return getFindItemListResponsePageResponse(pageItemList);
     }
@@ -459,7 +459,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<FindItemListResponse> findUserDealHistoryList(String keyword, boolean flag, Pageable pageable, String name) {
+    public PageResponse<FindItemListResponse> findUserDealHistoryList(String keyword, boolean flag, Pageable pageable, String name, int category) {
         String id = null;
 
         if (name == null) {
@@ -474,7 +474,7 @@ public class UserServiceImpl implements UserService {
         if (flag) {
             pageItemList = userRepository.findPageBuyListByUser(id, keyword, pageable);
         } else {
-            pageItemList = userRepository.findPageSellListByUser(id, keyword, pageable);
+            pageItemList = userRepository.findPageSellListByUser(id, keyword, pageable, category);
         }
 
         return getFindItemListResponsePageResponse(pageItemList);
