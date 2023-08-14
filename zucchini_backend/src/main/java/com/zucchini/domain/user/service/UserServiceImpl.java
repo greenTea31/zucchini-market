@@ -231,19 +231,16 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 회원 정보 수정
-     * @param id : 아이디
      * @param modifyUserRequest : 회원 정보 수정 요청 DTO
      */
     @Override
-    public void modifyUser(String id, ModifyUserRequest modifyUserRequest) {
+    public void modifyUser(ModifyUserRequest modifyUserRequest) {
+        String loginId = getCurrentId();
         // 기본키로 회원 조회
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userRepository.findById(loginId);
         if(!user.isPresent())
             throw new NoSuchElementException("해당 회원이 존재하지 않습니다.");
-        String loginId = getCurrentId();
         User loginUser = user.get();
-        if(!loginId.equals(id))
-            throw new UserException("잘못된 접근입니다. 로그인한 아이디의 회원 정보만 수정할 수 있습니다.");
         loginUser.modifyUser(modifyUserRequest);
     }
 
