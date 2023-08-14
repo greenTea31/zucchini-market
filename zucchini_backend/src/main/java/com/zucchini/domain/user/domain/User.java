@@ -96,7 +96,6 @@ public class User implements Serializable {
     // 회원 정보 수정
     public void modifyUser(ModifyUserRequest modifyUserRequest) {
         this.nickname = modifyUserRequest.getNickname();
-        this.name = modifyUserRequest.getName();
         this.phone = modifyUserRequest.getPhone();
         this.gender = modifyUserRequest.getGender();
     }

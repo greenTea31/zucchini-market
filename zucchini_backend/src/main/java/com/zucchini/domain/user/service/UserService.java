@@ -58,10 +58,9 @@ public interface UserService {
 
     /**
      * 회원 정보 수정
-     * @param id : 아이디
      * @param modifyUserRequest : 회원 정보 수정 요청 DTO
      */
-    void modifyUser(String id, ModifyUserRequest modifyUserRequest);
+    void modifyUser(ModifyUserRequest modifyUserRequest);
 
     /**
      * 회원 비밀번호 변경

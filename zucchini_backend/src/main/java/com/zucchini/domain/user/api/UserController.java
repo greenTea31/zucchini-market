@@ -244,16 +244,15 @@ public class UserController {
 
     /**
      * 회원 정보 수정
-     * @param id : 아이디
      * @param modifyUserRequest : 회원 정보 수정 요청 DTO
      * @return
      * 200 : 회원 정보 수정 성공
      * 400 : 회원 정보 수정 양식 잘못됨
      * 500 : 서버 내 에러
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest){
-        userService.modifyUser(id, modifyUserRequest);
+    @PutMapping
+    public ResponseEntity<Void> modifyUser(@Valid @RequestBody ModifyUserRequest modifyUserRequest){
+        userService.modifyUser(modifyUserRequest);
         return ResponseEntity.ok().build();
     }
 
