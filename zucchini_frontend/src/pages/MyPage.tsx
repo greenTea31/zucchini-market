@@ -5,10 +5,11 @@ import likeList from "../assets/images/likeList.jpg";
 import buyList from "../assets/images/buyList.jpg";
 import sellList from "../assets/images/sellList.jpg";
 import todoList from "../assets/images/todoList.jpg";
-import femaleImg from "../assets/images/female.jpg";
 import api from "../utils/api";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import GradeImage from "../components/Common/GradeImage";
+import GradeText from "../components/Common/GradeText";
 
 interface IUser {
   id: string;
@@ -45,11 +46,19 @@ export default function MyPage() {
         <TitleSpan>마이페이지</TitleSpan>
         <SubTitleP>{user?.id} 님 안녕하세요!</SubTitleP>
         <MyInfoDiv>
-          <Img src={femaleImg}></Img>
+          <GradeImg>
+            {/* <Img src={getImage(user?.grade)} /> */}
+            <GradeImage grade={user?.grade || 1} height={100} width={100} />
+          </GradeImg>
           <InfoPDiv>
             <InfoP>이메일 : {user?.email}</InfoP>
             <InfoP>닉네임 : {user?.nickname}</InfoP>
-            <InfoP>등급 : Lv.{user?.grade}</InfoP>
+            <InfoP>
+              <GradeDiv>
+                등급 : Lv.{user?.grade}
+                <GradeText grade={user?.grade || 1} />
+              </GradeDiv>
+            </InfoP>
             <InfoP>거래횟수 : {user?.dealCount}</InfoP>
             <InfoP>신고횟수 : {user?.reportCount}</InfoP>
           </InfoPDiv>
@@ -128,11 +137,9 @@ const SubTitleP = styled.p`
 `;
 
 const Img = styled.img`
-  height: 10rem;
-  width: 10rem;
-  margin: 2rem;
-  border: 0.1rem solid #254021;
-  border-radius: 7rem;
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
 `;
 
 const InfoP = styled.p`
@@ -192,4 +199,20 @@ const InfoPDiv = styled.div`
   gap: 1rem;
   min-width: 13rem;
   max-height: 10rem;
+`;
+
+const GradeImg = styled.div`
+  height: 10rem;
+  width: 10rem;
+  margin: 2rem;
+  border: 0.1rem solid #254021;
+  border-radius: 7rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const GradeDiv = styled.div`
+  display: flex;
+  gap: 0.5rem;
 `;

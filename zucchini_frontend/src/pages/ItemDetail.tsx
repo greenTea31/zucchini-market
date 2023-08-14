@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import gradeFive from "../assets/images/5.png";
 import Modal from "../components/Common/Modal";
 import Report from "../components/Common/Report";
 import { useState, useEffect } from "react";
@@ -13,10 +12,11 @@ import IToken from "../types/IToken";
 import ClosedButton from "../components/Button/ClosedButton";
 import { motion } from "framer-motion";
 import api from "../utils/api";
-import moment from "moment";
 import NoImage from "../assets/images/NoImage.png";
 import { getUser, getUserInfo } from "../hooks/useLocalStorage";
 import dayjs from "dayjs";
+import GradeText from "../components/Common/GradeText";
+import GradeImage from "../components/Common/GradeImage";
 
 interface ISeller {
   nickname: string;
@@ -354,7 +354,11 @@ export default function ItemDetail() {
 
           {item?.seller.nickname !== userNickname && (
             <>
-              <button type="button" onClick={toggleReport} style={buttonStyle}>
+              <TransBtn
+                type="button"
+                onClick={toggleReport}
+                style={buttonStyle}
+              >
                 신고하기
                 <RedSvg
                   xmlns="http://www.w3.org/2000/svg"
@@ -370,7 +374,7 @@ export default function ItemDetail() {
                     d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
                   />
                 </RedSvg>
-              </button>
+              </TransBtn>
 
               <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
               <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
@@ -399,12 +403,21 @@ export default function ItemDetail() {
           <SellerDiv onClick={toUserPage}>
             {/* 등급 관련 이미지 넣기.. */}
             <ImgDiv>
-              <SellerImg src={gradeFive}></SellerImg>
+              <GradeImage
+                grade={item?.seller.grade || 1}
+                height={70}
+                width={70}
+              />
             </ImgDiv>
             <SellerSpanDiv>
               <SellerName>{item?.seller.nickname}</SellerName>
-              <span>{item?.seller.grade}</span>
-              <SubSpan>판매중 3 · 거래완료 2</SubSpan>
+              <span>
+                <GradeDiv>
+                  Lv.{item?.seller.grade}
+                  <GradeText grade={item?.seller.grade || 1} />
+                </GradeDiv>
+              </span>
+              {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
             </SellerSpanDiv>
           </SellerDiv>
         </LowerRightDiv>
@@ -660,5 +673,13 @@ const SelectDiv = styled.div`
 
 const TransBtn = styled.button`
   font-size: 1rem;
-  padding: 0;
+  margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+const GradeDiv = styled.div`
+  display: flex;
+  gap: 0.5rem;
 `;
