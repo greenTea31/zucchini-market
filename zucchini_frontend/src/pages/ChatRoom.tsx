@@ -15,6 +15,8 @@ import { motion } from "framer-motion";
 import { getUser } from "../hooks/useLocalStorage";
 import api from "../utils/api";
 import Report from "../components/Common/Report";
+import GradeImage from "../components/Common/GradeImage";
+import GradeText from "../components/Common/GradeText";
 
 interface ISeller {
   nickname: string;
@@ -272,7 +274,7 @@ export default function ChatRoom({ chat }: any) {
               <>
                 <SellerTitle>상대방 정보</SellerTitle>
                 <SellerDiv>
-                  <SellerImg src={female}></SellerImg>
+                  {/* <SellerImg src={female}></SellerImg> */}
                   <SellerSpanDiv>
                     <SellerName>{chat.opponentNickname}</SellerName>
                     {/* <span>Lv.1 애호박씨앗</span> */}
@@ -289,12 +291,21 @@ export default function ChatRoom({ chat }: any) {
               <>
                 {/* <SellerTitle>상대방 정보</SellerTitle> */}
                 <SellerDiv>
-                  <SellerImg src={female}></SellerImg>
+                  <SellerImgDiv>
+                    <GradeImage
+                      grade={item?.seller?.grade || 1}
+                      height={70}
+                      width={70}
+                    />
+                  </SellerImgDiv>
                   <SellerSpanDiv>
                     <SellerName>{item?.seller?.nickname}</SellerName>
-                    {/* <span>Lv.1 애호박씨앗</span> */}
-                    <span>Lv.{item?.seller?.grade}</span>
-                    {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
+                    <span>
+                      <GradeDiv>
+                        Lv.{item?.seller?.grade}
+                        <GradeText grade={item?.seller?.grade || 1} />
+                      </GradeDiv>
+                    </span>
                   </SellerSpanDiv>
                   <BtnDiv>
                     <ReportBtn onClick={toggleReport}>신고하기</ReportBtn>
@@ -488,12 +499,14 @@ const SellerDiv = styled.div`
   width: 100%;
 `;
 
-const SellerImg = styled.img`
-  width: 6.5rem;
+const SellerImgDiv = styled.div`
+  width: 8rem;
   height: 6.5rem;
   border-radius: 5rem;
-  border: solid 1px black;
+  border: solid 3px #cde990;
   margin-top: 1rem;
+  display: flex;
+  justify-content: center;
 `;
 
 const SellerSpanDiv = styled.div`
@@ -699,4 +712,9 @@ const StyledForm = styled.form`
   justify-content: center;
   align-items: center;
   margin-left: 0.5rem;
+`;
+
+const GradeDiv = styled.div`
+  display: flex;
+  gap: 0.5rem;
 `;
