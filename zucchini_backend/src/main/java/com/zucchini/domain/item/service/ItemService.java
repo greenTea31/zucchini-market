@@ -7,16 +7,8 @@ import com.zucchini.global.common.PageResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
-import java.util.List;
 
 public interface ItemService {
-
-    /**
-     * 상품 전체 조회
-     * @param keyword : 검색어
-     * @return List<FindItemListResponse> : 상품 전체 리스트
-     */
-    List<FindItemListResponse> findItemList(String keyword);
 
     /**
      * 상품 전체 조회 (페이징)
