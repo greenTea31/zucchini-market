@@ -106,9 +106,10 @@ const LowerDiv = styled.div`
 `;
 
 const ItemsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding-bottom: 2rem;
 `;
 
 const FooterDiv = styled.div`

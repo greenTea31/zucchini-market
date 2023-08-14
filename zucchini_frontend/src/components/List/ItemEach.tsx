@@ -59,30 +59,37 @@ const ItemDiv = styled.div`
   display: flex;
   flex-direction: column;
   width: 16rem;
+  height: 24rem;
   padding: 0.7rem 0.7rem 1.7rem 0.7rem;
   margin-bottom: 1rem;
   border: solid 1px #aeb9ad;
   border-radius: 2rem;
   position: relative;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const ItemImg = styled.img`
   border-radius: 1.5rem;
   width: 100%; /* 이미지의 너비를 100%로 설정하여 컨테이너에 맞춤 */
-  height: 100%; /* 이미지의 높이를 100%로 설정하여 컨테이너에 맞춤 */
+  height: 20rem; /* 이미지의 높이를 100%로 설정하여 컨테이너에 맞춤 */
   object-fit: contain; /* 이미지가 컨테이너를 완전히 채우면서 비율 유지 */
-  background-color: transparent; /* 빈 공간의 배경색을 투명하게 설정 */
+  background-color: lightgray; /* 빈 공간의 배경색을 투명하게 설정 */
 `;
 
 const ItemTitle = styled.span`
   font-weight: 500;
   font-size: 1.1rem;
-  line-height: 1.4rem;
+  line-height: 2rem;
   margin: 0.4rem 0.1rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 const ItemContent = styled.span`
   color: gray;
   margin: 0.2rem;
+  text-overflow: ellipsis;
 `;
