@@ -28,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -207,6 +208,7 @@ public class RoomServiceImpl implements RoomService{
         int currentPrincipalNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
         List<Room> rooms = roomUserRepository.findAllRoomsByUser(currentPrincipalNo);
         List<RoomResponse> roomResponseList = toResponseList(rooms, currentPrincipalNo);
+        Collections.sort(roomResponseList, (o1, o2) -> o2.getLastMessageCreatedAt().compareTo(o1.getLastMessageCreatedAt()));
         return roomResponseList;
     }
 
