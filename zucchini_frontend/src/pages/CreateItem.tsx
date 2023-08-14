@@ -255,7 +255,10 @@ export default function CreateItem() {
         <ContentDiv>
           <ContentSpan>상세 설명</ContentSpan>
           <ContentTextArea
-            {...register("content", { required: "설명을 입력해주세요." })}
+            maxLength={360}
+            {...register("content", {
+              required: "설명을 입력해주세요.",
+            })}
           ></ContentTextArea>
           <StyledMessage>
             <ErrorMessage errors={errors} name="content" />

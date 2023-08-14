@@ -261,9 +261,7 @@ export default function ChatRoom({ chat }: any) {
             <SimpleCalendar dates={item?.dateList as IDate[]} />
             <StyledBtnDiv>
               <StyledBtn>
-                <Link to={"/scheduleList"} target={"_blank"}>
-                  영상 통화하기
-                </Link>
+                <Link to={"/scheduleList"}>영상 통화하기</Link>
               </StyledBtn>
               <StyledBtn onClick={toggle}>일정 선택하기</StyledBtn>
             </StyledBtnDiv>
