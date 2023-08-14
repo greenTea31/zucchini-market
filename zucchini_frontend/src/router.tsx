@@ -105,9 +105,9 @@ const router = createBrowserRouter([
       {
         path: "/item/register",
         element: (
-          // <PrivateRoute>
-          <CreateItem />
-          // </PrivateRoute>
+          <PrivateRoute>
+            <CreateItem />
+          </PrivateRoute>
         ),
       },
       {
@@ -116,7 +116,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/scheduleList",
-        element: <ScheduleList />,
+        element: (
+          <PrivateRoute>
+            <ScheduleList />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/conference/:conferenceNo",
