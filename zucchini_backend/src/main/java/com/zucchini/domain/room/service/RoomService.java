@@ -1,12 +1,6 @@
 package com.zucchini.domain.room.service;
 
-import com.zucchini.domain.room.dto.AddMessageRequest;
-import com.zucchini.domain.room.dto.MessageResponse;
-import com.zucchini.domain.room.dto.RoomItemResponse;
-import com.zucchini.domain.room.dto.RoomResponse;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import java.nio.file.AccessDeniedException;
+import com.zucchini.domain.room.dto.*;
 import java.util.List;
 
 public interface RoomService {
@@ -79,6 +73,10 @@ public interface RoomService {
      */
     RoomItemResponse getRoomItem(int roomNo);
 
-
-
+    /**
+     * 채팅방에 참가한 상대방의 정보 가져오기
+     * @param roomNo : 채팅방 번호
+     * @return RoomUserResponse : 채팅방에 참가한 상대방의 정보
+     */
+    RoomUserResponse findRoomUser(int roomNo);
 }
