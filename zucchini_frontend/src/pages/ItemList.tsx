@@ -157,9 +157,9 @@ const ItemsContainer = styled.div`
   justify-content: start;
   flex-wrap: wrap; */
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3개의 동일한 칼럼을 생성 */
+  grid-template-columns: repeat(4, 1fr); /* 3개의 동일한 칼럼을 생성 */
   gap: 1rem; /* 그리드 간격 설정 */
-  padding: 1rem;
+  padding-bottom: 2rem;
 `;
 
 const FooterDiv = styled.div`

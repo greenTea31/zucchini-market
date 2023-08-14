@@ -25,9 +25,9 @@ import PrivacyPolicy from "./components/Footer/PrivacyPolicy";
 import PrivateRoute from "./components/Common/PrivateRoute";
 import AboutReplay from "./pages/AboutReplay";
 import AboutSchedule from "./pages/AboutSchedule";
-import ConferenceRoom from "./components/Conference/ConferenceRoom";
 import AboutConference from "./pages/AboutConference";
 import UserPage from "./pages/UserPage";
+import UpdatePassword from "./pages/UpdatePassword";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: "/mypage/modify",
         element: <UpdateUser />,
+      },
+      {
+        path: "/mypage/modifypass",
+        element: <UpdatePassword />,
       },
       {
         path: "/mypage/buy",

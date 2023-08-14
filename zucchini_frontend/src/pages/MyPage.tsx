@@ -43,14 +43,25 @@ export default function MyPage() {
     >
       <UpperDiv>
         <TitleSpan>마이페이지</TitleSpan>
-        <SubTitleP>내 정보</SubTitleP>
-        <Img src={femaleImg}></Img>
-        <InfoP>닉네임 : {user?.nickname}</InfoP>
-        {/* Lv.1 애호박 씨앗 */}
-        <InfoP>등급 : Lv.{user?.grade}</InfoP>
-        <Link to={"/myPage/modify"}>
-          <InfoBtn>내 정보 수정</InfoBtn>
-        </Link>
+        <SubTitleP>{user?.id} 님 안녕하세요!</SubTitleP>
+        <MyInfoDiv>
+          <Img src={femaleImg}></Img>
+          <InfoPDiv>
+            <InfoP>이메일 : {user?.email}</InfoP>
+            <InfoP>닉네임 : {user?.nickname}</InfoP>
+            <InfoP>등급 : Lv.{user?.grade}</InfoP>
+            <InfoP>거래횟수 : {user?.dealCount}</InfoP>
+            <InfoP>신고횟수 : {user?.reportCount}</InfoP>
+          </InfoPDiv>
+        </MyInfoDiv>
+        <div>
+          <Link to={"/mypage/modify"}>
+            <InfoBtn>내 정보 변경</InfoBtn>
+          </Link>
+          <Link to={"/mypage/modifypass"}>
+            <InfoBtn>비밀번호 변경</InfoBtn>
+          </Link>
+        </div>
       </UpperDiv>
       <div>
         <hr />
@@ -125,7 +136,7 @@ const Img = styled.img`
 `;
 
 const InfoP = styled.p`
-  margin: 0.3rem;
+  margin: 0.7rem;
   color: #254021;
 `;
 
@@ -171,3 +182,14 @@ const MenuImg = styled.img`
 `;
 
 const MenuP = styled.p``;
+
+const MyInfoDiv = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const InfoPDiv = styled.div`
+  gap: 1rem;
+  min-width: 13rem;
+  max-height: 10rem;
+`;
