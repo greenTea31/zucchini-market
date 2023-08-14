@@ -288,7 +288,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public TokenDto login(LoginRequest loginRequest) {
-        User user = userRepository.findById(loginRequest.getId()).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+        User user = userRepository.findById(loginRequest.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이디입니다."));
         if(user.getIsLocked()) throw new UserException("정지된 회원입니다.");
         checkPassword(loginRequest.getPassword(), user.getPassword());
 
