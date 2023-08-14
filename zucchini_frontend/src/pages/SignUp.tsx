@@ -7,6 +7,7 @@ import FullWidthButton from "../components/Button/FullWidthButton";
 import { motion } from "framer-motion";
 import { http } from "../utils/axios";
 import axios from "axios";
+import { Button } from "../components/Common/Button";
 
 export default function SignUp() {
   // react-hook-form
@@ -163,35 +164,37 @@ export default function SignUp() {
           <StyledSpan>회원 정보를 입력해주세요.</StyledSpan>
         </StyledSpanDiv>
         <StyledForm onSubmit={handleSubmit(onSubmit)}>
-          <Input
-            type="text"
-            placeholder="아이디"
-            value={id}
-            {...register("id", {
-              required: true,
-              onChange: (value) => {
-                handleIdChange(value); // 입력 값이 변경될 때 handleIdChange 함수 호출
-              },
-              pattern: {
-                value: /^[a-z0-9-_]*$/,
-                message: "아이디는 한글, 특수문자를 제외해야합니다.",
-              },
-              minLength: {
-                value: 8,
-                message: "아이디는 8자 이상이어야 합니다.",
-              },
-              maxLength: {
-                value: 16,
-                message: "비밀번호는 16자 이하여야 합니다.",
-              },
-            })}
-          />
+          <InputBtnDiv>
+            <Input
+              type="text"
+              placeholder="아이디"
+              value={id}
+              {...register("id", {
+                required: true,
+                onChange: (value) => {
+                  handleIdChange(value); // 입력 값이 변경될 때 handleIdChange 함수 호출
+                },
+                pattern: {
+                  value: /^[a-z0-9-_]*$/,
+                  message: "아이디는 한글, 특수문자를 제외해야합니다.",
+                },
+                minLength: {
+                  value: 8,
+                  message: "아이디는 8자 이상이어야 합니다.",
+                },
+                maxLength: {
+                  value: 16,
+                  message: "비밀번호는 16자 이하여야 합니다.",
+                },
+              })}
+            />
+            <PinkBtn onClick={idCheck} disabled={idChecked}>
+              중복확인
+            </PinkBtn>
+          </InputBtnDiv>
           <StyledMessage>
             <ErrorMessage errors={errors} name="id" />
           </StyledMessage>
-          <StyledButton onClick={idCheck} disabled={idChecked}>
-            중복확인
-          </StyledButton>
           <Input
             type="password"
             placeholder="비밀번호"
@@ -280,25 +283,27 @@ export default function SignUp() {
             <option value="True">남성</option>
             <option value="null">선택 안함</option>
           </GenderSelect>
-          <Input
-            type="email"
-            placeholder="이메일"
-            {...register("email", {
-              required: true,
-              onChange: (value) => {
-                handleEmailChange(value);
-              },
-              pattern: {
-                value:
-                  /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i,
-                message: "이메일 형식이 올바르지 않습니다.",
-              },
-            })}
-          />
+          <InputBtnDiv>
+            <Input
+              type="email"
+              placeholder="이메일"
+              {...register("email", {
+                required: true,
+                onChange: (value) => {
+                  handleEmailChange(value);
+                },
+                pattern: {
+                  value:
+                    /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i,
+                  message: "이메일 형식이 올바르지 않습니다.",
+                },
+              })}
+            />
+            <PinkBtn onClick={emailSend}>인증하기</PinkBtn>
+          </InputBtnDiv>
           <StyledMessage>
             <ErrorMessage errors={errors} name="email" />
           </StyledMessage>
-          <StyledButton onClick={emailSend}>보내기</StyledButton>
           {showAuthKeyInput && (
             <>
               <Input
@@ -311,7 +316,7 @@ export default function SignUp() {
                   },
                 })}
               />
-              <StyledButton onClick={authKeyCheck}>인증</StyledButton>
+              <PinkBtn onClick={authKeyCheck}>인증</PinkBtn>
             </>
           )}
           <CheckboxAll>
@@ -376,12 +381,14 @@ const StyledForm = styled.form`
 
 const Input = styled.input`
   height: 3rem;
+  min-width: 15rem;
   border: none;
   background-color: #f8f8f8;
   border-radius: 0.4rem;
   padding-left: 1rem;
   margin: 0.3rem;
   font-size: 1rem;
+
   &::-webkit-inner-spin-button {
     appearance: none;
     -moz-appearance: none;
@@ -425,6 +432,7 @@ const CheckboxAll = styled.div`
 const CheckboxDiv = styled.div`
   margin: 0.5rem;
   font-size: smaller;
+  display: flex;
 `;
 
 const BoldA = styled.div`
@@ -438,4 +446,23 @@ const GenderSelect = styled.select`
   border-radius: 0.4rem;
   font-size: 1rem;
   padding-left: 0.4rem;
+`;
+
+const InputBtnDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const PinkBtn = styled.button`
+  height: 3rem;
+  border: 2px solid #ffd4d4;
+  border-radius: 0.4rem;
+  background-color: white;
+  margin: 0.3rem;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: #ffd4d4;
+    cursor: pointer;
+  }
 `;
