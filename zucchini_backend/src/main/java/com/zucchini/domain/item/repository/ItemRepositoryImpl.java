@@ -67,6 +67,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom{
         JPAQuery<Long> countQuery = queryFactory
                 .select(item.count())
                 .from(item)
+                .join(item.seller, user)
                 .where(item.title.contains(keyword)
                         .and(user.isDeleted.eq(false))
                         .and(user.isLocked.eq(false)));
