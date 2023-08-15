@@ -12,11 +12,16 @@ import IconButton from "@material-ui/core/IconButton";
 
 import Modal from "../Common/Modal";
 import ClosedButton from "../Button/ClosedButton";
+import styled from "styled-components";
+import Report from "../Common/Report";
 
 interface IProps {
   title: string;
+  other: string;
+  itemNo: number;
   showNotification: boolean;
   leaveSession: Function;
+  buyItem: Function;
   toggleChat: Function;
 }
 
@@ -41,6 +46,22 @@ export default function ToolbarComponent(props: IProps) {
     // await props.leaveSession();
     navigate("/scheduleList", { replace: true });
   }
+
+  function buyItem() {
+    props.buyItem();
+    toggleBuyModal();
+    // navigate("/scheduleList", { replace: true });
+  }
+
+  // 신고사유
+  const reportReasons = [
+    "판매금지물품",
+    "허위 매물",
+    "전문판매업자",
+    "도배",
+    "욕설, 비방",
+    "성희롱",
+  ];
 
   return (
     <AppBar className="toolbar" id="header">
@@ -77,7 +98,7 @@ export default function ToolbarComponent(props: IProps) {
                   d="M4.5 12.75l6 6 9-13.5"
                 />
               </svg>
-              구매하기
+              거래하기
             </button>
             <button className="headerRButton" onClick={leaveSession}>
               <svg
@@ -132,14 +153,16 @@ export default function ToolbarComponent(props: IProps) {
               <span>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</span>
             </div>
             <div className="buttonsDiv">
-              <button className="greenBtn">확정</button>
+              <button className="greenBtn" onClick={buyItem}>
+                확정
+              </button>
               <button className="redBtn" onClick={toggleBuyModal}>
                 거절
               </button>
             </div>
           </Modal>
           <Modal isOpen={isReportModalOpen} toggle={toggleReportModal}>
-            <div className="modalDiv" onClick={toggleReportModal}>
+            {/* <div className="modalDiv" onClick={toggleReportModal}>
               <ClosedButton />
             </div>
             <div className="modalSpan">사용자 신고</div>
@@ -163,7 +186,19 @@ export default function ToolbarComponent(props: IProps) {
               <button className="greenBtn" onClick={toggleReportModal}>
                 취소
               </button>
-            </div>
+            </div> */}
+            <ModalDiv>
+              <ClosedButton onClick={toggleReportModal} />
+            </ModalDiv>
+            <ModalSpan>신고하기</ModalSpan>
+            <SubSpan>신고 사유를 선택해주세요.</SubSpan>
+            <Report
+              reportedNickname={props.other}
+              itemNo={props.itemNo}
+              reasons={reportReasons}
+              roomNo={null}
+              onCancel={toggleReportModal}
+            />
           </Modal>
         </div>
 
@@ -179,3 +214,20 @@ export default function ToolbarComponent(props: IProps) {
     </AppBar>
   );
 }
+
+const ModalDiv = styled.div`
+  float: right;
+`;
+
+const ModalSpan = styled.div`
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-top: 3rem;
+  margin-bottom: 0.5rem;
+`;
+
+const SubSpan = styled.span`
+  color: gray;
+  margin-bottom: 1rem;
+  margin-left: 0.3rem;
+`;
