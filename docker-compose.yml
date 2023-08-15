@@ -64,7 +64,7 @@ services:
     container_name: backend-container
     restart: always
     ports:
-      - "8080:8080"
+      - "8200:8200"
     networks:
       - front-connection
 
