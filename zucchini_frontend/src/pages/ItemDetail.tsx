@@ -332,7 +332,7 @@ export default function ItemDetail() {
           <CategorySpan>
             {item?.categoryList.map((category: any, index: number) => {
               return (
-                <span key={index}>
+                <span key={index} style={{ lineHeight: "1.3rem" }}>
                   {category}
                   {index < item?.categoryList.length - 1 ? " · " : null}
                 </span>
@@ -533,17 +533,17 @@ const StyledImg = styled.img`
 
 const UpperRightDiv = styled.div`
   width: 30rem;
-  padding: 1rem 1rem 0 1rem;
+  padding: 0 1rem 0 1rem;
   display: flex;
   flex-direction: column;
 `;
 
 const CategorySpan = styled.span`
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 `;
 
 const TitleSpan = styled.span`
-  height: 4.6rem;
+  min-height: 4.6rem;
   font-size: 2rem;
   font-weight: 500;
   line-height: 2.3rem;
@@ -559,10 +559,33 @@ const TitleSpan = styled.span`
 const ContentSpan = styled.span`
   line-height: 1.3rem;
   margin-bottom: 1.5rem;
-  height: 13.6rem;
+  height: 14.2rem;
   margin-left: 0.3rem;
-  word-break: inherit;
-  word-wrap: break-word;
+  overflow-x: none;
+  overflow-y: scroll;
+  white-space: pre-wrap;
+  word-break: break-all;
+  /* 스크롤바의 스타일 지정 */
+  &::-webkit-scrollbar {
+    width: 8px; /* 스크롤바의 너비 */
+    background-color: #e8e2d9; /* 스크롤바의 배경색 */
+  }
+
+  /* 스크롤바의 thumb 스타일 지정 */
+  &::-webkit-scrollbar-thumb {
+    background-color: #acb4a8; /* 스크롤바 thumb 색상 */
+    border-radius: 3px; /*스크롤바 thumb의 모서리 둥글기*/
+  }
+
+  /* 스크롤바의 thumb에 호버했을 때 스타일 지정 */
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #818a7e; /* 스크롤바 thumb 호버 색상 */
+  }
+
+  /* 스크롤바의 thumb에 클릭했을 때 스타일 지정 */
+  &::-webkit-scrollbar-thumb:active {
+    background-color: #656c62; /* 스크롤바 thumb 클릭 색상 */
+  }
 `;
 
 const PriceSpan = styled.span`
