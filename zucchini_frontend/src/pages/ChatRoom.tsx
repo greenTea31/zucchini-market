@@ -105,6 +105,7 @@ export default function ChatRoom() {
 
   const onSubmit = async (data: any) => {
     if (!client.current) return;
+    if (data.content === "") return;
 
     client.current.publish({
       destination: "/pub/chat",
