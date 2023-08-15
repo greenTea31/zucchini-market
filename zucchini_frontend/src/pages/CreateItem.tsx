@@ -136,7 +136,6 @@ export default function CreateItem() {
     // 30분 반올림하는 것도 추가해야대여....
     // gmt??tlqkf...
     setSelectedTimes([...selectedTimes, clickedTime]);
-    alert("일정이 추가되었습니다.");
   };
 
   // 선택한 시간 삭제
@@ -157,8 +156,6 @@ export default function CreateItem() {
     formData.append("title", data.title);
     formData.append("content", data.content);
     formData.append("price", data.price);
-    // alert(data.title);
-    alert("매물이 등록되었습니다!");
     // 카테고리
     for (let i = 0; i < selectedCategories.length; i++) {
       const num = allCategories.indexOf(selectedCategories[i]) + 1;
@@ -178,9 +175,11 @@ export default function CreateItem() {
     for (let i = 0; i < selectedTimes.length; i++) {
       formData.append("dateList", selectedTimes[i]);
     }
-    await api.post("/item", formData);
 
-    navigate("/item");
+    const response = await api.post("/item", formData);
+    const item_no = response.data
+    
+    navigate(`/item/${item_no}`);
   };
   useEffect(() => {
     console.log(uploadURL);
