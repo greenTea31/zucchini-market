@@ -1,8 +1,27 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import aboutSchedule from "../assets/images/aboutschedule2.png";
+import Loading from "../components/Loading/Loading";
+import { useEffect, useState } from "react";
 
 export default function AboutSchedule() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 400);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <ContainerDiv
       initial={{ opacity: 0 }}

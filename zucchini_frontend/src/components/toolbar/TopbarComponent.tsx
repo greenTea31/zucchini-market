@@ -22,9 +22,14 @@ interface IProps {
 
 export default function ToolbarComponent(props: IProps) {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
 
   function toggleChat() {
     props.toggleChat();
+  }
+
+  function toggleBuyModal() {
+    setIsBuyModalOpen(!isBuyModalOpen);
   }
 
   function toggleReportModal() {
@@ -52,7 +57,11 @@ export default function ToolbarComponent(props: IProps) {
           </svg>
           <p id="videoTitle">{props.title}</p>
           <div className="buttonDiv">
-            <button className="headerGButton">
+            {/* 구매하기 버튼은 구매자에게만 보이게... 가능할까 */}
+            <button
+              className="headerGButton"
+              onClick={() => setIsBuyModalOpen(true)}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -107,8 +116,30 @@ export default function ToolbarComponent(props: IProps) {
               신고하기
             </button>
           </div>
+          {/* 
+          구매자가 구매하기 버튼을 누르면.. 
+          거래 확정 모달은 판매자에게만 팝업,
+          구매자의 닉네임이 모달에 출력되어야 함
+          */}
+          <Modal isOpen={isBuyModalOpen} toggle={toggleBuyModal}>
+            <div className="modalDiv" onClick={toggleBuyModal}>
+              <ClosedButton />
+            </div>
+            <div className="modalSpan">거래 확정하기</div>
+            <div className="spanDiv">
+              <span>님께서 거래 희망 버튼을 눌렀습니다.</span>
+              <span>님과 거래를 확정 하시겠습니까?</span>
+              <span>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</span>
+            </div>
+            <div className="buttonsDiv">
+              <button className="greenBtn">확정</button>
+              <button className="redBtn" onClick={toggleBuyModal}>
+                거절
+              </button>
+            </div>
+          </Modal>
           <Modal isOpen={isReportModalOpen} toggle={toggleReportModal}>
-            <div className="modalDiv">
+            <div className="modalDiv" onClick={toggleReportModal}>
               <ClosedButton />
             </div>
             <div className="modalSpan">사용자 신고</div>
@@ -129,7 +160,9 @@ export default function ToolbarComponent(props: IProps) {
             </div>
             <div className="buttonsDiv">
               <button className="redBtn">신고</button>
-              <button className="greenBtn">취소</button>
+              <button className="greenBtn" onClick={toggleReportModal}>
+                취소
+              </button>
             </div>
           </Modal>
         </div>

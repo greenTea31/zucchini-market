@@ -91,6 +91,7 @@ const ModalTextarea = styled.textarea`
   border-radius: 0.4rem;
   padding: 0.5rem;
   font-size: 1rem;
+  resize: none;
 `;
 
 const ButtonDiv = styled.div`

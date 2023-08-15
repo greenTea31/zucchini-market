@@ -38,7 +38,7 @@ interface IItem {
 }
 interface OpponentInfo {
   opponentNickname: string;
-  opponentGrade: string;
+  opponentGrade: number;
 }
 
 export default function ChatRoom() {
@@ -285,12 +285,16 @@ export default function ChatRoom() {
 
             <SellerTitle>상대방 정보</SellerTitle>
             <SellerDiv>
-              {/* <SellerImg src={female}></SellerImg> */}
+              <SellerImgDiv>
+                <GradeImage
+                  grade={opponent?.opponentGrade || 1}
+                  height={70}
+                  width={70}
+                />
+              </SellerImgDiv>
               <SellerSpanDiv>
                 <SellerName>{opponent?.opponentNickname}</SellerName>
-                {/* <span>Lv.1 애호박씨앗</span> */}
                 <span>Lv.{opponent?.opponentGrade}</span>
-                {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
               </SellerSpanDiv>
               <BtnDiv>
                 <ReportBtn onClick={toggleReport}>신고하기</ReportBtn>

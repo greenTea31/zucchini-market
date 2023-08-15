@@ -1,8 +1,28 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import conferenceImg from "../assets/images/aboutconference.png";
+import Loading from "../components/Loading/Loading";
+import { useEffect, useState } from "react";
 
 export default function AboutConference() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 400);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <ContainerDiv
       initial={{ opacity: 0 }}
