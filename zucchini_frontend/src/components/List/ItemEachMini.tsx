@@ -53,6 +53,9 @@ const ItemDiv = styled.div`
   border: solid 1px #aeb9ad;
   border-radius: 2rem;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const ItemImg = styled.img`
@@ -64,9 +67,12 @@ const ItemTitle = styled.span`
   font-size: 1.1rem;
   line-height: 1.4rem;
   margin: 0.4rem 0.1rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 const ItemContent = styled.span`
   color: gray;
   margin: 0.2rem;
+  text-overflow: ellipsis;
 `;

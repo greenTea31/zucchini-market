@@ -244,9 +244,9 @@ export default function CreateItem() {
           <ContentInput
             {...register("title", {
               required: "제목을 입력해주세요.",
-              maxLength: 200,
+              maxLength: 80,
             })}
-            maxLength={200}
+            maxLength={80}
           ></ContentInput>
           <StyledMessage>
             <ErrorMessage errors={errors} name="title" />
