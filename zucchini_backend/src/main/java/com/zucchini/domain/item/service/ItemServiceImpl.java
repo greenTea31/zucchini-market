@@ -430,7 +430,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         item.setStatus(1);
-        item.setBuyer(userRepository.findById(buyer).orElseThrow(() -> new NoSuchElementException("존재하지 않는 구매자입니다.")));
+        item.setBuyer(userRepository.findByNickname(buyer).orElseThrow(() -> new NoSuchElementException("존재하지 않는 구매자입니다.")));
     }
 
     /**
