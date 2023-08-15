@@ -532,7 +532,7 @@ const StyledImg = styled.img`
 `;
 
 const UpperRightDiv = styled.div`
-  width: 30rem;
+  width: 50%;
   padding: 0 1rem 0 1rem;
   display: flex;
   flex-direction: column;
