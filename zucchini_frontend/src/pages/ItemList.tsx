@@ -28,7 +28,7 @@ export default function ItemList() {
   const getItems = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/item?category=${selectedCategory}&keyword=${keyword}&page=${page}`
+        `http://i9a209.p.ssafy.io/api/item?category=${selectedCategory}&keyword=${keyword}&page=${page}`
       );
       setItems(response.data.content);
       setTotalPages(response.data.totalPages);
