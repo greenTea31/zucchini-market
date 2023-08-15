@@ -70,7 +70,10 @@ export default function SignUp() {
     if (agree) {
       // 회원가입 post 통신 로직
       // alert(JSON.stringify(data));
-      http.post("user", data);
+      try {
+        http.post("user", data);
+        navigate("/login");
+      } catch (err) {}
     } else {
       alert("약관에 동의해주세요");
     }
@@ -188,7 +191,7 @@ export default function SignUp() {
                 },
               })}
             />
-            <PinkBtn onClick={idCheck} disabled={idChecked}>
+            <PinkBtn onClick={idCheck} disabled={idChecked} type="button">
               중복확인
             </PinkBtn>
           </InputBtnDiv>
@@ -299,7 +302,9 @@ export default function SignUp() {
                 },
               })}
             />
-            <PinkBtn onClick={emailSend}>인증하기</PinkBtn>
+            <PinkBtn onClick={emailSend} type="button">
+              인증하기
+            </PinkBtn>
           </InputBtnDiv>
           <StyledMessage>
             <ErrorMessage errors={errors} name="email" />
@@ -316,7 +321,9 @@ export default function SignUp() {
                   },
                 })}
               />
-              <PinkBtn onClick={authKeyCheck}>인증</PinkBtn>
+              <PinkBtn onClick={authKeyCheck} type="button">
+                인증
+              </PinkBtn>
             </>
           )}
           <CheckboxAll>
