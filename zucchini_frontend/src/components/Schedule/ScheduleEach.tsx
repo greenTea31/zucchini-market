@@ -26,7 +26,7 @@ export default function ScheduleEach(props: IProps) {
         {moment(props?.item?.confirmedDate).format("hh시 mm분")}
       </TimeP>
       <TitleP>{props?.item?.title}</TitleP>
-      {date1.diff(now, "minute") <= 10 ? (
+      {date1.diff(now, "minute") >= -10 && date1.diff(now, "minute") <= 30 ? (
         <Link
           to={`/conference/${props?.item?.conferenceNo}`}
           state={{ title: `${props?.item?.title}` }}

@@ -74,9 +74,10 @@ const ItemDiv = styled.div`
 const ItemImg = styled.img`
   border-radius: 1.5rem;
   width: 100%; /* 이미지의 너비를 100%로 설정하여 컨테이너에 맞춤 */
-  height: 20rem; /* 이미지의 높이를 100%로 설정하여 컨테이너에 맞춤 */
+  height: 100%; /* 이미지의 높이를 100%로 설정하여 컨테이너에 맞춤 */
   object-fit: contain; /* 이미지가 컨테이너를 완전히 채우면서 비율 유지 */
-  background-color: lightgray; /* 빈 공간의 배경색을 투명하게 설정 */
+  background-color: white; /* 빈 공간의 배경색을 투명하게 설정 */
+  max-height: 16rem;
 `;
 
 const ItemTitle = styled.span`

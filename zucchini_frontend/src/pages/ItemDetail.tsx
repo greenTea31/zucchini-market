@@ -527,12 +527,13 @@ const StyledImg = styled.img`
   height: 100%;
   width: 100%;
   object-fit: contain;
-  background-color: black;
+  background-color: white;
   border-radius: 1rem;
+  border: solid 1px lightgray;
 `;
 
 const UpperRightDiv = styled.div`
-  width: 30rem;
+  width: 50%;
   padding: 0 1rem 0 1rem;
   display: flex;
   flex-direction: column;
