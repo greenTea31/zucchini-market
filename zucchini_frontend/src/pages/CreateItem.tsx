@@ -255,7 +255,7 @@ export default function CreateItem() {
         <ContentDiv>
           <ContentSpan>상세 설명</ContentSpan>
           <ContentTextArea
-            maxLength={360}
+            maxLength={1000}
             {...register("content", {
               required: "설명을 입력해주세요.",
             })}
@@ -279,7 +279,13 @@ export default function CreateItem() {
           /> */}
           <ContentInput
             type="number"
-            {...register("price", { required: "가격을 입력해주세요" })}
+            {...register("price", {
+              required: "가격을 입력해주세요",
+              pattern: {
+                value: /^[1-9]\d*$/,
+                message: "잘못된 값입니다.",
+              },
+            })}
           ></ContentInput>
           <StyledMessage>
             <ErrorMessage errors={errors} name="price" />
@@ -308,21 +314,18 @@ export default function CreateItem() {
               );
             })}
           </div>
-          <CategorySelect onChange={onChange}>
-            <option value="" disabled selected hidden>
+          <CategorySelect
+            {...register("category", {
+              required: "물품의 종류을 입력해주세요",
+              onChange: onChange,
+            })}
+          >
+            <option value="" disabled selected>
               물품의 종류를 선택해주세요
             </option>
 
             {allCategories?.map((category: any) => {
-              return (
-                <option
-                  {...register("category", {
-                    required: "물품 종류을 입력해주세요",
-                  })}
-                >
-                  {category}
-                </option>
-              );
+              return <option>{category}</option>;
             })}
           </CategorySelect>
           <StyledMessage>
