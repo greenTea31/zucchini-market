@@ -25,6 +25,14 @@ public interface ConferenceService {
     FindConferenceResponse findConference(int conferenceNo);
 
     /**
+     * 회의 상품 번호 조회
+     *
+     * @param conferenceNo : 회의 번호
+     * @return FindConferenceResponse : 회의 상품 번호 반환
+     */
+    int findConferenceItemNo(int conferenceNo);
+
+    /**
      * 회의 삭제
      *
      * @param conferenceNo : 회의 번호
