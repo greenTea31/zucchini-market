@@ -7,7 +7,7 @@ services:
     ports:
       - 3308:3306 # HOST: CONTAINER
     environment:
-      MYSQL_ROOT_PASSQORD: zucchini
+      MYSQL_ROOT_PASSWORD: zucchini
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -52,8 +52,8 @@ services:
       dockerfile: Dockerfile
     container_name: frontend-container
     restart: always
-    expose:
-      - "3000"
+    ports:
+      - "3000:3000"
     networks:
       - front-connection
 
@@ -64,7 +64,7 @@ services:
     container_name: backend-container
     restart: always
     ports:
-      - "8081:8080"
+      - "8080:8080"
     networks:
       - front-connection
 
