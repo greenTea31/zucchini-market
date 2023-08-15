@@ -17,7 +17,7 @@ import { v1, v3, v4, v5 } from "uuid";
 
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:8080/api/";
+  process.env.NODE_ENV === "production" ? "" : "http://i9a209.p.ssafy.io/api/";
 
 class ConferenceRoom extends Component {
   constructor(props) {

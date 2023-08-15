@@ -32,7 +32,7 @@ export default function ScheduleList() {
     const token = "Bearer " + getUser();
 
     axios
-      .get("http://localhost:8080/api/reservation", {
+      .get("http://i9a209.p.ssafy.io/api/reservation", {
         headers: { Authorization: token },
       })
       .then((res) => {
