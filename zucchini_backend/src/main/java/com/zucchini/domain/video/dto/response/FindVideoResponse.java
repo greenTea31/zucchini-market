@@ -15,6 +15,8 @@ public class FindVideoResponse {
 
     String itemTitle;
 
+    String seller;
+
     String link;
 
     Date startTime;
@@ -24,9 +26,10 @@ public class FindVideoResponse {
     Date deleteTime;
 
     @Builder
-    public FindVideoResponse(int no, String itemTitle, String link, Date startTime, Date endTime, Date deleteTime) {
+    public FindVideoResponse(int no, String itemTitle, String seller, String link, Date startTime, Date endTime, Date deleteTime) {
         this.no = no;
         this.itemTitle = itemTitle;
+        this.seller = seller;
         this.link = link;
         this.startTime = startTime;
         this.endTime = endTime;
