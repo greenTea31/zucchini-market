@@ -17,6 +17,7 @@ import api from "../utils/api";
 import Report from "../components/Common/Report";
 import GradeImage from "../components/Common/GradeImage";
 import GradeText from "../components/Common/GradeText";
+import NoImage from "../assets/images/NoImage.png";
 
 interface ISeller {
   nickname: string;
@@ -281,8 +282,6 @@ export default function ChatRoom() {
             </StyledBtnDiv>
           </UpperDiv>
           <LowerDiv>
-            {/* 채팅방 상대방 정보를... */}
-
             <SellerTitle>상대방 정보</SellerTitle>
             <SellerDiv>
               <SellerImgDiv>
@@ -294,7 +293,10 @@ export default function ChatRoom() {
               </SellerImgDiv>
               <SellerSpanDiv>
                 <SellerName>{opponent?.opponentNickname}</SellerName>
-                <span>Lv.{opponent?.opponentGrade}</span>
+                <GradeDiv>
+                  Lv.{opponent?.opponentGrade}
+                  <GradeText grade={opponent?.opponentGrade || 1} />
+                </GradeDiv>
               </SellerSpanDiv>
               <BtnDiv>
                 <ReportBtn onClick={toggleReport}>신고하기</ReportBtn>
@@ -306,41 +308,12 @@ export default function ChatRoom() {
           </LowerDiv>
         </LeftDiv>
         <RightDiv>
-          <ChatTitleDiv onClick={moveItem}>
-            <ChatImg src={item?.image}></ChatImg>
-            <ChatDiv>
+          <ChatTitleDiv>
+            <ChatImg src={item?.image ? item?.image : NoImage}></ChatImg>
+            <ChatDiv onClick={moveItem}>
               <SellerName>{item?.title}</SellerName>
               <SubSpan>{item?.price.toLocaleString("ko-KR")}원</SubSpan>
             </ChatDiv>
-            <SvgDiv>
-              <Svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"
-                />
-              </Svg>
-              <Svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6.7y5 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"
-                />
-              </Svg>
-            </SvgDiv>
           </ChatTitleDiv>
           <ChatMainDiv ref={chatMainDivRef}>
             {messages.map((message, index) => (
@@ -351,20 +324,6 @@ export default function ChatRoom() {
             ))}
           </ChatMainDiv>
           <ChatInputDiv>
-            <Svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
-              />
-            </Svg>
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
               <StyledInput
                 {...register("content")}
@@ -401,13 +360,6 @@ const ContainerDiv = styled(motion.div)`
   padding: 0 5rem;
   margin: 0 6rem 13rem 6rem;
   font-family: "IBM Plex Sans KR", sans-serif;
-`;
-
-const StyledSvg = styled.svg`
-  height: 1.5rem;
-  width: 1.5rem;
-  cursor: pointer;
-  color: #849c80;
 `;
 
 const BodyDiv = styled.div`
@@ -468,20 +420,6 @@ const StyledBtn = styled.button`
   }
 `;
 
-const ModalBtn = styled.button`
-  width: 9rem;
-  height: 2.5rem;
-  background-color: #cde990;
-  border: solid 1px #cde990;
-  border-radius: 0.4rem;
-  cursor: pointer;
-  margin-right: 0.4rem;
-  margin-top: 2rem;
-
-  &:hover {
-    background-color: white;
-  }
-`;
 const SellerDiv = styled.div`
   display: flex;
   align-items: center;
@@ -515,6 +453,9 @@ const SellerTitle = styled.span`
 
 const SellerName = styled.span`
   font-weight: 700;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const SubSpan = styled.span`
@@ -541,8 +482,8 @@ const ModalSpan = styled.div`
 const ChatTitleDiv = styled.div`
   height: 4rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   padding: 0 1rem;
   background-color: #f3f3f3;
 `;
@@ -585,12 +526,6 @@ const ChatInputDiv = styled.div`
   background-color: #f3f3f3;
 `;
 
-const SvgDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 3.5rem;
-`;
-
 const Svg = styled.svg`
   width: 24px;
   height: 24px;
@@ -600,16 +535,17 @@ const Svg = styled.svg`
 const ChatImg = styled.img`
   height: 3rem;
   width: 3rem;
-  border: solid 1px black;
+  border: solid 1px #254021;
   border-radius: 4rem;
 `;
 
 const ChatDiv = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 29rem;
+  max-width: 29rem;
   padding-top: 0.5rem;
   gap: 0.4rem;
+  cursor: pointer;
 `;
 
 const StyledInput = styled.input`
@@ -706,5 +642,5 @@ const StyledForm = styled.form`
 
 const GradeDiv = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 0.3rem;
 `;

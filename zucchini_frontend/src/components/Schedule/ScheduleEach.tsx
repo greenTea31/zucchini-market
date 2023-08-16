@@ -36,7 +36,7 @@ export default function ScheduleEach(props: IProps) {
           </Button>
         </Link>
       ) : (
-        <NoneButton>없음</NoneButton>
+        <NoneDiv></NoneDiv>
       )}
     </VideoDiv>
   );
@@ -60,9 +60,10 @@ const TimeP = styled.p`
   text-align: center;
 `;
 
-const NoneButton = styled.button`
+const NoneDiv = styled.div`
   font-size: 15px;
   padding: 11px 16px;
+  width: 2rem;
   border: transparent;
   color: transparent;
   background-color: transparent;
