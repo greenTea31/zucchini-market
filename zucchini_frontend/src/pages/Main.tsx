@@ -268,7 +268,6 @@ const ScheduleBtn = styled.button`
   &:hover {
     cursor: pointer;
     background-color: white;
-    border: solid 1px #aacb73;
     color: #aacb73;
   }
 `;
