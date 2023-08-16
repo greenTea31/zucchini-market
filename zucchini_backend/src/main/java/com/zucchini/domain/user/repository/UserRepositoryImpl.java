@@ -65,7 +65,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .where(whereClause)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(i.no.asc())
+                .orderBy(i.no.desc())
                 .fetch();
 
         JPAQuery<Long> countQuery = queryFactory
@@ -90,7 +90,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .where(u.id.eq(userId), i.title.contains(keyword))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(i.no.asc())
+                .orderBy(i.no.desc())
                 .fetch();
 
         JPAQuery<Long> countQuery = queryFactory

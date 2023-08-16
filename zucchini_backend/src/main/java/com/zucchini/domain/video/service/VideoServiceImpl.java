@@ -94,6 +94,7 @@ public class VideoServiceImpl implements VideoService {
 
         return FindVideoResponse.builder()
                 .no(video.get().getNo())
+                .itemTitle(item.getTitle())
                 .link(video.get().getLink())
                 .startTime(video.get().getStartTime())
                 .endTime(video.get().getEndTime())
