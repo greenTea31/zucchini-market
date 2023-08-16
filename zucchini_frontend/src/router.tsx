@@ -52,7 +52,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/mypage",
-        element: <MyPage />,
+        element: (
+          <PrivateRoute>
+            <MyPage />,
+          </PrivateRoute>
+        ),
       },
       {
         path: "/mypage/modify",
