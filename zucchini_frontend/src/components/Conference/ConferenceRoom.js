@@ -141,7 +141,10 @@ class ConferenceRoom extends Component {
     window.removeEventListener("beforeunload", this.onbeforeunload);
     window.removeEventListener("resize", this.updateLayout);
     window.removeEventListener("resize", this.checkSize);
-    this.leaveSession();
+    if (this.state.session) {
+      alert("unmount!!!!!!!!");
+      // this.leaveSession();
+    }
   }
 
   onbeforeunload(event) {
@@ -633,7 +636,8 @@ class ConferenceRoom extends Component {
     this.setState({ isBuyModalOpen: !this.isBuyModalOpen });
   }
 
-  close() {
+  async close() {
+    await this.leaveSession();
     window.location.href = `/scheduleList`;
   }
 
