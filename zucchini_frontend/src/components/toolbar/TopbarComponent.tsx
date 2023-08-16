@@ -29,6 +29,7 @@ interface IProps {
 export default function ToolbarComponent(props: IProps) {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [isOkModalOpen, setIsOkModalOpen] = useState(false);
 
   function toggleChat() {
     props.toggleChat();
@@ -42,6 +43,10 @@ export default function ToolbarComponent(props: IProps) {
     setIsReportModalOpen(!isReportModalOpen);
   }
 
+  function toggleOkModal() {
+    setIsOkModalOpen(!isOkModalOpen);
+  }
+
   const navigate = useNavigate();
   function leaveSession() {
     // await props.leaveSession();
@@ -49,6 +54,9 @@ export default function ToolbarComponent(props: IProps) {
   }
 
   function buyItem() {
+    // 거래 확정되었다는 안내문구 팝업시키기
+    setIsOkModalOpen(!isOkModalOpen);
+
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
@@ -64,6 +72,11 @@ export default function ToolbarComponent(props: IProps) {
     // toggleBuyModal();
 
     // navigate("/scheduleList", { replace: true });
+
+    // 3초 후 자동으로 페이지 이동시키기..
+    // setTimeout(() = {
+    //   // 페이지 이동 로직 여기에 작성...
+    // }, 3000);
   }
 
   function dontbuyItem() {
@@ -107,7 +120,6 @@ export default function ToolbarComponent(props: IProps) {
           </svg>
           <p id="videoTitle">{props.title}</p>
           <div className="buttonDiv">
-            {/* 구매하기 버튼은 구매자에게만 보이게... 가능할까 */}
             <button className="headerGButton" onClick={() => goBuy()}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -163,58 +175,26 @@ export default function ToolbarComponent(props: IProps) {
               신고하기
             </button>
           </div>
-          {/* 
-          구매자가 구매하기 버튼을 누르면.. 
-          거래 확정 모달은 판매자에게만 팝업,
-          구매자의 닉네임이 모달에 출력되어야 함
-          */}
           <Modal isOpen={isBuyModalOpen} toggle={toggleBuyModal}>
             <div className="modalDiv" onClick={toggleBuyModal}>
               <ClosedButton />
             </div>
             <div className="modalSpan">거래 확정하기</div>
-            <div className="spanDiv">
-              <span>님께서 거래 희망 버튼을 눌렀습니다.</span>
-              <span>님과 거래를 확정 하시겠습니까?</span>
-              <span>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</span>
+            <div className="pDiv">
+              <p>님께서 거래 희망 버튼을 눌렀습니다.</p>
+              <p>님과 거래를 확정 하시겠습니까?</p>
+              <p>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</p>
             </div>
             <div className="buttonsDiv">
               <button className="greenBtn" onClick={buyItem}>
-                {/* 상대방한테 메세지 보내기 */}
                 확정
               </button>
               <button className="redBtn" onClick={dontbuyItem}>
-                {/* 상대방한테 메세지 보내기 */}
                 거절
               </button>
             </div>
           </Modal>
           <Modal isOpen={isReportModalOpen} toggle={toggleReportModal}>
-            {/* <div className="modalDiv" onClick={toggleReportModal}>
-              <ClosedButton />
-            </div>
-            <div className="modalSpan">사용자 신고</div>
-            <div className="spanDiv">
-              <select className="modalSelect">
-                <option>-- 신고하는 이유를 선택해주세요 --</option>
-                <option>비매너 사용자</option>
-                <option>욕설 신고</option>
-                <option>성희롱 신고</option>
-                <option>거래 / 환불 분쟁 신고</option>
-                <option>사기 신고</option>
-                <option>기타</option>
-              </select>
-              <textarea
-                className="modalTextarea"
-                placeholder="상세 사유를 입력해주세요.."
-              ></textarea>
-            </div>
-            <div className="buttonsDiv">
-              <button className="redBtn">신고</button>
-              <button className="greenBtn" onClick={toggleReportModal}>
-                취소
-              </button>
-            </div> */}
             <ModalDiv>
               <ClosedButton onClick={toggleReportModal} />
             </ModalDiv>
@@ -227,6 +207,19 @@ export default function ToolbarComponent(props: IProps) {
               roomNo={null}
               onCancel={toggleReportModal}
             />
+          </Modal>
+          <Modal isOpen={isOkModalOpen} toggle={toggleOkModal}>
+            <ModalDiv>
+              <ClosedButton onClick={toggleOkModal} />
+            </ModalDiv>
+            <ModalSpan style={{ marginBottom: "1rem" }}>거래 확정!</ModalSpan>
+            <div className="pDiv">
+              <p>거래 확정이 완료되었습니다.</p>
+              <p>3초 후 자동으로 영상 통화 종료 후 채팅방으로 이동합니다.</p>
+            </div>
+            <div className="buttonsDiv">
+              <button className="greenBtn">채팅방으로 이동</button>
+            </div>
           </Modal>
         </div>
 
@@ -252,6 +245,7 @@ const ModalSpan = styled.div`
   font-weight: 600;
   margin-top: 3rem;
   margin-bottom: 0.5rem;
+  color: black;
 `;
 
 const SubSpan = styled.span`

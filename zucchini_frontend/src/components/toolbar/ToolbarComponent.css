@@ -134,11 +134,16 @@
   color: black;
 }
 
-.spanDiv {
+.pDiv {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
   margin-bottom: 2rem;
+}
+
+.pDiv p {
+  font-size: 1rem;
+  color: black;
 }
 
 .buttonsDiv {
