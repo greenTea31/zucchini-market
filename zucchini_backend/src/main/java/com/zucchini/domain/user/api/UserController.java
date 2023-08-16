@@ -138,8 +138,11 @@ public class UserController {
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
+        log.info("cookies : {}", cookies);
 
         String refreshToken = JwtHeaderUtilEnums.GRANT_TYPE.getValue();
+
+        log.info("refreshToken : {}", refreshToken);
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -148,6 +151,9 @@ public class UserController {
                 }
             }
         }
+
+        log.info("refreshToken : {}", refreshToken);
+
         TokenDto token = userService.reissue(refreshToken);
         return ResponseEntity.ok()
                 .header("Set-Cookie", jwtCookieName + "=" + token.getRefreshToken() + "; HttpOnly; Max-Age=" + 1000L * 60 * 60 * 24 + "; SameSite=None; Secure")
