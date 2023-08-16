@@ -15,7 +15,10 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import api from "../../utils/api";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { getUserInfo } from "../../hooks/useUserInfo";
+<<<<<<< HEAD
 import { BASE_URL } from "../../constants/url";
+=======
+>>>>>>> ad98d25337dc67b0ae936bb410e1c6064d8af5a7
 import Modal from "../Common/Modal";
 import ClosedButton from "../Button/ClosedButton";
 import styled from "styled-components";
