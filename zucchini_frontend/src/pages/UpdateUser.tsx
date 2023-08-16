@@ -113,6 +113,10 @@ export default function UpdateUser() {
     }
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <StyledAll
       initial={{ opacity: 0 }}
@@ -169,7 +173,7 @@ export default function UpdateUser() {
 
           <StyledButtonDiv>
             <StyledButton>수정</StyledButton>
-            <StyledButton>취소</StyledButton>
+            <StyledButton onClick={goBack}>취소</StyledButton>
           </StyledButtonDiv>
           <div style={{ marginTop: "0.6rem" }}>
             <RedSpan onClick={handleDeleteButtonClick}>탈퇴하기</RedSpan>

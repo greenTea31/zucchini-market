@@ -30,6 +30,7 @@ export default function ToolbarComponent(props: IProps) {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [isOkModalOpen, setIsOkModalOpen] = useState(false);
+  const [isNoModalOpen, setIsNoModalOpen] = useState(false);
 
   function toggleChat() {
     props.toggleChat();
@@ -45,6 +46,10 @@ export default function ToolbarComponent(props: IProps) {
 
   function toggleOkModal() {
     setIsOkModalOpen(!isOkModalOpen);
+  }
+
+  function toggleNoModal() {
+    setIsNoModalOpen(!isNoModalOpen);
   }
 
   const navigate = useNavigate();
@@ -80,6 +85,9 @@ export default function ToolbarComponent(props: IProps) {
   }
 
   function dontbuyItem() {
+    // 거래 거절되었다는 내용의 모달 팝업시키기
+    setIsNoModalOpen(!isNoModalOpen);
+
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
@@ -219,6 +227,23 @@ export default function ToolbarComponent(props: IProps) {
             </div>
             <div className="buttonsDiv">
               <button className="greenBtn">채팅방으로 이동</button>
+            </div>
+          </Modal>
+          <Modal isOpen={isNoModalOpen} toggle={toggleNoModal}>
+            <ModalDiv>
+              <ClosedButton onClick={toggleNoModal} />
+            </ModalDiv>
+            <ModalSpan style={{ marginBottom: "1rem" }}>거래 미확정</ModalSpan>
+            <div className="pDiv">
+              <p>판매자가 거래를 거절하였습니다..</p>
+              <p>영상 통화를 계속 진행하시겠습니까?</p>
+              <p>
+                나가기 버튼을 누르시면 통화 종료 후 메인페이지로 이동합니다.
+              </p>
+            </div>
+            <div className="buttonsDiv">
+              <button className="greenBtn">통화 진행</button>
+              <button className="redBtn">나가기</button>
             </div>
           </Modal>
         </div>
