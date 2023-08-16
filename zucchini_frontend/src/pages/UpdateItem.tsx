@@ -288,7 +288,7 @@ export default function CreateItem() {
         <ContentDiv>
           <ContentSpan>제목</ContentSpan>
           <ContentInput
-            value={item?.title}
+            defaultValue={item?.title}
             {...register("title", {
               required: "제목을 입력해주세요.",
               maxLength: 80,
@@ -302,7 +302,7 @@ export default function CreateItem() {
         <ContentDiv>
           <ContentSpan>상세 설명</ContentSpan>
           <ContentTextArea
-            value={item?.content}
+            defaultValue={item?.content}
             maxLength={1000}
             {...register("content", {
               required: "설명을 입력해주세요.",
@@ -315,7 +315,7 @@ export default function CreateItem() {
         <ContentDiv>
           <ContentSpan>가격</ContentSpan>
           <ContentInput
-            value={item?.price}
+            defaultValue={item?.price}
             type="number"
             {...register("price", {
               required: "가격을 입력해주세요",
