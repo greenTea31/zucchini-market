@@ -29,8 +29,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      password: ssafy
-      username: ssafy
+      password: zucchini
+      username: zucchini
     url: jdbc:mysql://i9a209.p.ssafy.io:3308/zucchini?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
   data:
     web:
@@ -50,7 +50,7 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
   redis:
-    host: 127.0.0.1
+    host: i9a209.p.ssafy.io
     port: 6379
 logging:
   level:
@@ -75,8 +75,8 @@ server:
       force: "true"
       charset: UTF-8
     contextPath: /api
-  address: localhost
-  port: "8080"
+  address: 0.0.0.0
+  port: "8200"
   compression:
     enabled: "true"
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
@@ -91,5 +91,5 @@ springfox:
     swagger:
       use-model-v3: 'false'
 openvidu:
-  url: 'http://localhost:4443'
-  secret: 'MY_SECRET'
+  url: 'https://i9a209.p.ssafy.io:8443'
+  secret: 'pikapikapikachu'
