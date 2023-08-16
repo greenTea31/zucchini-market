@@ -46,6 +46,7 @@ class ConferenceRoom extends Component {
       chatDisplay: "none",
       currentVideoDevice: undefined,
       isOkModalOpen: false,
+      isNotOkModalOpen: false,
       isBuyModalOpen: false,
     };
 
@@ -67,6 +68,7 @@ class ConferenceRoom extends Component {
     this.dontbuyItem = this.dontbuyItem.bind(this);
     this.close = this.close.bind(this);
     this.stopRecording = this.stopRecording.bind(this);
+    this.toggleNotOkModal = this.toggleNotOkModal.bind(this);
   }
 
   async componentDidMount() {
@@ -81,9 +83,6 @@ class ConferenceRoom extends Component {
 
     const userinfo = sessionStorage.getItem("USER_INFO");
     const parsedinfo = JSON.parse(userinfo);
-
-    this.setState({ isOkModalOpen: false });
-    this.setState({ isBuyModalOpen: false });
 
     sse.addEventListener("connect", (e) => {
       const { data: receivedConnectData } = e;
@@ -103,7 +102,7 @@ class ConferenceRoom extends Component {
       // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
       const { data: receivedCount } = e;
       if (receivedCount !== parsedinfo.nickname) {
-        alert(`${receivedCount}님이 구매 거절을 눌렀습니다!`);
+        this.setState({ isNotOkModalOpen: !this.state.isNotOkModalOpen });
       }
     });
 
@@ -615,7 +614,7 @@ class ConferenceRoom extends Component {
       buy: true,
     });
 
-    this.setState({ isBuyModalOpen: !this.isBuyModalOpen });
+    this.setState({ isBuyModalOpen: !this.state.isBuyModalOpen });
   }
 
   dontbuyItem() {
@@ -627,7 +626,7 @@ class ConferenceRoom extends Component {
       buy: false,
     });
 
-    this.setState({ isBuyModalOpen: !this.isBuyModalOpen });
+    this.setState({ isBuyModalOpen: !this.state.isBuyModalOpen });
   }
 
   async close() {
@@ -640,6 +639,10 @@ class ConferenceRoom extends Component {
       "response------------------------------------------------->" + response
     );
     await this.storeVideo(response.data);
+  }
+
+  toggleNotOkModal() {
+    this.setState({ isNotOkModalOpen: !this.state.isNotOkModalOpen });
   }
 
   render() {
@@ -764,7 +767,6 @@ class ConferenceRoom extends Component {
               {this.state.subscribers[0]?.nickname}님과 거래를 확정
               하시겠습니까?
             </p>
-            <p>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</p>
           </div>
           <div className="buttonsDiv">
             <button className="greenBtn" onClick={this.buyItem}>
@@ -782,11 +784,27 @@ class ConferenceRoom extends Component {
           <ModalSpan style={{ marginBottom: "1rem" }}>거래 확정!</ModalSpan>
           <div className="pDiv">
             <p>거래 확정이 완료되었습니다.</p>
-            <p>3초 후 자동으로 영상 통화 종료 후 채팅방으로 이동합니다.</p>
+            <p>화상 통화 리스트로 이동합니다.</p>
           </div>
           <div className="buttonsDiv">
             <button className="greenBtn" onClick={this.close}>
-              채팅방으로 이동
+              확인
+            </button>
+          </div>
+        </Modal>
+        <Modal isOpen={this.state.isNotOkModalOpen}>
+          <ModalDiv>
+            <ClosedButton onClick={this.toggleNotOkModal} />
+          </ModalDiv>
+          <ModalSpan style={{ marginBottom: "1rem" }}>거래 거절</ModalSpan>
+          <div className="pDiv">
+            <p>
+              {this.state.subscribers[0]?.nickname}님이 거래 거절 하였습니다.
+            </p>
+          </div>
+          <div className="buttonsDiv">
+            <button className="greenBtn" onClick={this.toggleNotOkModal}>
+              확인
             </button>
           </div>
         </Modal>
