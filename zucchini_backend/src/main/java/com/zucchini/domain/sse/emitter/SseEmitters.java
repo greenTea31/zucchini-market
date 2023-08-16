@@ -33,9 +33,19 @@ public class SseEmitters {
         return emitter;
     }
 
-    public void count(String nickname, boolean buy) {
+    public void count(String nickname, Boolean buy) {
         long count = counter.incrementAndGet();
-        if (buy) {
+        if (buy == null){
+            emitters.forEach(emitter -> {
+                try {
+                    emitter.send(SseEmitter.event()
+                            .name("requestDeal")
+                            .data(nickname));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } else if (buy) {
             emitters.forEach(emitter -> {
                 try {
                     emitter.send(SseEmitter.event()

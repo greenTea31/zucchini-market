@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class BuyAlertDto {
     String userName;
-    boolean buy;
+    Boolean buy;
 }
