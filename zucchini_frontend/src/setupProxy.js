@@ -3,6 +3,6 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 module.exports = (app) => {
   app.use(
     "/ws",
-    createProxyMiddleware({ target: "http://localhost:8080", ws: true })
+    createProxyMiddleware({ target: "http://i9a209.p.ssafy.io", ws: true })
   );
 };

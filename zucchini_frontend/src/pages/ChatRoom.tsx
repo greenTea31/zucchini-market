@@ -176,7 +176,7 @@ export default function ChatRoom() {
     if (!no) return;
     console.log("연결이 성공적으로 수행되었습니다.");
     client.current = new Client({
-      brokerURL: "ws://localhost:8080/api/ws",
+      brokerURL: "ws://i9a209.p.ssafy.io/api/ws",
       onConnect: () => {
         subscribe();
       },
