@@ -6,6 +6,7 @@ export default function SelectedTime(props: any) {
     <div>
       {props.showTime ? (
         <SelectedTimes
+          itemNo={props.itemNo}
           clickedDate={props.clickedDate}
           mark={props.mark}
           setFixedSchedule={props.setFixedSchedule}

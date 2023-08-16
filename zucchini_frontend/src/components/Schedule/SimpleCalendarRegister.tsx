@@ -13,7 +13,8 @@ export default function SimpleCalendar({ clickedTime, setClickedTime }: any) {
   // 선택한 날짜로 date 바꿔주고
   const onChange = (event: any) => {
     console.log(event);
-    setClickedTime(event);
+    const time = new Date(event.format("YYYY-MM-DD HH:mm:00"));
+    setClickedTime(time);
   };
 
   return (
