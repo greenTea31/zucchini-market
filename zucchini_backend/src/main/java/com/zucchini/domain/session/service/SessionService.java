@@ -2,7 +2,7 @@ package com.zucchini.domain.session.service;
 
 import com.zucchini.domain.session.dto.request.LeaveSessionRequest;
 import com.zucchini.domain.session.dto.response.FindSessionResponse;
-import com.zucchini.domain.session.dto.response.LeaveSessionResponse;
+import com.zucchini.domain.session.dto.response.StopRecordingResponse;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
 import org.apache.hc.core5.http.HttpResponse;
@@ -26,6 +26,11 @@ public interface SessionService {
      * 세션 연결 종료 시 남은 인원 확인 후 세션 완전히 종료할지 설정
      * @param leaveSessionRequest
      */
-    LeaveSessionResponse leaveConferenceSession(LeaveSessionRequest leaveSessionRequest) throws OpenViduJavaClientException, OpenViduHttpException;
+    void leaveConferenceSession(LeaveSessionRequest leaveSessionRequest) throws OpenViduJavaClientException, OpenViduHttpException;
+
+    /**
+     * 녹화 종료 후 openvidu 에 저장된 임시 링크 반환
+     */
+    StopRecordingResponse stopRecording(int conferenceNo) throws OpenViduJavaClientException, OpenViduHttpException;
 
 }

@@ -2,7 +2,7 @@ package com.zucchini.domain.session.api;
 
 import com.zucchini.domain.session.dto.request.LeaveSessionRequest;
 import com.zucchini.domain.session.dto.response.FindSessionResponse;
-import com.zucchini.domain.session.dto.response.LeaveSessionResponse;
+import com.zucchini.domain.session.dto.response.StopRecordingResponse;
 import com.zucchini.domain.session.service.SessionService;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
@@ -46,9 +46,25 @@ public class SessionController {
      * @return
      */
     @PutMapping
-    public ResponseEntity<LeaveSessionResponse> leaveConferenceSession(@Valid @RequestBody LeaveSessionRequest leaveSessionRequest) {
+    public ResponseEntity<Void> leaveConferenceSession(@Valid @RequestBody LeaveSessionRequest leaveSessionRequest) {
         try {
-            return ResponseEntity.ok().body(sessionService.leaveConferenceSession(leaveSessionRequest));
+            sessionService.leaveConferenceSession(leaveSessionRequest);
+            return ResponseEntity.ok().build();
+        } catch (OpenViduJavaClientException e) {
+            throw new RuntimeException(e);
+        } catch (OpenViduHttpException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 녹화 중지하는 요청
+     * - 중지 후 openvidu 서버에 저장된 비디오 링크를 반환
+     */
+    @GetMapping("/record/{conferenceNo}")
+    public ResponseEntity<StopRecordingResponse> stopRecording(@PathVariable int conferenceNo){
+        try {
+            return ResponseEntity.ok().body(sessionService.stopRecording(conferenceNo));
         } catch (OpenViduJavaClientException e) {
             throw new RuntimeException(e);
         } catch (OpenViduHttpException e) {
