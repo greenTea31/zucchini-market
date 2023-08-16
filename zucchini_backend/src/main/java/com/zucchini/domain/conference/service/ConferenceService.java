@@ -1,6 +1,7 @@
 package com.zucchini.domain.conference.service;
 
 import com.zucchini.domain.conference.dto.FindConferenceResponse;
+import com.zucchini.domain.conference.dto.FindItemUserResponse;
 
 import java.util.Date;
 
@@ -25,12 +26,12 @@ public interface ConferenceService {
     FindConferenceResponse findConference(int conferenceNo);
 
     /**
-     * 회의 상품 번호 조회
+     * 회의 번호를 받아서 해당 회의의 아이템 번호와 해당 회의의 구매 예정자를 반환한다.
      *
      * @param conferenceNo : 회의 번호
-     * @return FindConferenceResponse : 회의 상품 번호 반환
+     * @return FindConferenceResponse : 회의 정보 반환
      */
-    int findConferenceItemNo(int conferenceNo);
+    FindItemUserResponse findConferenceItemUser(int conferenceNo);
 
     /**
      * 회의 삭제

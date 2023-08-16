@@ -1,6 +1,7 @@
 package com.zucchini.domain.conference.api;
 
 import com.zucchini.domain.conference.dto.FindConferenceResponse;
+import com.zucchini.domain.conference.dto.FindItemUserResponse;
 import com.zucchini.domain.conference.service.ConferenceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +34,10 @@ public class ConferenceController {
      * @return FindConferenceResponse : 회의 상품 번호 반환
      */
     @GetMapping("/{no}/itemNo")
-    public ResponseEntity<Integer> findConferenceItemNo(@PathVariable int no) {
-        return ResponseEntity.ok(conferenceService.findConferenceItemNo((no)));
+    public ResponseEntity<FindItemUserResponse> findConferenceItemNo(@PathVariable int no) {
+        FindItemUserResponse response = conferenceService.findConferenceItemUser(no);
+        return ResponseEntity.ok(response);
     }
-
-
 
     /**
      * 회의 취소

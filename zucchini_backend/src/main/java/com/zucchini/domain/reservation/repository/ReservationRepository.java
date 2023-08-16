@@ -66,5 +66,16 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     @Query(value = "select r from Reservation r where r.conferenceNo = :conferenceNo")
     List<Reservation> findByConferenceNo(@Param("conferenceNo") int conferenceNo);
 
+    /**
+     * 컨퍼런스 번호와 연관된 예약자중에 연관된 item에서 seller가 아닌 사람을 반환하는 쿼리
+     */
+    @Query(value = "select r from Reservation r " +
+            "join fetch r.user u " +
+            "join fetch r.conference c " +
+            "join fetch c.item i " +
+            "where i.seller.id != u.id " +
+            "and c.no = :conferenceNo")
+    Reservation findBuyerNameByConferenceNo(@Param("conferenceNo") int conferenceNo);
+
 
 }
