@@ -17,6 +17,8 @@ import api from "../utils/api";
 import Report from "../components/Common/Report";
 import GradeImage from "../components/Common/GradeImage";
 import GradeText from "../components/Common/GradeText";
+import { HttpResponse } from "aws-sdk";
+import { ServerResponse } from "http";
 
 interface ISeller {
   nickname: string;
@@ -44,6 +46,9 @@ interface OpponentInfo {
 export default function ChatRoom() {
   const [isOpen, setIsOpen] = useState(false);
   const [isReporting, setIsReporting] = useState(false); // 신고모달
+  const [alertOpen, setAlertOpen] = useState(false); // 거래불가메세지
+  const [alertMessage, setAlertMessage] = useState("");
+
   const [opponent, setOpponent] = useState<OpponentInfo>();
 
   const toggleReport = () => {
@@ -135,8 +140,6 @@ export default function ChatRoom() {
   async function getUserInformation() {
     const response = await api.get("/user/findMyNo");
     setUser(response.data);
-    console.log(user.no); // 왜 0뜸? 모름
-    console.log(user.nickname); // 마찬가지
   }
 
   async function getMessageList() {
@@ -153,7 +156,7 @@ export default function ChatRoom() {
     // client.current.subscribe("/sub/chat/" + apply_id, (body) => { 현재 방번호까지 구현 되면 진행하기 (로그인이 되야 됨)
     client.current.subscribe("/sub/chat/" + no, (body) => {
       const json_body = JSON.parse(body.body);
-      console.log(json_body);
+      // console.log(json_body);
       setMessages((prevMessages) => [...prevMessages, json_body]);
     });
 
@@ -211,6 +214,10 @@ export default function ChatRoom() {
     setBuyOpen(!buyOpen);
   };
 
+  const alertToggle = () => {
+    setAlertOpen(!alertOpen);
+  };
+
   const navigate = useNavigate();
   const moveItem = () => {
     navigate(`/item/${item?.no}`);
@@ -218,7 +225,17 @@ export default function ChatRoom() {
 
   // 예약중으로 상태변경
   const nextStatus = async () => {
-    await api.put(`/item/${item?.no}/deal`).then();
+    try {
+      await api
+        .put(`item/${item?.no}/deal?buyer=${opponent?.opponentNickname}`)
+        .then((response) => console.log(response));
+    } catch (error: any) {
+      console.log(typeof error.response.data);
+      setAlertMessage(`${error.response.data}`);
+      alertToggle();
+
+      buyToggle();
+    }
   };
 
   return (
@@ -227,6 +244,18 @@ export default function ChatRoom() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+      <Modal isOpen={alertOpen} toggle={alertToggle}>
+        <ModalDiv>
+          <ClosedButton onClick={alertToggle} />
+        </ModalDiv>
+        <ModalSpan>거래 불가</ModalSpan>
+        <SpanDiv>
+          <span>{alertMessage}</span>
+        </SpanDiv>
+        <ButtonDiv>
+          <GreenBtn onClick={alertToggle}>확인</GreenBtn>
+        </ButtonDiv>
+      </Modal>
       <Modal isOpen={buyOpen} toggle={buyToggle}>
         <ModalDiv>
           <ClosedButton onClick={buyToggle} />
@@ -274,9 +303,10 @@ export default function ChatRoom() {
             <TitleSpan>판매자가 선택한 일정</TitleSpan>
             <SimpleCalendar dates={item?.dateList as IDate[]} />
             <StyledBtnDiv>
+              {/* 
               <StyledBtn>
                 <Link to={"/scheduleList"}>영상 통화하기</Link>
-              </StyledBtn>
+              </StyledBtn> */}
               <StyledBtn onClick={toggle}>일정 선택하기</StyledBtn>
             </StyledBtnDiv>
           </UpperDiv>
