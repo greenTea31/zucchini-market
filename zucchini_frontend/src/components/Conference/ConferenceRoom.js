@@ -15,7 +15,7 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import api from "../../utils/api";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { getUserInfo } from "../../hooks/useUserInfo";
-import { BASE_URL } from "../../constants/url.js";
+import { BASE_URL } from "../../constants/url";
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL = BASE_URL;
 
