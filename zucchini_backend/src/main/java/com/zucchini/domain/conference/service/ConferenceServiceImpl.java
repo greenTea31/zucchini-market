@@ -61,11 +61,31 @@ public class ConferenceServiceImpl implements ConferenceService{
         // conference의 item 확인하고 현재 로그인한 유저가 seller나 buyer에 있지 않으면 예외처리
         String currentPrincipalId = getLoginUserId();
 
-        if (!currentPrincipalId.equals(conference.getItem().getSeller().getId()) == !currentPrincipalId.equals(conference.getItem().getBuyer().getId())) {
-            throw new UserException("회의를 조회할 권한이 없습니다.");
+        if (conference.getItem().getBuyer() == null) {
+            if (!currentPrincipalId.equals(conference.getItem().getSeller().getId())) {
+                throw new UserException("회의를 조회할 권한이 없습니다.");
+            }
+        } else {
+            if (!(currentPrincipalId.equals(conference.getItem().getSeller().getId()) || !currentPrincipalId.equals(conference.getItem().getBuyer().getId()))) {
+                throw new UserException("회의를 조회할 권한이 없습니다.");
+            }
         }
 
         return FindConferenceResponse.of(conference);
+    }
+
+    /**
+     * 회의 조회
+     *
+     * @param conferenceNo : 회의 번호
+     * @return FindConferenceResponse : 회의 정보 반환
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public int findConferenceItemNo(int conferenceNo) {
+        Conference conference = getConferenceByNo(conferenceNo);
+
+        return conference.getItem().getNo();
     }
 
     /**

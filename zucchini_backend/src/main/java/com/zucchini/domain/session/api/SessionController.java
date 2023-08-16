@@ -45,7 +45,7 @@ public class SessionController {
      * @param leaveSessionRequest
      * @return
      */
-    @PutMapping("")
+    @PutMapping
     public ResponseEntity<LeaveSessionResponse> leaveConferenceSession(@Valid @RequestBody LeaveSessionRequest leaveSessionRequest) {
         try {
             return ResponseEntity.ok().body(sessionService.leaveConferenceSession(leaveSessionRequest));
@@ -55,9 +55,5 @@ public class SessionController {
             throw new RuntimeException(e);
         }
     }
-
-    /**
-     * 화상방에 판매자 입장 시 비디오 녹화 시작?
-     */
 
 }

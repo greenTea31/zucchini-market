@@ -14,7 +14,7 @@ public class ConferenceController {
     private final ConferenceService conferenceService;
 
     /**
-     * 로그인한 유저의 회의 전체 조회
+     * 로그인한 유저의 회의 조회
      * @param no : 회의 번호
      * @return List<FindConferenceResponse> : 예약 전체 리스트
      * 200 : 조회 성공
@@ -25,6 +25,19 @@ public class ConferenceController {
         FindConferenceResponse response = conferenceService.findConference(no);
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * 회의 상품 번호 조회
+     *
+     * @param no : 회의 번호
+     * @return FindConferenceResponse : 회의 상품 번호 반환
+     */
+    @GetMapping("/{no}/itemNo")
+    public ResponseEntity<Integer> findConferenceItemNo(@PathVariable int no) {
+        return ResponseEntity.ok(conferenceService.findConferenceItemNo((no)));
+    }
+
+
 
     /**
      * 회의 취소

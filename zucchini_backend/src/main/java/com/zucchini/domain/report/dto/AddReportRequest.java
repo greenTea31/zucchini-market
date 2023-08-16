@@ -24,8 +24,7 @@ public class AddReportRequest {
     @Min(1)
     private int itemNo;
 
-    @Min(1)
-    private int roomNo;
+    private Integer roomNo;
 
     public Report toEntity() {
         return Report.builder()

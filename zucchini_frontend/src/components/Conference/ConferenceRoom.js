@@ -712,6 +712,7 @@ class ConferenceRoom extends Component {
         headers: { Authorization: token },
       }
     );
+    console.log(response);
     sessionStorage.setItem("sessionId", response.data.sessionId);
     return response.data.token; // The token
   }

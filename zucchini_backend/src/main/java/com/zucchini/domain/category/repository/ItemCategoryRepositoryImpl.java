@@ -1,5 +1,6 @@
 package com.zucchini.domain.category.repository;
 
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zucchini.domain.category.domain.ItemCategory;
@@ -7,6 +8,7 @@ import com.zucchini.domain.category.domain.QCategory;
 import com.zucchini.domain.category.domain.QItemCategory;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.domain.QItem;
+import com.zucchini.domain.user.domain.QUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,7 @@ public class ItemCategoryRepositoryImpl implements ItemCategoryRepositoryCustom 
     public Page<Item> findPageItemsByCategory(String category, String keyword, Pageable pageable) {
         QItemCategory ic = QItemCategory.itemCategory;
         QItem i = QItem.item;
+        QUser u = QUser.user;
         QCategory c = QCategory.category1;
         // 해당 카테고리에 속해있고 title에 검색어가 포함된 상품 목록에서 해당 페이지에 속한 상품들 페이지 크기만큼 조회
         List<ItemCategory> itemCategoryList = queryFactory
@@ -40,7 +43,17 @@ public class ItemCategoryRepositoryImpl implements ItemCategoryRepositoryCustom 
                 .fetchJoin()
                 .join(ic.item, i)
                 .fetchJoin()
-                .where(c.category.eq(category), i.title.contains(keyword))
+                .where(c.category.eq(category)
+                        .and(i.title.contains(keyword))
+                        .and(
+                                i.in(JPAExpressions
+                                        .select(i)
+                                        .from(i)
+                                        .join(i.seller, u)
+                                        .where(u.isDeleted.eq(false)
+                                                .and(u.isLocked.eq(false)))
+                        )
+                ))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 // 상품 번호 오름차순 정렬(만약 정렬 옵션 추가 시 여기 바꿔줘야 함)
@@ -52,7 +65,17 @@ public class ItemCategoryRepositoryImpl implements ItemCategoryRepositoryCustom 
                 .from(ic)
                 .join(ic.category, c)
                 .join(ic.item, i)
-                .where(c.category.eq(category), i.title.contains(keyword));
+                .where(c.category.eq(category)
+                        .and(i.title.contains(keyword))
+                        .and(
+                                i.in(JPAExpressions
+                                        .select(i)
+                                        .from(i)
+                                        .join(i.seller, u)
+                                        .where(u.isDeleted.eq(false)
+                                                .and(u.isLocked.eq(false)))
+                                )
+                        ));
 
         List<Item> itemList = itemCategoryList.stream().map(
                 itemCategory -> itemCategory.getItem()

@@ -1,12 +1,10 @@
 package com.zucchini.domain.session.service;
 
 import com.zucchini.domain.session.dto.request.LeaveSessionRequest;
-import com.zucchini.domain.session.dto.request.StartRecordingRequest;
 import com.zucchini.domain.session.dto.response.FindSessionResponse;
 import com.zucchini.domain.session.dto.response.LeaveSessionResponse;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
-import io.openvidu.java.client.Recording;
 import org.apache.hc.core5.http.HttpResponse;
 
 import javax.servlet.http.HttpSession;
@@ -29,7 +27,5 @@ public interface SessionService {
      * @param leaveSessionRequest
      */
     LeaveSessionResponse leaveConferenceSession(LeaveSessionRequest leaveSessionRequest) throws OpenViduJavaClientException, OpenViduHttpException;
-
-    Recording startRecording(StartRecordingRequest startRecordingRequest) throws OpenViduJavaClientException, OpenViduHttpException;
 
 }

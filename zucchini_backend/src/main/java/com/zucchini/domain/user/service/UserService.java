@@ -3,7 +3,6 @@ package com.zucchini.domain.user.service;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
-import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.global.common.PageResponse;
 import com.zucchini.global.domain.TokenDto;
 import org.springframework.data.domain.Pageable;
@@ -59,10 +58,9 @@ public interface UserService {
 
     /**
      * 회원 정보 수정
-     * @param id : 아이디
      * @param modifyUserRequest : 회원 정보 수정 요청 DTO
      */
-    void modifyUser(String id, ModifyUserRequest modifyUserRequest);
+    void modifyUser(ModifyUserRequest modifyUserRequest);
 
     /**
      * 회원 비밀번호 변경
@@ -117,7 +115,7 @@ public interface UserService {
      * @param pageable : 페이지 정보
      * @return PageResponse<FindItemListResponse> : 상품 목록 조회 DTO 리스트
      */
-    PageResponse<FindItemListResponse> findUserLikeItemList(String keyword, Pageable pageable);
+    PageResponse<FindItemListResponse> findUserLikeItemList(String keyword, Pageable pageable, int category);
 
     /**
      * 상품 찜 취소
@@ -131,7 +129,7 @@ public interface UserService {
      * @param flag : 상품 분류(구매, 판매)
      * @return List<UserDealHistoryResponse> : 거래 내역 조회 DTO 리스트
      */
-    PageResponse<FindItemListResponse> findUserDealHistoryList(String keyword, boolean flag, Pageable pageable, String name);
+    PageResponse<FindItemListResponse> findUserDealHistoryList(String keyword, boolean flag, Pageable pageable, String name, int category);
 
     /**
      * 닉네임 중복 검사
