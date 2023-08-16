@@ -53,9 +53,9 @@ export default function Report({
         onCancel();
       });
     } catch (error: any) {
+      console.error(error.response.data);
       setAlertMessage(`${error.response.data}`);
       alertToggle();
-      onCancel();
     }
   };
   return (
@@ -69,7 +69,7 @@ export default function Report({
           <span>{alertMessage}</span>
         </SpanDiv>
         <ButtonDiv>
-          <GreenBtn onClick={alertToggle}>확인</GreenBtn>
+          <GreenBtn onClick={onCancel}>확인</GreenBtn>
         </ButtonDiv>
       </Modal>
       <SpanDiv>
