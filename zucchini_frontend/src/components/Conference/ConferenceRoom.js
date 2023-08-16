@@ -66,6 +66,7 @@ class ConferenceRoom extends Component {
     this.buyItem = this.buyItem.bind(this);
     this.dontbuyItem = this.dontbuyItem.bind(this);
     this.close = this.close.bind(this);
+    this.stopRecording = this.stopRecording.bind(this);
   }
 
   async componentDidMount() {
@@ -93,6 +94,7 @@ class ConferenceRoom extends Component {
       const { data: receivedCount } = e;
       if (this.buyer !== parsedinfo.nickname) {
         this.dealItem();
+        this.stopRecording();
       }
       this.setState({ isOkModalOpen: !this.state.isOkModalOpen });
     });
@@ -141,10 +143,7 @@ class ConferenceRoom extends Component {
     window.removeEventListener("beforeunload", this.onbeforeunload);
     window.removeEventListener("resize", this.updateLayout);
     window.removeEventListener("resize", this.checkSize);
-    if (this.state.session) {
-      alert("unmount!!!!!!!!");
-      // this.leaveSession();
-    }
+    this.leaveSession();
   }
 
   onbeforeunload(event) {
@@ -297,7 +296,7 @@ class ConferenceRoom extends Component {
     // 여기에 api 호출~~
     console.log("세션을 떠나요");
     const token = "Bearer " + getUser();
-    const response = await axios.put(
+    await axios.put(
       APPLICATION_SERVER_URL + `session`,
       {
         conferenceNo: this.conferenceNo,
@@ -307,12 +306,7 @@ class ConferenceRoom extends Component {
         headers: { Authorization: token },
       }
     );
-    console.log(response);
-    if (response.data.isFinished) {
-      console.log("비디오 저장!!");
-      // 비디오 저장 로직 호출
-      await this.storeVideo(response.data.videoNo, response.data.link);
-    }
+
     const mySession = this.state.session;
 
     if (mySession) {
@@ -338,16 +332,13 @@ class ConferenceRoom extends Component {
     // this.leaveSession();
   }
 
-  // 비디오 db PK, 비디오 링크
-  async storeVideo(no, link) {
-    fetch(link)
+  // info(itemNo, link, startTime, endTime)
+  async storeVideo(info) {
+    fetch(info.link)
       .then((response) => response.blob())
       .then(async (blob) => {
-        console.log("no------>", no);
-        console.log("link------->", link);
-        console.log("blob-------->", blob);
+        console.log(info);
         const file = new Blob([blob]);
-        console.log("file-------->", file);
 
         const credentials = {
           accessKeyId: "AKIA2ZDVZIZHOHIYLSNH",
@@ -360,7 +351,7 @@ class ConferenceRoom extends Component {
         const uploadFile = async (file) => {
           // const uuid = v1().toString().replace("-", "");
           // const keyName = `${uuid}.${file.object.name}`;
-          const keyName = "video/" + no + ".mp4"; // S3에 저장될 경로와 파일 이름
+          const keyName = "video/" + info.itemNo + ".mp4"; // S3에 저장될 경로와 파일 이름
           console.log("keyName------>", keyName);
           const command = new PutObjectCommand({
             Bucket: "zucchinifile",
@@ -376,10 +367,13 @@ class ConferenceRoom extends Component {
             console.log("videoUrl-------->", videoURL);
             // 여기에 api 호출~~
             const token = "Bearer " + getUser();
-            const response = await axios.put(
-              APPLICATION_SERVER_URL + `video/${no}`,
+            const response = await axios.post(
+              APPLICATION_SERVER_URL + `video`,
               {
                 link: videoURL,
+                itemNo: info.itemNo,
+                startTime: info.startTime,
+                endTime: info.endTime,
               },
               {
                 headers: { Authorization: token },
@@ -637,8 +631,15 @@ class ConferenceRoom extends Component {
   }
 
   async close() {
-    await this.leaveSession();
     window.location.href = `/scheduleList`;
+  }
+
+  async stopRecording() {
+    const response = await api.get(`session/record/${this.conferenceNo}`);
+    console.log(
+      "response------------------------------------------------->" + response
+    );
+    await this.storeVideo(response.data);
   }
 
   render() {

@@ -52,10 +52,6 @@ export default function ToolbarComponent(props: IProps) {
     setIsNoModalOpen(!isNoModalOpen);
   }
 
-  function toggleNoModal() {
-    setIsNoModalOpen(!isNoModalOpen);
-  }
-
   const navigate = useNavigate();
   async function leaveSession() {
     // await props.leaveSession();
