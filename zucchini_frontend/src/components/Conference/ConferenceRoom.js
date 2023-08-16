@@ -82,7 +82,6 @@ class ConferenceRoom extends Component {
 
     sse.addEventListener("connect", (e) => {
       const { data: receivedConnectData } = e;
-      console.log("connect event data: ", receivedConnectData); // "connected!"
     });
 
     sse.addEventListener("buy", (e) => {
@@ -91,7 +90,6 @@ class ConferenceRoom extends Component {
       if (receivedCount !== parsedinfo.nickname) {
         this.dealItem();
       }
-      alert(this.state.isBuyModalOpen);
       this.setState({ isOkModalOpen: !this.state.isOkModalOpen });
     });
 
@@ -107,10 +105,7 @@ class ConferenceRoom extends Component {
       // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
       const { data: receivedCount } = e;
       if (receivedCount !== parsedinfo.nickname) {
-        console.log(this.isBuyModalOpen);
         this.setState({ isBuyModalOpen: !this.state.isBuyModalOpen });
-        alert(this.state.isBuyModalOpen);
-        console.log(this.isBuyModalOpen);
       }
     });
 
@@ -329,6 +324,8 @@ class ConferenceRoom extends Component {
     // if (this.props.leaveSession) {
     //   this.props.leaveSession();
     // }
+
+    window.location.href = `/scheduleList`;
   }
 
   async dealItem() {
@@ -751,8 +748,14 @@ class ConferenceRoom extends Component {
           </div>
           <div className="modalSpan">거래 확정하기</div>
           <div className="pDiv">
-            <p>님께서 거래 희망 버튼을 눌렀습니다.</p>
-            <p>님과 거래를 확정 하시겠습니까?</p>
+            <p>
+              {this.state.subscribers[0]?.nickname}님께서 거래 희망 버튼을
+              눌렀습니다.
+            </p>
+            <p>
+              {this.state.subscribers[0]?.nickname}님과 거래를 확정
+              하시겠습니까?
+            </p>
             <p>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</p>
           </div>
           <div className="buttonsDiv">
@@ -764,17 +767,19 @@ class ConferenceRoom extends Component {
             </button>
           </div>
         </Modal>
-        <Modal isOpen={this.isOkModalOpen} toggle={this.toggleOkModal}>
-          <ModalDiv>
+        <Modal isOpen={this.state.isOkModalOpen}>
+          {/* <ModalDiv>
             <ClosedButton onClick={this.toggleOkModal} />
-          </ModalDiv>
+          </ModalDiv> */}
           <ModalSpan style={{ marginBottom: "1rem" }}>거래 확정!</ModalSpan>
           <div className="pDiv">
             <p>거래 확정이 완료되었습니다.</p>
             <p>3초 후 자동으로 영상 통화 종료 후 채팅방으로 이동합니다.</p>
           </div>
           <div className="buttonsDiv">
-            <button className="greenBtn">채팅방으로 이동</button>
+            <button className="greenBtn" onClick={this.leaveSession}>
+              채팅방으로 이동
+            </button>
           </div>
         </Modal>
       </div>
