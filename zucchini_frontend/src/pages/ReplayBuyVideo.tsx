@@ -14,6 +14,9 @@ export default function ReplayBuyVideo() {
   const [video, setVideo] = useState();
   const [title, setTitle] = useState("");
   const [videoNo, setVideoNo] = useState();
+  const [seller, setSeller] = useState("");
+  const [itemNo, setItemNo] = useState();
+
   const location = useLocation();
   const getVideo = async () => {
     try {
@@ -23,6 +26,8 @@ export default function ReplayBuyVideo() {
       setVideo(response.data.link);
       setTitle(response.data.itemTitle);
       setVideoNo(response.data.no);
+      setSeller(response.data.seller);
+      setItemNo(response.data.itemNo);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
