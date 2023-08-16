@@ -30,6 +30,7 @@ public class VideoServiceImpl implements VideoService {
     private final VideoRepository videoRepository;
     private final ItemRepository itemRepository;
     private final long oneWeekInMillis = 24 * 60 * 60 * 1000 * 7; // 7일의 밀리초 값
+    private final long oneMinuteInMillis =  30 * 1000; // 1분의 밀리초 값
 
     /**
      * 비디오 등록
@@ -89,8 +90,19 @@ public class VideoServiceImpl implements VideoService {
         Item item = itemRepository.findItemWithFetchJoinById(video.get().getItem().getNo());
         String loginId = getCurrentId();
         // 최적화 방법 -> fetch join
-        if(!item.getSeller().getId().equals(loginId) && !item.getBuyer().getId().equals(loginId))
-            throw new UserException("해당 아이템의 비디오 조회 권한이 없습니다.");
+        String sellerId = item.getSeller().getId();
+        String buyerId = item.getBuyer().getId();
+        // 탈퇴한 회원 id는 null이 되므로 예외처리
+        if(sellerId != null && buyerId != null){
+            if(!sellerId.equals(loginId) && !buyerId.equals(loginId))
+                throw new UserException("해당 아이템의 비디오 조회 권한이 없습니다.");
+        }else if(sellerId == null){
+            if(!buyerId.equals(loginId))
+                throw new UserException("해당 아이템의 비디오 조회 권한이 없습니다.");
+        }else if(buyerId == null){
+            if(!sellerId.equals(loginId))
+                throw new UserException("해당 아이템의 비디오 조회 권한이 없습니다.");
+        }
 
         return FindVideoResponse.builder()
                 .no(video.get().getNo())
@@ -132,12 +144,6 @@ public class VideoServiceImpl implements VideoService {
         videoRepository.deleteByDeleteTimeAfter(now);
     }
 
-//    @Override
-//    public void modifyVideo(int no, String link) {
-//        Video video = videoRepository.findById(no).get();
-//        video.setLink(link);
-//    }
-
     /**
      * 비디오 기한 7일 연장
      * @param no : 비디오 no(PK)
@@ -148,7 +154,10 @@ public class VideoServiceImpl implements VideoService {
         if(!video.isPresent()) throw new NoSuchElementException("해당 비디오가 존재하지 않습니다.");
         if(isExtended(video.get().getEndTime(), video.get().getDeleteTime()))
             throw new IllegalArgumentException("해당 비디오는 이미 연장을 한 상태입니다.");
-        return video.get().extendDeleteTime();
+        // 7일 연장
+        Date extendedTime = new Date(video.get().getDeleteTime().getTime() + oneWeekInMillis);
+        video.get().extendDeleteTime(extendedTime);
+        return extendedTime;
     }
 
     /**
@@ -158,7 +167,12 @@ public class VideoServiceImpl implements VideoService {
      * @return boolean : 연장 가능 여부
      */
     private boolean isExtended(Date endTime, Date deleteTime){
-        return deleteTime.getTime() - getMidnight(endTime).getTime() > oneWeekInMillis;
+        // 자정 기준으로 변환 작업
+        endTime = getMidnight(endTime);
+        // 초단위는 오차가 있을 수 있어서 제거
+        Long endTimeInMills = endTime.getTime() - endTime.getTime() % oneMinuteInMillis;
+        Long deleteTimeInMills = deleteTime.getTime() - deleteTime.getTime() % oneMinuteInMillis;
+        return deleteTimeInMills - endTimeInMills > oneWeekInMillis;
     }
 
 }
