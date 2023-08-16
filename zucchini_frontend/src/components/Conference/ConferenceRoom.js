@@ -29,6 +29,7 @@ class ConferenceRoom extends Component {
     this.conferenceNo = window.location.pathname.split("/conference/")[1];
     this.title = props.title;
     this.itemNo = null;
+    this.other = "";
     this.hasBeenUpdated = false;
     this.layout = new OpenViduLayout();
     let sessionName = this.conferenceNo;
@@ -61,13 +62,15 @@ class ConferenceRoom extends Component {
     this.toggleChat = this.toggleChat.bind(this);
     this.checkNotification = this.checkNotification.bind(this);
     this.checkSize = this.checkSize.bind(this);
-    this.getItemNo = this.getItemNo.bind(this);
+    this.getInformation = this.getInformation.bind(this);
     this.buyItem = this.buyItem.bind(this);
     this.dontbuyItem = this.dontbuyItem.bind(this);
   }
 
   async componentDidMount() {
-    this.itemNo = await this.getItemNo();
+    const information = await this.getInformation();
+    this.itemNo = information.itemNo;
+    this.other = information.userName;
 
     const headers = { Authorization: `Bearer ${getUser()}` };
     const sse = new EventSourcePolyfill(BASE_URL + "sse", {
@@ -330,7 +333,7 @@ class ConferenceRoom extends Component {
 
   async dealItem() {
     //아이템 상태 예약중으로 변경하기
-    const buyer = this.state.subscribers[0]?.nickname;
+    const buyer = this.other;
     await api.put(`item/${this.itemNo}/deal?buyer=${buyer}`);
 
     // this.leaveSession();
@@ -603,7 +606,7 @@ class ConferenceRoom extends Component {
     }
   }
 
-  async getItemNo() {
+  async getInformation() {
     //먼저 해당 컨퍼런스 번호에 대한 아이템 번호 가져오기
     const response = await api.get(`conference/${this.conferenceNo}/itemNo`);
     return response.data;
@@ -642,7 +645,7 @@ class ConferenceRoom extends Component {
       <div className="container" id="container">
         <TopbarComponent
           title={this.title}
-          other={this.state.subscribers[0]?.nickname}
+          other={this.other}
           itemNo={this.itemNo}
           showNotification={this.state.messageReceived}
           leaveSession={this.leaveSession}
@@ -748,14 +751,8 @@ class ConferenceRoom extends Component {
           </div>
           <div className="modalSpan">거래 확정하기</div>
           <div className="pDiv">
-            <p>
-              {this.state.subscribers[0]?.nickname}님께서 거래 희망 버튼을
-              눌렀습니다.
-            </p>
-            <p>
-              {this.state.subscribers[0]?.nickname}님과 거래를 확정
-              하시겠습니까?
-            </p>
+            <p>{this.other}님께서 거래 희망 버튼을 눌렀습니다.</p>
+            <p>{this.other}님과 거래를 확정 하시겠습니까?</p>
             <p>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</p>
           </div>
           <div className="buttonsDiv">
