@@ -3,6 +3,7 @@ package com.zucchini.domain.video.repository;
 import com.zucchini.domain.video.domain.Video;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Date;
 import java.util.Optional;
 
 public interface VideoRepository extends JpaRepository<Video, Integer> {
@@ -13,5 +14,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
      * @return Optional<Video> : 비디오
      */
     Optional<Video> findByItemNo(int itemNo);
+
+    void deleteByDeleteTimeAfter(Date now);
 
 }

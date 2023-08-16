@@ -8,9 +8,11 @@ import com.zucchini.domain.video.dto.response.FindVideoResponse;
 import com.zucchini.domain.video.repository.VideoRepository;
 import com.zucchini.global.exception.UserException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Component
 public class VideoServiceImpl implements VideoService {
 
     private final VideoRepository videoRepository;
@@ -114,6 +117,15 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public void deleteVideo(int no) {
         videoRepository.deleteById(no);
+    }
+
+    /**
+     * 자정마다 기간이 만료된 비디오 모두 삭제
+     */
+    @Scheduled(cron = "0 0 * * *")
+    private void deleteExpiredVideo(){
+        Date now = new Date();
+        videoRepository.deleteByDeleteTimeAfter(now);
     }
 
     @Override
