@@ -77,8 +77,8 @@ class ConferenceRoom extends Component {
     const userinfo = sessionStorage.getItem("USER_INFO");
     const parsedinfo = JSON.parse(userinfo);
 
-    this.isOkModalOpen = false;
-    this.isBuyModalOpen = false;
+    this.setState({ isOkModalOpen: false });
+    this.setState({ isBuyModalOpen: false });
 
     sse.addEventListener("connect", (e) => {
       const { data: receivedConnectData } = e;
@@ -91,7 +91,8 @@ class ConferenceRoom extends Component {
       if (receivedCount !== parsedinfo.nickname) {
         this.dealItem();
       }
-      this.setState({ isOkModalOpen: !this.isBuyModalOpen });
+      alert(this.state.isBuyModalOpen);
+      this.setState({ isOkModalOpen: !this.state.isOkModalOpen });
     });
 
     sse.addEventListener("notbuy", (e) => {
@@ -107,7 +108,8 @@ class ConferenceRoom extends Component {
       const { data: receivedCount } = e;
       if (receivedCount !== parsedinfo.nickname) {
         console.log(this.isBuyModalOpen);
-        this.setState({ isBuyModalOpen: !this.isBuyModalOpen });
+        this.setState({ isBuyModalOpen: !this.state.isBuyModalOpen });
+        alert(this.state.isBuyModalOpen);
         console.log(this.isBuyModalOpen);
       }
     });
@@ -743,7 +745,7 @@ class ConferenceRoom extends Component {
               </div>
             )}
         </div>
-        <Modal isOpen={this.isBuyModalOpen} toggle={this.dontbuyItem}>
+        <Modal isOpen={this.state.isBuyModalOpen} toggle={this.dontbuyItem}>
           <div className="modalDiv" onClick={this.dontbuyItem}>
             <ClosedButton />
           </div>
