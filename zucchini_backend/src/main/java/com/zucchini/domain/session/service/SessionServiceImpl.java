@@ -231,6 +231,7 @@ public class SessionServiceImpl implements SessionService {
 
         // 둘다 나간상태이고 해당 상품이 판매중에서 상태가 변경된 경우만 비디오를 저장
         Item item = conference.get().getItem();
+        log.info(cnt + "status============================" + item.getStatus());
         if(cnt == 0 && item.getStatus() != 0){
             Session session = this.mapSessions.remove(no);
             String sessionId = session.getSessionId();
@@ -260,6 +261,8 @@ public class SessionServiceImpl implements SessionService {
         reservation.leave();
 //        reservationRepository.save(reservation);
 
+        log.info("leaveSessionResponse================================" + leaveSessionResponse.getIsFinished());
+        log.info("id================================================" + getCurrentId());
         return leaveSessionResponse;
     }
 
