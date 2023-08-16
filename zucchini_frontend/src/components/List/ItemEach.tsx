@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import ReplayButton from "../Button/ReplayButton";
+// import ReplayButton from "../Button/ReplayButton";
 import moment from "moment";
 import { useLocation, useNavigate } from "react-router-dom";
 import NoImage from "../../assets/images/NoImage.png";
+import { useEffect, useState } from "react";
 
 interface IItem {
   no: number;
@@ -22,14 +23,20 @@ interface IProps {
 }
 
 export default function ItemEach({ item }: IProps) {
+  const [onMouse, setOnMouse] = useState(false);
   const navigate = useNavigate();
   const onClick = () => {
     navigate(`/item/${item.no}`);
   };
 
   const location = useLocation();
+  useEffect(() => {
+    console.log(location.pathname);
+  }, []);
 
-  const playVideo = () => {
+  const playVideo = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     navigate(`${location.pathname}/video/${item.no}`);
   };
 
@@ -39,9 +46,10 @@ export default function ItemEach({ item }: IProps) {
       {/* <ItemImg src={watch} /> */}
       <ItemImg src={item?.image ? item?.image : NoImage} />
       {/* ItemList,  BuyList, SellList에서 각각 쓰이는 컴포넌트이므로 버튼은 조건부 렌더링 필요 */}
-      {item?.status === 2 && location.pathname !== "/item" && (
-        <ReplayButton onClick={playVideo}>다시보기</ReplayButton>
-      )}
+
+      {/* {item?.status === 2 && location.pathname !== "/item" && (
+        )} */}
+      <ReplayButton onClick={playVideo}>다시보기</ReplayButton>
       <ItemTitle>{item?.title}</ItemTitle>
       <ItemTitle>{item?.price.toLocaleString("ko-KR")}원</ItemTitle>
       <ItemContent>
@@ -93,4 +101,25 @@ const ItemContent = styled.span`
   color: gray;
   margin: 0.2rem;
   text-overflow: ellipsis;
+`;
+
+const ReplayButton = styled.button`
+  position: absolute;
+  right: 1.6rem;
+  bottom: 11rem;
+  width: 5.5rem;
+  height: 2.5rem;
+  color: white;
+  background-color: red;
+  border: transparent;
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.08rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: transparent;
+    border: solid 2px red;
+    color: red;
+  }
 `;
