@@ -99,6 +99,16 @@ export default function ToolbarComponent(props: IProps) {
     setIsBuyModalOpen(!isBuyModalOpen);
   }
 
+  function requestDeal() {
+    const userinfo = sessionStorage.getItem("USER_INFO");
+    if (userinfo === null) return;
+    const parsedinfo = JSON.parse(userinfo);
+    const response = api.post("/sse/count", {
+      userName: parsedinfo.nickname,
+      buy: null,
+    });
+  }
+
   // 신고사유
   const reportReasons = [
     "판매금지물품",
@@ -128,7 +138,7 @@ export default function ToolbarComponent(props: IProps) {
           </svg>
           <p id="videoTitle">{props.title}</p>
           <div className="buttonDiv">
-            <button className="headerGButton" onClick={() => goBuy()}>
+            <button className="headerGButton" onClick={() => requestDeal()}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

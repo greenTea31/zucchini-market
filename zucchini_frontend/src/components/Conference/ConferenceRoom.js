@@ -16,6 +16,10 @@ import api from "../../utils/api";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { getUserInfo } from "../../hooks/useUserInfo";
 import { BASE_URL } from "../../constants/url";
+import Modal from "../Common/Modal";
+import ClosedButton from "../Button/ClosedButton";
+import styled from "styled-components";
+
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL = BASE_URL;
 
@@ -40,11 +44,13 @@ class ConferenceRoom extends Component {
       subscribers: [],
       chatDisplay: "none",
       currentVideoDevice: undefined,
+      isOkModalOpen: false,
+      isBuyModalOpen: false,
     };
 
     this.joinSession = this.joinSession.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
-    this.buyItem = this.buyItem.bind(this);
+    this.dealItem = this.dealItem.bind(this);
     this.onbeforeunload = this.onbeforeunload.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.camStatusChanged = this.camStatusChanged.bind(this);
@@ -56,6 +62,8 @@ class ConferenceRoom extends Component {
     this.checkNotification = this.checkNotification.bind(this);
     this.checkSize = this.checkSize.bind(this);
     this.getItemNo = this.getItemNo.bind(this);
+    this.buyItem = this.buyItem.bind(this);
+    this.dontbuyItem = this.dontbuyItem.bind(this);
   }
 
   async componentDidMount() {
@@ -69,6 +77,9 @@ class ConferenceRoom extends Component {
     const userinfo = sessionStorage.getItem("USER_INFO");
     const parsedinfo = JSON.parse(userinfo);
 
+    this.isOkModalOpen = false;
+    this.isBuyModalOpen = false;
+
     sse.addEventListener("connect", (e) => {
       const { data: receivedConnectData } = e;
       console.log("connect event data: ", receivedConnectData); // "connected!"
@@ -78,8 +89,9 @@ class ConferenceRoom extends Component {
       // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
       const { data: receivedCount } = e;
       if (receivedCount !== parsedinfo.nickname) {
-        alert(`${receivedCount}님이 구매 확정을 눌렀습니다!`);
+        this.dealItem();
       }
+      this.setState({ isOkModalOpen: !this.isBuyModalOpen });
     });
 
     sse.addEventListener("notbuy", (e) => {
@@ -87,6 +99,16 @@ class ConferenceRoom extends Component {
       const { data: receivedCount } = e;
       if (receivedCount !== parsedinfo.nickname) {
         alert(`${receivedCount}님이 구매 거절을 눌렀습니다!`);
+      }
+    });
+
+    sse.addEventListener("requestDeal", (e) => {
+      // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
+      const { data: receivedCount } = e;
+      if (receivedCount !== parsedinfo.nickname) {
+        console.log(this.isBuyModalOpen);
+        this.setState({ isBuyModalOpen: !this.isBuyModalOpen });
+        console.log(this.isBuyModalOpen);
       }
     });
 
@@ -307,7 +329,7 @@ class ConferenceRoom extends Component {
     // }
   }
 
-  async buyItem() {
+  async dealItem() {
     //아이템 상태 예약중으로 변경하기
     const buyer = this.state.subscribers[0]?.nickname;
     await api.put(`item/${this.itemNo}/deal?buyer=${buyer}`);
@@ -588,6 +610,31 @@ class ConferenceRoom extends Component {
     return response.data;
   }
 
+  buyItem() {
+    // 거래 확정되었다는 안내문구 팝업시키기
+    const userinfo = sessionStorage.getItem("USER_INFO");
+    if (userinfo === null) return;
+    const parsedinfo = JSON.parse(userinfo);
+    const response = api.post("/sse/count", {
+      userName: parsedinfo.nickname,
+      buy: true,
+    });
+
+    this.setState({ isBuyModalOpen: !this.isBuyModalOpen });
+  }
+
+  dontbuyItem() {
+    const userinfo = sessionStorage.getItem("USER_INFO");
+    if (userinfo === null) return;
+    const parsedinfo = JSON.parse(userinfo);
+    const response = api.post("/sse/count", {
+      userName: parsedinfo.nickname,
+      buy: false,
+    });
+
+    this.setState({ isBuyModalOpen: !this.isBuyModalOpen });
+  }
+
   render() {
     const localUser = this.state.localUser;
     var chatDisplay = { display: this.state.chatDisplay };
@@ -696,6 +743,38 @@ class ConferenceRoom extends Component {
               </div>
             )}
         </div>
+        <Modal isOpen={this.isBuyModalOpen} toggle={this.dontbuyItem}>
+          <div className="modalDiv" onClick={this.dontbuyItem}>
+            <ClosedButton />
+          </div>
+          <div className="modalSpan">거래 확정하기</div>
+          <div className="pDiv">
+            <p>님께서 거래 희망 버튼을 눌렀습니다.</p>
+            <p>님과 거래를 확정 하시겠습니까?</p>
+            <p>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</p>
+          </div>
+          <div className="buttonsDiv">
+            <button className="greenBtn" onClick={this.buyItem}>
+              확정
+            </button>
+            <button className="redBtn" onClick={this.dontbuyItem}>
+              거절
+            </button>
+          </div>
+        </Modal>
+        <Modal isOpen={this.isOkModalOpen} toggle={this.toggleOkModal}>
+          <ModalDiv>
+            <ClosedButton onClick={this.toggleOkModal} />
+          </ModalDiv>
+          <ModalSpan style={{ marginBottom: "1rem" }}>거래 확정!</ModalSpan>
+          <div className="pDiv">
+            <p>거래 확정이 완료되었습니다.</p>
+            <p>3초 후 자동으로 영상 통화 종료 후 채팅방으로 이동합니다.</p>
+          </div>
+          <div className="buttonsDiv">
+            <button className="greenBtn">채팅방으로 이동</button>
+          </div>
+        </Modal>
       </div>
     );
   }
@@ -718,3 +797,15 @@ class ConferenceRoom extends Component {
   }
 }
 export default ConferenceRoom;
+
+const ModalDiv = styled.div`
+  float: right;
+`;
+
+const ModalSpan = styled.div`
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-top: 3rem;
+  margin-bottom: 0.5rem;
+  color: black;
+`;
