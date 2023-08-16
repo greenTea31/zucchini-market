@@ -11,6 +11,8 @@ import java.util.Date;
 @Data
 public class FindVideoResponse {
 
+    int no;
+
     String link;
 
     Date startTime;
@@ -20,7 +22,8 @@ public class FindVideoResponse {
     Date deleteTime;
 
     @Builder
-    public FindVideoResponse(String link, Date startTime, Date endTime, Date deleteTime) {
+    public FindVideoResponse(int no, String link, Date startTime, Date endTime, Date deleteTime) {
+        this.no = no;
         this.link = link;
         this.startTime = startTime;
         this.endTime = endTime;

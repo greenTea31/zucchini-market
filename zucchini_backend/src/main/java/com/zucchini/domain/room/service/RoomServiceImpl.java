@@ -4,15 +4,13 @@ import com.zucchini.domain.image.service.ImageService;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.domain.ItemDate;
 import com.zucchini.domain.item.dto.response.DateResponse;
+import com.zucchini.domain.item.dto.response.FindItemResponse;
 import com.zucchini.domain.item.repository.ItemRepository;
 import com.zucchini.domain.report.repository.ReportRepository;
 import com.zucchini.domain.room.domain.Message;
 import com.zucchini.domain.room.domain.Room;
 import com.zucchini.domain.room.domain.RoomUser;
-import com.zucchini.domain.room.dto.AddMessageRequest;
-import com.zucchini.domain.room.dto.MessageResponse;
-import com.zucchini.domain.room.dto.RoomItemResponse;
-import com.zucchini.domain.room.dto.RoomResponse;
+import com.zucchini.domain.room.dto.*;
 import com.zucchini.domain.room.repository.MessageRepository;
 import com.zucchini.domain.room.repository.RoomRepository;
 import com.zucchini.domain.room.repository.RoomUserRepository;
@@ -27,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -121,6 +120,28 @@ public class RoomServiceImpl implements RoomService{
         return roomResponseList;
     }
 
+    /**
+     * 채팅방에 참가한 상대방의 정보 가져오기
+     * @param roomNo : 채팅방 번호
+     * @return RoomUserResponse : 채팅방에 참가한 상대방의 정보
+     */
+    public RoomUserResponse findRoomUser(int roomNo) {
+        String currentPrincipalId = getCurrentId();
+        int currentPrincialNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
+        log.info("currentPrincipalNo : {}", currentPrincialNo);
+
+        // 방 번호를 입력받아 그 방에 속한 유저들중 자신이 아닌 사람을 반환합니다.
+        User user = roomUserRepository.findOpponentByRoomAndUser(roomNo, currentPrincialNo);
+
+        RoomUserResponse roomUserResponse = RoomUserResponse.builder()
+                .opponentNickname(user.getNickname())
+                .opponentGrade(user.getGrade())
+                .build();
+
+        log.info("roomUserResponse : {}", roomUserResponse);
+
+        return roomUserResponse;
+    }
 
     /**
      * room을 입력받아 현재 로그인한 유저의 거래 상대자가 누군지 파악합니다.
@@ -132,9 +153,11 @@ public class RoomServiceImpl implements RoomService{
         // 아 채팅만 하고있는데 getOpponent를 어떻게 알아....
         String currentPrincipalId = getCurrentId();
         int currentPrincialNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
+        log.info("currentPrincipalNo : {}", currentPrincialNo);
 
         // 방 번호를 입력받아 그 방에 속한 유저들중 자신이 아닌 사람을 반환합니다.
         User user = roomUserRepository.findOpponentByRoomAndUser(room.getNo(), currentPrincialNo);
+        log.info("user : {}", user);
         return user;
     }
 
@@ -152,6 +175,9 @@ public class RoomServiceImpl implements RoomService{
 
             // 그 방에서 작성된 마지막 메세지를 반환함
             Message message = messageRepository.findTopByRoomOrderByCreatedAtDesc(room);
+
+            // 그 방에서 작성된 메세지가 없으면 방 목록에 보여주지 않음
+            if (message == null) continue;
             Item item = room.getItem();
 
             User opponent = getOpponent(room);
@@ -201,6 +227,7 @@ public class RoomServiceImpl implements RoomService{
         int currentPrincipalNo = userRepository.findById(currentPrincipalId).orElseThrow(() -> new UserException("잘못된 접근입니다.")).getNo();
         List<Room> rooms = roomUserRepository.findAllRoomsByUser(currentPrincipalNo);
         List<RoomResponse> roomResponseList = toResponseList(rooms, currentPrincipalNo);
+        Collections.sort(roomResponseList, (o1, o2) -> o2.getLastMessageCreatedAt().compareTo(o1.getLastMessageCreatedAt()));
         return roomResponseList;
     }
 
@@ -311,12 +338,15 @@ public class RoomServiceImpl implements RoomService{
     public RoomItemResponse getRoomItem(int roomNo) {
         Item item = roomRepository.findItemByRoom(roomNo);
 
+        RoomItemResponse.Seller seller = new RoomItemResponse.Seller(item.getSeller().getNickname()
+                , item.getSeller().getGrade());
+
         RoomItemResponse roomItemResponse = RoomItemResponse.builder()
                 .no(item.getNo())
                 .title(item.getTitle())
                 .price(item.getPrice())
                 .image(getItemImage(item.getNo()))
-                .seller(item.getSeller())
+                .seller(seller)
                 .dateList(getItemDate(item.getDateList()))
                 .build();
 

@@ -8,9 +8,11 @@ import com.zucchini.domain.video.dto.response.FindVideoResponse;
 import com.zucchini.domain.video.repository.VideoRepository;
 import com.zucchini.global.exception.UserException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Component
 public class VideoServiceImpl implements VideoService {
 
     private final VideoRepository videoRepository;
@@ -90,6 +93,7 @@ public class VideoServiceImpl implements VideoService {
             throw new UserException("해당 아이템의 비디오 조회 권한이 없습니다.");
 
         return FindVideoResponse.builder()
+                .no(video.get().getNo())
                 .link(video.get().getLink())
                 .startTime(video.get().getStartTime())
                 .endTime(video.get().getEndTime())
@@ -116,6 +120,15 @@ public class VideoServiceImpl implements VideoService {
         videoRepository.deleteById(no);
     }
 
+    /**
+     * 자정마다 기간이 만료된 비디오 모두 삭제
+     */
+    @Scheduled(cron = "0 0 0 * * *")
+    public void deleteExpiredVideo(){
+        Date now = new Date();
+        videoRepository.deleteByDeleteTimeAfter(now);
+    }
+
     @Override
     public void modifyVideo(int no, String link) {
         Video video = videoRepository.findById(no).get();
@@ -127,12 +140,12 @@ public class VideoServiceImpl implements VideoService {
      * @param no : 비디오 no(PK)
      */
     @Override
-    public void extendVideoDeadLine(int no) {
+    public Date extendVideoDeadLine(int no) {
         Optional<Video> video = videoRepository.findById(no);
         if(!video.isPresent()) throw new NoSuchElementException("해당 비디오가 존재하지 않습니다.");
         if(isExtended(video.get().getEndTime(), video.get().getDeleteTime()))
             throw new IllegalArgumentException("해당 비디오는 이미 연장을 한 상태입니다.");
-        video.get().extendDeleteTime();
+        return video.get().extendDeleteTime();
     }
 
     /**

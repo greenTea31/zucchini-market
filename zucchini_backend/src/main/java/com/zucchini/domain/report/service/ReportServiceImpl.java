@@ -1,4 +1,5 @@
 package com.zucchini.domain.report.service;
+
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.repository.ItemRepository;
 import com.zucchini.domain.report.domain.Report;
@@ -6,12 +7,13 @@ import com.zucchini.domain.report.dto.AddReportRequest;
 import com.zucchini.domain.report.repository.ReportRepository;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.repository.UserRepository;
-import com.zucchini.global.config.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.NoSuchElementException;
@@ -33,13 +35,12 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public int addReport(@Valid AddReportRequest report) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
-        String currentPrincipalId = nowLogInDetail.getId();
+        String currentPrincipalId = getCurrentId();
 
         // User에 reported가 없으면 예외 -> 필요
         User reporteduser = userRepository.findByNickname(report.getReported()).orElseThrow(() -> new NoSuchElementException("신고할 회원이 없습니다."));
-
+        // 프론트에서 넘어오는 reported는 nickname이라서 id로 변경해주는 작업이 필요함
+        report.setReported(reporteduser.getId());
         // item table에 itemNo가 없으면 예외
         Item item = itemRepository.findById(report.getItemNo()).orElseThrow(() -> new NoSuchElementException("해당 아이템이 없습니다."));
 
@@ -51,7 +52,7 @@ public class ReportServiceImpl implements ReportService {
         Date realnow = new Date();
         Date realbefore24Hour = new Date(realnow.getTime() - (1000 * 60 * 60 * 24));
 
-        if (reportRepository.findByReporterAndReportedAndReportDateBetween(currentPrincipalId, report.getReported(), realnow, realbefore24Hour) != null) {
+        if (reportRepository.findByReporterAndReportedAndReportDateBetween(currentPrincipalId, report.getReported(), realbefore24Hour, realnow) != null) {
             throw new IllegalArgumentException("24시간 이내에는 같은 회원에게 신고할 수 없습니다.");
         }
 
@@ -68,4 +69,15 @@ public class ReportServiceImpl implements ReportService {
         reportRepository.save(newReport);
         return newReport.getNo();
     }
+
+    /**
+     * 스프링 시큐리티 인증을 통과하여 저장된 회원의 인증 객체에서 아이디 추출
+     * @return String : 아이디
+     */
+    private String getCurrentId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        return principal.getUsername();
+    }
+
 }

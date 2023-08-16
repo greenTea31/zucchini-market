@@ -54,31 +54,6 @@ public class ItemServiceImpl implements ItemService {
     private final ImageService imageService;
 
     /**
-     * 상품 전체 조회
-     * @param keyword : 검색어
-     * @return List<FindItemListResponse> : 상품 전체 리스트
-     */
-    @Override
-    public List<FindItemListResponse> findItemList(String keyword) {
-        List<Item> itemList = itemRepository.findItemAllByUser(keyword);
-
-        return itemList.stream().map(
-                item -> FindItemListResponse.builder()
-                        .no(item.getNo())
-                        .title(item.getTitle())
-                        .updatedAt(item.getUpdatedAt())
-                        .content(item.getContent())
-                        .price(item.getPrice())
-                        .status(item.getStatus())
-                        .image(getItemImage(item.getNo()))
-                        .likeCount(userItemLikeRepository.countById_ItemNo(item.getNo()))
-                        .categoryList(getCategory(item.getCategoryList()))
-                        .view(item.getView())
-                        .build()
-        ).collect(Collectors.toList());
-    }
-
-    /**
      * 상품 전체 조회 (페이징)
      * @param category : 카테고리
      * @param keyword : 검색어
@@ -455,7 +430,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         item.setStatus(1);
-        item.setBuyer(userRepository.findById(buyer).orElseThrow(() -> new NoSuchElementException("존재하지 않는 구매자입니다.")));
+        item.setBuyer(userRepository.findByNickname(buyer).orElseThrow(() -> new NoSuchElementException("존재하지 않는 구매자입니다.")));
     }
 
     /**

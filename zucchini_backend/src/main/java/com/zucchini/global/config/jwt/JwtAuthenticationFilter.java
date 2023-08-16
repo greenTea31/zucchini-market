@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessToken = getToken(request);
         log.info("accessToken==========================={}", accessToken);
-        if (accessToken != null) {
+        if (accessToken != null && !accessToken.equals("undefined")) {
             checkLogout(accessToken);
             String id = jwtTokenUtil.getUsername(accessToken);
             if (id != null) {

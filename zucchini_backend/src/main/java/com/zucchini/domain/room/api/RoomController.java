@@ -119,4 +119,16 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getRoomItem(roomNo));
     }
 
+    /**
+     * 특정 방의 채팅 상대방 정보 가져오기
+     * @param roomNo : 방 번호
+     * @return RoomUserResponse : 채팅 상대방의 정보
+     */
+    @GetMapping("/user/{roomNo}")
+    public ResponseEntity<RoomUserResponse> getRoomUser(@PathVariable int roomNo) {
+        return ResponseEntity.ok(roomService.findRoomUser(roomNo));
+    }
+
+    // 상대방 닉네임, 내 닉네임, itemNo 보고 confernece 있으면 true, 아니면 false 리턴해주는 api
+
 }

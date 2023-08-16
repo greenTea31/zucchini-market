@@ -18,7 +18,7 @@ public class Video {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int no;
+    private Integer no;
 
     @ManyToOne(targetEntity = Item.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_no", insertable = false, updatable = false)
@@ -52,9 +52,10 @@ public class Video {
     }
 
     // 비즈니스 메서드
-    public void extendDeleteTime(){
+    public Date extendDeleteTime(){
         long oneDayInMillis = 24 * 60 * 60 * 1000 * 7; // 7일의 밀리초 값
         this.deleteTime = new Date(this.deleteTime.getTime() + oneDayInMillis);
+        return this.deleteTime;
     }
 
     // 비디오 링크 저장

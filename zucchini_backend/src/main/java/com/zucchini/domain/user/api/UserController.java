@@ -4,7 +4,6 @@ import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
-import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.domain.user.dto.response.UserInfoResponse;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.domain.user.service.UserService;
@@ -139,8 +138,11 @@ public class UserController {
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
+        log.info("cookies : {}", cookies);
 
         String refreshToken = JwtHeaderUtilEnums.GRANT_TYPE.getValue();
+
+        log.info("refreshToken : {}", refreshToken);
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -149,6 +151,9 @@ public class UserController {
                 }
             }
         }
+
+        log.info("refreshToken : {}", refreshToken);
+
         TokenDto token = userService.reissue(refreshToken);
         return ResponseEntity.ok()
                 .header("Set-Cookie", jwtCookieName + "=" + token.getRefreshToken() + "; HttpOnly; Max-Age=" + 1000L * 60 * 60 * 24 + "; SameSite=None; Secure")
@@ -245,16 +250,15 @@ public class UserController {
 
     /**
      * 회원 정보 수정
-     * @param id : 아이디
      * @param modifyUserRequest : 회원 정보 수정 요청 DTO
      * @return
      * 200 : 회원 정보 수정 성공
      * 400 : 회원 정보 수정 양식 잘못됨
      * 500 : 서버 내 에러
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> modifyUser(@PathVariable String id, @Valid @RequestBody ModifyUserRequest modifyUserRequest){
-        userService.modifyUser(id, modifyUserRequest);
+    @PutMapping
+    public ResponseEntity<Void> modifyUser(@Valid @RequestBody ModifyUserRequest modifyUserRequest){
+        userService.modifyUser(modifyUserRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -309,9 +313,9 @@ public class UserController {
      * 500 : 서버 내 에러
      */
     @GetMapping("/item/like")
-    public ResponseEntity<PageResponse<FindItemListResponse>> findLikeItemList(@RequestParam String keyword, @RequestParam int page) {
+    public ResponseEntity<PageResponse<FindItemListResponse>> findLikeItemList(@RequestParam String keyword, @RequestParam int page, int category) {
         Pageable pageable = PageRequest.of(page - 1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
-        PageResponse<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(keyword, pageable);
+        PageResponse<FindItemListResponse> userLikeItemList = userService.findUserLikeItemList(keyword, pageable, category);
         return ResponseEntity.ok(userLikeItemList);
     }
 
@@ -324,9 +328,9 @@ public class UserController {
      * 500 : 서버 내 에러
      */
     @GetMapping("/deal/sell")
-    public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page) {
+    public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page, @RequestParam int category) {
         Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
-        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, null);
+        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, null, category);
         return ResponseEntity.ok(sellDealHistory);
     }
 
@@ -339,23 +343,23 @@ public class UserController {
      * 500 : 서버 내 에러
      */
     @GetMapping("/deal/buy")
-    public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page) {
+    public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page, @RequestParam int category) {
         Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
-        PageResponse<FindItemListResponse> buyDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, null);
+        PageResponse<FindItemListResponse> buyDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, null, category);
         return ResponseEntity.ok(buyDealHistory);
     }
 
     @GetMapping("/deal/sell/{username}")
-    public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username) {
+    public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username, @RequestParam int category) {
         Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
-        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, username);
+        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, username, category);
         return ResponseEntity.ok(sellDealHistory);
     }
 
     @GetMapping("/deal/buy/{username}")
-    public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username) {
+    public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username, @RequestParam int category) {
         Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
-        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, username);
+        PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, username, category);
         return ResponseEntity.ok(sellDealHistory);
     }
 
@@ -386,8 +390,4 @@ public class UserController {
         return ResponseEntity.ok(userInfoResponse);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity Test() {
-      return ResponseEntity.ok("Hello World");
-    }
 }

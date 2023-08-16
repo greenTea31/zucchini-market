@@ -19,7 +19,7 @@ public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int no;
+    private Integer no;
 
     @Column(name = "reporter")
     private String reporter;
@@ -37,13 +37,13 @@ public class Report {
     private Date reportDate;
 
     @Column(name = "item_no")
-    private int itemNo;
+    private Integer itemNo;
 
     @Column(name = "room_no")
-    private int roomNo;
+    private Integer roomNo;
 
     @Builder
-    public Report(String reporter, String reported, String reason, int itemNo, int roomNo) {
+    public Report(String reporter, String reported, String reason, Integer itemNo, Integer roomNo) {
         this.reporter = reporter;
         this.reported = reported;
         this.reason = reason;

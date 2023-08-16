@@ -3,6 +3,8 @@ package com.zucchini.domain.video.service;
 import com.zucchini.domain.video.dto.request.AddVideoRequest;
 import com.zucchini.domain.video.dto.response.FindVideoResponse;
 
+import java.util.Date;
+
 public interface VideoService {
 
     /**
@@ -15,8 +17,9 @@ public interface VideoService {
     /**
      * 비디오 기한 연장
      * @param no : 비디오 no(PK)
+     * @return 연장된 비디오 기한 반환
      */
-    void extendVideoDeadLine(int no);
+    Date extendVideoDeadLine(int no);
 
     /**
      * 비디오 조회

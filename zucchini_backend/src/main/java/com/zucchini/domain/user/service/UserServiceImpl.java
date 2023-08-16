@@ -10,7 +10,6 @@ import com.zucchini.domain.user.domain.UserItemLike;
 import com.zucchini.domain.user.domain.UserItemLikeId;
 import com.zucchini.domain.user.dto.request.*;
 import com.zucchini.domain.user.dto.response.FindUserResponse;
-import com.zucchini.domain.user.dto.response.UserDealHistoryResponse;
 import com.zucchini.domain.user.repository.UserItemLikeRepository;
 import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.common.PageResponse;
@@ -232,19 +231,16 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 회원 정보 수정
-     * @param id : 아이디
      * @param modifyUserRequest : 회원 정보 수정 요청 DTO
      */
     @Override
-    public void modifyUser(String id, ModifyUserRequest modifyUserRequest) {
+    public void modifyUser(ModifyUserRequest modifyUserRequest) {
+        String loginId = getCurrentId();
         // 기본키로 회원 조회
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userRepository.findById(loginId);
         if(!user.isPresent())
             throw new NoSuchElementException("해당 회원이 존재하지 않습니다.");
-        String loginId = getCurrentId();
         User loginUser = user.get();
-        if(!loginId.equals(id))
-            throw new UserException("잘못된 접근입니다. 로그인한 아이디의 회원 정보만 수정할 수 있습니다.");
         loginUser.modifyUser(modifyUserRequest);
     }
 
@@ -292,7 +288,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public TokenDto login(LoginRequest loginRequest) {
-        User user = userRepository.findById(loginRequest.getId()).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+        User user = userRepository.findById(loginRequest.getId()).orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이디입니다."));
         if(user.getIsLocked()) throw new UserException("정지된 회원입니다.");
         checkPassword(loginRequest.getPassword(), user.getPassword());
 
@@ -353,12 +349,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public TokenDto reissue(String refreshToken) {
         refreshToken = resolveToken(refreshToken);
+        log.info("serviceImpl refreshToken : {}", refreshToken);
         String username = getCurrentUsername(refreshToken);
+        log.info("serviceImpl username : {}", username);
         RefreshToken redisRefreshToken = refreshTokenRedisRepository.findById(username).orElseThrow(NoSuchElementException::new);
+        log.info("serviceImpl redisRefreshToken : {}", redisRefreshToken);
 
         if (refreshToken.equals(redisRefreshToken.getRefreshToken())) {
+            log.info("레디스에 있는거랑 토큰이 일치하네요");
             return reissueRefreshToken(refreshToken, username);
         }
+
+        log.info("레디스에 있는거랑 토큰이 일치하지 않네요");
         throw new IllegalArgumentException("토큰이 일치하지 않습니다.");
     }
 
@@ -444,23 +446,11 @@ public class UserServiceImpl implements UserService {
      * @return PageResponse<FindItemListResponse> : 상품 목록 조회 DTO 리스트
      */
     @Override
-    public PageResponse<FindItemListResponse> findUserLikeItemList(String keyword, Pageable pageable) {
+    public PageResponse<FindItemListResponse> findUserLikeItemList(String keyword, Pageable pageable, int category) {
         String loginId = getCurrentId();
-        Page<Item> pageItemList = userItemLikeRepository.findPageUserLikeItems(loginId, keyword, pageable);
+        Page<Item> pageItemList = userItemLikeRepository.findPageUserLikeItems(loginId, keyword, pageable, category);
 
-        return new PageResponse<>(pageItemList.getContent().stream()
-                .map(userItemLike -> FindItemListResponse.builder()
-                        .no(userItemLike.getNo())
-                        .title(userItemLike.getTitle())
-                        .updatedAt(userItemLike.getUpdatedAt())
-                        .content(userItemLike.getContent())
-                        .price(userItemLike.getPrice())
-                        .status(userItemLike.getStatus())
-                        .image(getItemImage(userItemLike.getNo()))
-                        .likeCount(userItemLikeRepository.countById_ItemNo(userItemLike.getNo()))
-                        .categoryList(getCategory(userItemLike.getCategoryList()))
-                        .build())
-                .collect(Collectors.toList()), pageItemList.getTotalPages());
+        return getFindItemListResponsePageResponse(pageItemList);
     }
 
     /**
@@ -475,7 +465,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<FindItemListResponse> findUserDealHistoryList(String keyword, boolean flag, Pageable pageable, String name) {
+    public PageResponse<FindItemListResponse> findUserDealHistoryList(String keyword, boolean flag, Pageable pageable, String name, int category) {
         String id = null;
 
         if (name == null) {
@@ -490,9 +480,13 @@ public class UserServiceImpl implements UserService {
         if (flag) {
             pageItemList = userRepository.findPageBuyListByUser(id, keyword, pageable);
         } else {
-            pageItemList = userRepository.findPageSellListByUser(id, keyword, pageable);
+            pageItemList = userRepository.findPageSellListByUser(id, keyword, pageable, category);
         }
 
+        return getFindItemListResponsePageResponse(pageItemList);
+    }
+
+    private PageResponse<FindItemListResponse> getFindItemListResponsePageResponse(Page<Item> pageItemList) {
         return new PageResponse<>(pageItemList.getContent().stream().map(item -> FindItemListResponse.builder().no(item.getNo())
                 .title(item.getTitle())
                 .updatedAt(item.getUpdatedAt())

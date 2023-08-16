@@ -20,7 +20,7 @@ public class RoomItemResponse {
 
     private String image;
 
-    private User seller;
+    private Seller seller;
 
     private List<DateResponse> dateList;
 
