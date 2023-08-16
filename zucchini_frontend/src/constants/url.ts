@@ -1,1 +1,2 @@
-export const BASE_URL = "http://i9a209.p.ssafy.io/api/";
+export const BASE_URL = "http://localhost:8080/api/";
+//deploy url
