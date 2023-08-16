@@ -6,6 +6,7 @@ import { useState } from "react";
 import Modal from "../components/Common/Modal";
 import ClosedButton from "../components/Button/ClosedButton";
 import axios from "axios";
+import { BASE_URL } from "../constants/url";
 
 export default function Conference() {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +35,7 @@ export default function Conference() {
   const handleReport = () => {
     // 신고 데이터 전송
     axios
-      .post("http://localhost:8080/api/report", {
+      .post(BASE_URL + "report", {
         reporter: "swan",
         reported: "abc",
         reason: reportReason,

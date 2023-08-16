@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { getUser, removeUser } from "../hooks/useLocalStorage";
 import { getUserInfo } from "../hooks/useUserInfo";
+import { BASE_URL } from "../constants/url";
 
 interface IUser {
   id: string;
@@ -67,7 +68,7 @@ export default function UpdateUser() {
   const handleDeleteAccount = async (): Promise<void> => {
     try {
       // 회원 탈퇴 api
-      const response = await api.delete(`http://localhost:8080/api/user`);
+      const response = await api.delete(BASE_URL + `user`);
       if (response.status === 200) {
         alert("그동안 애호박 마켓을 이용해주셔서 감사합니다..");
         // 탈퇴 후 메인 페이지로 리다이렉트

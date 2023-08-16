@@ -10,6 +10,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { Pagination } from "@mui/material";
 import api from "../utils/api";
+import { BASE_URL } from "../constants/url";
 // interface Item {
 //   id: number;
 // }
@@ -28,7 +29,8 @@ export default function ItemList() {
   const getItems = async () => {
     try {
       const response = await axios.get(
-        `http://i9a209.p.ssafy.io/api/item?category=${selectedCategory}&keyword=${keyword}&page=${page}`
+        BASE_URL +
+          `item?category=${selectedCategory}&keyword=${keyword}&page=${page}`
       );
       setItems(response.data.content);
       setTotalPages(response.data.totalPages);

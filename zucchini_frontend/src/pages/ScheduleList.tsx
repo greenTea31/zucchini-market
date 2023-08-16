@@ -5,6 +5,7 @@ import axios from "axios";
 import Loading from "../components/Loading/Loading";
 import { motion } from "framer-motion";
 import { getUser } from "../hooks/useLocalStorage";
+import { BASE_URL } from "../constants/url";
 interface Item {
   title: string;
   confirmedDate: string;
@@ -32,7 +33,7 @@ export default function ScheduleList() {
     const token = "Bearer " + getUser();
 
     axios
-      .get("http://i9a209.p.ssafy.io/api/reservation", {
+      .get(BASE_URL + "api/reservation", {
         headers: { Authorization: token },
       })
       .then((res) => {

@@ -15,9 +15,9 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import api from "../../utils/api";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { getUserInfo } from "../../hooks/useUserInfo";
-
+import { BASE_URL } from "../../constants/url.js";
 var localUser = new UserModel();
-const APPLICATION_SERVER_URL = "http://i9a209.p.ssafy.io/api/";
+const APPLICATION_SERVER_URL = BASE_URL;
 
 class ConferenceRoom extends Component {
   constructor(props) {
@@ -62,7 +62,7 @@ class ConferenceRoom extends Component {
     this.itemNo = await this.getItemNo();
 
     const headers = { Authorization: `Bearer ${getUser()}` };
-    const sse = new EventSourcePolyfill("http://localhost:8080/api/sse", {
+    const sse = new EventSourcePolyfill(BASE_URL + "sse", {
       headers: headers,
     });
 

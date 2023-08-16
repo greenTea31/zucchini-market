@@ -18,6 +18,7 @@ import { Credentials } from "aws-sdk";
 import { v1, v3, v4, v5 } from "uuid";
 import api from "../utils/api";
 import { useNavigate } from "react-router";
+import { BASE_URL } from "../constants/url";
 
 export default function CreateItem() {
   // sdk-s3
@@ -85,9 +86,7 @@ export default function CreateItem() {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/item/category"
-        );
+        const response = await axios.get(BASE_URL + "item/category");
         // const response = await api.get("item/category");
         const categoryNames = response.data.map((item: any) => item.category);
         setAllCategories(categoryNames);

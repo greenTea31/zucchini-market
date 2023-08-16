@@ -17,6 +17,7 @@ import ClosedButton from "../components/Button/ClosedButton";
 import Report from "../components/Common/Report";
 import GradeImage from "../components/Common/GradeImage";
 import GradeText from "../components/Common/GradeText";
+import { BASE_URL } from "../constants/url";
 
 interface ISeller {
   nickname: string;
@@ -44,7 +45,7 @@ export default function UserPage() {
   async function getItems() {
     try {
       const response = await api.get(
-        `http://localhost:8080/api/user/deal/sell/${username}?keyword=${keyword}&page=${page}`
+        BASE_URL + `user/deal/sell/${username}?keyword=${keyword}&page=${page}`
       );
       setUsername(response.data.username);
       setItems(response.data.content);
