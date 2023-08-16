@@ -53,7 +53,6 @@ export default function Report({
         onCancel();
       });
     } catch (error: any) {
-      console.error(error.response.data);
       setAlertMessage(`${error.response.data}`);
       alertToggle();
     }

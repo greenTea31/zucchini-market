@@ -3,10 +3,12 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import api from "../utils/api";
-import ReactPlayer from 'react-player';
+import ReactPlayer from "react-player";
 
 export default function ReplaySellVideo() {
   const [video, setVideo] = useState();
+  const [title, setTitle] = useState("");
+
   const location = useLocation();
   const getVideo = async () => {
     try {
@@ -15,6 +17,7 @@ export default function ReplaySellVideo() {
       );
       console.log(response.data.link);
       setVideo(response.data.link);
+      setTitle(response.data.itemTitle);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -33,12 +36,15 @@ export default function ReplaySellVideo() {
       <div>
         <TitleSpan>
           {/* 타이틀 나중에 상품 정보로 바꿔줘야 함!!! */}
-          갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
+          {title}
         </TitleSpan>
         <VideoScreenDiv>
-          <ReactPlayer url={video} controls // 재생 컨트롤 표시
+          <ReactPlayer
+            url={video}
+            controls // 재생 컨트롤 표시
             width="100%"
-            height="100%"/>
+            height="100%"
+          />
         </VideoScreenDiv>
       </div>
     </ContainerDiv>
