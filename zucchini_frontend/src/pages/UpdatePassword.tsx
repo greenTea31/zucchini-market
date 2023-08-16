@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function UpdatePassword() {
   const {
@@ -15,18 +15,16 @@ export default function UpdatePassword() {
   });
 
   const password = watch("password"); // "password" 필드의 값을 감시
-
-  /*
-   * 이메일 인증 다시?
-   * 비번 빼고 기존 정보 채워주는 통신 필요
-   * 닉네임 중복확인 통신, 로직필요
-   * 비번 전과 동일한 형식인지 통신, 로직필요
-   */
-
   const onSubmit = (data: any) => {
     // 제출 통신 필요
 
     alert(JSON.stringify(data));
+  };
+
+  const navigate = useNavigate();
+
+  const goback = () => {
+    navigate(-1);
   };
 
   return (
@@ -73,9 +71,7 @@ export default function UpdatePassword() {
           </StyledMessage>
           <StyledButtonDiv>
             <StyledButton>수정</StyledButton>
-            <StyledButton>
-              <Link to={"/mypage"}>취소</Link>
-            </StyledButton>
+            <StyledButton onClick={goback}>취소</StyledButton>
           </StyledButtonDiv>
         </StyledForm>
       </StyledDiv>

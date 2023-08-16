@@ -7,12 +7,18 @@ import FullWidthButton from "../Button/FullWidthButton";
 
 export default function Footer() {
   const [isOpen, setIsOpen] = useState(false);
+  const [modalText, setModalText] = useState("");
 
   const toggle = () => {
     setIsOpen(!isOpen);
+    setModalText(""); // 닫힐 때마다 모달 내용 초기화
   };
 
   const askClosed = () => {
+    if (modalText.trim() === "") {
+      return;
+    }
+
     alert(
       "애호박마켓에 문의해주셔서 감사합니다! \n답변은 이메일로 발송됩니다."
     );
@@ -41,7 +47,12 @@ export default function Footer() {
               <option>신고 / 이용제한</option>
               <option>기타</option>
             </ModalSelect>
-            <ModalTextarea placeholder="상세 내용을 입력해주세요.."></ModalTextarea>
+            <ModalTextarea
+              placeholder="상세 내용을 입력해주세요.."
+              value={modalText}
+              onChange={(e) => setModalText(e.target.value)}
+            ></ModalTextarea>
+            {modalText.trim() === "" && <AlertP>내용을 작성해주세요..</AlertP>}
           </SpanDiv>
           <ButtonDiv>
             <FullWidthButton onClick={askClosed}>문의</FullWidthButton>
@@ -127,4 +138,11 @@ const ModalTextarea = styled.textarea`
 
 const LogoSpan = styled.span`
   color: gray;
+`;
+
+const AlertP = styled.p`
+  display: flex;
+  padding-left: 0.2rem;
+  color: tomato;
+  font-size: 0.9rem;
 `;

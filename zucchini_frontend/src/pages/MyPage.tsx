@@ -44,7 +44,7 @@ export default function MyPage() {
     >
       <UpperDiv>
         <TitleSpan>마이페이지</TitleSpan>
-        <SubTitleP>{user?.id} 님 안녕하세요!</SubTitleP>
+        <SubTitleP>{user?.nickname} 님 안녕하세요!</SubTitleP>
         <MyInfoDiv>
           <GradeImg>
             {/* <Img src={getImage(user?.grade)} /> */}
@@ -53,9 +53,9 @@ export default function MyPage() {
           <InfoPDiv>
             <div>
               <InfoTitleP>개인정보</InfoTitleP>
+              <InfoP>아이디 : {user?.id}</InfoP>
               <InfoP>이메일 : {user?.email}</InfoP>
               <InfoP>전화번호 : {user?.phone}</InfoP>
-              <InfoP>닉네임 : {user?.nickname}</InfoP>
               <InfoP>성별 : {user?.gender ? user?.gender : "선택안함"}</InfoP>
             </div>
             <div>
