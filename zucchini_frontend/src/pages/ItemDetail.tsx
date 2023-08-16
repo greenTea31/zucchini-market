@@ -141,7 +141,6 @@ export default function ItemDetail() {
   }, []);
 
   // 채팅방 이동
-
   const toChatRoom = async () => {
     if (!sessionStorage.getItem("USER")) {
       alert("로그인이 필요합니다.");
@@ -171,6 +170,17 @@ export default function ItemDetail() {
       console.error(error);
     }
   };
+
+  // 게시글 삭제
+  const handleDelete = async () => {
+    try {
+      await api.delete(`item/${item?.no}`);
+      navigate(-1);
+    } catch (error) {
+      console.error("게시글 삭제 실패:", error);
+    }
+  };
+
   const buttonStyle = {
     backgroundColor: "transparent",
     border: "none",
@@ -393,7 +403,7 @@ export default function ItemDetail() {
               <SelectBtn onClick={() => navigate(`/item/${item?.no}/modify`)}>
                 수정하기
               </SelectBtn>
-              <SelectBtn>삭제하기</SelectBtn>
+              <SelectBtn onClick={handleDelete}>삭제하기</SelectBtn>
             </>
           )}
         </UpperRightDiv>
