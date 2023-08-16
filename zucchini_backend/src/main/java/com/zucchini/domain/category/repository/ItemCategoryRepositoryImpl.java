@@ -1,5 +1,6 @@
 package com.zucchini.domain.category.repository;
 
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zucchini.domain.category.domain.ItemCategory;
@@ -42,13 +43,17 @@ public class ItemCategoryRepositoryImpl implements ItemCategoryRepositoryCustom 
                 .fetchJoin()
                 .join(ic.item, i)
                 .fetchJoin()
-                .join(ic.item.seller, u)
-                .fetchJoin()
                 .where(c.category.eq(category)
                         .and(i.title.contains(keyword))
-                        .and(u.isDeleted.eq(false))
-                        .and(u.isLocked.eq(false))
-                )
+                        .and(
+                                i.in(JPAExpressions
+                                        .select(i)
+                                        .from(i)
+                                        .join(i.seller, u)
+                                        .where(u.isDeleted.eq(false)
+                                                .and(u.isLocked.eq(false)))
+                        )
+                ))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 // 상품 번호 오름차순 정렬(만약 정렬 옵션 추가 시 여기 바꿔줘야 함)
@@ -62,8 +67,15 @@ public class ItemCategoryRepositoryImpl implements ItemCategoryRepositoryCustom 
                 .join(ic.item, i)
                 .where(c.category.eq(category)
                         .and(i.title.contains(keyword))
-                        .and(u.isDeleted.eq(false))
-                        .and(u.isLocked.eq(false)));
+                        .and(
+                                i.in(JPAExpressions
+                                        .select(i)
+                                        .from(i)
+                                        .join(i.seller, u)
+                                        .where(u.isDeleted.eq(false)
+                                                .and(u.isLocked.eq(false)))
+                                )
+                        ));
 
         List<Item> itemList = itemCategoryList.stream().map(
                 itemCategory -> itemCategory.getItem()
