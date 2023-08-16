@@ -93,8 +93,8 @@ export default function ReplayBuyVideo() {
   };
 
   // 별을 눌렀을 때 별의 개수를 StarRating에 저장
-  const handleStarClick = (rating: number) => {
-    setStarRating(rating);
+  const handleStarClick = (grade: number) => {
+    setStarRating(grade);
   };
 
   // 별점 통신
@@ -106,8 +106,12 @@ export default function ReplayBuyVideo() {
     }
 
     try {
-      // 닉네임, 아이템 번호, 점수 넘겨주기`
-      await api.post("/grade", { grade: starRating });
+      // 닉네임, 아이템 번호, 점수 넘겨주기
+      await api.post("/grade", {
+        gradeRecipient: seller,
+        itemNo: itemNo,
+        grade: starRating,
+      });
       setIsStar(false);
       setIsConfirm(true);
     } catch (error: any) {
