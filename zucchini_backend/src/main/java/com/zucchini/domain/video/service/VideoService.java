@@ -39,6 +39,6 @@ public interface VideoService {
      * @param no
      * @param link
      */
-    void modifyVideo(int no, String link);
+//    void modifyVideo(int no, String link);
 
 }

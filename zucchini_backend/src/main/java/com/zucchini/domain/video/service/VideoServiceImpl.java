@@ -132,11 +132,11 @@ public class VideoServiceImpl implements VideoService {
         videoRepository.deleteByDeleteTimeAfter(now);
     }
 
-    @Override
-    public void modifyVideo(int no, String link) {
-        Video video = videoRepository.findById(no).get();
-        video.setLink(link);
-    }
+//    @Override
+//    public void modifyVideo(int no, String link) {
+//        Video video = videoRepository.findById(no).get();
+//        video.setLink(link);
+//    }
 
     /**
      * 비디오 기한 7일 연장
