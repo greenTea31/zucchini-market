@@ -4,8 +4,32 @@ import { ErrorMessage } from "@hookform/error-message";
 import { motion } from "framer-motion";
 import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { getUser } from "../hooks/useLocalStorage";
+import { getUserInfo } from "../hooks/useUserInfo";
+
+interface IUser {
+  id: string;
+  nickname: string;
+  name: string;
+  phone: string;
+  gender: boolean | null;
+  email: string;
+  reportCount: number;
+  grade: number;
+  dealCount: number;
+  isLocked: number;
+}
 
 export default function UpdateUser() {
+  const [user, setUser] = useState<IUser>(
+    JSON.parse(sessionStorage.getItem("USER_INFO") as string)
+  );
+  const [nickname, setNickname] = useState(user.nickname);
+  const [phone, setPhone] = useState(user.phone);
+  const [gender, setGender] = useState(user.gender);
+
   const {
     register,
     handleSubmit,
@@ -17,8 +41,25 @@ export default function UpdateUser() {
 
   const onSubmit = (data: any) => {
     // 제출 통신 필요
+    console.log(nickname, phone, gender);
+    api.put("/user", {
+      nickname: nickname,
+      phone: phone,
+      gender: gender,
+    });
 
-    alert(JSON.stringify(data));
+    const updatedUser = {
+      ...user,
+      nickname: nickname,
+      phone: phone,
+      gender: gender,
+    };
+
+    setUser(updatedUser);
+
+    sessionStorage.setItem("USER_INFO", JSON.stringify(updatedUser));
+
+    navigate("/mypage");
   };
 
   const navigate = useNavigate();
@@ -27,7 +68,7 @@ export default function UpdateUser() {
     try {
       // 회원 탈퇴 api
       const response = await api.delete(`http://localhost:8080/api/user`);
-      if (response.status === 204) {
+      if (response.status === 200) {
         alert("그동안 애호박 마켓을 이용해주셔서 감사합니다..");
         // 탈퇴 후 메인 페이지로 리다이렉트
         navigate("/main");
@@ -49,6 +90,25 @@ export default function UpdateUser() {
     }
   };
 
+  const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(event.target.value);
+  };
+
+  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPhone(event.target.value);
+  };
+
+  const handleGenderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    if (selectedValue === "True") {
+      setGender(true);
+    } else if (selectedValue === "False") {
+      setGender(false);
+    } else if (selectedValue === "null") {
+      setGender(null);
+    }
+  };
+
   return (
     <StyledAll
       initial={{ opacity: 0 }}
@@ -67,32 +127,54 @@ export default function UpdateUser() {
           <Input
             type="text"
             placeholder="닉네임"
-            {...register("nickname", { required: true })}
+            defaultValue={user.nickname}
+            {...register("nickname", {
+              required: true,
+              onChange: (value) => {
+                handleNicknameChange(value);
+              },
+            })}
           />
           <Input
-            type="number"
+            type="text"
             placeholder="휴대폰번호(- 없이 입력해주세요)"
-            {...register("phoneNumber", { required: true })}
+            defaultValue={user.phone}
+            {...register("phone", {
+              required: true,
+              onChange: (value) => {
+                handlePhoneChange(value);
+              },
+            })}
           />
           <GenderSelect
-            defaultValue={""}
-            {...register("gender", { required: true })}
+            defaultValue={
+              user.gender === null ? "null" : user.gender ? "True" : "False"
+            }
+            {...register("gender", {
+              required: true,
+              onChange: (value) => {
+                handleGenderChange(value);
+              },
+            })}
           >
             <option value="">-- 성별 선택 --</option>
-            <option value="female">여성</option>
-            <option value="male">남성</option>
-            <option value="none">선택 안함</option>
+            <option value="False">여성</option>
+            <option value="True">남성</option>
+            <option value="null">선택 안함</option>
           </GenderSelect>
 
           <StyledButtonDiv>
             <StyledButton>수정</StyledButton>
           </StyledButtonDiv>
-          <RedBtn onClick={handleDeleteButtonClick}>탈퇴</RedBtn>
+          <RedBtn onClick={handleDeleteButtonClick} type="button">
+            탈퇴
+          </RedBtn>
         </StyledForm>
       </StyledDiv>
     </StyledAll>
   );
 }
+
 const StyledAll = styled(motion.div)`
   display: flex;
   justify-content: center;
