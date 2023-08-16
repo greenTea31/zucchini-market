@@ -68,7 +68,10 @@ export default function LikeList() {
     >
       <div>
         <TitleSpan>나의 찜한 목록</TitleSpan>
-        <CategorySecond setSelectedCategory={setSelectedCategory} />
+        <CategorySecond
+          setSelectedCategory={setSelectedCategory}
+          setKeyword={setKeyword}
+        />
         <Search setKeyword={setKeyword} getItems={getItems} keyword={keyword} />
       </div>
       <LowerDiv>

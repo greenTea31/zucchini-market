@@ -1,27 +1,28 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const categories = ["전체보기", "판매중", "예약중", "판매완료"];
+const categories = ["판매중", "예약중", "판매완료"];
 
-export default function CategorySecond({ setSelectedCategory }: any) {
-  const [isActive, setIsActive] = useState(false);
-
-  function handleClick() {
-    setIsActive(!isActive);
-  }
-
+export default function CategorySecond({
+  setSelectedCategory,
+  setKeyword,
+}: any) {
   const onClick = (index: number) => {
-    setSelectedCategory(index - 1);
+    setSelectedCategory(index);
   };
+
+  const entireCategory = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setSelectedCategory(-1);
+    // setKeyword();
+  };
+
+  // useEffect(() => {}, []);
 
   return (
     <CategoryDiv>
+      <CategoryBtn onClick={entireCategory}>전체보기</CategoryBtn>
       {categories.map((category, index) => (
-        <CategoryBtn
-          key={category}
-          onClick={() => onClick(index)}
-          className={isActive ? "active" : ""}
-        >
+        <CategoryBtn key={index} onClick={() => onClick(index)}>
           {category}
         </CategoryBtn>
       ))}
