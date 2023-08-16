@@ -177,13 +177,14 @@ span.triangle {
   flex-direction: row;
 }
 #messageInput input {
-  width: 85%;
+  width: 80%;
   height: 100%;
   border: none;
   outline: none;
   font-size: 14px;
   background-color: #f6f6f6;
   color: #000000;
+  padding-right: 1rem;
 }
 
 #sendButton {

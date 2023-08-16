@@ -26,6 +26,7 @@ export default function ScheduleEach(props: IProps) {
         {moment(props?.item?.confirmedDate).format("hh시 mm분")}
       </TimeP>
       <TitleP>{props?.item?.title}</TitleP>
+      {/* 버튼 뿐만 아니라 내역 전체가 시간 지나면 안뜨게끔... */}
       {/* {date1.diff(now, "minute") >= -10 && date1.diff(now, "minute") <= 30 ? (
         <Link
           to={`/conference/${props?.item?.conferenceNo}`}
