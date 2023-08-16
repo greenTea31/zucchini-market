@@ -14,6 +14,7 @@ import Modal from "../Common/Modal";
 import ClosedButton from "../Button/ClosedButton";
 import styled from "styled-components";
 import Report from "../Common/Report";
+import api from "../../utils/api";
 
 interface IProps {
   title: string;
@@ -48,9 +49,33 @@ export default function ToolbarComponent(props: IProps) {
   }
 
   function buyItem() {
-    props.buyItem();
-    toggleBuyModal();
+    const userinfo = sessionStorage.getItem("USER_INFO");
+    if (userinfo === null) return;
+    const parsedinfo = JSON.parse(userinfo);
+    const response = api.post("/sse/count", {
+      userName: parsedinfo.nickname,
+      buy: true,
+    });
+
+    setIsBuyModalOpen(!isBuyModalOpen);
+
+    // 원래 밑에 2줄 주석 아니었는데 에러나서 일시적으로 주석처리함
+    // props.buyItem();
+    // toggleBuyModal();
+
     // navigate("/scheduleList", { replace: true });
+  }
+
+  function dontbuyItem() {
+    const userinfo = sessionStorage.getItem("USER_INFO");
+    if (userinfo === null) return;
+    const parsedinfo = JSON.parse(userinfo);
+    const response = api.post("/sse/count", {
+      userName: parsedinfo.nickname,
+      buy: false,
+    });
+
+    setIsBuyModalOpen(!isBuyModalOpen);
   }
 
   // 신고사유
@@ -62,6 +87,10 @@ export default function ToolbarComponent(props: IProps) {
     "욕설, 비방",
     "성희롱",
   ];
+
+  function goBuy() {
+    setIsBuyModalOpen(true);
+  }
 
   return (
     <AppBar className="toolbar" id="header">
@@ -79,10 +108,7 @@ export default function ToolbarComponent(props: IProps) {
           <p id="videoTitle">{props.title}</p>
           <div className="buttonDiv">
             {/* 구매하기 버튼은 구매자에게만 보이게... 가능할까 */}
-            <button
-              className="headerGButton"
-              onClick={() => setIsBuyModalOpen(true)}
-            >
+            <button className="headerGButton" onClick={() => goBuy()}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -154,9 +180,11 @@ export default function ToolbarComponent(props: IProps) {
             </div>
             <div className="buttonsDiv">
               <button className="greenBtn" onClick={buyItem}>
+                {/* 상대방한테 메세지 보내기 */}
                 확정
               </button>
-              <button className="redBtn" onClick={toggleBuyModal}>
+              <button className="redBtn" onClick={dontbuyItem}>
+                {/* 상대방한테 메세지 보내기 */}
                 거절
               </button>
             </div>

@@ -27,6 +27,7 @@
     "aws-sdk": "^2.1432.0",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
+    "event-source-polyfill": "^1.0.31",
     "framer-motion": "^10.15.0",
     "jquery": "^3.7.0",
     "moment": "^2.29.4",
