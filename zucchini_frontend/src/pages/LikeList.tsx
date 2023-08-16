@@ -20,10 +20,12 @@ export default function LikeList() {
   const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
   const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
 
+  const [selectedCategory, setSelectedCategory] = useState(-1); // 선택한 카테고리
+
   async function getItems() {
     try {
       const response = await api.get(
-        `/user/item/like?keyword=${keyword}&page=${page}`
+        `/user/item/like?keyword=${keyword}&page=${page}&category=${selectedCategory}`
       );
       setItems(response.data.content);
       setTotalPages(response.data.totalPages);
@@ -31,25 +33,18 @@ export default function LikeList() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    // cotIsLoading(true);
-    // axios
-    //   .get(`http://localhost:8080/user/item/like?keyword=${keyword}`)
-    //   .then((response) => {
-    //     setItems(response.data);
-    //     setIsLoading(true);
-    //   });
   }
 
   useEffect(() => {
     getItems();
-  }, [page]);
+  }, [selectedCategory, page]);
 
   //페이지 버튼 누를 때마다 세팅
   const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
     setPage(page);
   };
 
-    useEffect(() => {
+  useEffect(() => {
     setIsLoading(true);
 
     const timer = setTimeout(() => {
@@ -73,7 +68,10 @@ export default function LikeList() {
     >
       <div>
         <TitleSpan>나의 찜한 목록</TitleSpan>
-        <CategorySecond />
+        <CategorySecond
+          setSelectedCategory={setSelectedCategory}
+          setKeyword={setKeyword}
+        />
         <Search setKeyword={setKeyword} getItems={getItems} keyword={keyword} />
       </div>
       <LowerDiv>
@@ -111,13 +109,15 @@ const LowerDiv = styled.div`
 `;
 
 const ItemsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding-bottom: 2rem;
 `;
 
 const FooterDiv = styled.div`
   display: flex;
   justify-content: end;
   align-self: center;
+  margin-top: 2rem;
 `;

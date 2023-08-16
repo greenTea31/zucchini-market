@@ -6,6 +6,7 @@ import { http } from "../utils/axios";
 import { useLogin } from "../hooks/useLogin";
 import FullWidthButton from "../components/Button/FullWidthButton";
 import { motion } from "framer-motion";
+import { ErrorMessage } from "@hookform/error-message";
 
 export default function LogIn() {
   const {
@@ -30,20 +31,23 @@ export default function LogIn() {
       <StyledDiv>
         <StyledTitle>로그인</StyledTitle>
         <StyledForm onSubmit={handleSubmit(onSubmit)}>
-          <Input placeholder="아이디" {...register("id")}></Input>
+          <Input
+            placeholder="아이디"
+            {...register("id", { required: "아이디를 입력해주세요" })}
+          ></Input>
+          <StyledMessage>
+            <ErrorMessage errors={errors} name="id" />
+          </StyledMessage>
           <Input
             type="password"
             placeholder="비밀번호"
             {...register("password", {
-              minLength: {
-                value: 7,
-                message: "뭐임?",
-              },
+              required: "비밀번호를 입력해주세요",
             })}
           ></Input>
-          {errors?.password && (
-            <span>{errors?.password?.message?.toString()}</span>
-          )}
+          <StyledMessage>
+            <ErrorMessage errors={errors} name="password" />
+          </StyledMessage>
           <StyledButtonDiv>
             <FullWidthButton>로그인</FullWidthButton>
           </StyledButtonDiv>
@@ -137,4 +141,12 @@ const StyledLink = styled(Link)`
   margin-top: 0.7rem;
   color: blue;
   font-weight: 600;
+`;
+
+const StyledMessage = styled.div`
+  display: flex;
+  justify-content: start;
+  padding-left: 0.3;
+  margin: 0.3rem;
+  color: tomato;
 `;

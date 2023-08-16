@@ -15,6 +15,8 @@ import { Button } from "../components/Common/Button";
 import Modal from "../components/Common/Modal";
 import ClosedButton from "../components/Button/ClosedButton";
 import Report from "../components/Common/Report";
+import GradeImage from "../components/Common/GradeImage";
+import GradeText from "../components/Common/GradeText";
 
 interface ISeller {
   nickname: string;
@@ -31,24 +33,6 @@ interface IItem {
   date: string;
 }
 
-// 등급에 따라 이미지 다르게 보여주기
-function getImage(grade: number) {
-  switch (grade) {
-    case 1:
-      return zucchiniImg1;
-    case 2:
-      return zucchiniImg2;
-    case 3:
-      return zucchiniImg3;
-    case 4:
-      return zucchiniImg4;
-    case 5:
-      return zucchiniImg5;
-    default:
-      return zucchiniImg5;
-  }
-}
-
 export default function UserPage() {
   const [username, setUsername] = useState("");
   const [keyword, setKeyword] = useState("");
@@ -57,11 +41,10 @@ export default function UserPage() {
   const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
   const [isOpen, setIsOpen] = useState(false);
 
-  // 아래 api 부분 수정해야함,,,
   async function getItems() {
     try {
       const response = await api.get(
-        `/user/deal/sell/${username}?keyword=${keyword}&page=${page}`
+        `http://localhost:8080/api/user/deal/sell/${username}?keyword=${keyword}&page=${page}`
       );
       setUsername(response.data.username);
       setItems(response.data.content);
@@ -107,20 +90,26 @@ export default function UserPage() {
         <ModalSpan>신고하기</ModalSpan>
         <SubSpan>신고 사유를 선택해주세요.</SubSpan>
         <Report
-          // reportedNickname={item?.seller.nickname}
-          // itemNo={item.no}
+          reportedNickname={username}
+          itemNo={null}
           reasons={reportReasons}
-          // roomNo={null}
+          roomNo={null}
+          onCancel={toggle}
         />
       </Modal>
       <LeftDiv>
         <TitleP>프로필</TitleP>
         <ImgDiv>
-          <StyledImg src={getImage(user.grade)} />
+          <GradeImage grade={user.grade || 1} height={80} width={80} />
         </ImgDiv>
         <AboutDiv>
           <AboutP>닉네임: {user.nickname}</AboutP>
-          <AboutP>거래 등급: Lv.{user.grade}</AboutP>
+          <AboutP>
+            <GradeDiv>
+              거래 등급: Lv.{user.grade}
+              <GradeText grade={user.grade} />
+            </GradeDiv>
+          </AboutP>
           <AboutP>거래 횟수: {user.deal_count}</AboutP>
           <Button kind={"small"} Variant="redFilled" onClick={toggle}>
             신고하기
@@ -241,4 +230,9 @@ const ModalSpan = styled.div`
 const SubSpan = styled.span`
   color: gray;
   margin-bottom: 2rem;
+`;
+
+const GradeDiv = styled.div`
+  display: flex;
+  gap: 0.5rem;
 `;

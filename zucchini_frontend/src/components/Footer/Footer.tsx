@@ -12,6 +12,16 @@ export default function Footer() {
     setIsOpen(!isOpen);
   };
 
+  const askClosed = () => {
+    alert(
+      "애호박마켓에 문의해주셔서 감사합니다! \n답변은 이메일로 발송됩니다."
+    );
+    setIsOpen(!isOpen);
+
+    // 페이지 맨 위로 스크롤
+    window.scrollTo(0, 0);
+  };
+
   return (
     <>
       <ContainerDiv>
@@ -34,7 +44,7 @@ export default function Footer() {
             <ModalTextarea placeholder="상세 내용을 입력해주세요.."></ModalTextarea>
           </SpanDiv>
           <ButtonDiv>
-            <FullWidthButton>문의</FullWidthButton>
+            <FullWidthButton onClick={askClosed}>문의</FullWidthButton>
             <FullWidthButton onClick={toggle}>취소</FullWidthButton>
           </ButtonDiv>
         </Modal>
@@ -112,6 +122,7 @@ const ModalTextarea = styled.textarea`
   border-radius: 0.4rem;
   padding: 0.5rem;
   font-size: 1rem;
+  resize: none;
 `;
 
 const LogoSpan = styled.span`

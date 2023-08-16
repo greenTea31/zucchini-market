@@ -5,15 +5,17 @@ import { useState, useEffect } from "react";
 import Loading from "../components/Loading/Loading";
 import { motion } from "framer-motion";
 import api from "../utils/api";
+import { Pagination } from "@mui/material";
 interface Item {
   id: number;
 }
 
 export default function BuyList() {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<Item[] | null>(null);
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
+  const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
   async function getItems() {
     // axios
     //   .get(`http://localhost:8080/user/deal/buy?keyword=${keyword}`)
@@ -21,22 +23,24 @@ export default function BuyList() {
     //     setItems(response.data);
     //   });
 
-    const response = await api.get(`/user/deal/buy?keyword=${keyword}`);
-    setItems(response.data);
-  }
-
-  useEffect(() => {
-    getItems();
-  }, []);
-
-  async function init() {
     try {
-      const response = await api.get(`/user/deal/buy?keyword=`);
-      setItems(response.data);
+      const response = await api.get(
+        `/user/deal/buy?keyword=${keyword}&page=${page}&category=-1`
+      );
+      setItems(response.data.content);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
+
+  useEffect(() => {
+    getItems();
+  }, [page]);
+
+  const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setPage(page);
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -82,13 +86,16 @@ export default function BuyList() {
       </div>
       <LowerDiv>
         <ItemsContainer>
-          {data && data.length > 0 ? (
+          {items && items.length > 0 ? (
             items.map((item, index) => <ItemEach item={item} />)
           ) : (
             <p>구매한 내역이 없습니다.</p>
           )}
         </ItemsContainer>
       </LowerDiv>
+      <FooterDiv>
+        <Pagination count={totalPages} page={page} onChange={onChange} />
+      </FooterDiv>
     </ContainerDiv>
   );
 }
@@ -112,9 +119,10 @@ const LowerDiv = styled.div`
 `;
 
 const ItemsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding-bottom: 2rem;
 `;
 
 const NoticeDiv = styled.div`
@@ -138,4 +146,11 @@ const AlertTitle = styled.span`
 
 const AlertSvg = styled.svg`
   color: #ff6600;
+`;
+
+const FooterDiv = styled.div`
+  display: flex;
+  justify-content: end;
+  align-self: center;
+  margin-top: 2rem;
 `;

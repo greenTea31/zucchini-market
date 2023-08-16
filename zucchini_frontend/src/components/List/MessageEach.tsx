@@ -16,31 +16,17 @@ export default function MesssageEach(props: Iprops) {
         <RightChatDiv>
           <BubbleDiv>
             <SubDiv>
-              {/* <p> */}
               {props.message.read ? <ReadP>읽음</ReadP> : <ReadP>안읽음</ReadP>}
-              {/* </p> */}
               <p>{props.message.read}</p>
             </SubDiv>
-            <RightChat>
-              내용: {props.message.content}
-              <br />
-              읽음 여부: {props.message.read ? "잘읽음" : "안읽음"}
-              {props.message.read}
-            </RightChat>
+            <RightChat>{props.message.content}</RightChat>
           </BubbleDiv>
           <TimeDiv>{dayjs(props.message.createdAt).format("HH:mm")}</TimeDiv>
         </RightChatDiv>
       ) : (
         <div>
           <p>{props.message.sender}</p>
-          <LeftChat>
-            보낸 사람 : {props.message.sender}
-            <br />
-            내용: {props.message.content}
-            <br />
-            읽음 여부: {props.message.read ? "잘읽음" : "안읽음"} :
-            {props.message.read}
-          </LeftChat>
+          <LeftChat>{props.message.content}</LeftChat>
           <TimeLeftDiv>
             {dayjs(props.message.createdAt).format("HH:mm")}
           </TimeLeftDiv>

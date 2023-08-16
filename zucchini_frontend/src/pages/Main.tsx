@@ -32,7 +32,7 @@ export default function Main() {
             <Link to={"/item"}>
               <ItemBtn>상품 구경</ItemBtn>
             </Link>
-            <Link to={"/mypage/schedule"}>
+            <Link to={"/scheduleList"}>
               <ScheduleBtn>화상 일정</ScheduleBtn>
             </Link>
           </BtnDiv>

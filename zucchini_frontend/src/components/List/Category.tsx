@@ -6,6 +6,7 @@ export default function Category({ setSelectedCategory, setKeyword }: any) {
   // const [clickedButton, setClickedButton] = useState();
 
   const [allCategories, setAllCategories] = useState([]);
+  const [isActive, setIsActive] = useState(false);
 
   // 처음 렌더링될 때, 카테고리 가져올 거예영
   useEffect(() => {
@@ -84,6 +85,11 @@ export default function Category({ setSelectedCategory, setKeyword }: any) {
     setSelectedCategory("");
   };
 
+  // 버튼 active 효과
+  function handleClick() {
+    setIsActive(!isActive);
+  }
+
   return (
     <CategoryDiv
       ref={containerRef}
@@ -93,7 +99,11 @@ export default function Category({ setSelectedCategory, setKeyword }: any) {
       <CategoryBtn onClick={entireCategory}>전체보기</CategoryBtn>
       {allCategories.map((category: any, index: number) => {
         return (
-          <CategoryBtn key={index} onClick={onClick}>
+          <CategoryBtn
+            key={index}
+            onClick={onClick}
+            className={isActive ? "active" : ""}
+          >
             {category}
           </CategoryBtn>
         );
@@ -103,11 +113,12 @@ export default function Category({ setSelectedCategory, setKeyword }: any) {
 }
 const CategoryDiv = styled.div`
   display: flex;
-  /* justify-content: center; */
   margin: 1.5rem 0rem;
-
+  padding-left: 1rem;
   overflow: hidden;
   width: 100%;
+  align-items: center;
+  height: 3rem;
 `;
 
 const CategoryBtn = styled.button`
@@ -118,8 +129,13 @@ const CategoryBtn = styled.button`
   border: 2px solid #cde990;
   margin-right: 1rem;
   color: #254021;
+  cursor: pointer;
+
+  &:active,
+  &:focus,
   &:hover {
     background-color: #cde990;
-    cursor: pointer;
+    box-shadow: 0 0 6px 4px #cde990;
+    border: none;
   }
 `;

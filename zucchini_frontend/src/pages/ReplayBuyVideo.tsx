@@ -1,12 +1,37 @@
 import styled from "styled-components";
 import GoBackButton from "../components/Button/GoBackButton";
 import Modal from "../components/Common/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import ClosedButton from "../components/Button/ClosedButton";
 import { motion } from "framer-motion";
+import api from "../utils/api";
+import ReactPlayer from "react-player";
+import { async } from "q";
+import dayjs from "dayjs";
 
 export default function ReplayBuyVideo() {
   const [isOpen, setIsOpen] = useState(false);
+  const [video, setVideo] = useState();
+  const [title, setTitle] = useState("");
+  const [videoNo, setVideoNo] = useState();
+  const location = useLocation();
+  const getVideo = async () => {
+    try {
+      const response = await api.get(
+        `video/${location.pathname.split("/")[4]}`
+      );
+      setVideo(response.data.link);
+      setTitle(response.data.itemTitle);
+      setVideoNo(response.data.no);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getVideo();
+  }, []);
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -18,15 +43,109 @@ export default function ReplayBuyVideo() {
     setIsOpen2(!isOpen2);
   };
 
+  // 구매확정 or 확정일 연장
+  const [isConfirm, setIsConfirm] = useState(false);
+  const [isExtended, setIsExtended] = useState(false);
+  const [dueDate, setDueDate] = useState("");
+  const [isError, setIsError] = useState(false); // 확정일 연장 에러
+  const [errorMsgEx, setErrorMsgEx] = useState("");
+  const [isError2, setIsError2] = useState(false); // 구매 확정 에러
+  const [errorMsgCon, setErrorMsgCon] = useState("");
+
+  const toggleConfirm = () => {
+    setIsConfirm(!isConfirm);
+  };
+  const toggleExtend = () => {
+    setIsExtended(!setIsExtended);
+  };
+
+  const errorToggle = () => {
+    setIsError(!isError);
+  };
+  const errorToggle2 = () => {
+    setIsError2(!isError2);
+  };
+
+  const confirmDeal = async () => {
+    try {
+      await api
+        .put(`item/${location.pathname.split("/")[4]}/confirmation`)
+        .then((response) => toggleConfirm());
+    } catch (error: any) {
+      console.log(error.response.data);
+      setErrorMsgCon(`${error.response.data}`);
+      toggle();
+      errorToggle2();
+    }
+  };
+
+  const extendDue = async () => {
+    try {
+      await api.put(`video/extension/${videoNo}`).then((response) => {
+        setDueDate(dayjs(new Date(response.data))?.format("YYYY년 MM월 DD일"));
+        toggleExtend();
+      });
+    } catch (error: any) {
+      console.log(error.response.data);
+      setErrorMsgEx(`${error.response.data}`);
+      toggle2();
+      errorToggle();
+    }
+  };
+
   return (
     <ContainerDiv
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+      {/* 구매 확정일 연장 재시도 시 에러 모달 */}
+      <Modal isOpen={isError} toggle={errorToggle}>
+        <ModalDiv>
+          <ClosedButton onClick={errorToggle} />
+        </ModalDiv>
+        <ModalSpan>{errorMsgEx}</ModalSpan>
+        <ButtonDiv>
+          <GreenBtn onClick={errorToggle}>확인</GreenBtn>
+        </ButtonDiv>
+      </Modal>
+      {/* 구매 확정 에러 모달 */}
+      <Modal isOpen={isError2} toggle={errorToggle2}>
+        <ModalDiv>
+          <ClosedButton onClick={errorToggle2} />
+        </ModalDiv>
+        <ModalSpan>{errorMsgCon}</ModalSpan>
+        <ButtonDiv>
+          <GreenBtn onClick={errorToggle2}>확인</GreenBtn>
+        </ButtonDiv>
+      </Modal>
+      {/* 구매 확정일 연장 시 모달 */}
+      <Modal isOpen={isExtended} toggle={toggleExtend}>
+        <ModalDiv>
+          <ClosedButton onClick={toggleExtend} />
+        </ModalDiv>
+        <ModalSpan>구매 확정일을 일주일 연장했습니다.</ModalSpan>
+        <SpanDiv>
+          <span>최종 구매 확정 마감일 : {dueDate}</span>
+        </SpanDiv>
+        <ButtonDiv>
+          <GreenBtn onClick={toggleExtend}>확인</GreenBtn>
+        </ButtonDiv>
+      </Modal>
+      {/* 구매 확정 시 모달 */}
+      <Modal isOpen={isConfirm} toggle={toggleConfirm}>
+        <ModalDiv>
+          <ClosedButton onClick={toggleConfirm} />
+        </ModalDiv>
+        <ModalSpan>구매가 확정되었습니다!</ModalSpan>
+        <ButtonDiv>
+          <GreenBtn onClick={toggle}>확인</GreenBtn>
+        </ButtonDiv>
+      </Modal>
+      {/* 구매 확정 연장 모달 */}
       <Modal isOpen={isOpen2} toggle={toggle2}>
         <ModalDiv>
-          <ClosedButton />
+          <ClosedButton onClick={toggle2} />
         </ModalDiv>
         <ModalSpan>구매 확정일 연장</ModalSpan>
         <SpanDiv>
@@ -34,12 +153,13 @@ export default function ReplayBuyVideo() {
           <span>거래일자 기준 14일 후 자동으로 구매 확정 처리됩니다.</span>
         </SpanDiv>
         <ButtonDiv>
-          <GreenBtn>구매 연장</GreenBtn>
+          <GreenBtn onClick={extendDue}>구매 연장</GreenBtn>
         </ButtonDiv>
       </Modal>
+      {/* 구매 확정 모달 */}
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
-          <ClosedButton />
+          <ClosedButton onClick={toggle} />
         </ModalDiv>
         <ModalSpan>구매 확정하기</ModalSpan>
         <SpanDiv>
@@ -48,15 +168,23 @@ export default function ReplayBuyVideo() {
           <span>중고 매물을 꼼꼼하게 확인 후 확정을 눌러주세요.</span>
         </SpanDiv>
         <ButtonDiv>
-          <GreenBtn>확정</GreenBtn>
+          <GreenBtn onClick={confirmDeal}>확정</GreenBtn>
         </ButtonDiv>
       </Modal>
       <GoBackButton />
       <div>
         <TitleSpan>
-          갤럭시 워치5 PRO 골드에디션 블랙 45MM 판매합니다(미개봉)
+          {/* 타이틀 나중에 상품 정보로 바꿔줘야 함!!! */}
+          {title}
         </TitleSpan>
-        <VideoScreenDiv></VideoScreenDiv>
+        <VideoScreenDiv>
+          <ReactPlayer
+            url={video}
+            controls // 재생 컨트롤 표시
+            width="100%"
+            height="100%"
+          />
+        </VideoScreenDiv>
         <FixedButtonDiv>
           <StyledBtn onClick={toggle}>구매확정</StyledBtn>
           <StyledBtn onClick={toggle2}>확정연장</StyledBtn>

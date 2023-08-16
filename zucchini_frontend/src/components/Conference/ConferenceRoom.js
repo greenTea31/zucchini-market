@@ -12,8 +12,9 @@ import LiveChat from "../Chat/LiveChat.js";
 import { getUser } from "../../hooks/useLocalStorage";
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { Credentials } from "aws-sdk";
-import { v1, v3, v4, v5 } from "uuid";
+import api from "../../utils/api";
+import { EventSourcePolyfill } from "event-source-polyfill";
+import { getUserInfo } from "../../hooks/useUserInfo";
 
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL = "http://i9a209.p.ssafy.io/api/";
@@ -23,6 +24,7 @@ class ConferenceRoom extends Component {
     super(props);
     this.conferenceNo = window.location.pathname.split("/conference/")[1];
     this.title = props.title;
+    this.itemNo = null;
     this.hasBeenUpdated = false;
     this.layout = new OpenViduLayout();
     let sessionName = this.conferenceNo;
@@ -42,6 +44,7 @@ class ConferenceRoom extends Component {
 
     this.joinSession = this.joinSession.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
+    this.buyItem = this.buyItem.bind(this);
     this.onbeforeunload = this.onbeforeunload.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.camStatusChanged = this.camStatusChanged.bind(this);
@@ -52,9 +55,41 @@ class ConferenceRoom extends Component {
     this.toggleChat = this.toggleChat.bind(this);
     this.checkNotification = this.checkNotification.bind(this);
     this.checkSize = this.checkSize.bind(this);
+    this.getItemNo = this.getItemNo.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.itemNo = await this.getItemNo();
+
+    const headers = { Authorization: `Bearer ${getUser()}` };
+    const sse = new EventSourcePolyfill("http://localhost:8080/api/sse", {
+      headers: headers,
+    });
+
+    const userinfo = sessionStorage.getItem("USER_INFO");
+    const parsedinfo = JSON.parse(userinfo);
+
+    sse.addEventListener("connect", (e) => {
+      const { data: receivedConnectData } = e;
+      console.log("connect event data: ", receivedConnectData); // "connected!"
+    });
+
+    sse.addEventListener("buy", (e) => {
+      // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
+      const { data: receivedCount } = e;
+      if (receivedCount !== parsedinfo.nickname) {
+        alert(`${receivedCount}님이 구매 확정을 눌렀습니다!`);
+      }
+    });
+
+    sse.addEventListener("notbuy", (e) => {
+      // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
+      const { data: receivedCount } = e;
+      if (receivedCount !== parsedinfo.nickname) {
+        alert(`${receivedCount}님이 구매 거절을 눌렀습니다!`);
+      }
+    });
+
     const openViduLayoutOptions = {
       maxRatio: 3 / 2, // The narrowest ratio that will be used (default 2x3)
       minRatio: 9 / 16, // The widest ratio that will be used (default 16x9)
@@ -78,6 +113,7 @@ class ConferenceRoom extends Component {
     this.joinSession();
   }
 
+  // 컴포넌트 페이지에서 빠져나오게 되면 이 함수가 실행됨
   componentWillUnmount() {
     window.removeEventListener("beforeunload", this.onbeforeunload);
     window.removeEventListener("resize", this.updateLayout);
@@ -233,6 +269,7 @@ class ConferenceRoom extends Component {
 
   async leaveSession() {
     // 여기에 api 호출~~
+    console.log("세션을 떠나요");
     const token = "Bearer " + getUser();
     const response = await axios.put(
       APPLICATION_SERVER_URL + `session`,
@@ -265,9 +302,17 @@ class ConferenceRoom extends Component {
       myUserName: "알수없음",
       localUser: undefined,
     });
-    if (this.props.leaveSession) {
-      this.props.leaveSession();
-    }
+    // if (this.props.leaveSession) {
+    //   this.props.leaveSession();
+    // }
+  }
+
+  async buyItem() {
+    //아이템 상태 예약중으로 변경하기
+    const buyer = this.state.subscribers[0]?.nickname;
+    await api.put(`item/${this.itemNo}/deal?buyer=${buyer}`);
+
+    // this.leaveSession();
   }
 
   // 비디오 db PK, 비디오 링크
@@ -537,6 +582,12 @@ class ConferenceRoom extends Component {
     }
   }
 
+  async getItemNo() {
+    //먼저 해당 컨퍼런스 번호에 대한 아이템 번호 가져오기
+    const response = await api.get(`conference/${this.conferenceNo}/itemNo`);
+    return response.data;
+  }
+
   render() {
     const localUser = this.state.localUser;
     var chatDisplay = { display: this.state.chatDisplay };
@@ -545,8 +596,11 @@ class ConferenceRoom extends Component {
       <div className="container" id="container">
         <TopbarComponent
           title={this.title}
+          other={this.state.subscribers[0]?.nickname}
+          itemNo={this.itemNo}
           showNotification={this.state.messageReceived}
           leaveSession={this.leaveSession}
+          buyItem={this.buyItem}
           toggleChat={this.toggleChat}
         />
 

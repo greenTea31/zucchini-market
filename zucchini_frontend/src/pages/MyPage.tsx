@@ -5,33 +5,36 @@ import likeList from "../assets/images/likeList.jpg";
 import buyList from "../assets/images/buyList.jpg";
 import sellList from "../assets/images/sellList.jpg";
 import todoList from "../assets/images/todoList.jpg";
-import femaleImg from "../assets/images/female.jpg";
 import api from "../utils/api";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import GradeImage from "../components/Common/GradeImage";
+import GradeText from "../components/Common/GradeText";
+
+interface IUser {
+  id: string;
+  nickname: string;
+  name: string;
+  phone: string;
+  gender: boolean;
+  email: string;
+  reportCount: number;
+  grade: number;
+  dealCount: number;
+  isLocked: number;
+}
 
 export default function MyPage() {
-  const [user, setUser] = useState();
-  async function getUserInfo() {
-    const response = await api({
-      method: "POST",
-      url: "grade",
-      data: {
-        gradeRecipient: "abc",
-        itemNo: 6,
-        grade: 5,
-      },
-    });
-
-    console.log(response);
-    const data = response.data;
-
-    setUser(data);
-  }
+  const [user, setUser] = useState<IUser>();
 
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    setUser(JSON.parse(sessionStorage.getItem("USER_INFO") as string));
+    // console.log(user);
+  }, []);
+
+  // useEffect(() => {
+  //   console.log(user);
+  // }, [user]);
 
   return (
     <ContainerDiv
@@ -39,16 +42,43 @@ export default function MyPage() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <button onClick={getUserInfo}>통신</button>
       <UpperDiv>
         <TitleSpan>마이페이지</TitleSpan>
-        <SubTitleP>내 정보</SubTitleP>
-        <Img src={femaleImg}></Img>
-        <InfoP>닉네임 : 애호오박</InfoP>
-        <InfoP>등급 : Lv.1 애호박 씨앗</InfoP>
-        <Link to={"/myPage/modify"}>
-          <InfoBtn>내 정보 수정</InfoBtn>
-        </Link>
+        <SubTitleP>{user?.id} 님 안녕하세요!</SubTitleP>
+        <MyInfoDiv>
+          <GradeImg>
+            {/* <Img src={getImage(user?.grade)} /> */}
+            <GradeImage grade={user?.grade || 1} height={100} width={100} />
+          </GradeImg>
+          <InfoPDiv>
+            <div>
+              <InfoTitleP>개인정보</InfoTitleP>
+              <InfoP>이메일 : {user?.email}</InfoP>
+              <InfoP>전화번호 : {user?.phone}</InfoP>
+              <InfoP>닉네임 : {user?.nickname}</InfoP>
+              <InfoP>성별 : {user?.gender ? user?.gender : "선택안함"}</InfoP>
+            </div>
+            <div>
+              <InfoTitleP>거래정보</InfoTitleP>
+              <InfoP>
+                <GradeDiv>
+                  등급 : Lv.{user?.grade}
+                  <GradeText grade={user?.grade || 1} />
+                </GradeDiv>
+              </InfoP>
+              <InfoP>거래횟수 : {user?.dealCount}</InfoP>
+              <InfoP>신고횟수 : {user?.reportCount}</InfoP>
+            </div>
+          </InfoPDiv>
+        </MyInfoDiv>
+        <div>
+          <Link to={"/mypage/modify"}>
+            <InfoBtn>내 정보 변경</InfoBtn>
+          </Link>
+          <Link to={"/mypage/modifypass"}>
+            <InfoBtn>비밀번호 변경</InfoBtn>
+          </Link>
+        </div>
       </UpperDiv>
       <div>
         <hr />
@@ -115,16 +145,21 @@ const SubTitleP = styled.p`
 `;
 
 const Img = styled.img`
-  height: 10rem;
-  width: 10rem;
-  margin: 2rem;
-  border: 0.1rem solid #254021;
-  border-radius: 7rem;
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
 `;
 
 const InfoP = styled.p`
-  margin: 0.3rem;
+  margin: 0.7rem;
   color: #254021;
+`;
+
+const InfoTitleP = styled.p`
+  margin: 0.7rem;
+  color: #254021;
+  font-weight: 500;
+  font-size: 1.1rem;
 `;
 
 const InfoBtn = styled.button`
@@ -169,3 +204,32 @@ const MenuImg = styled.img`
 `;
 
 const MenuP = styled.p``;
+
+const MyInfoDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const InfoPDiv = styled.div`
+  gap: 1rem;
+  min-width: 13rem;
+  max-height: 10rem;
+  display: flex;
+`;
+
+const GradeImg = styled.div`
+  height: 10rem;
+  width: 10rem;
+  margin: 2rem;
+  border: 0.1rem solid #254021;
+  border-radius: 7rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const GradeDiv = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;

@@ -2,8 +2,34 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { motion } from "framer-motion";
+import api from "../utils/api";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { getUser, removeUser } from "../hooks/useLocalStorage";
+import { getUserInfo } from "../hooks/useUserInfo";
+
+interface IUser {
+  id: string;
+  nickname: string;
+  name: string;
+  phone: string;
+  gender: boolean | null;
+  email: string;
+  reportCount: number;
+  grade: number;
+  dealCount: number;
+  isLocked: number;
+}
 
 export default function UpdateUser() {
+  const [user, setUser] = useState<IUser>(
+    JSON.parse(sessionStorage.getItem("USER_INFO") as string)
+  );
+  const [nickname, setNickname] = useState(user.nickname);
+  const [phone, setPhone] = useState(user.phone);
+  const [gender, setGender] = useState(user.gender);
+
   const {
     register,
     handleSubmit,
@@ -13,20 +39,79 @@ export default function UpdateUser() {
     mode: "onChange",
   });
 
-  const password = watch("password"); // "password" 필드의 값을 감시
-
-  /*
-   * 이메일 인증 다시?
-   * 비번 빼고 기존 정보 채워주는 통신 필요
-   * 닉네임 중복확인 통신, 로직필요
-   * 비번 전과 동일한 형식인지 통신, 로직필요
-   */
-
   const onSubmit = (data: any) => {
     // 제출 통신 필요
+    console.log(nickname, phone, gender);
+    api.put("/user", {
+      nickname: nickname,
+      phone: phone,
+      gender: gender,
+    });
 
-    alert(JSON.stringify(data));
+    const updatedUser = {
+      ...user,
+      nickname: nickname,
+      phone: phone,
+      gender: gender,
+    };
+
+    setUser(updatedUser);
+
+    sessionStorage.setItem("USER_INFO", JSON.stringify(updatedUser));
+
+    navigate("/mypage");
   };
+
+  const navigate = useNavigate();
+
+  const handleDeleteAccount = async (): Promise<void> => {
+    try {
+      // 회원 탈퇴 api
+      const response = await api.delete(`http://localhost:8080/api/user`);
+      if (response.status === 200) {
+        alert("그동안 애호박 마켓을 이용해주셔서 감사합니다..");
+        // 탈퇴 후 메인 페이지로 리다이렉트
+        removeUser();
+        const now = new Date();
+        document.cookie = `zucchiniCookie=; expires=${now.toUTCString()}; path=/;`;
+        navigate("/");
+      } else {
+        throw new Error("회원 탈퇴 실패");
+      }
+    } catch (error) {
+      console.error("회원 탈퇴 중 오류가 발생하였습니다.", error);
+      alert("회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  const handleDeleteButtonClick = () => {
+    const confirmDelete = window.confirm(
+      "정말 애호박마켓을 떠나시겠습니까? 😢"
+    );
+    if (confirmDelete) {
+      handleDeleteAccount();
+    }
+  };
+
+  const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(event.target.value);
+  };
+
+  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPhone(event.target.value);
+  };
+
+  const handleGenderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    if (selectedValue === "True") {
+      setGender(true);
+    } else if (selectedValue === "False") {
+      setGender(false);
+    } else if (selectedValue === "null") {
+      setGender(null);
+    }
+  };
+
   return (
     <StyledAll
       initial={{ opacity: 0 }}
@@ -34,7 +119,7 @@ export default function UpdateUser() {
       exit={{ opacity: 0 }}
     >
       <StyledDiv>
-        <StyledTitle>회원정보 수정</StyledTitle>
+        <StyledTitle>회원정보 변경</StyledTitle>
         <StyledSpanDiv>
           <StyledSpan>아이디와 이름은 변경이 불가합니다.</StyledSpan>
           <StyledSpan>
@@ -43,61 +128,57 @@ export default function UpdateUser() {
         </StyledSpanDiv>
         <StyledForm onSubmit={handleSubmit(onSubmit)}>
           <Input
-            type="password"
-            placeholder="비밀번호"
-            {...register("password", {
+            type="text"
+            placeholder="닉네임"
+            defaultValue={user.nickname}
+            {...register("nickname", {
               required: true,
-              minLength: {
-                value: 8,
-                message: "비밀번호는 8자 이상이어야 합니다.",
-              },
-              maxLength: {
-                value: 16,
-                message: "비밀번호는 16자 이하여야 합니다.",
+              onChange: (value) => {
+                handleNicknameChange(value);
               },
             })}
-          />
-          <StyledMessage>
-            <ErrorMessage errors={errors} name="password" />
-          </StyledMessage>
-          <Input
-            type="password"
-            placeholder="비밀번호 재확인"
-            {...register("passwordConfirmation", {
-              required: true,
-              validate: (value) =>
-                value === password || "비밀번호가 일치하지 않습니다.",
-            })}
-          />
-          <StyledMessage>
-            <ErrorMessage errors={errors} name="passwordConfirmation" />
-          </StyledMessage>
-          <Input
-            type="email"
-            placeholder="이메일"
-            {...register("email", { required: true })}
-          />
-          <Input
-            type="number"
-            placeholder="휴대폰번호(- 없이 입력해주세요)"
-            {...register("phoneNumber", { required: true })}
           />
           <Input
             type="text"
-            placeholder="닉네임"
-            {...register("nickname", { required: true })}
+            placeholder="휴대폰번호(- 없이 입력해주세요)"
+            defaultValue={user.phone}
+            {...register("phone", {
+              required: true,
+              onChange: (value) => {
+                handlePhoneChange(value);
+              },
+            })}
           />
+          <GenderSelect
+            defaultValue={
+              user.gender === null ? "null" : user.gender ? "True" : "False"
+            }
+            {...register("gender", {
+              required: true,
+              onChange: (value) => {
+                handleGenderChange(value);
+              },
+            })}
+          >
+            <option value="">-- 성별 선택 --</option>
+            <option value="False">여성</option>
+            <option value="True">남성</option>
+            <option value="null">선택 안함</option>
+          </GenderSelect>
+
           <StyledButtonDiv>
             <StyledButton>수정</StyledButton>
-            {/* 취소버튼 어디로 갈 지 안 정함 */}
-            {/* <StyledButton>취소</StyledButton> */}
+            <StyledButton>취소</StyledButton>
           </StyledButtonDiv>
-          <RedBtn>탈퇴</RedBtn>
+          <div style={{ marginTop: "0.6rem" }}>
+            <RedSpan onClick={handleDeleteButtonClick}>탈퇴하기</RedSpan>
+          </div>
         </StyledForm>
       </StyledDiv>
     </StyledAll>
   );
 }
+
 const StyledAll = styled(motion.div)`
   display: flex;
   justify-content: center;
@@ -141,7 +222,15 @@ const Input = styled.input`
   border-radius: 0.4rem;
   padding-left: 1rem;
   margin: 0.3rem;
+  font-size: 1rem;
+
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
 `;
+
 const StyledMessage = styled.div`
   display: flex;
   justify-content: start;
@@ -159,25 +248,28 @@ const StyledButton = styled.button`
   border: 2px solid #cde990;
   border-radius: 0.4rem;
   background-color: white;
-  // width: 15rem;
+  font-size: 1rem;
   margin: 0.3rem;
+
   &:hover {
     background-color: #cde990;
     cursor: pointer;
   }
 `;
 
-const RedBtn = styled.button`
+const RedSpan = styled.span`
   background-color: white;
-  border-radius: 0.4rem;
   color: red;
-  height: 2.9rem;
-  border: 2px solid red;
   cursor: pointer;
+  font-size: 1rem;
+  width: 4rem;
+  border-bottom: solid 1px red;
+`;
+
+const GenderSelect = styled.select`
+  height: 3rem;
   margin: 0.3rem;
-  &:hover {
-    background-color: red;
-    cursor: pointer;
-    color: white;
-  }
+  border-radius: 0.4rem;
+  font-size: 1rem;
+  padding-left: 0.4rem;
 `;

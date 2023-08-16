@@ -39,7 +39,8 @@ export function useLogin() {
     },
     onError: (error: any) => {
       // 에러 발생시 실행할 함수
-      alert("로그인 실패");
+      console.log(error.response.data);
+      alert(error.response.data);
     },
   });
 
@@ -59,15 +60,19 @@ export async function logout() {
 }
 
 export async function refreshToken() {
-  const response = await axios({
-    method: "POST",
-    url: `${BASE_URL}user/reissue`,
-    withCredentials: true,
-  });
+  try {
+    const response = await axios({
+      method: "POST",
+      url: `${BASE_URL}user/reissue`,
+      withCredentials: true,
+    });
 
-  const token = await response.data;
-
-  saveUser(token);
+    const token = await response.data;
+    saveUser(token);
+  } catch (error) {
+    console.log("refreshToken이 만료되었습니다.");
+    window.location.href = "/login"; // 로그인 페이지로 리다이렉트
+  }
 }
 
 export function regenerateToken() {}

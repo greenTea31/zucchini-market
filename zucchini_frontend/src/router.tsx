@@ -25,9 +25,9 @@ import PrivacyPolicy from "./components/Footer/PrivacyPolicy";
 import PrivateRoute from "./components/Common/PrivateRoute";
 import AboutReplay from "./pages/AboutReplay";
 import AboutSchedule from "./pages/AboutSchedule";
-import ConferenceRoom from "./components/Conference/ConferenceRoom";
 import AboutConference from "./pages/AboutConference";
 import UserPage from "./pages/UserPage";
+import UpdatePassword from "./pages/UpdatePassword";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +59,10 @@ const router = createBrowserRouter([
         element: <UpdateUser />,
       },
       {
+        path: "/mypage/modifypass",
+        element: <UpdatePassword />,
+      },
+      {
         path: "/mypage/buy",
         element: <BuyList />,
       },
@@ -67,11 +71,11 @@ const router = createBrowserRouter([
         element: <SellList />,
       },
       {
-        path: "/mypage/buy/video",
+        path: "/mypage/buy/video/:no",
         element: <ReplayBuyVideo />,
       },
       {
-        path: "/mypage/sell/video",
+        path: "/mypage/sell/video/:no",
         element: <ReplaySellVideo />,
       },
       {
@@ -101,9 +105,9 @@ const router = createBrowserRouter([
       {
         path: "/item/register",
         element: (
-          // <PrivateRoute>
-          <CreateItem />
-          // </PrivateRoute>
+          <PrivateRoute>
+            <CreateItem />
+          </PrivateRoute>
         ),
       },
       {
@@ -112,7 +116,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/scheduleList",
-        element: <ScheduleList />,
+        element: (
+          <PrivateRoute>
+            <ScheduleList />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/conference/:conferenceNo",

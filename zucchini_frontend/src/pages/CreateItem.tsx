@@ -12,7 +12,6 @@ import axios from "axios";
 import IFileTypes from "../types/IFileTypes";
 import { Button } from "../components/Common/Button";
 import useAuth from "../hooks/useAuth";
-import { NumericFormat } from "react-number-format";
 import { motion } from "framer-motion";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { Credentials } from "aws-sdk";
@@ -86,8 +85,10 @@ export default function CreateItem() {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await api.get("item/category");
-        console.log(response.data);
+        const response = await axios.get(
+          "http://localhost:8080/api/item/category"
+        );
+        // const response = await api.get("item/category");
         const categoryNames = response.data.map((item: any) => item.category);
         setAllCategories(categoryNames);
       } catch (error) {
@@ -135,7 +136,6 @@ export default function CreateItem() {
     // 30분 반올림하는 것도 추가해야대여....
     // gmt??tlqkf...
     setSelectedTimes([...selectedTimes, clickedTime]);
-    alert("일정이 추가되었습니다.");
   };
 
   // 선택한 시간 삭제
@@ -156,8 +156,6 @@ export default function CreateItem() {
     formData.append("title", data.title);
     formData.append("content", data.content);
     formData.append("price", data.price);
-    // alert(data.title);
-    alert(data.price);
     // 카테고리
     for (let i = 0; i < selectedCategories.length; i++) {
       const num = allCategories.indexOf(selectedCategories[i]) + 1;
@@ -177,9 +175,11 @@ export default function CreateItem() {
     for (let i = 0; i < selectedTimes.length; i++) {
       formData.append("dateList", selectedTimes[i]);
     }
-    await api.post("/item", formData);
 
-    navigate("/item");
+    const response = await api.post("/item", formData);
+    const item_no = response.data;
+
+    navigate(`/item/${item_no}`);
   };
   useEffect(() => {
     console.log(uploadURL);
@@ -243,9 +243,9 @@ export default function CreateItem() {
           <ContentInput
             {...register("title", {
               required: "제목을 입력해주세요.",
-              maxLength: 200,
+              maxLength: 80,
             })}
-            maxLength={200}
+            maxLength={80}
           ></ContentInput>
           <StyledMessage>
             <ErrorMessage errors={errors} name="title" />
@@ -254,7 +254,10 @@ export default function CreateItem() {
         <ContentDiv>
           <ContentSpan>상세 설명</ContentSpan>
           <ContentTextArea
-            {...register("content", { required: "설명을 입력해주세요." })}
+            maxLength={1000}
+            {...register("content", {
+              required: "설명을 입력해주세요.",
+            })}
           ></ContentTextArea>
           <StyledMessage>
             <ErrorMessage errors={errors} name="content" />
@@ -275,7 +278,13 @@ export default function CreateItem() {
           /> */}
           <ContentInput
             type="number"
-            {...register("price", { required: "가격을 입력해주세요" })}
+            {...register("price", {
+              required: "가격을 입력해주세요",
+              pattern: {
+                value: /^[1-9]\d*$/,
+                message: "잘못된 값입니다.",
+              },
+            })}
           ></ContentInput>
           <StyledMessage>
             <ErrorMessage errors={errors} name="price" />
@@ -287,6 +296,7 @@ export default function CreateItem() {
             {selectedCategories.map((category: any) => {
               return (
                 <Button
+                  type="button"
                   kind="extraSmall"
                   Variant="filled"
                   style={{
@@ -303,21 +313,18 @@ export default function CreateItem() {
               );
             })}
           </div>
-          <CategorySelect onChange={onChange}>
-            <option value="" disabled selected hidden>
+          <CategorySelect
+            {...register("category", {
+              required: "물품의 종류을 입력해주세요",
+              onChange: onChange,
+            })}
+          >
+            <option value="" disabled selected>
               물품의 종류를 선택해주세요
             </option>
 
             {allCategories?.map((category: any) => {
-              return (
-                <option
-                  {...register("category", {
-                    required: "물품 종류을 입력해주세요",
-                  })}
-                >
-                  {category}
-                </option>
-              );
+              return <option>{category}</option>;
             })}
           </CategorySelect>
           <StyledMessage>
