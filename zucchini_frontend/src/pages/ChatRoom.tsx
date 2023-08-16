@@ -230,10 +230,8 @@ export default function ChatRoom() {
         .put(`item/${item?.no}/deal?buyer=${opponent?.opponentNickname}`)
         .then((response) => console.log(response));
     } catch (error: any) {
-      console.log(typeof error.response.data);
       setAlertMessage(`${error.response.data}`);
       alertToggle();
-
       buyToggle();
     }
   };
@@ -290,10 +288,10 @@ export default function ChatRoom() {
         <ModalSpan>신고하기</ModalSpan>
         <SubSpan>신고 사유를 선택해주세요.</SubSpan>
         <Report
-          reportedNickname={item?.seller.nickname}
+          reportedNickname={opponent?.opponentNickname}
           itemNo={item?.no}
           reasons={reportReasons}
-          roomNo={null}
+          roomNo={location.pathname.split("/")[2]}
           onCancel={toggleReport}
         />
       </Modal>
