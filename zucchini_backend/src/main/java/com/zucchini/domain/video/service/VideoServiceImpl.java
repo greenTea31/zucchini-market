@@ -122,7 +122,7 @@ public class VideoServiceImpl implements VideoService {
     /**
      * 자정마다 기간이 만료된 비디오 모두 삭제
      */
-    @Scheduled(cron = "0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     private void deleteExpiredVideo(){
         Date now = new Date();
         videoRepository.deleteByDeleteTimeAfter(now);
