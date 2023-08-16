@@ -139,12 +139,12 @@ public class VideoServiceImpl implements VideoService {
      * @param no : 비디오 no(PK)
      */
     @Override
-    public void extendVideoDeadLine(int no) {
+    public Date extendVideoDeadLine(int no) {
         Optional<Video> video = videoRepository.findById(no);
         if(!video.isPresent()) throw new NoSuchElementException("해당 비디오가 존재하지 않습니다.");
         if(isExtended(video.get().getEndTime(), video.get().getDeleteTime()))
             throw new IllegalArgumentException("해당 비디오는 이미 연장을 한 상태입니다.");
-        video.get().extendDeleteTime();
+        return video.get().extendDeleteTime();
     }
 
     /**
