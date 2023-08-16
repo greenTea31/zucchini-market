@@ -2,6 +2,7 @@ package com.zucchini.domain.session.service;
 
 import com.zucchini.domain.conference.domain.Conference;
 import com.zucchini.domain.conference.repository.ConferenceRepository;
+import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.reservation.domain.Reservation;
 import com.zucchini.domain.reservation.repository.ReservationRepository;
 import com.zucchini.domain.session.dto.request.LeaveSessionRequest;
@@ -208,7 +209,7 @@ public class SessionServiceImpl implements SessionService {
         int no = leaveSessionRequest.getConferenceNo();
         String token = leaveSessionRequest.getToken();
         // 쿼리 최적화 하려면...?
-        Optional<Conference> conference = conferenceRepository.findById(no);
+        Optional<Conference> conference = conferenceRepository.findByIdWithFetchJoin(no);
         // 없는 컨퍼런스면 예외 처리
         if(!conference.isPresent()) throw new NoSuchElementException("컨퍼런스가 없습니다.");
         if(!conference.get().isActive()) throw new IllegalArgumentException("컨퍼런스가 아직 활성화되지 않은 상태입니다.");
@@ -227,7 +228,10 @@ public class SessionServiceImpl implements SessionService {
         // 컨퍼런스에 참석중인 사람이 몇명인지 확인
         int cnt = getAttendedUserCount(no);
         LeaveSessionResponse leaveSessionResponse;
-        if(cnt == 0){
+
+        // 둘다 나간상태이고 해당 상품이 판매중에서 상태가 변경된 경우만 비디오를 저장
+        Item item = conference.get().getItem();
+        if(cnt == 0 && item.getStatus() != 0){
             Session session = this.mapSessions.remove(no);
             String sessionId = session.getSessionId();
 
