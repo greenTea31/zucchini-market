@@ -71,7 +71,10 @@ export default function UpdateUser() {
       if (response.status === 200) {
         alert("그동안 애호박 마켓을 이용해주셔서 감사합니다..");
         // 탈퇴 후 메인 페이지로 리다이렉트
-        navigate("/main");
+        sessionStorage.clear();
+        const now = new Date();
+        document.cookie = `zucchiniCookie=; expires=${now.toUTCString()}; path=/;`;
+        navigate("/");
       } else {
         throw new Error("회원 탈퇴 실패");
       }
@@ -165,10 +168,11 @@ export default function UpdateUser() {
 
           <StyledButtonDiv>
             <StyledButton>수정</StyledButton>
+            <StyledButton>취소</StyledButton>
           </StyledButtonDiv>
-          <RedBtn onClick={handleDeleteButtonClick} type="button">
-            탈퇴
-          </RedBtn>
+          <div style={{ marginTop: "0.6rem" }}>
+            <RedSpan onClick={handleDeleteButtonClick}>탈퇴하기</RedSpan>
+          </div>
         </StyledForm>
       </StyledDiv>
     </StyledAll>
@@ -253,20 +257,13 @@ const StyledButton = styled.button`
   }
 `;
 
-const RedBtn = styled.button`
+const RedSpan = styled.span`
   background-color: white;
-  border-radius: 0.4rem;
   color: red;
-  height: 2.9rem;
-  border: 2px solid red;
   cursor: pointer;
-  margin: 0.3rem;
   font-size: 1rem;
-  &:hover {
-    background-color: red;
-    cursor: pointer;
-    color: white;
-  }
+  width: 4rem;
+  border-bottom: solid 1px red;
 `;
 
 const GenderSelect = styled.select`

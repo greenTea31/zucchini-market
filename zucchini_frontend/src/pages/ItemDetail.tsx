@@ -390,7 +390,9 @@ export default function ItemDetail() {
           )}
           {item?.seller.nickname === userNickname && (
             <>
-              <SelectBtn>수정하기</SelectBtn>
+              <SelectBtn onClick={() => navigate(`/item/${item?.no}/modify`)}>
+                수정하기
+              </SelectBtn>
               <SelectBtn>삭제하기</SelectBtn>
             </>
           )}

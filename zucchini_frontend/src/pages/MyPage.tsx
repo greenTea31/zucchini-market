@@ -51,16 +51,24 @@ export default function MyPage() {
             <GradeImage grade={user?.grade || 1} height={100} width={100} />
           </GradeImg>
           <InfoPDiv>
-            <InfoP>이메일 : {user?.email}</InfoP>
-            <InfoP>닉네임 : {user?.nickname}</InfoP>
-            <InfoP>
-              <GradeDiv>
-                등급 : Lv.{user?.grade}
-                <GradeText grade={user?.grade || 1} />
-              </GradeDiv>
-            </InfoP>
-            <InfoP>거래횟수 : {user?.dealCount}</InfoP>
-            <InfoP>신고횟수 : {user?.reportCount}</InfoP>
+            <div>
+              <InfoTitleP>개인정보</InfoTitleP>
+              <InfoP>이메일 : {user?.email}</InfoP>
+              <InfoP>전화번호 : {user?.phone}</InfoP>
+              <InfoP>닉네임 : {user?.nickname}</InfoP>
+              <InfoP>성별 : {user?.gender ? user?.gender : "선택안함"}</InfoP>
+            </div>
+            <div>
+              <InfoTitleP>거래정보</InfoTitleP>
+              <InfoP>
+                <GradeDiv>
+                  등급 : Lv.{user?.grade}
+                  <GradeText grade={user?.grade || 1} />
+                </GradeDiv>
+              </InfoP>
+              <InfoP>거래횟수 : {user?.dealCount}</InfoP>
+              <InfoP>신고횟수 : {user?.reportCount}</InfoP>
+            </div>
           </InfoPDiv>
         </MyInfoDiv>
         <div>
@@ -147,6 +155,13 @@ const InfoP = styled.p`
   color: #254021;
 `;
 
+const InfoTitleP = styled.p`
+  margin: 0.7rem;
+  color: #254021;
+  font-weight: 500;
+  font-size: 1.1rem;
+`;
+
 const InfoBtn = styled.button`
   padding: 0.8rem 1.2rem;
   margin: 1rem;
@@ -192,6 +207,7 @@ const MenuP = styled.p``;
 
 const MyInfoDiv = styled.div`
   display: flex;
+  flex-direction: row;
   align-items: center;
 `;
 
@@ -199,6 +215,7 @@ const InfoPDiv = styled.div`
   gap: 1rem;
   min-width: 13rem;
   max-height: 10rem;
+  display: flex;
 `;
 
 const GradeImg = styled.div`
