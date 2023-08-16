@@ -177,8 +177,8 @@ export default function CreateItem() {
     }
 
     const response = await api.post("/item", formData);
-    const item_no = response.data
-    
+    const item_no = response.data;
+
     navigate(`/item/${item_no}`);
   };
   useEffect(() => {
