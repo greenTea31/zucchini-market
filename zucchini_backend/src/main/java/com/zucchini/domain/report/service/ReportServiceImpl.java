@@ -52,7 +52,7 @@ public class ReportServiceImpl implements ReportService {
         Date realnow = new Date();
         Date realbefore24Hour = new Date(realnow.getTime() - (1000 * 60 * 60 * 24));
 
-        if (reportRepository.findByReporterAndReportedAndReportDateBetween(currentPrincipalId, report.getReported(), realnow, realbefore24Hour) != null) {
+        if (reportRepository.findByReporterAndReportedAndReportDateBetween(currentPrincipalId, report.getReported(), realbefore24Hour, realnow) != null) {
             throw new IllegalArgumentException("24시간 이내에는 같은 회원에게 신고할 수 없습니다.");
         }
 
