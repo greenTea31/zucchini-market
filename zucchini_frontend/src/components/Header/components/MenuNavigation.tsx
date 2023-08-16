@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
 import { logout } from "../../../hooks/useLogin";
-import { getUser } from "../../../hooks/useLocalStorage";
+import { getUser, removeUser } from "../../../hooks/useLocalStorage";
 
 interface IItem {
   navName: string;
@@ -44,6 +44,8 @@ export default function MenuNavigation({
                   onClick={() => {
                     logout();
                     onItemClick();
+                    const now = new Date();
+                    document.cookie = `zucchiniCookie=; expires=${now.toUTCString()}; path=/;`;
                     navigate("/login");
                   }}
                   initial={{ opacity: 0, x: -20 }}
