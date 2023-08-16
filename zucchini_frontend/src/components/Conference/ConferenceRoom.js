@@ -13,6 +13,8 @@ import { getUser } from "../../hooks/useLocalStorage";
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import api from "../../utils/api";
+import { EventSourcePolyfill } from "event-source-polyfill";
+import { getUserInfo } from "../../hooks/useUserInfo";
 
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL =
@@ -59,6 +61,35 @@ class ConferenceRoom extends Component {
 
   async componentDidMount() {
     this.itemNo = await this.getItemNo();
+
+    const headers = { Authorization: `Bearer ${getUser()}` };
+    const sse = new EventSourcePolyfill("http://localhost:8080/api/sse", {
+      headers: headers,
+    });
+
+    const userinfo = sessionStorage.getItem("USER_INFO");
+    const parsedinfo = JSON.parse(userinfo);
+
+    sse.addEventListener("connect", (e) => {
+      const { data: receivedConnectData } = e;
+      console.log("connect event data: ", receivedConnectData); // "connected!"
+    });
+
+    sse.addEventListener("buy", (e) => {
+      // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
+      const { data: receivedCount } = e;
+      if (receivedCount !== parsedinfo.nickname) {
+        alert(`${receivedCount}님이 구매 확정을 눌렀습니다!`);
+      }
+    });
+
+    sse.addEventListener("notbuy", (e) => {
+      // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
+      const { data: receivedCount } = e;
+      if (receivedCount !== parsedinfo.nickname) {
+        alert(`${receivedCount}님이 구매 거절을 눌렀습니다!`);
+      }
+    });
 
     const openViduLayoutOptions = {
       maxRatio: 3 / 2, // The narrowest ratio that will be used (default 2x3)
