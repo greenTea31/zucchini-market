@@ -6,7 +6,7 @@ import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getUser } from "../hooks/useLocalStorage";
+import { getUser, removeUser } from "../hooks/useLocalStorage";
 import { getUserInfo } from "../hooks/useUserInfo";
 
 interface IUser {
@@ -71,7 +71,7 @@ export default function UpdateUser() {
       if (response.status === 200) {
         alert("그동안 애호박 마켓을 이용해주셔서 감사합니다..");
         // 탈퇴 후 메인 페이지로 리다이렉트
-        sessionStorage.clear();
+        removeUser();
         const now = new Date();
         document.cookie = `zucchiniCookie=; expires=${now.toUTCString()}; path=/;`;
         navigate("/");
