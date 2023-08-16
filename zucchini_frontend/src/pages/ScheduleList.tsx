@@ -33,7 +33,7 @@ export default function ScheduleList() {
     const token = "Bearer " + getUser();
 
     axios
-      .get(BASE_URL + "api/reservation", {
+      .get(BASE_URL + "reservation", {
         headers: { Authorization: token },
       })
       .then((res) => {
