@@ -29,7 +29,7 @@ class ConferenceRoom extends Component {
     this.conferenceNo = window.location.pathname.split("/conference/")[1];
     this.title = props.title;
     this.itemNo = null;
-    this.other = "";
+    this.buyer = "";
     this.hasBeenUpdated = false;
     this.layout = new OpenViduLayout();
     let sessionName = this.conferenceNo;
@@ -65,12 +65,13 @@ class ConferenceRoom extends Component {
     this.getInformation = this.getInformation.bind(this);
     this.buyItem = this.buyItem.bind(this);
     this.dontbuyItem = this.dontbuyItem.bind(this);
+    this.close = this.close.bind(this);
   }
 
   async componentDidMount() {
     const information = await this.getInformation();
     this.itemNo = information.itemNo;
-    this.other = information.userName;
+    this.buyer = information.username;
 
     const headers = { Authorization: `Bearer ${getUser()}` };
     const sse = new EventSourcePolyfill(BASE_URL + "sse", {
@@ -90,7 +91,7 @@ class ConferenceRoom extends Component {
     sse.addEventListener("buy", (e) => {
       // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
       const { data: receivedCount } = e;
-      if (receivedCount !== parsedinfo.nickname) {
+      if (this.buyer !== parsedinfo.nickname) {
         this.dealItem();
       }
       this.setState({ isOkModalOpen: !this.state.isOkModalOpen });
@@ -324,16 +325,11 @@ class ConferenceRoom extends Component {
       myUserName: "알수없음",
       localUser: undefined,
     });
-    // if (this.props.leaveSession) {
-    //   this.props.leaveSession();
-    // }
-
-    window.location.href = `/scheduleList`;
   }
 
   async dealItem() {
     //아이템 상태 예약중으로 변경하기
-    const buyer = this.other;
+    const buyer = this.buyer;
     await api.put(`item/${this.itemNo}/deal?buyer=${buyer}`);
 
     // this.leaveSession();
@@ -637,6 +633,10 @@ class ConferenceRoom extends Component {
     this.setState({ isBuyModalOpen: !this.isBuyModalOpen });
   }
 
+  close() {
+    window.location.href = `/scheduleList`;
+  }
+
   render() {
     const localUser = this.state.localUser;
     var chatDisplay = { display: this.state.chatDisplay };
@@ -645,7 +645,7 @@ class ConferenceRoom extends Component {
       <div className="container" id="container">
         <TopbarComponent
           title={this.title}
-          other={this.other}
+          other={this.state.subscribers[0]?.nickname}
           itemNo={this.itemNo}
           showNotification={this.state.messageReceived}
           leaveSession={this.leaveSession}
@@ -751,8 +751,14 @@ class ConferenceRoom extends Component {
           </div>
           <div className="modalSpan">거래 확정하기</div>
           <div className="pDiv">
-            <p>{this.other}님께서 거래 희망 버튼을 눌렀습니다.</p>
-            <p>{this.other}님과 거래를 확정 하시겠습니까?</p>
+            <p>
+              {this.state.subscribers[0]?.nickname}님께서 거래 희망 버튼을
+              눌렀습니다.
+            </p>
+            <p>
+              {this.state.subscribers[0]?.nickname}님과 거래를 확정
+              하시겠습니까?
+            </p>
             <p>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</p>
           </div>
           <div className="buttonsDiv">
@@ -774,7 +780,7 @@ class ConferenceRoom extends Component {
             <p>3초 후 자동으로 영상 통화 종료 후 채팅방으로 이동합니다.</p>
           </div>
           <div className="buttonsDiv">
-            <button className="greenBtn" onClick={this.leaveSession}>
+            <button className="greenBtn" onClick={this.close}>
               채팅방으로 이동
             </button>
           </div>
