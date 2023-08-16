@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import GoBackButton from "../components/Button/GoBackButton";
 import Modal from "../components/Common/Modal";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -51,6 +50,8 @@ export default function ReplayBuyVideo() {
   const [errorMsgEx, setErrorMsgEx] = useState("");
   const [isError2, setIsError2] = useState(false); // 구매 확정 에러
   const [errorMsgCon, setErrorMsgCon] = useState("");
+  const [starRating, setStarRating] = useState(0); // 선택한 별점 개수
+  const [isStar, setIsStar] = useState(false);
 
   const toggleConfirm = () => {
     setIsConfirm(!isConfirm);
@@ -76,6 +77,36 @@ export default function ReplayBuyVideo() {
       setErrorMsgCon(`${error.response.data}`);
       toggle();
       errorToggle2();
+    }
+  };
+
+  // 별점 모달 열고 닫기
+  const toggleStar = () => {
+    setIsStar(!isStar);
+    // 모달 닫히면 별점 초기화
+    setStarRating(0);
+  };
+
+  // 별을 눌렀을 때 별의 개수를 StarRating에 저장
+  const handleStarClick = (rating: number) => {
+    setStarRating(rating);
+  };
+
+  // 별점 통신
+  const confirmRating = async () => {
+    // 선택한 별이 없을 경우 예외 처리
+    if (starRating === 0) {
+      setErrorMsgCon("별점을 선택해주세요.");
+      return;
+    }
+
+    try {
+      // 닉네임, 아이템 번호, 점수 넘겨주기`
+      await api.post("/grade", { grade: starRating });
+      setIsStar(false);
+      setIsConfirm(true);
+    } catch (error: any) {
+      console.log(error.response.data);
     }
   };
 
@@ -168,7 +199,46 @@ export default function ReplayBuyVideo() {
           <span>중고 매물을 꼼꼼하게 확인 후 확정을 눌러주세요.</span>
         </SpanDiv>
         <ButtonDiv>
-          <GreenBtn onClick={confirmDeal}>확정</GreenBtn>
+          <GreenBtn onClick={toggleStar}>확정</GreenBtn>
+        </ButtonDiv>
+      </Modal>
+      {/* 별점 선택 모달 */}
+      <Modal isOpen={isStar} toggle={toggleStar}>
+        <ModalDiv>
+          <ClosedButton onClick={toggleStar} />
+        </ModalDiv>
+        <ModalSpan>별점을 선택해주세요</ModalSpan>
+        <SpanDiv>
+          <span>해당 거래는 만족스러우셨나요?</span>
+          <span>거래에 대한 별점을 주세요!</span>
+          <span>별의 개수로 1점 ~ 5점의 마음을 표현해주세요</span>
+        </SpanDiv>
+        <StarContainer>
+          {[1, 2, 3, 4, 5].map((index) => (
+            <StarDiv
+              key={index}
+              className={`star ${index <= starRating ? "selected" : ""}`}
+              onClick={() => handleStarClick(index)}
+            >
+              <StarSvg
+                xmlns="http://www.w3.org/2000/svg"
+                fill={index <= starRating ? "yellow" : "none"}
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+                />
+              </StarSvg>
+            </StarDiv>
+          ))}
+        </StarContainer>
+        <ButtonDiv>
+          <GreenBtn onClick={confirmRating}>확인</GreenBtn>
         </ButtonDiv>
       </Modal>
       <div>
@@ -282,4 +352,19 @@ const ButtonDiv = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 0.3rem;
+`;
+
+const StarContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+`;
+
+const StarDiv = styled.div`
+  width: 3rem;
+  height: 3rem;
+`;
+
+const StarSvg = styled.svg`
+  cursor: pointer;
 `;
