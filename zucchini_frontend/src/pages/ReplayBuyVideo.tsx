@@ -47,8 +47,10 @@ export default function ReplayBuyVideo() {
   const [isConfirm, setIsConfirm] = useState(false);
   const [isExtended, setIsExtended] = useState(false);
   const [dueDate, setDueDate] = useState("");
-  const [isError, setIsError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [isError, setIsError] = useState(false); // 확정일 연장 에러
+  const [errorMsgEx, setErrorMsgEx] = useState("");
+  const [isError2, setIsError2] = useState(false); // 구매 확정 에러
+  const [errorMsgCon, setErrorMsgCon] = useState("");
 
   const toggleConfirm = () => {
     setIsConfirm(!isConfirm);
@@ -60,6 +62,9 @@ export default function ReplayBuyVideo() {
   const errorToggle = () => {
     setIsError(!isError);
   };
+  const errorToggle2 = () => {
+    setIsError2(!isError2);
+  };
 
   const confirmDeal = async () => {
     try {
@@ -68,17 +73,22 @@ export default function ReplayBuyVideo() {
         .then((response) => toggleConfirm());
     } catch (error: any) {
       console.log(error.response.data);
+      setErrorMsgCon(`${error.response.data}`);
+      toggle();
+      errorToggle2();
     }
   };
 
   const extendDue = async () => {
     try {
-      await api.put(`video/extension /${videoNo}`).then((response) => {
+      await api.put(`video/extension/${videoNo}`).then((response) => {
         setDueDate(dayjs(new Date(response.data))?.format("YYYY년 MM월 DD일"));
         toggleExtend();
       });
     } catch (error: any) {
-      setErrorMsg(`${error.response.data}`);
+      console.log(error.response.data);
+      setErrorMsgEx(`${error.response.data}`);
+      toggle2();
       errorToggle();
     }
   };
@@ -94,9 +104,19 @@ export default function ReplayBuyVideo() {
         <ModalDiv>
           <ClosedButton onClick={errorToggle} />
         </ModalDiv>
-        <ModalSpan>{errorMsg}</ModalSpan>
+        <ModalSpan>{errorMsgEx}</ModalSpan>
         <ButtonDiv>
-          <GreenBtn onClick={toggle2}>확인</GreenBtn>
+          <GreenBtn onClick={errorToggle}>확인</GreenBtn>
+        </ButtonDiv>
+      </Modal>
+      {/* 구매 확정 에러 모달 */}
+      <Modal isOpen={isError2} toggle={errorToggle2}>
+        <ModalDiv>
+          <ClosedButton onClick={errorToggle2} />
+        </ModalDiv>
+        <ModalSpan>{errorMsgCon}</ModalSpan>
+        <ButtonDiv>
+          <GreenBtn onClick={errorToggle2}>확인</GreenBtn>
         </ButtonDiv>
       </Modal>
       {/* 구매 확정일 연장 시 모달 */}
@@ -109,7 +129,7 @@ export default function ReplayBuyVideo() {
           <span>최종 구매 확정 마감일 : {dueDate}</span>
         </SpanDiv>
         <ButtonDiv>
-          <GreenBtn onClick={toggle2}>확인</GreenBtn>
+          <GreenBtn onClick={toggleExtend}>확인</GreenBtn>
         </ButtonDiv>
       </Modal>
       {/* 구매 확정 시 모달 */}
@@ -139,7 +159,7 @@ export default function ReplayBuyVideo() {
       {/* 구매 확정 모달 */}
       <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
-          <ClosedButton />
+          <ClosedButton onClick={toggle} />
         </ModalDiv>
         <ModalSpan>구매 확정하기</ModalSpan>
         <SpanDiv>

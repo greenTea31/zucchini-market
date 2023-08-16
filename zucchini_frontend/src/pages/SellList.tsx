@@ -65,7 +65,10 @@ export default function SellList() {
     >
       <div>
         <TitleSpan>나의 판매 목록</TitleSpan>
-        <CategorySecond setSelectedCategory={setSelectedCategory} />
+        <CategorySecond
+          setSelectedCategory={setSelectedCategory}
+          setKeyword={setKeyword}
+        />
         <Search setKeyword={setKeyword} getItems={getItems} keyword={keyword} />
       </div>
       <LowerDiv>
