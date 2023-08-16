@@ -1,5 +1,5 @@
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./ToolbarComponent.css";
 
 import AppBar from "@material-ui/core/AppBar";
@@ -47,10 +47,10 @@ export default function ToolbarComponent(props: IProps) {
     setIsOkModalOpen(!isOkModalOpen);
   }
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   async function leaveSession() {
-    await props.leaveSession();
-    // navigate("/scheduleList", { replace: true });
+    // await props.leaveSession();
+    navigate("/scheduleList", { replace: true });
   }
 
   function buyItem() {
