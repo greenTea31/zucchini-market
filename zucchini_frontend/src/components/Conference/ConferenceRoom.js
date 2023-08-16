@@ -16,6 +16,10 @@ import api from "../../utils/api";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { getUserInfo } from "../../hooks/useUserInfo";
 import { BASE_URL } from "../../constants/url";
+import Modal from "../Common/Modal";
+import ClosedButton from "../Button/ClosedButton";
+import styled from "styled-components";
+
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL = BASE_URL;
 
@@ -25,6 +29,7 @@ class ConferenceRoom extends Component {
     this.conferenceNo = window.location.pathname.split("/conference/")[1];
     this.title = props.title;
     this.itemNo = null;
+    this.buyer = "";
     this.hasBeenUpdated = false;
     this.layout = new OpenViduLayout();
     let sessionName = this.conferenceNo;
@@ -40,11 +45,13 @@ class ConferenceRoom extends Component {
       subscribers: [],
       chatDisplay: "none",
       currentVideoDevice: undefined,
+      isOkModalOpen: false,
+      isBuyModalOpen: false,
     };
 
     this.joinSession = this.joinSession.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
-    this.buyItem = this.buyItem.bind(this);
+    this.dealItem = this.dealItem.bind(this);
     this.onbeforeunload = this.onbeforeunload.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.camStatusChanged = this.camStatusChanged.bind(this);
@@ -55,11 +62,17 @@ class ConferenceRoom extends Component {
     this.toggleChat = this.toggleChat.bind(this);
     this.checkNotification = this.checkNotification.bind(this);
     this.checkSize = this.checkSize.bind(this);
-    this.getItemNo = this.getItemNo.bind(this);
+    this.getInformation = this.getInformation.bind(this);
+    this.buyItem = this.buyItem.bind(this);
+    this.dontbuyItem = this.dontbuyItem.bind(this);
+    this.close = this.close.bind(this);
+    this.stopRecording = this.stopRecording.bind(this);
   }
 
   async componentDidMount() {
-    this.itemNo = await this.getItemNo();
+    const information = await this.getInformation();
+    this.itemNo = information.itemNo;
+    this.buyer = information.username;
 
     const headers = { Authorization: `Bearer ${getUser()}` };
     const sse = new EventSourcePolyfill(BASE_URL + "sse", {
@@ -69,17 +82,21 @@ class ConferenceRoom extends Component {
     const userinfo = sessionStorage.getItem("USER_INFO");
     const parsedinfo = JSON.parse(userinfo);
 
+    this.setState({ isOkModalOpen: false });
+    this.setState({ isBuyModalOpen: false });
+
     sse.addEventListener("connect", (e) => {
       const { data: receivedConnectData } = e;
-      console.log("connect event data: ", receivedConnectData); // "connected!"
     });
 
     sse.addEventListener("buy", (e) => {
       // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
       const { data: receivedCount } = e;
-      if (receivedCount !== parsedinfo.nickname) {
-        alert(`${receivedCount}님이 구매 확정을 눌렀습니다!`);
+      if (this.buyer !== parsedinfo.nickname) {
+        this.dealItem();
+        this.stopRecording();
       }
+      this.setState({ isOkModalOpen: !this.state.isOkModalOpen });
     });
 
     sse.addEventListener("notbuy", (e) => {
@@ -87,6 +104,14 @@ class ConferenceRoom extends Component {
       const { data: receivedCount } = e;
       if (receivedCount !== parsedinfo.nickname) {
         alert(`${receivedCount}님이 구매 거절을 눌렀습니다!`);
+      }
+    });
+
+    sse.addEventListener("requestDeal", (e) => {
+      // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
+      const { data: receivedCount } = e;
+      if (receivedCount !== parsedinfo.nickname) {
+        this.setState({ isBuyModalOpen: !this.state.isBuyModalOpen });
       }
     });
 
@@ -271,7 +296,7 @@ class ConferenceRoom extends Component {
     // 여기에 api 호출~~
     console.log("세션을 떠나요");
     const token = "Bearer " + getUser();
-    const response = await axios.put(
+    await axios.put(
       APPLICATION_SERVER_URL + `session`,
       {
         conferenceNo: this.conferenceNo,
@@ -281,12 +306,7 @@ class ConferenceRoom extends Component {
         headers: { Authorization: token },
       }
     );
-    console.log(response);
-    if (response.data.isFinished) {
-      console.log("비디오 저장!!");
-      // 비디오 저장 로직 호출
-      await this.storeVideo(response.data.videoNo, response.data.link);
-    }
+
     const mySession = this.state.session;
 
     if (mySession) {
@@ -302,29 +322,23 @@ class ConferenceRoom extends Component {
       myUserName: "알수없음",
       localUser: undefined,
     });
-    // if (this.props.leaveSession) {
-    //   this.props.leaveSession();
-    // }
   }
 
-  async buyItem() {
+  async dealItem() {
     //아이템 상태 예약중으로 변경하기
-    const buyer = this.state.subscribers[0]?.nickname;
+    const buyer = this.buyer;
     await api.put(`item/${this.itemNo}/deal?buyer=${buyer}`);
 
     // this.leaveSession();
   }
 
-  // 비디오 db PK, 비디오 링크
-  async storeVideo(no, link) {
-    fetch(link)
+  // info(itemNo, link, startTime, endTime)
+  async storeVideo(info) {
+    fetch(info.link)
       .then((response) => response.blob())
       .then(async (blob) => {
-        console.log("no------>", no);
-        console.log("link------->", link);
-        console.log("blob-------->", blob);
+        console.log(info);
         const file = new Blob([blob]);
-        console.log("file-------->", file);
 
         const credentials = {
           accessKeyId: "AKIA2ZDVZIZHOHIYLSNH",
@@ -337,7 +351,7 @@ class ConferenceRoom extends Component {
         const uploadFile = async (file) => {
           // const uuid = v1().toString().replace("-", "");
           // const keyName = `${uuid}.${file.object.name}`;
-          const keyName = "video/" + no + ".mp4"; // S3에 저장될 경로와 파일 이름
+          const keyName = "video/" + info.itemNo + ".mp4"; // S3에 저장될 경로와 파일 이름
           console.log("keyName------>", keyName);
           const command = new PutObjectCommand({
             Bucket: "zucchinifile",
@@ -353,10 +367,13 @@ class ConferenceRoom extends Component {
             console.log("videoUrl-------->", videoURL);
             // 여기에 api 호출~~
             const token = "Bearer " + getUser();
-            const response = await axios.put(
-              APPLICATION_SERVER_URL + `video/${no}`,
+            const response = await axios.post(
+              APPLICATION_SERVER_URL + `video`,
               {
                 link: videoURL,
+                itemNo: info.itemNo,
+                startTime: info.startTime,
+                endTime: info.endTime,
               },
               {
                 headers: { Authorization: token },
@@ -582,10 +599,47 @@ class ConferenceRoom extends Component {
     }
   }
 
-  async getItemNo() {
+  async getInformation() {
     //먼저 해당 컨퍼런스 번호에 대한 아이템 번호 가져오기
     const response = await api.get(`conference/${this.conferenceNo}/itemNo`);
     return response.data;
+  }
+
+  buyItem() {
+    // 거래 확정되었다는 안내문구 팝업시키기
+    const userinfo = sessionStorage.getItem("USER_INFO");
+    if (userinfo === null) return;
+    const parsedinfo = JSON.parse(userinfo);
+    const response = api.post("/sse/count", {
+      userName: parsedinfo.nickname,
+      buy: true,
+    });
+
+    this.setState({ isBuyModalOpen: !this.isBuyModalOpen });
+  }
+
+  dontbuyItem() {
+    const userinfo = sessionStorage.getItem("USER_INFO");
+    if (userinfo === null) return;
+    const parsedinfo = JSON.parse(userinfo);
+    const response = api.post("/sse/count", {
+      userName: parsedinfo.nickname,
+      buy: false,
+    });
+
+    this.setState({ isBuyModalOpen: !this.isBuyModalOpen });
+  }
+
+  async close() {
+    window.location.href = `/scheduleList`;
+  }
+
+  async stopRecording() {
+    const response = await api.get(`session/record/${this.conferenceNo}`);
+    console.log(
+      "response------------------------------------------------->" + response
+    );
+    await this.storeVideo(response.data);
   }
 
   render() {
@@ -696,6 +750,46 @@ class ConferenceRoom extends Component {
               </div>
             )}
         </div>
+        <Modal isOpen={this.state.isBuyModalOpen} toggle={this.dontbuyItem}>
+          <div className="modalDiv" onClick={this.dontbuyItem}>
+            <ClosedButton />
+          </div>
+          <div className="modalSpan">거래 확정하기</div>
+          <div className="pDiv">
+            <p>
+              {this.state.subscribers[0]?.nickname}님께서 거래 희망 버튼을
+              눌렀습니다.
+            </p>
+            <p>
+              {this.state.subscribers[0]?.nickname}님과 거래를 확정
+              하시겠습니까?
+            </p>
+            <p>확정을 누르시면 영상종료 후 채팅방으로 이동합니다.</p>
+          </div>
+          <div className="buttonsDiv">
+            <button className="greenBtn" onClick={this.buyItem}>
+              확정
+            </button>
+            <button className="redBtn" onClick={this.dontbuyItem}>
+              거절
+            </button>
+          </div>
+        </Modal>
+        <Modal isOpen={this.state.isOkModalOpen}>
+          {/* <ModalDiv>
+            <ClosedButton onClick={this.toggleOkModal} />
+          </ModalDiv> */}
+          <ModalSpan style={{ marginBottom: "1rem" }}>거래 확정!</ModalSpan>
+          <div className="pDiv">
+            <p>거래 확정이 완료되었습니다.</p>
+            <p>3초 후 자동으로 영상 통화 종료 후 채팅방으로 이동합니다.</p>
+          </div>
+          <div className="buttonsDiv">
+            <button className="greenBtn" onClick={this.close}>
+              채팅방으로 이동
+            </button>
+          </div>
+        </Modal>
       </div>
     );
   }
@@ -718,3 +812,15 @@ class ConferenceRoom extends Component {
   }
 }
 export default ConferenceRoom;
+
+const ModalDiv = styled.div`
+  float: right;
+`;
+
+const ModalSpan = styled.div`
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-top: 3rem;
+  margin-bottom: 0.5rem;
+  color: black;
+`;
