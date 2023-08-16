@@ -40,11 +40,14 @@ public class GradeServiceImpl implements GradeService{
         if(item == null) throw new NoSuchElementException("상품이 존재하지 않습니다.");
         // 판매자와 구매자에 해당하는 아이디가 아니면 잘못된 접근
         String graderId = getCurrentId();
-        String graderRecipientId = giveGradeRequest.getGradeRecipient();
+        String graderRecipientNickname = giveGradeRequest.getGradeRecipient();
         if(!item.getBuyer().getId().equals(graderId) && !item.getSeller().getId().equals(graderId))
             throw new UserException("해당 상품의 구매자 또는 판매자가 아닌 회원은 별점을 매길 수 없습니다.");
-        if(!item.getBuyer().getId().equals(graderRecipientId) && !item.getSeller().getId().equals(graderRecipientId))
+        if(!item.getBuyer().getNickname().equals(graderRecipientNickname) &&
+                !item.getSeller().getNickname().equals(graderRecipientNickname))
             throw new UserException("해당 상품의 구매자 또는 판매자가 아닌 회원에게 별점을 매길 수 없습니다.");
+        // 판매자에 해당하는지 구매자에 해당하는지에 따라 회원의 아이디 가져오기
+        User graderRecipient = (item.getBuyer().getNickname().equals(graderRecipientNickname)) ? item.getBuyer() : item.getSeller();
         // 이미 점수를 매긴 상태면 잘못된 접근
         for (Grade grade : item.getGradeList()) {
             // 해당 아이템에 grade는 총 2개 존재 -> from 구매자 to 사용자 or from 사용자 to 구매자
@@ -57,21 +60,20 @@ public class GradeServiceImpl implements GradeService{
         Grade grade = Grade.builder()
                 .itemNo(item.getNo())
                 .graderId(graderId)
-                .gradeRecipientId(graderRecipientId)
+                .gradeRecipientId(graderRecipient.getId())
                 .build();
         // Grade 엔티티 저장 (INSERT)
         gradeRepository.save(grade);
         // 별점 갱신
-        calculateGrade(graderRecipientId, giveGradeRequest.getGrade());
+        calculateGrade(graderRecipient, giveGradeRequest.getGrade());
     }
 
     /**
      * 새로 추가된 별점과 기존 사용자의 별점 합 평균 계산
-     * @param graderRecipientId : 별점 받는 회원 아이디
+     * @param user : 별점 받은 회원
      * @param grade : 별점
      */
-    private void calculateGrade(String graderRecipientId, float grade) {
-        User user = userRepository.findById(graderRecipientId).get();
+    private void calculateGrade(User user, float grade) {
         float newGrade = (float)(0.99 * user.getGrade() + grade) / 2;
         user.setGrade(newGrade);
     }

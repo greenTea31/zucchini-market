@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 public class GiveGradeRequest {
 
     @NotBlank
-    private String gradeRecipient; // 점수를 받은 사용자 아이디
+    private String gradeRecipient; // 점수를 받은 사용자 닉네임
 
     @NotNull
     private Integer itemNo; // 아이템 번호
