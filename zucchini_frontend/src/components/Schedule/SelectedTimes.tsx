@@ -3,6 +3,7 @@ import { Button } from "../Common/Button";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../constants/url";
 
 // 우선 갖다놓는 날짜(임시, 테스트용.)
 // DB에서 해당 아이템,  해당 날짜에 해당하는 시간을 불러오는 로직 구현하기.
@@ -40,7 +41,7 @@ export default function Times({ clickedDate, mark, setFixedSchedule }: any) {
       // }
       await axios
         .post(
-          "http://localhost:8080/api/reservation/check",
+          BASE_URL + "reservation/check",
           { selectDate: new Date(`${clickedDate}T${clickedTime}`) }
           // {
           //   // headers: {
@@ -82,7 +83,7 @@ export default function Times({ clickedDate, mark, setFixedSchedule }: any) {
   //
   const onConfirm = async () => {
     try {
-      await axios.post("http://localhost:8080/api/reservation/confirm");
+      await axios.post(BASE_URL + "reservation/confirm");
     } catch (error) {
       console.error(error);
     }

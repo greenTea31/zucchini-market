@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { http } from "../utils/axios";
 import axios from "axios";
 import { Button } from "../components/Common/Button";
+import { BASE_URL } from "../constants/url";
 
 export default function SignUp() {
   // react-hook-form
@@ -102,9 +103,7 @@ export default function SignUp() {
       return;
     }
 
-    const response = await axios.get(
-      `http://localhost:8080/api/user/idCheck/${id}`
-    );
+    const response = await axios.get(BASE_URL + `user/idCheck/${id}`);
     if (response.data) {
       setIdChecked(true);
       alert("사용 가능한 아이디입니다.");
@@ -125,7 +124,7 @@ export default function SignUp() {
       return;
     }
 
-    const response = await axios.post(`http://localhost:8080/api/user/email`, {
+    const response = await axios.post(BASE_URL + `user/email`, {
       email: email,
     });
     alert("인증 메일이 전송되었습니다.");
@@ -139,13 +138,10 @@ export default function SignUp() {
       return;
     }
 
-    const response = await axios.post(
-      `http://localhost:8080/api/user/authCheck`,
-      {
-        email: email,
-        authKey: authKey,
-      }
-    );
+    const response = await axios.post(BASE_URL + `user/authCheck`, {
+      email: email,
+      authKey: authKey,
+    });
     if (response.data) {
       setEmailChecked(true);
       alert("이메일 인증이 완료되었습니다.");
