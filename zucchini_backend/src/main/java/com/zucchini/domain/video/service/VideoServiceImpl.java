@@ -93,6 +93,7 @@ public class VideoServiceImpl implements VideoService {
             throw new UserException("해당 아이템의 비디오 조회 권한이 없습니다.");
 
         return FindVideoResponse.builder()
+                .no(video.get().getNo())
                 .link(video.get().getLink())
                 .startTime(video.get().getStartTime())
                 .endTime(video.get().getEndTime())
