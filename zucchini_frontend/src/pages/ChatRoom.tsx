@@ -291,7 +291,12 @@ export default function ChatRoom() {
           <UpperDiv>
             <TitleSpan>판매자가 선택한 일정</TitleSpan>
             {item ? (
-              <SimpleCalendar itemNo={item?.no} mark={item?.dateList} />
+              <SimpleCalendar
+                itemNo={item?.no}
+                mark={item?.dateList}
+                myNickname={user.nickname}
+                sellerNickname={item.seller.nickname}
+              />
             ) : null}
           </UpperDiv>
           <LowerDiv>
@@ -441,9 +446,9 @@ const SellerDiv = styled.div`
 `;
 
 const SellerImgDiv = styled.div`
-  width: 8rem;
-  height: 6.5rem;
-  border-radius: 5rem;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
   border: solid 3px #cde990;
   margin-top: 1rem;
   display: flex;
