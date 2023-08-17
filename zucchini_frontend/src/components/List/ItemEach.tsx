@@ -112,6 +112,7 @@ const ItemContent = styled.span`
   color: gray;
   margin: 0.2rem;
   text-overflow: ellipsis;
+  font-size: 0.85rem;
 `;
 
 const ReplayButton = styled.button`

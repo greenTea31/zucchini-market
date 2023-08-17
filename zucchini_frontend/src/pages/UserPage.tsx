@@ -202,12 +202,6 @@ const ImgDiv = styled.div`
   border-radius: 5rem;
 `;
 
-const StyledImg = styled.img`
-  height: 5rem;
-  width: 5rem;
-  object-fit: cover;
-`;
-
 const TitleP = styled.p`
   font-size: 2rem;
   font-weight: 500;
@@ -234,9 +228,10 @@ const LowerDiv = styled.div`
 `;
 
 const ItemsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding-bottom: 2rem;
 `;
 
 const FooterDiv = styled.div`
