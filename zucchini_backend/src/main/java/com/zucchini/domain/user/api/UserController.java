@@ -351,14 +351,14 @@ public class UserController {
 
     @GetMapping("/deal/sell/{username}")
     public ResponseEntity<PageResponse<FindItemListResponse>> findSellDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username, @RequestParam int category) {
-        Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
+        Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_MINI_PAGE_SIZE.getValue());
         PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, false, pageable, username, category);
         return ResponseEntity.ok(sellDealHistory);
     }
 
     @GetMapping("/deal/buy/{username}")
     public ResponseEntity<PageResponse<FindItemListResponse>> findBuyDealHistory(@RequestParam String keyword, @RequestParam int page, @PathVariable String username, @RequestParam int category) {
-        Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_LIKE_PAGE_SIZE.getValue());
+        Pageable pageable = PageRequest.of(page-1, PageSizeEnums.USER_ITEM_MINI_PAGE_SIZE.getValue());
         PageResponse<FindItemListResponse> sellDealHistory = userService.findUserDealHistoryList(keyword, true, pageable, username, category);
         return ResponseEntity.ok(sellDealHistory);
     }
