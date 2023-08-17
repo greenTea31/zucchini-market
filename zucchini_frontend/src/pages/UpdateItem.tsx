@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import Modal from "../components/Common/Modal";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useLocation, useNavigate } from "react-router";
 import SimpleCalendarRegister from "../components/Schedule/SimpleCalendarRegister";
+// import ImageUpload from "../FileUpload/ImageUpload";
 import DragDrop from "../FileUpload/DragDrop";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
@@ -18,7 +17,9 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { Credentials } from "aws-sdk";
 import { v1, v3, v4, v5 } from "uuid";
 import api from "../utils/api";
+import { useNavigate } from "react-router";
 import { BASE_URL } from "../constants/url";
+import { useLocation } from "react-router-dom";
 
 interface IDate {
   date: string;
@@ -39,7 +40,7 @@ interface IItem {
   view: number;
 }
 
-export default function CreateItem() {
+export default function UpdateItem() {
   // sdk-s3
   /*
    * 실제 AWS 액세스 키와 시크릿 키로 대체해야 합니다.
@@ -88,7 +89,6 @@ export default function CreateItem() {
     mode: "onChange",
   });
 
-  const { itemId } = useParams();
   const [item, setItem] = useState<IItem>();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -202,32 +202,29 @@ export default function CreateItem() {
     // 이미지 파일 url
     // await uploadFile(files[i]);
     // formData.append("imageList", uploadURL);
-    const uploadedURLs = await Promise.all(files.map(uploadFile));
+    // const uploadedURLs = await Promise.all(files.map(uploadFile));
 
-    // 업로드된 URL들을 formData에 추가
-    uploadedURLs.forEach((url: any) => {
-      formData.append("imageList", url);
-    });
+    // // 업로드된 URL들을 formData에 추가
+    // uploadedURLs.forEach((url: any) => {
+    //   formData.append("imageList", url);
+    // });
 
     // 일정들
     for (let i = 0; i < selectedTimes.length; i++) {
       formData.append("dateList", selectedTimes[i]);
     }
 
-    // 게시글 수정
-    try {
-      if (itemId) {
-        await api.put(`/item/${itemId}`, formData);
-      } else {
-        const response = await api.post("/item", formData);
-        const item_no = response.data;
-        navigate(`/item/${item_no}`);
-      }
-    } catch (error) {
-      console.error("Error submitting data:", error);
-    }
-  };
+    const response = await api.put(`/item/${item?.no}`, {
+      title: data.title,
+      content: data.content,
+      price: data.price,
+      dateList: data.selectedTimes,
+      categoryList: data.selectedCategories,
+    });
+    const item_no = response.data;
 
+    navigate(`/item/${item_no}`);
+  };
   useEffect(() => {
     console.log(uploadURL);
   }, [uploadURL]);
@@ -274,6 +271,7 @@ export default function CreateItem() {
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </TimeSvg>
+                {/* </TimeBtn> */}
               </TimeDiv>
             );
           })}
@@ -313,9 +311,20 @@ export default function CreateItem() {
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>가격</ContentSpan>
+          {/* <NumericFormat
+            type="text"
+            placeholder=", 없이 입력해주세요"
+            suffix={" 원"}
+            style={{
+              fontSize: "1rem",
+              paddingLeft: "0.5rem",
+            }}
+            thousandSeparator=","
+            // {...register("price", { required: "가격을 입력해주세요" })}
+          /> */}
           <ContentInput
-            defaultValue={item?.price}
             type="number"
+            defaultValue={item?.price}
             {...register("price", {
               required: "가격을 입력해주세요",
               pattern: {
@@ -362,17 +371,17 @@ export default function CreateItem() {
             </option>
 
             {allCategories?.map((category: any) => {
-              return <option key={category}>{category}</option>;
+              return <option>{category}</option>;
             })}
           </CategorySelect>
           <StyledMessage>
             <ErrorMessage errors={errors} name="category" />
           </StyledMessage>
         </ContentDiv>
-        <ContentDiv>
+        {/* <ContentDiv>
           <ContentSpan>사진 업로드</ContentSpan>
           <DragDrop files={files} setFiles={setFiles} />
-        </ContentDiv>
+        </ContentDiv> */}
 
         <ButtonDiv>
           <StyledButton type="button" onClick={toggle}>
