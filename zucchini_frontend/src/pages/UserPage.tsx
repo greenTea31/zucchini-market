@@ -1,10 +1,5 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import zucchiniImg1 from "../assets/images/1.png";
-import zucchiniImg2 from "../assets/images/2.png";
-import zucchiniImg3 from "../assets/images/3.png";
-import zucchiniImg4 from "../assets/images/4.png";
-import zucchiniImg5 from "../assets/images/5.png";
 import CategorySecond from "../components/List/CategorySecond";
 import Search from "../components/List/Search";
 import { useState, useEffect } from "react";
@@ -20,6 +15,7 @@ import GradeText from "../components/Common/GradeText";
 import { BASE_URL } from "../constants/url";
 import axios from "axios";
 import { constants } from "buffer";
+import Loading from "../components/Loading/Loading";
 
 interface ISeller {
   nickname: string;
@@ -44,6 +40,7 @@ export default function UserPage() {
   const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(-1); // 선택한 카테고리
+  const [isLoading, setIsLoading] = useState(false);
 
   async function getItems() {
     try {
@@ -107,6 +104,22 @@ export default function UserPage() {
     deal_count: 0,
   });
 
+  useEffect(() => {
+    setIsLoading(true);
+
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <ContainerDiv>
       <Modal isOpen={isOpen} toggle={toggle}>
@@ -160,7 +173,7 @@ export default function UserPage() {
             {items && items.length > 0 ? (
               items.map((item, index) => <ItemEachMini item={item} />)
             ) : (
-              <p>판매한 내역이 없습니다.</p>
+              <AlertP>카테고리에 일치하는 매물이 없습니다.</AlertP>
             )}
           </ItemsContainer>
         </LowerDiv>
@@ -225,6 +238,10 @@ const LowerDiv = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 2rem;
+`;
+
+const AlertP = styled.p`
+  width: 17rem;
 `;
 
 const ItemsContainer = styled.div`
