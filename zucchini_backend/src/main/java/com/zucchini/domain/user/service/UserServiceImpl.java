@@ -1,10 +1,12 @@
 package com.zucchini.domain.user.service;
 
 import com.zucchini.domain.category.domain.ItemCategory;
+import com.zucchini.domain.grade.service.GradeService;
 import com.zucchini.domain.image.service.ImageService;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.repository.ItemRepository;
+import com.zucchini.domain.report.service.ReportService;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.domain.UserItemLike;
 import com.zucchini.domain.user.domain.UserItemLikeId;
@@ -46,6 +48,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final ImageService imageService;
+    private final ReportService reportService;
+    private final GradeService gradeService;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -264,10 +268,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void removeUser(String token, String id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
-        String currentPrincipalId = nowLogInDetail.getId();
+        String currentPrincipalId = getCurrentId();
         User user;
 
         if (id == null) {
@@ -276,9 +277,12 @@ public class UserServiceImpl implements UserService {
         } else {
             user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
         }
+        // 탈퇴하려는 회원이 report에 있는지 확인 -> report는 id를 가지고 있으므로 해당 id 모두 delete?
+        reportService.removeReport(currentPrincipalId);
+        // 탈퇴하려는 회원이 매긴 별점이 존재하는지 확인 -> grade는 id를 가지고 있으므로 해당 id 모두 delete
+        gradeService.removeGrade(currentPrincipalId);
 
         user.userDelete();
-        userRepository.save(user);
     }
 
     /**

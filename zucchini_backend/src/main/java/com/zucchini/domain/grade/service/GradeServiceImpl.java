@@ -69,6 +69,14 @@ public class GradeServiceImpl implements GradeService{
     }
 
     /**
+     * 해당하는 별점 기록 삭제
+     */
+    @Override
+    public void removeGrade(String userId) {
+        gradeRepository.deleteAllByUser(userId);
+    }
+
+    /**
      * 새로 추가된 별점과 기존 사용자의 별점 합 평균 계산
      * @param user : 별점 받은 회원
      * @param grade : 별점

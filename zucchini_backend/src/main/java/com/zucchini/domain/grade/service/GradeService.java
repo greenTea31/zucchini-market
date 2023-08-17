@@ -10,4 +10,10 @@ public interface GradeService {
      */
     void giveGrade(GiveGradeRequest giveGradeRequest);
 
+    /**
+     * 해당하는 별점 기록 삭제
+     */
+
+    void removeGrade(String userId);
+
 }

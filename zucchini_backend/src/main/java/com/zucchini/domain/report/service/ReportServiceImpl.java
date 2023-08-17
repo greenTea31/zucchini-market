@@ -71,6 +71,15 @@ public class ReportServiceImpl implements ReportService {
     }
 
     /**
+     * 신고 삭제(회원 탈퇴 경우)
+     * @param id : 회원 아이디
+     */
+    @Override
+    public void removeReport(String id) {
+        reportRepository.deleteAllByUser(id);
+    }
+
+    /**
      * 스프링 시큐리티 인증을 통과하여 저장된 회원의 인증 객체에서 아이디 추출
      * @return String : 아이디
      */
