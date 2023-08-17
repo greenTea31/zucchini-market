@@ -103,9 +103,9 @@ public class ReservationServiceImpl implements ReservationService {
 
 
         // 해당 아이템에 관한 구매자의 예약이 하나 이상 존재하는지 판별함
-        int count = reservationRepository.countReservationsByItemNoAndUser(itemNo, buyer);
+        List<Reservation> count = reservationRepository.countReservationsByItemNoAndUser(itemNo, buyer);
 
-        if (count > 0) {
+        if (!count.isEmpty()) {
             throw new IllegalArgumentException("이미 예약한 아이템입니다.");
         }
 
