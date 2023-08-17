@@ -20,15 +20,15 @@ public class SseController {
 
     private final SseEmitters sseEmitters;
 
-    @GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> connect() {
+    @GetMapping(value = ("/{conferenceNo}"), produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> connect(@PathVariable("conferenceNo") int conferenceNo) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("authentication : " + authentication);
         UserDetails principal = (UserDetails) authentication.getPrincipal();
         log.info("principal.getUsername() : " + principal.getUsername());
 
         SseEmitter emitter = new SseEmitter();
-        sseEmitters.add(emitter);
+        sseEmitters.add(emitter, conferenceNo);
         log.info("connect 요청이 들어옴");
         try {
             emitter.send(SseEmitter.event()
@@ -41,10 +41,10 @@ public class SseController {
         return ResponseEntity.ok(emitter);
     }
 
-    @PostMapping("/count")
-    public ResponseEntity<String> count(@RequestBody BuyAlertDto buyAlertDto) {
+    @PostMapping("/count/{conferenceNo}")
+    public ResponseEntity<String> count(@RequestBody BuyAlertDto buyAlertDto, @PathVariable int conferenceNo) {
         log.info(buyAlertDto.getUserName());
-        sseEmitters.count(buyAlertDto.getUserName(), buyAlertDto.getBuy());
+        sseEmitters.count(buyAlertDto.getUserName(), buyAlertDto.getBuy(), conferenceNo);
         return ResponseEntity.ok().build();
     }
 
