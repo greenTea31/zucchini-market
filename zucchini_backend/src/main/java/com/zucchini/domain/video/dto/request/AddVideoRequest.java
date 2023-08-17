@@ -15,10 +15,10 @@ public class AddVideoRequest {
     @NotBlank
     String link;
 
-    @NotBlank
+    @NotNull
     Date startTime;
 
-    @NotBlank
+    @NotNull
     Date endTime;
 
 }
