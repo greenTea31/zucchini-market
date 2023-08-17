@@ -23,6 +23,7 @@ export default function ReplayBuyVideo() {
       const response = await api.get(
         `video/${location.pathname.split("/")[4]}`
       );
+      console.log(response);
       setVideo(response.data.link);
       setTitle(response.data.itemTitle);
       setVideoNo(response.data.no);
@@ -87,7 +88,6 @@ export default function ReplayBuyVideo() {
 
   // 별점 모달 열고 닫기
   const toggleStar = () => {
-    confirmDeal();
     setIsStar(!isStar);
     // 모달 닫히면 별점 초기화
     setStarRating(0);
@@ -100,6 +100,7 @@ export default function ReplayBuyVideo() {
 
   // 별점 통신
   const confirmRating = async () => {
+    toggle();
     // 선택한 별이 없을 경우 예외 처리
     if (starRating === 0) {
       setErrorMsgCon("별점을 선택해주세요.");
@@ -115,8 +116,12 @@ export default function ReplayBuyVideo() {
       });
       setIsStar(false);
       setIsConfirm(true);
+      await confirmDeal();
     } catch (error: any) {
       console.log(error.response.data);
+      setErrorMsgCon(`${error.response.data}`);
+      setIsStar(false);
+      errorToggle2();
     }
   };
 
@@ -180,7 +185,7 @@ export default function ReplayBuyVideo() {
         </ModalDiv>
         <ModalSpan>구매가 확정되었습니다!</ModalSpan>
         <ButtonDiv>
-          <GreenBtn onClick={toggle}>확인</GreenBtn>
+          <GreenBtn onClick={toggleConfirm}>확인</GreenBtn>
         </ButtonDiv>
       </Modal>
       {/* 구매 확정 연장 모달 */}
