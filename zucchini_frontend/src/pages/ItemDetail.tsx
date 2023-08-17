@@ -46,6 +46,7 @@ interface IItem {
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMyOpen, setIsMyOpen] = useState(false);
   const [isReporting, setIsReporting] = useState(false); // 신고모달
   const [item, setItem] = useState<IItem>(); // item 상태 추가
   const [like, setLike] = useState(false);
@@ -61,6 +62,11 @@ export default function ItemDetail() {
   const toggle = () => {
     setIsOpen(!isOpen);
   };
+
+  const toggleMy = () => {
+    setIsMyOpen(!isMyOpen);
+  };
+
   const toggleReport = () => {
     if (!sessionStorage.getItem("USER")) {
       navigate("/login");
@@ -180,7 +186,7 @@ export default function ItemDetail() {
     ) {
       try {
         await api.delete(`item/${item?.no}`);
-        navigate(-1);
+        navigate("/mypage/sell");
       } catch (error) {
         alert("게시글 삭제 도중 오류 발생 : 다시 시도해주세요");
         console.error("게시글 삭제 실패:", error);
@@ -240,8 +246,24 @@ export default function ItemDetail() {
         <ModalDiv>
           <ClosedButton onClick={toggle} />
         </ModalDiv>
-        <ModalSpan>화상통화 일정 선택</ModalSpan>
+        <ModalSpan>영상통화 일정 선택</ModalSpan>
         <SubSpan>일정은 상품당 한 번씩만 선택 가능합니다</SubSpan>
+        <CalendarDiv>
+          <SimpleCalendar
+            itemNo={item?.no}
+            mark={item?.dateList}
+            myNickname={userNickname}
+            sellerNickname={item?.seller.nickname}
+          />
+        </CalendarDiv>
+      </Modal>
+
+      {/* 내 일정 보는 모달 */}
+      <Modal isOpen={isOpen} toggle={toggle}>
+        <ModalDiv>
+          <ClosedButton onClick={toggle} />
+        </ModalDiv>
+        <ModalSpan>영상통화 일정 보기</ModalSpan>
         <CalendarDiv>
           <SimpleCalendar
             itemNo={item?.no}
@@ -388,37 +410,49 @@ export default function ItemDetail() {
             · 조회 {item?.view} · 찜 {item?.likeCount}
           </SubSpan>
 
-          <TransBtn type="button" onClick={toggleReport} style={buttonStyle}>
-            신고하기
-            <RedSvg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 24"
-              strokeWidth="1.5"
-              stroke="red"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-              />
-            </RedSvg>
-          </TransBtn>
+          {item?.seller.nickname !== userNickname && (
+            <TransBtn type="button" onClick={toggleReport} style={buttonStyle}>
+              신고하기
+              <RedSvg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 24"
+                strokeWidth="1.5"
+                stroke="red"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                />
+              </RedSvg>
+            </TransBtn>
+          )}
 
           <SelectBtnDiv>
             {item?.dateList.length !== 0 && (
               <SelectBtn onClick={toggle}>일정보기</SelectBtn>
             )}
+            {item?.dateList.length === 0 && (
+              <NoDiv>
+                영상통화 일정 없음{" "}
+                <NoTimeSvg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1em"
+                  viewBox="0 0 512 512"
+                >
+                  <path d="M160 0c13.3 0 24 10.7 24 24V64H328V24c0-13.3 10.7-24 24-24s24 10.7 24 24V64h40c35.3 0 64 28.7 64 64v16 48V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V192 144 128c0-35.3 28.7-64 64-64h40V24c0-13.3 10.7-24 24-24zM432 192H80V448c0 8.8 7.2 16 16 16H416c8.8 0 16-7.2 16-16V192zm-95 89l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
+                </NoTimeSvg>
+              </NoDiv>
+            )}
             {item?.seller.nickname !== userNickname && (
               <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
             )}
-          </SelectBtnDiv>
-          {item?.seller.nickname === userNickname && (
-            <>
+            {item?.seller.nickname === userNickname && (
               <DeleteBtn onClick={handleDelete}>게시글 삭제</DeleteBtn>
-            </>
-          )}
+            )}
+          </SelectBtnDiv>
         </UpperRightDiv>
       </UpperDiv>
       <LowerDiv>
@@ -628,7 +662,6 @@ const SubSpan = styled.span`
 
 const SelectBtn = styled.button`
   height: 3rem;
-  width: 49%;
   background-color: #cde990;
   border: transparent;
   color: #254021;
@@ -743,6 +776,20 @@ const GradeDiv = styled.div`
 
 const SelectBtnDiv = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   width: 100%;
+`;
+
+const NoDiv = styled.div`
+  padding: 0 0 1rem 0.3rem;
+  padding-bottom: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+`;
+
+const NoTimeSvg = styled.svg`
+  width: 1rem;
+  height: 1rem;
 `;

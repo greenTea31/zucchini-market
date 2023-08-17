@@ -100,7 +100,7 @@ export default function ItemList() {
           </Link>
         </TitleDiv>
         <ItemsContainer>
-          {items ? (
+          {items && items.length > 0 ? (
             items.map((item, index) => <ItemEach item={item} />)
           ) : (
             <p>카테고리에 일치하는 매물이 없습니다.</p>
