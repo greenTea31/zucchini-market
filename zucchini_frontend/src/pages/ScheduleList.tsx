@@ -77,8 +77,7 @@ export default function ScheduleList() {
           <TodayDiv>
             <p>Today : {today.toLocaleDateString()}</p>
           </TodayDiv>
-          {/* 아래 주석 나중에 풀기 */}
-          {/* {data && data.length > 0 ? (
+          {data && data.length > 0 ? (
             data.map((item) => {
               const date1 = dayjs(item.confirmedDate);
               const now = dayjs();
@@ -88,13 +87,6 @@ export default function ScheduleList() {
               }
               <ScheduleEach key={item.conferenceNo} item={item} />;
             })
-          ) : (
-            <AlertP>일정이 없습니다.</AlertP>
-          )} */}
-          {data && data.length > 0 ? (
-            data.map((item) => (
-              <ScheduleEach key={item.conferenceNo} item={item} />
-            ))
           ) : (
             <AlertP>일정이 없습니다.</AlertP>
           )}
