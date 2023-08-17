@@ -58,14 +58,14 @@ export default function ToolbarComponent(props: IProps) {
     navigate("/scheduleList", { replace: true });
   }
 
-  function buyItem() {
+  async function buyItem() {
     const conferNo = window.location.pathname.split("/conference/")[1];
     setIsOkModalOpen(!isOkModalOpen);
 
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
-    const response = api.post(`/sse/count/${conferNo}`, {
+    const response = await api.post(`/sse/count/${conferNo}`, {
       userName: parsedinfo.nickname,
       buy: true,
     });
@@ -84,7 +84,7 @@ export default function ToolbarComponent(props: IProps) {
     // }, 3000);
   }
 
-  function dontbuyItem() {
+  async function dontbuyItem() {
     // 거래 거절되었다는 내용의 모달 팝업시키기
     const conferNo = window.location.pathname.split("/conference/")[1];
     setIsNoModalOpen(!isNoModalOpen);
@@ -92,7 +92,7 @@ export default function ToolbarComponent(props: IProps) {
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
-    const response = api.post(`/sse/count/${conferNo}`, {
+    const response = await api.post(`/sse/count/${conferNo}`, {
       userName: parsedinfo.nickname,
       buy: false,
     });
@@ -100,12 +100,12 @@ export default function ToolbarComponent(props: IProps) {
     setIsBuyModalOpen(!isBuyModalOpen);
   }
 
-  function requestDeal() {
+  async function requestDeal() {
     const conferNo = window.location.pathname.split("/conference/")[1];
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
-    const response = api.post(`/sse/count/${conferNo}`, {
+    const response = await api.post(`/sse/count/${conferNo}`, {
       userName: parsedinfo.nickname,
       buy: null,
     });

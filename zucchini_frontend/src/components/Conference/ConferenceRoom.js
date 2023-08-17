@@ -605,14 +605,14 @@ class ConferenceRoom extends Component {
     return response.data;
   }
 
-  buyItem() {
+  async buyItem() {
     // 거래 확정되었다는 안내문구 팝업시키기
 
     const conferNo = window.location.pathname.split("/conference/")[1];
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
-    const response = api.post(`/sse/count/${conferNo}`, {
+    const response = await api.post(`/sse/count/${conferNo}`, {
       userName: parsedinfo.nickname,
       buy: true,
     });
@@ -620,12 +620,12 @@ class ConferenceRoom extends Component {
     this.setState({ isBuyModalOpen: !this.state.isBuyModalOpen });
   }
 
-  dontbuyItem() {
+  async dontbuyItem() {
     const conferNo = window.location.pathname.split("/conference/")[1];
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
-    const response = api.post(`/sse/count/${conferNo}`, {
+    const response = await api.post(`/sse/count/${conferNo}`, {
       userName: parsedinfo.nickname,
       buy: false,
     });
