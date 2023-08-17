@@ -417,9 +417,7 @@ export default function ItemDetail() {
               <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
             )}
             {item?.seller.nickname === userNickname && (
-              <>
-                <DeleteBtn onClick={handleDelete}>게시글 삭제</DeleteBtn>
-              </>
+              <DeleteBtn onClick={handleDelete}>게시글 삭제</DeleteBtn>
             )}
           </SelectBtnDiv>
         </UpperRightDiv>
