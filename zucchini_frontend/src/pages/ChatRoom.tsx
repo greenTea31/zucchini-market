@@ -210,7 +210,7 @@ export default function ChatRoom() {
 
   const [buyOpen, setBuyOpen] = useState(false);
 
-  const buyToggle = () => {
+  const sellToggle = () => {
     setBuyOpen(!buyOpen);
   };
 
@@ -232,7 +232,7 @@ export default function ChatRoom() {
     } catch (error: any) {
       setAlertMessage(`${error.response.data}`);
       alertToggle();
-      buyToggle();
+      sellToggle();
     }
   };
 
@@ -254,9 +254,9 @@ export default function ChatRoom() {
           <GreenBtn onClick={alertToggle}>확인</GreenBtn>
         </ButtonDiv>
       </Modal>
-      <Modal isOpen={buyOpen} toggle={buyToggle}>
+      <Modal isOpen={buyOpen} toggle={sellToggle}>
         <ModalDiv>
-          <ClosedButton onClick={buyToggle} />
+          <ClosedButton onClick={sellToggle} />
         </ModalDiv>
         <ModalSpan>거래 예약하기</ModalSpan>
         <SpanDiv>
@@ -267,7 +267,7 @@ export default function ChatRoom() {
         </SpanDiv>
         <ButtonDiv>
           <GreenBtn onClick={nextStatus}>
-            <Link to={"/mypage/buy"}>확정</Link>
+            <Link to={"/mypage/sell"}>확정</Link>
           </GreenBtn>
         </ButtonDiv>
       </Modal>
@@ -319,7 +319,7 @@ export default function ChatRoom() {
               <BtnDiv>
                 <ReportBtn onClick={toggleReport}>신고하기</ReportBtn>
                 {opponent?.opponentNickname !== item?.seller.nickname && (
-                  <SellerBtn onClick={buyToggle}>거래 예약</SellerBtn>
+                  <SellerBtn onClick={sellToggle}>거래 예약</SellerBtn>
                 )}
               </BtnDiv>
             </SellerDiv>
