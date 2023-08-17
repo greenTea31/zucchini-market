@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import MenuNavigation from "./MenuNavigation";
 import menuNavigation from "../constants/menuNavigation";
-import menuNavigationSecond from "../constants/menuNavigationSecond";
 import loggedOutNavigation from "../constants/loggedOutNavigaion";
 import Zucchini from "../../../assets/images/zucchini.png";
 import { useLocation } from "react-router-dom";
@@ -67,18 +66,11 @@ export default function MenuWindow({ toggle }: IMenuProps) {
         </svg>
       </ExitButton>
       <StyledImg src={Zucchini} />
-      <NaviDiv>
-        <MenuNavigation
-          list={menuNavigation}
-          loggedOutList={loggedOutNavigation}
-          onItemClick={handleMenuItemClick}
-        />
-        <MenuNavigation
-          list={menuNavigationSecond}
-          loggedOutList={loggedOutNavigation}
-          onItemClick={handleMenuItemClick}
-        />
-      </NaviDiv>
+      <MenuNavigation
+        list={menuNavigation}
+        loggedOutList={loggedOutNavigation}
+        onItemClick={handleMenuItemClick}
+      />
     </MenuWindowContainer>
   );
 }
@@ -113,8 +105,4 @@ const StyledImg = styled.img`
   height: 4rem;
   width: 4rem;
   margin-bottom: 3rem;
-`;
-
-const NaviDiv = styled.div`
-  display: flex;
 `;
