@@ -6,6 +6,7 @@ import com.zucchini.domain.reservation.dto.response.CheckReservationResponse;
 import com.zucchini.domain.reservation.dto.response.ReservationResponse;
 import com.zucchini.domain.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reservation")
+@Slf4j
 public class ReservationController {
 
     private final ReservationService reservationService;

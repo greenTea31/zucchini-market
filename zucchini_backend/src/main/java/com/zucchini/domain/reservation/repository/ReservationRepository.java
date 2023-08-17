@@ -13,11 +13,13 @@ import java.util.Optional;
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
     /**
-     * 회원의 모든 예약 내역 조회
+     * 회원의 모든 예약 내역 조회하되, 해당 예약 내역의 컨퍼런스, 컨퍼런스의 아이템 타고 들어가서 item의 status가 0인 것만 조회 하되, 현재 시간보다 컨퍼런스의 날짜가 60분 이후이면 조회하지 않음
      * @param user : 현재 로그인한 회원
      * @return List<Reservation> : 예약 내역 리스트
      */
-    List<Reservation> findAllByUser(User user);
+
+    @Query("SELECT r FROM Reservation r JOIN r.conference c JOIN c.item i WHERE c.confirmedDate > :before1Hour AND r.user = :user AND i.status = 0 ORDER BY c.confirmedDate ASC")
+    List<Reservation> findActiveReservationAllByUser(User user, Date before1Hour);
 
     /**
      * 회원의 모든 화상 일정을 반환하는 쿼리

@@ -102,14 +102,14 @@ public class SessionServiceImpl implements SessionService {
         }
         // 해당 컨퍼런스 번호로 한 예약은 회원마다 유일함
         Reservation reservation = reservationList.get(0);
-//        if(reservation.isAttended()){
-//            // 이미 접속중인 상태
-//            throw new IllegalArgumentException("이미 해당 컨퍼런스에 접속한 상태입니다.");
-//        }
-        // 예약된 날짜부터 30분까지는 입장 가능하게 변경(임시)
-//        Date curDate = new Date();
-//        if(curDate.getTime()-conference.get().getConfirmedDate().getTime() > thirtyMillis)
-//            throw new IllegalArgumentException("입장 만료되었습니다.");
+        if(reservation.isAttended()){
+            // 이미 접속중인 상태
+            throw new IllegalArgumentException("이미 해당 컨퍼런스에 접속한 상태입니다.");
+        }
+//         예약된 날짜부터 30분까지는 입장 가능하게 변경(임시)
+        Date curDate = new Date();
+        if(curDate.getTime()-conference.get().getConfirmedDate().getTime() > thirtyMillis)
+            throw new IllegalArgumentException("입장 만료되었습니다.");
         // 회원의 참석 여부 true로 갱신
         reservation.attend();
 //        reservationRepository.save(reservation);
