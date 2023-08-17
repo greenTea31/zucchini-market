@@ -28,7 +28,7 @@ export default function MyPage() {
   const [user, setUser] = useState<IUser>();
 
   useEffect(() => {
-    setUser(JSON.parse(sessionStorage.getItem("USER_INFO") as string));
+    setUser(JSON.parse(localStorage.getItem("USER_INFO") as string));
     // console.log(user);
   }, []);
 

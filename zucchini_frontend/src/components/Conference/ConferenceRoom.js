@@ -33,7 +33,7 @@ class ConferenceRoom extends Component {
     this.hasBeenUpdated = false;
     this.layout = new OpenViduLayout();
     let sessionName = this.conferenceNo;
-    let userName = JSON.parse(sessionStorage.getItem("USER_INFO")).nickname;
+    let userName = JSON.parse(localStorage.getItem("USER_INFO")).nickname;
     this.remotes = [];
     this.localUserAccessAllowed = false;
     this.state = {
@@ -82,7 +82,7 @@ class ConferenceRoom extends Component {
       headers: headers,
     });
 
-    const userinfo = sessionStorage.getItem("USER_INFO");
+    const userinfo = localStorage.getItem("USER_INFO");
     const parsedinfo = JSON.parse(userinfo);
 
     sse.addEventListener("connect", (e) => {
@@ -609,7 +609,7 @@ class ConferenceRoom extends Component {
     // 거래 확정되었다는 안내문구 팝업시키기
 
     const conferNo = window.location.pathname.split("/conference/")[1];
-    const userinfo = sessionStorage.getItem("USER_INFO");
+    const userinfo = localStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
     const response = await api.post(`/sse/count/${conferNo}`, {
@@ -622,7 +622,7 @@ class ConferenceRoom extends Component {
 
   async dontbuyItem() {
     const conferNo = window.location.pathname.split("/conference/")[1];
-    const userinfo = sessionStorage.getItem("USER_INFO");
+    const userinfo = localStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
     const response = await api.post(`/sse/count/${conferNo}`, {
@@ -829,7 +829,7 @@ class ConferenceRoom extends Component {
       }
     );
     console.log(response);
-    sessionStorage.setItem("sessionId", response.data.sessionId);
+    localStorage.setItem("sessionId", response.data.sessionId);
     return response.data.token; // The token
   }
 }

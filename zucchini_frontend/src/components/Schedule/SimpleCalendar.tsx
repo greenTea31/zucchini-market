@@ -34,7 +34,7 @@ export default function SimpleCalendar({
 
   // 선택한 날짜로 date 바꿔주고
   const onChange = (event: any) => {
-    if (!sessionStorage.getItem("USER")) {
+    if (!localStorage.getItem("USER")) {
       alert("로그인 후 조회 가능합니다.");
       return;
     }
