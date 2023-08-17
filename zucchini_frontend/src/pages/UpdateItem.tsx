@@ -2,20 +2,14 @@ import styled from "styled-components";
 import Modal from "../components/Common/Modal";
 import { useEffect, useState } from "react";
 import SimpleCalendarRegister from "../components/Schedule/SimpleCalendarRegister";
-// import ImageUpload from "../FileUpload/ImageUpload";
-import DragDrop from "../FileUpload/DragDrop";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import ClosedButton from "../components/Button/ClosedButton";
 import dayjs from "dayjs";
 import axios from "axios";
-import IFileTypes from "../types/IFileTypes";
 import { Button } from "../components/Common/Button";
 import useAuth from "../hooks/useAuth";
 import { motion } from "framer-motion";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { Credentials } from "aws-sdk";
-import { v1, v3, v4, v5 } from "uuid";
 import api from "../utils/api";
 import { useNavigate } from "react-router";
 import { BASE_URL } from "../constants/url";
@@ -41,44 +35,6 @@ interface IItem {
 }
 
 export default function UpdateItem() {
-  // sdk-s3
-  /*
-   * 실제 AWS 액세스 키와 시크릿 키로 대체해야 합니다.
-   * 이렇게 설정하면 AWS 서비스에 액세스하기 위한 인증 정보가 제공되어
-   * "Credential is missing" 에러가 해결될 것입니다.
-   * 액세스 키와 시크릿 키를 코드에 하드코딩하는 것은 보안상 좋지 않을 수 있으므로,
-   * 실제 프로덕션 환경에서는 환경 변수나 다른 보안 메커니즘을 사용하여 안전하게 관리하는 것이 좋습니다.
-   */
-  const [uploadURL, setUploadURL] = useState("");
-  //@ts-ignore
-  const credentials: Credentials = {
-    accessKeyId: "AKIA2ZDVZIZHOHIYLSNH",
-    secretAccessKey: "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",
-  };
-  const client = new S3Client({
-    region: "ap-northeast-2",
-    credentials: credentials,
-  });
-  const uploadFile = async (file: IFileTypes) => {
-    const uuid = v1().toString().replace("-", "");
-    const keyName = `${uuid}.${file.object.name}`;
-
-    const command = new PutObjectCommand({
-      Bucket: "zucchinifile",
-      Key: keyName,
-      Body: file.object,
-    });
-    try {
-      await client.send(command);
-
-      // 이미지의 공개 URL 생성
-      const imageURL = `https://zucchinifile.s3.ap-northeast-2.amazonaws.com/${keyName}`;
-      return imageURL;
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const token = useAuth();
 
   const {
@@ -93,31 +49,11 @@ export default function UpdateItem() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const [files, setFiles] = useState<IFileTypes[]>([]);
   // 마우스로 선택한 날짜 받는 state
   const [clickedTime, setClickedTime] = useState(new Date());
 
   // 판매자가 선택한 시간들 차곡차곡 담아주기
   const [selectedTimes, setSelectedTimes] = useState<any>([]);
-  // 카테고리 전부
-  const [allCategories, setAllCategories] = useState<any>([]);
-  // 선택한 카테고리
-  const [selectedCategories, setSelectedCategories] = useState<any>([]);
-
-  // 처음 렌더링될 때, 카테고리 가져올 거예영
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const response = await axios.get(BASE_URL + "item/category");
-        // const response = await api.get("item/category");
-        const categoryNames = response.data.map((item: any) => item.category);
-        setAllCategories(categoryNames);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    getCategories();
-  }, []);
 
   const location = useLocation();
   // 아이템 가져오기
@@ -128,7 +64,6 @@ export default function UpdateItem() {
           `item/${location.pathname.split("/")[2]}`
         );
         setItem(response.data);
-        setSelectedCategories(response.data.categoryList);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -138,30 +73,6 @@ export default function UpdateItem() {
 
   const toggle = () => {
     setIsOpen(!isOpen);
-    console.log("눌려?");
-  };
-
-  // 카테고리 추가
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedCategory =
-      event.target.options[event.target.selectedIndex].textContent;
-    console.log(selectedCategory);
-    if (!selectedCategories.includes(selectedCategory)) {
-      setSelectedCategories([...selectedCategories, selectedCategory]);
-    }
-  };
-
-  useEffect(() => {
-    console.log(selectedCategories);
-  }, [selectedCategories]);
-
-  // 카테고리 삭제
-  const discardCategory = (event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log(event.currentTarget.value);
-    let reselect = selectedCategories.filter(
-      (e: any) => e !== event.currentTarget.value
-    );
-    setSelectedCategories(reselect);
   };
 
   const addTime = () => {
@@ -194,20 +105,6 @@ export default function UpdateItem() {
     formData.append("title", data.title);
     formData.append("content", data.content);
     formData.append("price", data.price);
-    // 카테고리
-    for (let i = 0; i < selectedCategories.length; i++) {
-      const num = allCategories.indexOf(selectedCategories[i]) + 1;
-      formData.append("categoryList", `${num}`);
-    }
-    // 이미지 파일 url
-    // await uploadFile(files[i]);
-    // formData.append("imageList", uploadURL);
-    // const uploadedURLs = await Promise.all(files.map(uploadFile));
-
-    // // 업로드된 URL들을 formData에 추가
-    // uploadedURLs.forEach((url: any) => {
-    //   formData.append("imageList", url);
-    // });
 
     // 일정들
     for (let i = 0; i < selectedTimes.length; i++) {
@@ -219,15 +116,11 @@ export default function UpdateItem() {
       content: data.content,
       price: data.price,
       dateList: data.selectedTimes,
-      categoryList: data.selectedCategories,
     });
-    const item_no = response.data;
 
+    const item_no = response.data;
     navigate(`/item/${item_no}`);
   };
-  useEffect(() => {
-    console.log(uploadURL);
-  }, [uploadURL]);
 
   return (
     <ContainerAll
@@ -255,7 +148,6 @@ export default function UpdateItem() {
             return (
               <TimeDiv key={formattedTime}>
                 {formattedTime}
-                {/* <TimeBtn> */}
                 <TimeSvg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -271,7 +163,6 @@ export default function UpdateItem() {
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </TimeSvg>
-                {/* </TimeBtn> */}
               </TimeDiv>
             );
           })}
@@ -279,7 +170,6 @@ export default function UpdateItem() {
         <StyledBtn onClick={addTime}>추가</StyledBtn>
         <StyledBtn onClick={() => toggle()}>완료</StyledBtn>
       </Modal>
-      {/* <TimeSchedule isOpen={timeOpen} toggle={timeToggle} /> */}
       <ContainerForm onSubmit={handleSubmit(onSubmit)}>
         <TitleSpan>내 물건 팔기</TitleSpan>
         <ContentDiv>
@@ -287,7 +177,7 @@ export default function UpdateItem() {
           <ContentInput
             defaultValue={item?.title}
             {...register("title", {
-              required: "제목을 입력해주세요.",
+              required: item?.title ? undefined : "제목을 입력해주세요.",
               maxLength: 80,
             })}
             maxLength={80}
@@ -302,7 +192,7 @@ export default function UpdateItem() {
             defaultValue={item?.content}
             maxLength={1000}
             {...register("content", {
-              required: "설명을 입력해주세요.",
+              required: item?.content ? undefined : "설명을 입력해주세요.",
             })}
           ></ContentTextArea>
           <StyledMessage>
@@ -311,22 +201,11 @@ export default function UpdateItem() {
         </ContentDiv>
         <ContentDiv>
           <ContentSpan>가격</ContentSpan>
-          {/* <NumericFormat
-            type="text"
-            placeholder=", 없이 입력해주세요"
-            suffix={" 원"}
-            style={{
-              fontSize: "1rem",
-              paddingLeft: "0.5rem",
-            }}
-            thousandSeparator=","
-            // {...register("price", { required: "가격을 입력해주세요" })}
-          /> */}
           <ContentInput
             type="number"
             defaultValue={item?.price}
             {...register("price", {
-              required: "가격을 입력해주세요",
+              required: item?.price ? undefined : "가격을 입력해주세요",
               pattern: {
                 value: /^[1-9]\d*$/,
                 message: "잘못된 값입니다.",
@@ -337,52 +216,6 @@ export default function UpdateItem() {
             <ErrorMessage errors={errors} name="price" />
           </StyledMessage>
         </ContentDiv>
-        <ContentDiv>
-          <ContentSpan>카테고리</ContentSpan>
-          <div>
-            {selectedCategories.map((category: any) => {
-              return (
-                <Button
-                  type="button"
-                  kind="extraSmall"
-                  Variant="filled"
-                  style={{
-                    padding: "8px",
-                    margin: "0.2rem",
-                    width: "8rem",
-                    borderRadius: "10px",
-                  }}
-                  onClick={discardCategory}
-                  value={category}
-                >
-                  {category}
-                </Button>
-              );
-            })}
-          </div>
-          <CategorySelect
-            {...register("category", {
-              required: "물품의 종류을 입력해주세요",
-              onChange: onChange,
-            })}
-          >
-            <option value="" disabled selected>
-              물품의 종류를 선택해주세요
-            </option>
-
-            {allCategories?.map((category: any) => {
-              return <option>{category}</option>;
-            })}
-          </CategorySelect>
-          <StyledMessage>
-            <ErrorMessage errors={errors} name="category" />
-          </StyledMessage>
-        </ContentDiv>
-        {/* <ContentDiv>
-          <ContentSpan>사진 업로드</ContentSpan>
-          <DragDrop files={files} setFiles={setFiles} />
-        </ContentDiv> */}
-
         <ButtonDiv>
           <StyledButton type="button" onClick={toggle}>
             일정 선택
