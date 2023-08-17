@@ -239,6 +239,10 @@ export default function ChatRoom() {
     }
   };
 
+  const toUserPage = () => {
+    navigate(`/userpage/${item?.seller.nickname}`);
+  };
+
   return (
     <ContainerDiv
       initial={{ opacity: 0 }}
@@ -313,7 +317,9 @@ export default function ChatRoom() {
                 />
               </SellerImgDiv>
               <SellerSpanDiv>
-                <SellerName>{opponent?.opponentNickname}</SellerName>
+                <SellerName onClick={toUserPage}>
+                  {opponent?.opponentNickname}
+                </SellerName>
                 <GradeDiv>
                   Lv.{opponent?.opponentGrade}
                   <GradeText grade={opponent?.opponentGrade || 1} />
