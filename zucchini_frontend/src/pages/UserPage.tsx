@@ -38,7 +38,7 @@ export default function UserPage() {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
   const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(-1); // 선택한 카테고리
   const [isLoading, setIsLoading] = useState(false);
 
@@ -85,18 +85,18 @@ export default function UserPage() {
     setPage(page);
   };
 
-  const toggle = () => {
-    setIsOpen(!isOpen);
-  };
+  // const toggle = () => {
+  //   setIsOpen(!isOpen);
+  // };
 
-  const reportReasons = [
-    "판매금지물품",
-    "허위 매물",
-    "전문판매업자",
-    "도배",
-    "욕설, 비방",
-    "성희롱",
-  ];
+  // const reportReasons = [
+  //   "판매금지물품",
+  //   "허위 매물",
+  //   "전문판매업자",
+  //   "도배",
+  //   "욕설, 비방",
+  //   "성희롱",
+  // ];
 
   const [user, setUser] = useState({
     nickname: "",
@@ -122,7 +122,7 @@ export default function UserPage() {
 
   return (
     <ContainerDiv>
-      <Modal isOpen={isOpen} toggle={toggle}>
+      {/* <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
           <ClosedButton onClick={toggle} />
         </ModalDiv>
@@ -135,7 +135,7 @@ export default function UserPage() {
           roomNo={null}
           onCancel={toggle}
         />
-      </Modal>
+      </Modal> */}
       <LeftDiv>
         <TitleP>프로필</TitleP>
         <ImgDiv>
@@ -150,9 +150,9 @@ export default function UserPage() {
             </GradeDiv>
           </AboutP>
           <AboutP>거래 횟수: {user.deal_count}</AboutP>
-          <Button kind={"small"} Variant="redFilled" onClick={toggle}>
+          {/* <Button kind={"small"} Variant="redFilled" onClick={toggle}>
             신고하기
-          </Button>
+          </Button> */}
         </AboutDiv>
       </LeftDiv>
       <RightDiv>
