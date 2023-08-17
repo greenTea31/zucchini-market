@@ -38,7 +38,7 @@ export default function Times({
     console.log("내 닉네임 : " + myNickname);
     console.log("판매자 닉네임 : " + sellerNickname);
     if (
-      location.pathname.split("/")[1] === "chat" &&
+      // location.pathname.split("/")[1] === "chat" &&
       myNickname === sellerNickname
     ) {
       alert("본인의 스케줄은 조회만 가능합니다.");
