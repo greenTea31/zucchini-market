@@ -12,7 +12,7 @@ import java.util.List;
  * 상품 등록, 수정 시 사용하는 request
  */
 @Data
-public class ItemRequest {
+public class ModifyItemRequest {
 
     @NotBlank
     @Length(max = 200)
@@ -23,8 +23,6 @@ public class ItemRequest {
 
     @Min(0)
     private int price;
-
-    private List<String> imageList;
 
     private List<Date> dateList;
 
