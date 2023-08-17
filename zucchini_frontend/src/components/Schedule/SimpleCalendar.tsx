@@ -22,12 +22,6 @@ export default function SimpleCalendar({ itemNo, mark }: any) {
   // Times component 조건부 랜더링에 필요한 boolean값
   const [showTime, setShowTime] = useState(false);
 
-  // 선택된 스케줄 담아줄 것.
-  const [myFixedSchedule, setMyFixedSchedule] = useState();
-
-  // 선택 가능 dates
-  const [possibleDates, setPossibleDates] = useState<string[]>([]);
-
   // 선택 불가능 dates (이미 예약됨)
   const [impossibleDates, setImpossibleDates] = useState<string[]>([]);
 
@@ -93,7 +87,6 @@ export default function SimpleCalendar({ itemNo, mark }: any) {
         showTime={showTime}
         clickedDate={clickedDate}
         mark={mark}
-        setMyFixedSchedule={setMyFixedSchedule}
       />
     </ScheduleDiv>
   );

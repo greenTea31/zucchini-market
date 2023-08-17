@@ -10,12 +10,7 @@ import dayjs from "dayjs";
 // 우선 갖다놓는 날짜(임시, 테스트용.)
 // DB에서 해당 아이템,  해당 날짜에 해당하는 시간을 불러오는 로직 구현하기.
 // 아래 functions 안에서!
-export default function Times({
-  itemNo,
-  clickedDate,
-  mark,
-  setFixedSchedule,
-}: any) {
+export default function Times({ itemNo, clickedDate, mark }: any) {
   // clickedDate에 해당하는 시간들 담을 배열
   // const [times, setTimes] = useState([]);
 
