@@ -610,7 +610,6 @@ class ConferenceRoom extends Component {
 
     const conferNo = window.location.pathname.split("/conference/")[1];
     const userinfo = sessionStorage.getItem("USER_INFO");
-    alert(window.location.pathname);
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
     const response = api.post(`/sse/count/${conferNo}`, {
@@ -623,7 +622,6 @@ class ConferenceRoom extends Component {
 
   dontbuyItem() {
     const conferNo = window.location.pathname.split("/conference/")[1];
-    alert(window.location.pathname);
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);

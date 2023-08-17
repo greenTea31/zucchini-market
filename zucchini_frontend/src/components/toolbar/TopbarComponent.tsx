@@ -60,7 +60,6 @@ export default function ToolbarComponent(props: IProps) {
 
   function buyItem() {
     const conferNo = window.location.pathname.split("/conference/")[1];
-    alert(window.location.pathname);
     setIsOkModalOpen(!isOkModalOpen);
 
     const userinfo = sessionStorage.getItem("USER_INFO");
@@ -88,7 +87,6 @@ export default function ToolbarComponent(props: IProps) {
   function dontbuyItem() {
     // 거래 거절되었다는 내용의 모달 팝업시키기
     const conferNo = window.location.pathname.split("/conference/")[1];
-    alert(window.location.pathname);
     setIsNoModalOpen(!isNoModalOpen);
 
     const userinfo = sessionStorage.getItem("USER_INFO");
@@ -104,7 +102,6 @@ export default function ToolbarComponent(props: IProps) {
 
   function requestDeal() {
     const conferNo = window.location.pathname.split("/conference/")[1];
-    alert(window.location.pathname);
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
