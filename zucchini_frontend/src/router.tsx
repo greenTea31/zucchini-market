@@ -151,7 +151,7 @@ const router = createBrowserRouter([
         element: <AboutConference />,
       },
       {
-        path: "/userpage",
+        path: "/userpage/:nickName",
         element: <UserPage />,
       },
     ],

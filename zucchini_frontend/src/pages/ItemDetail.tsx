@@ -217,7 +217,7 @@ export default function ItemDetail() {
   ];
 
   const toUserPage = () => {
-    navigate(`/seller/${item?.no}`);
+    navigate(`/userpage/${item?.seller.nickname}`);
   };
 
   useEffect(() => {
