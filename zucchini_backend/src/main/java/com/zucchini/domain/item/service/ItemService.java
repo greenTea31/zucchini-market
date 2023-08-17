@@ -1,6 +1,7 @@
 package com.zucchini.domain.item.service;
 
-import com.zucchini.domain.item.dto.request.ItemRequest;
+import com.zucchini.domain.item.dto.request.AddItemRequest;
+import com.zucchini.domain.item.dto.request.ModifyItemRequest;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
 import com.zucchini.global.common.PageResponse;
@@ -30,14 +31,14 @@ public interface ItemService {
      * @param item : 입력된 상품 정보
      * @return itemNo : 생성된 상품 번호(PK)
      */
-    int addItem(ItemRequest item);
+    int addItem(AddItemRequest item);
 
     /**
      * 상품 수정
      * @param itemNo : 상품 번호 (PK)
      * @param item : 수정된 상품 정보
      */
-    void modifyItem(int itemNo, ItemRequest item);
+    void modifyItem(int itemNo, ModifyItemRequest item);
 
     /**
      * 상품 삭제

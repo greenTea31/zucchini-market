@@ -8,7 +8,8 @@ import com.zucchini.domain.image.repository.ImageRepository;
 import com.zucchini.domain.image.service.ImageService;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.domain.ItemDate;
-import com.zucchini.domain.item.dto.request.ItemRequest;
+import com.zucchini.domain.item.dto.request.AddItemRequest;
+import com.zucchini.domain.item.dto.request.ModifyItemRequest;
 import com.zucchini.domain.item.dto.response.DateResponse;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
@@ -201,7 +202,7 @@ public class ItemServiceImpl implements ItemService {
      * @return itemNo : 생성된 상품 번호(PK)
      */
     @Override
-    public int addItem(ItemRequest item) {
+    public int addItem(AddItemRequest item) {
         log.info("addItem");
         log.info("item : " + item);
         // 현재 로그인한 회원의 아이디
@@ -322,7 +323,7 @@ public class ItemServiceImpl implements ItemService {
      * @param item : 수정된 상품 정보
      */
     @Override
-    public void modifyItem(int itemNo, ItemRequest item) {
+    public void modifyItem(int itemNo, ModifyItemRequest item) {
         // itemNo로 아이템 조회
         if (!itemRepository.findById(itemNo).isPresent()) {
             throw new NoSuchElementException("존재하지 않는 상품입니다.");
@@ -333,9 +334,6 @@ public class ItemServiceImpl implements ItemService {
         if (!findItem.getSeller().getId().equals(getCurrentId())){
             throw new UserException("잘못된 접근입니다. 다른 판매자의 상품을 수정할 수 없습니다.");
         }
-
-        // image 수정
-        imageService.modifyImage(itemNo, item.getImageList());
 
         // date 수정
         removeDate(itemNo);
