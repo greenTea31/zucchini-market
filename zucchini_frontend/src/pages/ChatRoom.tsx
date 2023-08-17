@@ -66,8 +66,11 @@ export default function ChatRoom() {
     no: 0,
     nickname: "",
   });
-
   const [item, setItem] = useState<IItem>();
+  useEffect(() => {
+    console.log("user.nickname : " + user.nickname);
+    console.log("item.seller.nickname : " + item?.seller.nickname);
+  }, [user, item]);
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -290,14 +293,14 @@ export default function ChatRoom() {
         <LeftDiv>
           <UpperDiv>
             <TitleSpan>판매자가 선택한 일정</TitleSpan>
-            {item ? (
+            {item && user && (
               <SimpleCalendar
                 itemNo={item?.no}
                 mark={item?.dateList}
                 myNickname={user.nickname}
                 sellerNickname={item.seller.nickname}
               />
-            ) : null}
+            )}
           </UpperDiv>
           <LowerDiv>
             <SellerTitle>상대방 정보</SellerTitle>

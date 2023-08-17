@@ -91,6 +91,8 @@ export default function SimpleCalendar({
         showTime={showTime}
         clickedDate={clickedDate}
         mark={mark}
+        myNickname={myNickname}
+        sellerNickname={sellerNickname}
       />
     </ScheduleDiv>
   );

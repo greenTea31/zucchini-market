@@ -17,8 +17,10 @@ export default function Times({
   myNickname,
   sellerNickname,
 }: any) {
-  // clickedDate에 해당하는 시간들 담을 배열
-  // const [times, setTimes] = useState([]);
+  // useEffect(() => {
+  //   console.log("내 닉네임" + myNickname);
+  //   console.log("판매자 닉네임" + sellerNickname);
+  // }, []);
 
   //시간 버튼 생성하자
   //우선 날짜 맞는 거 찾는 로직
@@ -33,6 +35,8 @@ export default function Times({
   const navigate = useNavigate();
   const location = useLocation();
   const onClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("내 닉네임 : " + myNickname);
+    console.log("판매자 닉네임 : " + sellerNickname);
     if (
       location.pathname.split("/")[1] === "chat" &&
       myNickname === sellerNickname
