@@ -23,10 +23,17 @@ public interface VideoService {
 
     /**
      * 비디오 조회
-     * @param no : 비디오 no(PK)
+     * @param no : 상품번호(PK)
      * @return FindVideoResponse : 비디오 조회 response
      */
     FindVideoResponse findVideo(int no);
+
+    /**
+     * 비디오 존재 여부
+     * @param itemNo : 상품번호(PK)
+     * @return boolean : 상품 존재 여부
+     */
+    boolean checkVideo(int itemNo);
 
     /**
      * 비디오 삭제

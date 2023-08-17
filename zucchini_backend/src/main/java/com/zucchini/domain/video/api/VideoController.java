@@ -36,6 +36,15 @@ public class VideoController {
     }
 
     /**
+     * 해당 아이템의 비디오 존재 여부 확인
+     */
+    @GetMapping("/check/{itemNo}")
+    public ResponseEntity<Boolean> checkVideo(@PathVariable int itemNo) {
+        boolean check = videoService.checkVideo(itemNo);
+        return ResponseEntity.ok(check);
+    }
+
+    /**
      * 해당 아이템의 비디오 기한 연장
      */
     @PutMapping("/extension/{no}")
