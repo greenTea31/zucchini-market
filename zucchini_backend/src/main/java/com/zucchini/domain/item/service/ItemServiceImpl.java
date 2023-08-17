@@ -32,10 +32,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -211,6 +208,7 @@ public class ItemServiceImpl implements ItemService {
 
         // 화상 가능한 날짜 리스트
         List<Date> inputDateList = item.getDateList();
+        Collections.sort(inputDateList);
 
         // inputDateList와 reservatedList의 요소중 하나라도 겹치는게 있으면 예외를 발생시킴
         List<Date> overlapDateList = reservationRepository.findOverlapDatesByUserAndDates(user, inputDateList);
