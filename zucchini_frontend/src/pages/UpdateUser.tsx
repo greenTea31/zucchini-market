@@ -25,7 +25,7 @@ interface IUser {
 
 export default function UpdateUser() {
   const [user, setUser] = useState<IUser>(
-    JSON.parse(sessionStorage.getItem("USER_INFO") as string)
+    JSON.parse(localStorage.getItem("USER_INFO") as string)
   );
   const [nickname, setNickname] = useState(user.nickname);
   const [phone, setPhone] = useState(user.phone);
@@ -58,7 +58,7 @@ export default function UpdateUser() {
 
     setUser(updatedUser);
 
-    sessionStorage.setItem("USER_INFO", JSON.stringify(updatedUser));
+    localStorage.setItem("USER_INFO", JSON.stringify(updatedUser));
 
     navigate("/mypage");
   };

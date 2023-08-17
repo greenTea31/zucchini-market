@@ -68,7 +68,7 @@ export default function ItemDetail() {
   };
 
   const toggleReport = () => {
-    if (!sessionStorage.getItem("USER")) {
+    if (!localStorage.getItem("USER")) {
       navigate("/login");
       return;
     }
@@ -107,7 +107,7 @@ export default function ItemDetail() {
 
   // 하트(찜)
   const toggleLike = async () => {
-    if (!sessionStorage.getItem("USER")) {
+    if (!localStorage.getItem("USER")) {
       alert("로그인이 필요합니다.");
       navigate(`/login`);
       return;
@@ -148,7 +148,7 @@ export default function ItemDetail() {
 
   // 채팅방 이동
   const toChatRoom = async () => {
-    if (!sessionStorage.getItem("USER")) {
+    if (!localStorage.getItem("USER")) {
       alert("로그인이 필요합니다.");
       navigate(`/login`);
       return;
