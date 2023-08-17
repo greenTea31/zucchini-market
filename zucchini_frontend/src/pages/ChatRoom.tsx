@@ -441,9 +441,9 @@ const SellerDiv = styled.div`
 `;
 
 const SellerImgDiv = styled.div`
-  width: 8rem;
-  height: 6.5rem;
-  border-radius: 5rem;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
   border: solid 3px #cde990;
   margin-top: 1rem;
   display: flex;

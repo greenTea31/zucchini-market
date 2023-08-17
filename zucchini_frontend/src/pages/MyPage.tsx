@@ -59,12 +59,12 @@ export default function MyPage() {
               <InfoP>
                 성별 :
                 {user?.gender === false
-                  ? "여자"
+                  ? "여성"
                   : user?.gender === true
-                  ? "남자"
-                  : user?.gender === undefined
+                  ? "남성"
+                  : user?.gender === null
                   ? "선택안함"
-                  : ""}
+                  : "선택안함"}
               </InfoP>
             </div>
             <div>
