@@ -180,7 +180,7 @@ export default function ItemDetail() {
     ) {
       try {
         await api.delete(`item/${item?.no}`);
-        navigate(-1);
+        navigate("/mypage/sell");
       } catch (error) {
         alert("게시글 삭제 도중 오류 발생 : 다시 시도해주세요");
         console.error("게시글 삭제 실패:", error);
