@@ -128,7 +128,8 @@ public class SessionServiceImpl implements SessionService {
             sessionId = this.mapSessions.get(no).getSessionId();
         }else {
             // 컨퍼런스에 판매자 구매자 모두 접속한 경우 -> 동영상 녹화 시작!!
-            if(getAttendedUserCount(no) == 1){
+            // 이미 녹화 시작한 경우 체크
+            if(getAttendedUserCount(no) == 1 && this.sessionRecordingIds.get(sessionId) == null){
                 // 일단은 오디오 비디오 모두 true인 것으로 설정
                 startRecording(sessionId, true, true);
             }
@@ -159,7 +160,7 @@ public class SessionServiceImpl implements SessionService {
      */
     private Recording stopRecording(String sessionId) throws OpenViduJavaClientException, OpenViduHttpException {
 
-        String recordingId = this.sessionRecordingIds.get(sessionId);
+        String recordingId = this.sessionRecordingIds.remove(sessionId);
         if(recordingId == null) { // 아직 시작된 녹화가 없는 상태(ex : 판매자가 화상방에 입장했다가 구매자가 들어오기도 전에 나가버린 경우)
             LeaveSessionResponse leaveSessionResponse = new LeaveSessionResponse();
             leaveSessionResponse.setIsFinished(false);
