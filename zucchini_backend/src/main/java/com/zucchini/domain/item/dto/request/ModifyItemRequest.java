@@ -26,6 +26,4 @@ public class ModifyItemRequest {
 
     private List<Date> dateList;
 
-    private List<Integer> categoryList;
-
 }
