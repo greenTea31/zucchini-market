@@ -15,7 +15,12 @@ import api from "../../utils/api";
 import { response } from "express";
 import styled from "styled-components";
 
-export default function SimpleCalendar({ itemNo, mark }: any) {
+export default function SimpleCalendar({
+  itemNo,
+  mark,
+  myNickname,
+  sellerNickname,
+}: any) {
   // 마우스로 선택한 날짜 받는 state(tmp data)
   const [clickedDate, setClickedDate] = useState(new Date());
 
@@ -31,7 +36,6 @@ export default function SimpleCalendar({ itemNo, mark }: any) {
   const onChange = (event: any) => {
     if (!sessionStorage.getItem("USER")) {
       alert("로그인 후 조회 가능합니다.");
-      // navigate(`/login`);
       return;
     }
 

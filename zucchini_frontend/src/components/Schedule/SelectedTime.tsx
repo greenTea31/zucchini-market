@@ -9,6 +9,8 @@ export default function SelectedTime(props: any) {
           itemNo={props.itemNo}
           clickedDate={props.clickedDate}
           mark={props.mark}
+          myNickname={props.myNickname}
+          sellerNicknam={props.sellerNicknam}
         />
       ) : null}
     </div>
