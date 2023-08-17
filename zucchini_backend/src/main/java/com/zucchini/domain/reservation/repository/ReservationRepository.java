@@ -80,13 +80,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     /**
      * 해당 아이템에 관한 구매자의 예약이 존재하는지 판별하는 쿼리
      */
-    @Query(value = "select count(r) from Reservation r " +
+    @Query(value = "select r from Reservation r " +
             "join fetch r.conference c " +
             "join fetch c.item i " +
             "join fetch r.user u " +
             "where i.no = :itemNo " +
             "and u = :user")
-    int countReservationsByItemNoAndUser(@Param("itemNo") int itemNo, @Param("user") User user);
+    List<Reservation> countReservationsByItemNoAndUser(@Param("itemNo") int itemNo, @Param("user") User user);
 
 
 }
