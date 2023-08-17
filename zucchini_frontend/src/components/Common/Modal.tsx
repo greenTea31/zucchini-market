@@ -30,7 +30,7 @@ export default function Modal(props: ModalType) {
 }
 
 const ModalOverlay = styled.div`
-  z-index: 9999;
+  z-index: 999999;
   position: fixed;
   top: 0;
   left: 0;
@@ -52,4 +52,5 @@ const ModalBox = styled.div`
   margin-top: 1%;
   text-align: center;
   border: solid 5px #cde990;
+  color: black;
 `;

@@ -100,6 +100,7 @@ const NavigationContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 14px;
+  width: 12rem;
 `;
 
 const NavigationItem = styled(motion(Link))`
