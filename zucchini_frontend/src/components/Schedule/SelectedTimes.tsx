@@ -59,7 +59,7 @@ export default function Times({
         },
       }).then((response) => {
         if (response.data.status === 0) {
-          alert("이미 예약됨");
+          alert("판매자가 해당 시간대에 다른 예약이 있습니다.");
           console.log(response.data.status);
         } else if (response.data.status === 1) {
           // 예약 가능하지만 구매자가 등록한 판매 상품의 날짜 목록이랑 겹침

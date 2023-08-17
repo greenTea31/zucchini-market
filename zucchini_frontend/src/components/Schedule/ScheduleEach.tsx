@@ -27,7 +27,7 @@ export default function ScheduleEach(props: IProps) {
       </TimeP>
       <TitleP>{props?.item?.title}</TitleP>
       {/* 아래 주석 나중에 풀기 */}
-      {date1.diff(now, "minute") >= -10 && date1.diff(now, "minute") <= 30 ? (
+      {date1.diff(now, "minute") >= -30 && date1.diff(now, "minute") <= 10 ? (
         <Link
           to={`/conference/${props?.item?.conferenceNo}`}
           state={{ title: `${props?.item?.title}` }}

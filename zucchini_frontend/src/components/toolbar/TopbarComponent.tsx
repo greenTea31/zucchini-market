@@ -62,7 +62,7 @@ export default function ToolbarComponent(props: IProps) {
     const conferNo = window.location.pathname.split("/conference/")[1];
     setIsOkModalOpen(!isOkModalOpen);
 
-    const userinfo = sessionStorage.getItem("USER_INFO");
+    const userinfo = localStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
     const response = await api.post(`/sse/count/${conferNo}`, {
@@ -89,7 +89,7 @@ export default function ToolbarComponent(props: IProps) {
     const conferNo = window.location.pathname.split("/conference/")[1];
     setIsNoModalOpen(!isNoModalOpen);
 
-    const userinfo = sessionStorage.getItem("USER_INFO");
+    const userinfo = localStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
     const response = await api.post(`/sse/count/${conferNo}`, {
@@ -102,7 +102,7 @@ export default function ToolbarComponent(props: IProps) {
 
   async function requestDeal() {
     const conferNo = window.location.pathname.split("/conference/")[1];
-    const userinfo = sessionStorage.getItem("USER_INFO");
+    const userinfo = localStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
     const response = await api.post(`/sse/count/${conferNo}`, {
