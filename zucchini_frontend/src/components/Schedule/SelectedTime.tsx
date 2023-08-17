@@ -9,7 +9,6 @@ export default function SelectedTime(props: any) {
           itemNo={props.itemNo}
           clickedDate={props.clickedDate}
           mark={props.mark}
-          setFixedSchedule={props.setFixedSchedule}
         />
       ) : null}
     </div>

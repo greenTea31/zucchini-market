@@ -98,10 +98,6 @@ export default function ChatRoom() {
     getItem();
   }, []);
 
-  useEffect(() => {
-    console.log(item?.dateList);
-  }, [item]);
-
   // 상대방 정보 불러오기 룸넘버 넘겨줘야함
   useEffect(() => {
     const getOpponent = async () => {
@@ -275,16 +271,7 @@ export default function ChatRoom() {
           </GreenBtn>
         </ButtonDiv>
       </Modal>
-      {/* <Modal isOpen={isOpen} toggle={toggle}>
-        <ModalDiv>
-          <ClosedButton onClick={toggle} />
-        </ModalDiv>
-        <ModalSpan>화상통화 일정 선택</ModalSpan>
-        <ModalSubSpan>
-          <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
-        </ModalSubSpan>
-        <SimpleCalendar itemNo={item?.no} mark={item?.dateList} />
-      </Modal> */}
+
       <Modal isOpen={isReporting} toggle={toggleReport}>
         <ModalDiv>
           <ClosedButton onClick={toggleReport} />
@@ -303,12 +290,9 @@ export default function ChatRoom() {
         <LeftDiv>
           <UpperDiv>
             <TitleSpan>판매자가 선택한 일정</TitleSpan>
-            <SimpleCalendar itemNo={item?.no} mark={item?.dateList} />
-            {/* <StyledBtnDiv>
-              <StyledBtn>
-                <Link to={"/scheduleList"}>영상 통화하기</Link>
-              </StyledBtn> 
-            </StyledBtnDiv> */}
+            {item ? (
+              <SimpleCalendar itemNo={item?.no} mark={item?.dateList} />
+            ) : null}
           </UpperDiv>
           <LowerDiv>
             <SellerTitle>상대방 정보</SellerTitle>
