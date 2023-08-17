@@ -388,37 +388,40 @@ export default function ItemDetail() {
             · 조회 {item?.view} · 찜 {item?.likeCount}
           </SubSpan>
 
-          <TransBtn type="button" onClick={toggleReport} style={buttonStyle}>
-            신고하기
-            <RedSvg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 24"
-              strokeWidth="1.5"
-              stroke="red"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-              />
-            </RedSvg>
-          </TransBtn>
+          {item?.seller.nickname !== userNickname && (
+            <TransBtn type="button" onClick={toggleReport} style={buttonStyle}>
+              신고하기
+              <RedSvg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 24"
+                strokeWidth="1.5"
+                stroke="red"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                />
+              </RedSvg>
+            </TransBtn>
+          )}
 
           <SelectBtnDiv>
             {item?.dateList.length !== 0 && (
               <SelectBtn onClick={toggle}>일정보기</SelectBtn>
             )}
+            {item?.dateList.length === 0 && <NoSpan>영상통화 일정 없음</NoSpan>}
             {item?.seller.nickname !== userNickname && (
               <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
             )}
+            {item?.seller.nickname === userNickname && (
+              <>
+                <DeleteBtn onClick={handleDelete}>게시글 삭제</DeleteBtn>
+              </>
+            )}
           </SelectBtnDiv>
-          {item?.seller.nickname === userNickname && (
-            <>
-              <DeleteBtn onClick={handleDelete}>게시글 삭제</DeleteBtn>
-            </>
-          )}
         </UpperRightDiv>
       </UpperDiv>
       <LowerDiv>
@@ -628,7 +631,6 @@ const SubSpan = styled.span`
 
 const SelectBtn = styled.button`
   height: 3rem;
-  width: 49%;
   background-color: #cde990;
   border: transparent;
   color: #254021;
@@ -743,6 +745,12 @@ const GradeDiv = styled.div`
 
 const SelectBtnDiv = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   width: 100%;
+`;
+
+const NoSpan = styled.span`
+  padding: 0 0 1rem 0.3rem;
+  padding-bottom: 1rem;
+  font-weight: 500;
 `;
