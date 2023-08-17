@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/ws/**").permitAll()
                 .antMatchers("/ws").permitAll()
                 .antMatchers(HttpMethod.POST, "/user", "/user/login", "/user/email", "/user/authCheck", "/user/reissue").permitAll()
-                .antMatchers(HttpMethod.GET, "/user/idCheck/**", "/item", "/item/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/idCheck/**", "/item", "/item/**", "/video/check/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/user", "/user/*/item/like/**").authenticated()
 //                .hasAuthority("USER")
                 .antMatchers(HttpMethod.DELETE, "/user/*")

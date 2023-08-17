@@ -2,6 +2,7 @@ package com.zucchini.domain.conference.service;
 
 import com.zucchini.domain.conference.domain.Conference;
 import com.zucchini.domain.conference.dto.FindConferenceResponse;
+import com.zucchini.domain.conference.dto.FindItemUserResponse;
 import com.zucchini.domain.conference.repository.ConferenceRepository;
 import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.repository.ItemRepository;
@@ -75,17 +76,25 @@ public class ConferenceServiceImpl implements ConferenceService{
     }
 
     /**
-     * 회의 조회
+     * 회의 번호를 받아서 해당 회의의 아이템 번호와 해당 회의의 구매 예정자를 반환한다.
      *
      * @param conferenceNo : 회의 번호
      * @return FindConferenceResponse : 회의 정보 반환
      */
     @Override
     @Transactional(readOnly = true)
-    public int findConferenceItemNo(int conferenceNo) {
+    public FindItemUserResponse findConferenceItemUser(int conferenceNo) {
         Conference conference = getConferenceByNo(conferenceNo);
 
-        return conference.getItem().getNo();
+        // 해당 conference와 연관된 reservation한 유저 이름중에 item에 seller로 등록되어 있지 않은 사람을 반환함
+        Reservation buyer = reservationRepository.findBuyerNameByConferenceNo(conferenceNo);
+
+        FindItemUserResponse findItemUserResponse = FindItemUserResponse.builder()
+                .itemNo(conference.getItem().getNo())
+                .username(buyer.getUser().getNickname())
+                .build();
+
+        return findItemUserResponse;
     }
 
     /**

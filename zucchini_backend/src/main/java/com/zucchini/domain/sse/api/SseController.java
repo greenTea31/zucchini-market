@@ -44,7 +44,7 @@ public class SseController {
     @PostMapping("/count")
     public ResponseEntity<String> count(@RequestBody BuyAlertDto buyAlertDto) {
         log.info(buyAlertDto.getUserName());
-        sseEmitters.count(buyAlertDto.getUserName(), buyAlertDto.isBuy());
+        sseEmitters.count(buyAlertDto.getUserName(), buyAlertDto.getBuy());
         return ResponseEntity.ok().build();
     }
 

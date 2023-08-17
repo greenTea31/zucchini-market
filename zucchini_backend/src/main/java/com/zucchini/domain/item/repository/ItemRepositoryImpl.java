@@ -61,7 +61,7 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom{
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 // 상품 번호 오름차순 정렬(만약 정렬 옵션 추가 시 여기 바꿔줘야 함)
-                .orderBy(item.no.asc())
+                .orderBy(item.no.desc())
                 .fetch();
         // 해당 페이지에 해당되는 상품 전체 개수 구하는 카운트 쿼리
         JPAQuery<Long> countQuery = queryFactory

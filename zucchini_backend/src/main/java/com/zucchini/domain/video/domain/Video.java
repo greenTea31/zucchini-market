@@ -38,7 +38,7 @@ public class Video {
     @Temporal(TemporalType.TIMESTAMP)
     private Date endTime;
 
-    @Column(name = "delete_time", updatable = false)
+    @Column(name = "delete_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deleteTime;
 
@@ -52,15 +52,8 @@ public class Video {
     }
 
     // 비즈니스 메서드
-    public Date extendDeleteTime(){
-        long oneDayInMillis = 24 * 60 * 60 * 1000 * 7; // 7일의 밀리초 값
-        this.deleteTime = new Date(this.deleteTime.getTime() + oneDayInMillis);
-        return this.deleteTime;
-    }
-
-    // 비디오 링크 저장
-    public void setLink(String link) {
-        this.link = link;
+    public void extendDeleteTime(Date deleteTime){
+        this.deleteTime = deleteTime;
     }
 
 }

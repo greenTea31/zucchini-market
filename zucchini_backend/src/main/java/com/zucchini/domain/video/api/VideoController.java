@@ -1,6 +1,6 @@
 package com.zucchini.domain.video.api;
 
-import com.zucchini.domain.video.dto.request.ModifyVideoRequest;
+import com.zucchini.domain.video.dto.request.AddVideoRequest;
 import com.zucchini.domain.video.dto.response.FindVideoResponse;
 import com.zucchini.domain.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +18,11 @@ public class VideoController {
     private final VideoService videoService;
 
     /**
-     * 비디오 링크 수정 (openvidu 링크에서 aws 링크로 변경)
+     * 비디오 저장 (aws링크 저장)
      */
-    @PutMapping("/{no}")
-    public ResponseEntity<Integer> modifyVideo(@PathVariable int no, @Valid @RequestBody ModifyVideoRequest modifyVideoRequest){
-        videoService.modifyVideo(no, modifyVideoRequest.getLink());
+    @PostMapping
+    public ResponseEntity<Integer> addVideo(@Valid @RequestBody AddVideoRequest addVideoRequest){
+        videoService.addVideo(addVideoRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -33,6 +33,15 @@ public class VideoController {
     public ResponseEntity<FindVideoResponse> findVideo(@PathVariable int no){
         FindVideoResponse findVideoResponse = videoService.findVideo(no);
         return ResponseEntity.ok(findVideoResponse);
+    }
+
+    /**
+     * 해당 아이템의 비디오 존재 여부 확인
+     */
+    @GetMapping("/check/{itemNo}")
+    public ResponseEntity<Boolean> checkVideo(@PathVariable int itemNo) {
+        boolean check = videoService.checkVideo(itemNo);
+        return ResponseEntity.ok(check);
     }
 
     /**

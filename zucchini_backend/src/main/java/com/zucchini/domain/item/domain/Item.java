@@ -3,7 +3,7 @@ package com.zucchini.domain.item.domain;
 import com.zucchini.domain.category.domain.ItemCategory;
 import com.zucchini.domain.grade.domain.Grade;
 import com.zucchini.domain.image.domain.Image;
-import com.zucchini.domain.item.dto.request.ItemRequest;
+import com.zucchini.domain.item.dto.request.ModifyItemRequest;
 import com.zucchini.domain.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -89,7 +89,7 @@ public class Item {
     }
     
     // 아이템 정보 수정
-    public void modifyItem(ItemRequest item) {
+    public void modifyItem(ModifyItemRequest item) {
         this.title = item.getTitle();
         this.content = item.getContent();
         this.price = item.getPrice();

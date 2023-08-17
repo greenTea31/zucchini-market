@@ -7,9 +7,9 @@ import com.zucchini.domain.reservation.repository.ReservationRepository;
 import com.zucchini.domain.session.dto.request.LeaveSessionRequest;
 import com.zucchini.domain.session.dto.response.FindSessionResponse;
 import com.zucchini.domain.session.dto.response.LeaveSessionResponse;
+import com.zucchini.domain.session.dto.response.StopRecordingResponse;
 import com.zucchini.domain.user.domain.User;
 import com.zucchini.domain.user.repository.UserRepository;
-import com.zucchini.domain.video.dto.request.AddVideoRequest;
 import com.zucchini.domain.video.service.VideoService;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
@@ -153,30 +153,31 @@ public class SessionServiceImpl implements SessionService {
     /**
      * 녹화 종료
      * @param sessionId
-     * @param itemNo
+     * @return 임시 링크
      * @throws OpenViduJavaClientException
      * @throws OpenViduHttpException
      */
-    private LeaveSessionResponse stopRecording(String sessionId, int itemNo) throws OpenViduJavaClientException, OpenViduHttpException {
+    private Recording stopRecording(String sessionId) throws OpenViduJavaClientException, OpenViduHttpException {
 
         String recordingId = this.sessionRecordingIds.get(sessionId);
         if(recordingId == null) { // 아직 시작된 녹화가 없는 상태(ex : 판매자가 화상방에 입장했다가 구매자가 들어오기도 전에 나가버린 경우)
             LeaveSessionResponse leaveSessionResponse = new LeaveSessionResponse();
             leaveSessionResponse.setIsFinished(false);
-            return leaveSessionResponse;
+            throw new IllegalArgumentException("녹화되지 않은 상태에서 중지 요청을 시도했습니다.");
         }
         Recording recording = this.openVidu.stopRecording(recordingId);
         this.sessionRecordings.remove(recording.getSessionId());
-        // 받은 비디오 url 링크를 db에 저장
-        AddVideoRequest addVideoRequest = new AddVideoRequest();
-        addVideoRequest.setItemNo(itemNo);
-        addVideoRequest.setLink(recording.getUrl());
-        addVideoRequest.setStartTime(new Date(recording.getCreatedAt()));
-        addVideoRequest.setEndTime(new Date());
-        // video 서비스 호출
-        int videoNo = videoService.addVideo(addVideoRequest);
+        return recording;
+//        // 받은 비디오 url 링크를 db에 저장
+//        AddVideoRequest addVideoRequest = new AddVideoRequest();
+//        addVideoRequest.setItemNo(itemNo);
+//        addVideoRequest.setLink(recording.getUrl());
+//        addVideoRequest.setStartTime(new Date(recording.getCreatedAt()));
+//        addVideoRequest.setEndTime(new Date());
+//        // video 서비스 호출
+//        int videoNo = videoService.addVideo(addVideoRequest);
 
-        return new LeaveSessionResponse(true, videoNo, recording.getUrl());
+//        return new LeaveSessionResponse(true, videoNo, recording.getUrl());
     }
 
     /**
@@ -204,11 +205,11 @@ public class SessionServiceImpl implements SessionService {
      * @param leaveSessionRequest
      */
     @Override
-    public LeaveSessionResponse leaveConferenceSession(LeaveSessionRequest leaveSessionRequest) throws OpenViduJavaClientException, OpenViduHttpException {
+    public void leaveConferenceSession(LeaveSessionRequest leaveSessionRequest) throws OpenViduJavaClientException, OpenViduHttpException {
         int no = leaveSessionRequest.getConferenceNo();
         String token = leaveSessionRequest.getToken();
         // 쿼리 최적화 하려면...?
-        Optional<Conference> conference = conferenceRepository.findById(no);
+        Optional<Conference> conference = conferenceRepository.findByIdWithFetchJoin(no);
         // 없는 컨퍼런스면 예외 처리
         if(!conference.isPresent()) throw new NoSuchElementException("컨퍼런스가 없습니다.");
         if(!conference.get().isActive()) throw new IllegalArgumentException("컨퍼런스가 아직 활성화되지 않은 상태입니다.");
@@ -227,36 +228,66 @@ public class SessionServiceImpl implements SessionService {
         // 컨퍼런스에 참석중인 사람이 몇명인지 확인
         int cnt = getAttendedUserCount(no);
         LeaveSessionResponse leaveSessionResponse;
-        if(cnt == 0){
-            Session session = this.mapSessions.remove(no);
-            String sessionId = session.getSessionId();
 
-            // 토큰삭제도 필요~~
-                this.mapSessionNamesTokens.remove(no);
-                this.mapSessionIdTokens.remove(no);
-            // 예약된 날짜부터 30분까지는 입장 가능하게 변경(임시)
-//            Date curDate = new Date();
-//            // 본인이 퇴장 시 아무도 세션에 참가하지 않게 됨 -> 세션 삭제
-//            if(curDate.getTime()-conference.get().getConfirmedDate().getTime() > thirtyMillis) {
-//                this.mapSessions.remove(no);
-//                // 토큰삭제도 필요~~
+        // 둘다 나간상태면 세션 데이터 삭제
+        if(cnt == 0){
+            this.mapSessions.remove(no);
+            this.mapSessionNamesTokens.remove(no);
+            this.mapSessionIdTokens.remove(no);
+        }
+//        if(cnt == 0 && item.getStatus() != 0){
+//            Session session = this.mapSessions.remove(no);
+//            String sessionId = session.getSessionId();
+//
+//            // 토큰삭제도 필요~~
 //                this.mapSessionNamesTokens.remove(no);
 //                this.mapSessionIdTokens.remove(no);
-//            }
-            // 일단 둘다 종료시 컨퍼런스도 종료되게 구현? -> 컨퍼런스 비활성화 관련 고민(실수로 둘다 종료된 경우는?)
-//            conferenceRepository.delete(conference.get());
-            // 세션이 종료되었으므로 녹화 중단 후 저장
-            leaveSessionResponse = stopRecording(sessionId, conference.get().getItem().getNo());
-        }else {
-            leaveSessionResponse = new LeaveSessionResponse();
-            leaveSessionResponse.setIsFinished(false);
-        }
+//            // 예약된 날짜부터 30분까지는 입장 가능하게 변경(임시)
+////            Date curDate = new Date();
+////            // 본인이 퇴장 시 아무도 세션에 참가하지 않게 됨 -> 세션 삭제
+////            if(curDate.getTime()-conference.get().getConfirmedDate().getTime() > thirtyMillis) {
+////                this.mapSessions.remove(no);
+////                // 토큰삭제도 필요~~
+////                this.mapSessionNamesTokens.remove(no);
+////                this.mapSessionIdTokens.remove(no);
+////            }
+//            // 일단 둘다 종료시 컨퍼런스도 종료되게 구현? -> 컨퍼런스 비활성화 관련 고민(실수로 둘다 종료된 경우는?)
+////            conferenceRepository.delete(conference.get());
+//        }else {
+//            leaveSessionResponse = new LeaveSessionResponse();
+//            leaveSessionResponse.setIsFinished(false);
+//        }
 
         // 회원의 접속 여부 false로 갱신
         reservation.leave();
 //        reservationRepository.save(reservation);
 
-        return leaveSessionResponse;
+//        return leaveSessionResponse;
+    }
+
+    /**
+     * 녹화 종료 후 openvidu 에 저장된 임시 링크 반환
+     */
+    @Override
+    public StopRecordingResponse stopRecording(int conferenceNo) throws OpenViduJavaClientException, OpenViduHttpException {
+        // 녹화가 종료된 순간의 시간
+        Date endTime = new Date();
+        // 쿼리 최적화 하려면...?
+        Optional<Conference> conference = conferenceRepository.findByIdWithFetchJoin(conferenceNo);
+        // 없는 컨퍼런스면 예외 처리
+        if(!conference.isPresent()) throw new NoSuchElementException("컨퍼런스가 없습니다.");
+        if(!conference.get().isActive()) throw new IllegalArgumentException("컨퍼런스가 아직 활성화되지 않은 상태입니다.");
+        Session session = this.mapSessions.get(conferenceNo);
+        String sessionId = session.getSessionId();
+        // openvidu에 저장된 임시 링크
+        Recording recording = stopRecording(sessionId);
+
+        return StopRecordingResponse.builder()
+                .itemNo(conference.get().getItem().getNo())
+                .link(recording.getUrl())
+                .startTime(new Date(recording.getCreatedAt()))
+                .endTime(endTime)
+                .build();
     }
 
     private String getToken(User user, OpenViduRole role, int no, HttpSession httpSession) throws OpenViduJavaClientException, OpenViduHttpException {

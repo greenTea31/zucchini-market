@@ -11,4 +11,11 @@ public interface ReportService {
      * @return int : 생성된 신고의 식별번호를 반환
      */
     int addReport(AddReportRequest report);
+
+    /**
+     * 신고 삭제(회원 탈퇴 경우)
+     * @param id : 회원 아이디
+     */
+    void removeReport(String id);
+
 }
