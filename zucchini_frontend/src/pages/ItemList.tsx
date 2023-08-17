@@ -48,6 +48,11 @@ export default function ItemList() {
     getItems();
   }, [selectedCategory, page]);
 
+  useEffect(() => {
+    // default 값으로 초기화
+    setPage(1);
+  }, [selectedCategory]);
+
   //페이지 버튼 누를 때마다 세팅
   const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
     setPage(page);
