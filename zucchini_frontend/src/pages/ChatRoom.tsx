@@ -8,7 +8,6 @@ import ClosedButton from "../components/Button/ClosedButton";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { Client } from "@stomp/stompjs";
 import Imessage from "../types/Imessage";
 import { motion } from "framer-motion";
@@ -27,7 +26,7 @@ interface ISeller {
 }
 
 interface IDate {
-  date: string;
+  date: Date;
   status: number;
 }
 
@@ -89,7 +88,7 @@ export default function ChatRoom() {
     const getItem = async () => {
       try {
         const response = await api.get(
-          `/room/item/${location.pathname.split("/chat/")[1]}`
+          `room/item/${location.pathname.split("/chat/")[1]}`
         );
         setItem(response.data);
       } catch (error) {
@@ -272,16 +271,7 @@ export default function ChatRoom() {
           </GreenBtn>
         </ButtonDiv>
       </Modal>
-      <Modal isOpen={isOpen} toggle={toggle}>
-        <ModalDiv>
-          <ClosedButton onClick={toggle} />
-        </ModalDiv>
-        <ModalSpan>화상통화 일정 선택</ModalSpan>
-        <ModalSubSpan>
-          <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
-        </ModalSubSpan>
-        <SimpleCalendar dates={item?.dateList as IDate[]} />
-      </Modal>
+
       <Modal isOpen={isReporting} toggle={toggleReport}>
         <ModalDiv>
           <ClosedButton onClick={toggleReport} />
@@ -300,14 +290,9 @@ export default function ChatRoom() {
         <LeftDiv>
           <UpperDiv>
             <TitleSpan>판매자가 선택한 일정</TitleSpan>
-            <SimpleCalendar dates={item?.dateList as IDate[]} />
-            <StyledBtnDiv>
-              {/* 
-              <StyledBtn>
-                <Link to={"/scheduleList"}>영상 통화하기</Link>
-              </StyledBtn> */}
-              <StyledBtn onClick={toggle}>일정 선택하기</StyledBtn>
-            </StyledBtnDiv>
+            {item ? (
+              <SimpleCalendar itemNo={item?.no} mark={item?.dateList} />
+            ) : null}
           </UpperDiv>
           <LowerDiv>
             <SellerTitle>상대방 정보</SellerTitle>

@@ -52,7 +52,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/mypage",
-        element: <MyPage />,
+        element: (
+          <PrivateRoute>
+            <MyPage />,
+          </PrivateRoute>
+        ),
       },
       {
         path: "/mypage/modify",
@@ -147,7 +151,7 @@ const router = createBrowserRouter([
         element: <AboutConference />,
       },
       {
-        path: "/userpage",
+        path: "/userpage/:nickName",
         element: <UserPage />,
       },
     ],

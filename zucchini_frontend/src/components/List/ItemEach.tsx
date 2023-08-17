@@ -4,6 +4,7 @@ import moment from "moment";
 import { useLocation, useNavigate } from "react-router-dom";
 import NoImage from "../../assets/images/NoImage.png";
 import { useEffect, useState } from "react";
+import api from "../../utils/api";
 
 interface IItem {
   no: number;
@@ -24,16 +25,27 @@ interface IProps {
 
 export default function ItemEach({ item }: IProps) {
   const [onMouse, setOnMouse] = useState(false);
+  const [haveVideo, setHaveVideo] = useState(false);
+
   const navigate = useNavigate();
   const onClick = () => {
     navigate(`/item/${item.no}`);
   };
 
-  const location = useLocation();
   useEffect(() => {
-    console.log(location.pathname);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/video/check/${item.no}`);
+        console.log(response.data);
+        setHaveVideo(response.data);
+      } catch (error) {
+        console.error("Error fetching video:", error);
+      }
+    };
+    fetchData();
+  }, [item]);
 
+  const location = useLocation();
   const playVideo = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -46,10 +58,9 @@ export default function ItemEach({ item }: IProps) {
       {/* <ItemImg src={watch} /> */}
       <ItemImg src={item?.image ? item?.image : NoImage} />
       {/* ItemList,  BuyList, SellList에서 각각 쓰이는 컴포넌트이므로 버튼은 조건부 렌더링 필요 */}
-
-      {/* {item?.status === 2 && location.pathname !== "/item" && (
-        )} */}
-      <ReplayButton onClick={playVideo}>다시보기</ReplayButton>
+      {item?.status === 1 && location.pathname !== "/item" && haveVideo && (
+        <ReplayButton onClick={playVideo}>다시보기</ReplayButton>
+      )}
       <ItemTitle>{item?.title}</ItemTitle>
       <ItemTitle>{item?.price.toLocaleString("ko-KR")}원</ItemTitle>
       <ItemContent>
@@ -101,6 +112,7 @@ const ItemContent = styled.span`
   color: gray;
   margin: 0.2rem;
   text-overflow: ellipsis;
+  font-size: 0.85rem;
 `;
 
 const ReplayButton = styled.button`

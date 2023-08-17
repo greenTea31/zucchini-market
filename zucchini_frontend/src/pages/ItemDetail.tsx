@@ -24,7 +24,7 @@ interface ISeller {
 }
 
 interface IDate {
-  date: string;
+  date: Date;
   status: number;
 }
 
@@ -217,9 +217,12 @@ export default function ItemDetail() {
   ];
 
   const toUserPage = () => {
-    navigate("/userpage");
+    navigate(`/userpage/${item?.seller.nickname}`);
   };
 
+  useEffect(() => {
+    console.log(item?.dateList);
+  }, [item]);
   return (
     <ContainerDiv
       initial={{ opacity: 0 }}
@@ -233,7 +236,7 @@ export default function ItemDetail() {
         <ModalSpan>화상통화 일정 선택</ModalSpan>
         <SubSpan>일정은 상품당 한 번씩만 선택 가능합니다</SubSpan>
         <CalendarDiv>
-          <SimpleCalendar dates={item?.dateList as IDate[]} />
+          <SimpleCalendar itemNo={item?.no} mark={item?.dateList} />
         </CalendarDiv>
       </Modal>
 
@@ -358,9 +361,12 @@ export default function ItemDetail() {
             )
               ? timeDifferenceInMinutes(new Date(item?.createdAt as string)) <
                 60
-                ? `${timeDifferenceInMinutes(
-                    new Date(item?.createdAt as string)
-                  )} 분 전`
+                ? timeDifferenceInMinutes(new Date(item?.createdAt as string)) <
+                  0
+                  ? "0분전"
+                  : `${timeDifferenceInMinutes(
+                      new Date(item?.createdAt as string)
+                    )} 분 전`
                 : `${minToHour(
                     timeDifferenceInMinutes(new Date(item?.createdAt as string))
                   )}시간 전`

@@ -111,6 +111,7 @@ const SpanDiv = styled.div`
   flex-direction: column;
   gap: 0.3rem;
   margin-bottom: 2rem;
+  color: black;
 `;
 
 const ModalSelect = styled.select`

@@ -56,7 +56,16 @@ export default function MyPage() {
               <InfoP>아이디 : {user?.id}</InfoP>
               <InfoP>이메일 : {user?.email}</InfoP>
               <InfoP>전화번호 : {user?.phone}</InfoP>
-              <InfoP>성별 : {user?.gender ? user?.gender : "선택안함"}</InfoP>
+              <InfoP>
+                성별 :
+                {user?.gender === false
+                  ? "여자"
+                  : user?.gender === true
+                  ? "남자"
+                  : user?.gender === undefined
+                  ? "선택안함"
+                  : ""}
+              </InfoP>
             </div>
             <div>
               <InfoTitleP>거래정보</InfoTitleP>

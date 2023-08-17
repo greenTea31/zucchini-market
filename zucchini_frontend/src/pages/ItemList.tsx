@@ -48,23 +48,16 @@ export default function ItemList() {
     getItems();
   }, [selectedCategory, page]);
 
+  useEffect(() => {
+    // default 값으로 초기화
+    setPage(1);
+  }, [selectedCategory]);
+
   //페이지 버튼 누를 때마다 세팅
   const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
     setPage(page);
   };
 
-  // useEffect(() => {
-  //   console.log(page);
-  // }, [page]);
-
-  // 로딩페이지
-  // 로딩 백에서 했대유...
-  // useEffect(() => {
-  //   if (data) {
-  //     setIsLoading(false);
-  //   }
-  //   setIsLoading(false); // 여기는 지울거에용
-  // }, [data]);
   useEffect(() => {
     setIsLoading(true);
 
@@ -110,7 +103,7 @@ export default function ItemList() {
           {items ? (
             items.map((item, index) => <ItemEach item={item} />)
           ) : (
-            <p>등록된 매물이 없습니다.</p>
+            <p>카테고리에 일치하는 매물이 없습니다.</p>
           )}
         </ItemsContainer>
       </LowerDiv>

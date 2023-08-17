@@ -76,7 +76,7 @@ export default function SellList() {
           {items && items.length > 0 ? (
             items.map((item, index) => <ItemEach item={item} />)
           ) : (
-            <p>판매한 내역이 없습니다.</p>
+            <p>카테고리에 일치하는 매물이 없습니다.</p>
           )}
         </ItemsContainer>
       </LowerDiv>

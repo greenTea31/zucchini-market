@@ -34,10 +34,7 @@ export default function ReplaySellVideo() {
       exit={{ opacity: 0 }}
     >
       <div>
-        <TitleSpan>
-          {/* 타이틀 나중에 상품 정보로 바꿔줘야 함!!! */}
-          {title}
-        </TitleSpan>
+        <TitleSpan>{title}</TitleSpan>
         <VideoScreenDiv>
           <ReactPlayer
             url={video}
@@ -67,4 +64,8 @@ const VideoScreenDiv = styled.div`
 
 const TitleSpan = styled.span`
   font-size: 2rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
 `;
