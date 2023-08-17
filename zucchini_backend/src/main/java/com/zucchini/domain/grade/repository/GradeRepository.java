@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface GradeRepository extends JpaRepository<Grade, Integer> {
 
     @Modifying
-    @Query(value = "DELETE FROM Grade g WHERE g.graderId = :userId and g.gradeRecipientId = :userId")
+    @Query(value = "DELETE FROM Grade g WHERE g.graderId = :userId or g.gradeRecipientId = :userId")
     void deleteAllByUser(String userId);
 
 }
