@@ -37,7 +37,11 @@ export default function Report({
   };
 
   const handleReport = async () => {
-    // 신고 데이터 전송\
+    if (reportReason === "") {
+      alert("신고 내용을 작성해주세요");
+      return;
+    }
+    // 신고 데이터 전송
     try {
       await api({
         method: "post",

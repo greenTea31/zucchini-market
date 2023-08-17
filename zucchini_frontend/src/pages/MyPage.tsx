@@ -57,7 +57,7 @@ export default function MyPage() {
               <InfoP>이메일 : {user?.email}</InfoP>
               <InfoP>전화번호 : {user?.phone}</InfoP>
               <InfoP>
-                성별 :
+                성별 :{" "}
                 {user?.gender === false
                   ? "여성"
                   : user?.gender === true

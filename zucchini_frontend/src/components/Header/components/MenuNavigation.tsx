@@ -100,13 +100,14 @@ const NavigationContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 14px;
+  width: 14rem;
 `;
 
 const NavigationItem = styled(motion(Link))`
   user-select: none;
   color: #254021;
   padding: 1.5rem;
-  width: 30rem;
+  width: 100%;
   text-align: center;
   border-radius: 0.4rem;
 
