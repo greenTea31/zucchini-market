@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public FindUserResponse findUser(String id) {
         int dealCount = (int) userRepository.countItemsByStatusAndUserNo(id);
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+        User user = userRepository.findByNickname(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth.getPrincipal().equals("anonymousUser")) {

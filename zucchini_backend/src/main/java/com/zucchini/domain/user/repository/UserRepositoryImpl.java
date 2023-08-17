@@ -31,7 +31,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         int userId = queryFactory
                 .select(user.no)
                 .from(user)
-                .where(user.id.eq(id))
+                .where(user.nickname.eq(id))
                 .fetchFirst();
 
         return queryFactory
