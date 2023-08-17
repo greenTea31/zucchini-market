@@ -75,9 +75,10 @@ class ConferenceRoom extends Component {
     const information = await this.getInformation();
     this.itemNo = information.itemNo;
     this.buyer = information.username;
+    const conferNo = window.location.pathname.split("/conference/")[1];
 
     const headers = { Authorization: `Bearer ${getUser()}` };
-    const sse = new EventSourcePolyfill(BASE_URL + "sse", {
+    const sse = new EventSourcePolyfill(BASE_URL + `sse/${conferNo}`, {
       headers: headers,
     });
 
@@ -606,10 +607,11 @@ class ConferenceRoom extends Component {
 
   buyItem() {
     // 거래 확정되었다는 안내문구 팝업시키기
+    const conferNo = window.location.pathname.split("/conference/")[1];
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
-    const response = api.post("/sse/count", {
+    const response = api.post(`/sse/count/${conferNo}`, {
       userName: parsedinfo.nickname,
       buy: true,
     });
@@ -618,10 +620,11 @@ class ConferenceRoom extends Component {
   }
 
   dontbuyItem() {
+    const conferNo = window.location.pathname.split("/conference/")[1];
     const userinfo = sessionStorage.getItem("USER_INFO");
     if (userinfo === null) return;
     const parsedinfo = JSON.parse(userinfo);
-    const response = api.post("/sse/count", {
+    const response = api.post(`/sse/count/${conferNo}`, {
       userName: parsedinfo.nickname,
       buy: false,
     });
