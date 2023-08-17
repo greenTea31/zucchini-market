@@ -2,7 +2,8 @@ package com.zucchini.domain.item.api;
 
 import com.zucchini.domain.category.dto.response.FindCategoryResponse;
 import com.zucchini.domain.category.service.CategoryService;
-import com.zucchini.domain.item.dto.request.ItemRequest;
+import com.zucchini.domain.item.dto.request.AddItemRequest;
+import com.zucchini.domain.item.dto.request.ModifyItemRequest;
 import com.zucchini.domain.item.dto.response.FindItemListResponse;
 import com.zucchini.domain.item.dto.response.FindItemResponse;
 import com.zucchini.domain.item.service.ItemService;
@@ -25,18 +26,6 @@ public class ItemController {
 
     private final ItemService itemService;
     private final CategoryService categoryService;
-
-//    /**
-//     * 상품 전체 조회
-//     * @param keyword : 검색어
-//     * @return List<FindItemListResponse> : 상품 전체 리스트
-//     * 200 : 조회 성공
-//     * 500 : 서버 에러
-//     */
-//    @GetMapping
-//    public ResponseEntity<List<FindItemListResponse>> findItem(@RequestParam String keyword) {
-//        return ResponseEntity.ok(itemService.findItemList(keyword));
-//    }
 
     @GetMapping("/category")
     public ResponseEntity<List<FindCategoryResponse>> findCategoryList(){
@@ -82,7 +71,7 @@ public class ItemController {
      * 500 : 서버 에러
      */
     @PostMapping
-    public ResponseEntity<Integer> addItem(@Valid @ModelAttribute ItemRequest item) {
+    public ResponseEntity<Integer> addItem(@Valid @ModelAttribute AddItemRequest item) {
         int itemNo = itemService.addItem(item);
         return ResponseEntity.status(HttpStatus.CREATED).body(itemNo);
     }
@@ -99,7 +88,7 @@ public class ItemController {
      * 500 : 서버 에러
      */
     @PutMapping("/{itemNo}")
-    public ResponseEntity<Void> modifyItem(@PathVariable int itemNo, @Valid @RequestBody ItemRequest item) {
+    public ResponseEntity<Void> modifyItem(@PathVariable int itemNo, @Valid @RequestBody ModifyItemRequest item) {
         itemService.modifyItem(itemNo, item);
         return ResponseEntity.ok().build();
     }
