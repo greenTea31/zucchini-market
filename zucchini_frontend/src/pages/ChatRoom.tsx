@@ -8,7 +8,6 @@ import ClosedButton from "../components/Button/ClosedButton";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { Client } from "@stomp/stompjs";
 import Imessage from "../types/Imessage";
 import { motion } from "framer-motion";
@@ -27,7 +26,7 @@ interface ISeller {
 }
 
 interface IDate {
-  date: string;
+  date: Date;
   status: number;
 }
 
@@ -89,7 +88,7 @@ export default function ChatRoom() {
     const getItem = async () => {
       try {
         const response = await api.get(
-          `/room/item/${location.pathname.split("/chat/")[1]}`
+          `room/item/${location.pathname.split("/chat/")[1]}`
         );
         setItem(response.data);
       } catch (error) {
@@ -98,6 +97,10 @@ export default function ChatRoom() {
     };
     getItem();
   }, []);
+
+  useEffect(() => {
+    console.log(item?.dateList);
+  }, [item]);
 
   // 상대방 정보 불러오기 룸넘버 넘겨줘야함
   useEffect(() => {
@@ -272,7 +275,7 @@ export default function ChatRoom() {
           </GreenBtn>
         </ButtonDiv>
       </Modal>
-      <Modal isOpen={isOpen} toggle={toggle}>
+      {/* <Modal isOpen={isOpen} toggle={toggle}>
         <ModalDiv>
           <ClosedButton onClick={toggle} />
         </ModalDiv>
@@ -280,8 +283,8 @@ export default function ChatRoom() {
         <ModalSubSpan>
           <SubSpan>일정은 하루만 선택 가능합니다</SubSpan>
         </ModalSubSpan>
-        <SimpleCalendar dates={item?.dateList as IDate[]} />
-      </Modal>
+        <SimpleCalendar itemNo={item?.no} mark={item?.dateList} />
+      </Modal> */}
       <Modal isOpen={isReporting} toggle={toggleReport}>
         <ModalDiv>
           <ClosedButton onClick={toggleReport} />
@@ -300,14 +303,12 @@ export default function ChatRoom() {
         <LeftDiv>
           <UpperDiv>
             <TitleSpan>판매자가 선택한 일정</TitleSpan>
-            <SimpleCalendar dates={item?.dateList as IDate[]} />
-            <StyledBtnDiv>
-              {/* 
+            <SimpleCalendar itemNo={item?.no} mark={item?.dateList} />
+            {/* <StyledBtnDiv>
               <StyledBtn>
                 <Link to={"/scheduleList"}>영상 통화하기</Link>
-              </StyledBtn> */}
-              <StyledBtn onClick={toggle}>일정 선택하기</StyledBtn>
-            </StyledBtnDiv>
+              </StyledBtn> 
+            </StyledBtnDiv> */}
           </UpperDiv>
           <LowerDiv>
             <SellerTitle>상대방 정보</SellerTitle>

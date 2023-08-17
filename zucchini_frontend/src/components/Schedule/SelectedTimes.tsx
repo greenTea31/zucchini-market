@@ -29,6 +29,7 @@ export default function Times({
   const times = mark.filter((m: any) => hasSameDate(clickedDate, m.date));
 
   // 시간 버튼 클릭 시
+  const navigate = useNavigate();
   const onClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     try {
       // 버튼 안의 시간입니다. 아래.
@@ -57,6 +58,7 @@ export default function Times({
           console.log(response.data.status);
           // 바로 예약
           alert("예약이 확정되었습니다.");
+          window.location.reload();
         }
       });
 
@@ -64,7 +66,7 @@ export default function Times({
       // fixed schedule을 써야할까?
       // 더 쉽게 하려면 끄기. 비활은 필요...
     } catch (error) {
-      console.error(error);
+      alert("이미 이 상품에 대해 예약된 화상통화 일정이 존재합니다.");
     }
   };
   //
@@ -84,7 +86,10 @@ export default function Times({
         };
         const ButtonComponent = disable() ? SpecialTimeButton : TimeButton;
         return (
-          <ButtonComponent onClick={onClick}>
+          <ButtonComponent
+            disabled={disable()}
+            onClick={disable() ? undefined : onClick}
+          >
             {dayjs(time.date).format("HH:mm")}
           </ButtonComponent>
         );
@@ -106,27 +111,30 @@ const TimeButton = styled.button`
   font-weight: 450;
   width: 6rem;
   height: 3rem;
-  background-color: #df3340;
+  background-color: #99de77;
   border: none;
-  border-radius: 0.7rem;
-  color: white;
+  border-radius: 0.3rem;
+  color: #38461f;
+  margin: 0.5rem;
   cursor: pointer;
 
   &:hover {
-    border: none;
-    border-radius: 0.7rem;
-    background-color: #f3a95f;
-    color: #7d0016;
+    border: solid 2px darkolivegreen;
+    border-radius: 0.3rem;
+    background-color: #e7f0e0;
+    color: #38461f;
   }
 `;
 
 const SpecialTimeButton = styled(TimeButton)`
   background-color: #c5c8b9;
-  color: black;
+  color: #54633a;
+
   cursor: default;
 
   &:hover {
-    background-color: #8f9285;
-    color: white;
+    border: none;
+    background-color: #b8b9b2;
+    color: #ced8be;
   }
 `;
