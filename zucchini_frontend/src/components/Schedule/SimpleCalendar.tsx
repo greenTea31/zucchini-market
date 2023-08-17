@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import api from "../../utils/api";
 import { response } from "express";
+import styled from "styled-components";
 
 export default function SimpleCalendar({ itemNo, mark }: any) {
   // 마우스로 선택한 날짜 받는 state(tmp data)
@@ -54,7 +55,7 @@ export default function SimpleCalendar({ itemNo, mark }: any) {
   }, [clickedDate, mark]);
 
   return (
-    <div>
+    <ScheduleDiv>
       <Calendar
         // onchange로 date를 추출해내고
         onChange={onChange}
@@ -74,6 +75,10 @@ export default function SimpleCalendar({ itemNo, mark }: any) {
             return "possible";
           }
         }}
+        tileDisabled={({ date }: any) =>
+          new Date(dayjs(Date.now()).format("YYYY-MM-DD")) >
+          new Date(dayjs(date).format("YYYY-MM-DD"))
+        }
         onClickDay={(date: any) => {
           onChange(date);
         }}
@@ -90,6 +95,13 @@ export default function SimpleCalendar({ itemNo, mark }: any) {
         mark={mark}
         setMyFixedSchedule={setMyFixedSchedule}
       />
-    </div>
+    </ScheduleDiv>
   );
 }
+
+const ScheduleDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 450px;
+`;

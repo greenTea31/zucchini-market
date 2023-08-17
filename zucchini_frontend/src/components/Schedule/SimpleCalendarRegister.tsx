@@ -8,6 +8,7 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import { useEffect } from "react";
 
 export default function SimpleCalendar({ clickedTime, setClickedTime }: any) {
   // 선택한 날짜로 date 바꿔주고
@@ -26,7 +27,7 @@ export default function SimpleCalendar({ clickedTime, setClickedTime }: any) {
           }}
           orientation="landscape"
           minutesStep={30}
-          // disablePast={true}
+          disablePast={true}
           onChange={onChange}
           value={dayjs(clickedTime)}
           defaultValue={dayjs(new Date())}

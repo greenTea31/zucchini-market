@@ -361,9 +361,12 @@ export default function ItemDetail() {
             )
               ? timeDifferenceInMinutes(new Date(item?.createdAt as string)) <
                 60
-                ? `${timeDifferenceInMinutes(
-                    new Date(item?.createdAt as string)
-                  )} 분 전`
+                ? timeDifferenceInMinutes(new Date(item?.createdAt as string)) <
+                  0
+                  ? "0분전"
+                  : `${timeDifferenceInMinutes(
+                      new Date(item?.createdAt as string)
+                    )} 분 전`
                 : `${minToHour(
                     timeDifferenceInMinutes(new Date(item?.createdAt as string))
                   )}시간 전`

@@ -73,7 +73,21 @@ export default function CreateItem() {
 
   const [files, setFiles] = useState<IFileTypes[]>([]);
   // 마우스로 선택한 날짜 받는 state
-  const [clickedTime, setClickedTime] = useState(new Date());
+  const getNextNearest30Minutes = (time: Date) => {
+    const minutes = time.getMinutes();
+
+    // Calculate the difference between the current minutes and the next 30-minute mark
+    const minutesUntilNext30 = 30 - (minutes % 30);
+
+    // Add the difference to the current time to get the next nearest 30-minute time
+    time.setMinutes(minutes + minutesUntilNext30);
+    time.setSeconds(0);
+
+    return time;
+  };
+  const [clickedTime, setClickedTime] = useState(
+    getNextNearest30Minutes(new Date())
+  );
 
   // 판매자가 선택한 시간들 차곡차곡 담아주기
   const [selectedTimes, setSelectedTimes] = useState<any>([]);
