@@ -18,6 +18,7 @@ import com.zucchini.domain.user.repository.UserRepository;
 import com.zucchini.global.domain.ReservationConfirmCode;
 import com.zucchini.global.domain.ReservationConfirmCodeRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +30,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ReservationServiceImpl implements ReservationService {
 
     // 예약 확인 유효 시간 1분
@@ -51,10 +53,11 @@ public class ReservationServiceImpl implements ReservationService {
     public List<ReservationResponse> findReservationList() {
         String currentPrincipalId = getCurrentId();
         User user = userRepository.findById(currentPrincipalId).get();
-
-        // 모든 예약 목록 불러오고, 예약된 날짜와 예약 아이템의 이름 리스트를 반환함.
-        List<Reservation> reservationList = reservationRepository.findAllByUser(user);
+        Date now = new Date();
+        Date before1Hour = new Date(now.getTime() - 1000 * 60 * 60);
+        List<Reservation> reservationList = reservationRepository.findActiveReservationAllByUser(user, before1Hour);
         List<ReservationResponse> reservationResponseList = ReservationResponse.listOf(reservationList);
+
         return reservationResponseList;
     }
 
