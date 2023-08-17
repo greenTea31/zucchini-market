@@ -3,6 +3,10 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import api from "../utils/api";
+import axios from "axios";
+import { BASE_URL } from "../constants/url";
+import { getUser } from "../hooks/useLocalStorage";
 
 export default function UpdatePassword() {
   const {
@@ -13,15 +17,19 @@ export default function UpdatePassword() {
   } = useForm({
     mode: "onChange",
   });
+  const navigate = useNavigate();
 
   const password = watch("password"); // "password" 필드의 값을 감시
-  const onSubmit = (data: any) => {
-    // 제출 통신 필요
-
-    alert(JSON.stringify(data));
+  const onSubmit = async (data: any) => {
+    try {
+      await api
+        .post(`user/password`, { password: password })
+        .then((response) => console.log(response));
+    } catch (error: any) {
+      alert("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.");
+    }
+    navigate("/mypage");
   };
-
-  const navigate = useNavigate();
 
   const goback = () => {
     navigate(-1);
