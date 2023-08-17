@@ -35,7 +35,7 @@ public class Item {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = false, updatable = false)
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
