@@ -60,6 +60,11 @@ const ItemDiv = styled.div`
 
 const ItemImg = styled.img`
   border-radius: 1.5rem;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: white;
+  max-height: 10rem;
 `;
 
 const ItemTitle = styled.span`
@@ -75,4 +80,5 @@ const ItemContent = styled.span`
   color: gray;
   margin: 0.2rem;
   text-overflow: ellipsis;
+  font-size: 0.8rem;
 `;
