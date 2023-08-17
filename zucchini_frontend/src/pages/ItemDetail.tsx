@@ -388,36 +388,32 @@ export default function ItemDetail() {
             · 조회 {item?.view} · 찜 {item?.likeCount}
           </SubSpan>
 
-          {item?.seller.nickname !== userNickname && (
-            <>
-              <TransBtn
-                type="button"
-                onClick={toggleReport}
-                style={buttonStyle}
-              >
-                신고하기
-                <RedSvg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 24"
-                  strokeWidth="1.5"
-                  stroke="red"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                  />
-                </RedSvg>
-              </TransBtn>
+          <TransBtn type="button" onClick={toggleReport} style={buttonStyle}>
+            신고하기
+            <RedSvg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 24"
+              strokeWidth="1.5"
+              stroke="red"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+              />
+            </RedSvg>
+          </TransBtn>
 
-              <SelectBtnDiv>
-                <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
-                <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
-              </SelectBtnDiv>
-            </>
-          )}
+          <SelectBtnDiv>
+            {item?.dateList.length !== 0 && (
+              <SelectBtn onClick={toggle}>일정보기</SelectBtn>
+            )}
+            {item?.seller.nickname !== userNickname && (
+              <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
+            )}
+          </SelectBtnDiv>
           {item?.seller.nickname === userNickname && (
             <>
               <DeleteBtn onClick={handleDelete}>게시글 삭제</DeleteBtn>
