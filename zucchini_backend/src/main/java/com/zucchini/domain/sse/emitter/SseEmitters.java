@@ -15,19 +15,14 @@ import java.util.concurrent.atomic.AtomicLong;
 public class SseEmitters {
 
     private static final AtomicLong counter = new AtomicLong();
-//    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
     private final ConcurrentHashMap<Integer, List<SseEmitter>> emitterConcurrentHashMap = new ConcurrentHashMap<>();
 
     public SseEmitter add(SseEmitter emitter, int conferenceNo) {
-//        this.emitters.add(emitter);
         if (!emitterConcurrentHashMap.containsKey(conferenceNo)) {
             emitterConcurrentHashMap.put(conferenceNo, new ArrayList<>());
         }
 
         emitterConcurrentHashMap.get(conferenceNo).add(emitter);
-
-//        log.info("new emitter added: {}", emitter);
-//        log.info("emitter list size: {}", emitters.size());
 
         emitter.onCompletion(() -> {
             log.info("onCompletion callback");
@@ -58,16 +53,6 @@ public class SseEmitters {
                     throw new RuntimeException(e);
                 }
             });
-
-//            emitters.forEach(emitter -> {
-//                try {
-//                    emitter.send(SseEmitter.event()
-//                            .name("requestDeal")
-//                            .data(nickname));
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
         } else if (buy) {
             emitterConcurrentHashMap.get(conferenceNo).forEach(emitter -> {
                 try {
@@ -78,16 +63,6 @@ public class SseEmitters {
                     throw new RuntimeException(e);
                 }
             });
-
-//            emitters.forEach(emitter -> {
-//                try {
-//                    emitter.send(SseEmitter.event()
-//                            .name("buy")
-//                            .data(nickname));
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
         } else {
             emitterConcurrentHashMap.get(conferenceNo).forEach(emitter -> {
                 try {
@@ -98,16 +73,7 @@ public class SseEmitters {
                     throw new RuntimeException(e);
                 }
             });
-
-//            emitters.forEach(emitter -> {
-//                try {
-//                    emitter.send(SseEmitter.event()
-//                            .name("notbuy")
-//                            .data(nickname));
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            });
         }
     }
+
 }
