@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../Common/Button";
 import styled from "styled-components";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../constants/url";
 import api from "../../utils/api";
 import dayjs from "dayjs";
@@ -31,8 +31,12 @@ export default function Times({
 
   // 시간 버튼 클릭 시
   const navigate = useNavigate();
+  const location = useLocation();
   const onClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (myNickname === sellerNickname) {
+    if (
+      location.pathname.split("/")[1] === "chat" &&
+      myNickname === sellerNickname
+    ) {
       alert("본인의 스케줄은 조회만 가능합니다.");
       return;
     }
