@@ -127,6 +127,19 @@ public class VideoServiceImpl implements VideoService {
     }
 
     /**
+     * 비디오 존재 여부
+     * @param itemNo : 상품번호(PK)
+     * @return boolean : 상품 존재 여부
+     */
+    public boolean checkVideo(int itemNo) {
+        Optional<Video> video = videoRepository.findByItemNo(itemNo);
+        if(!video.isPresent()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 비디오 삭제
      * @param no : 비디오 no(PK)
      */
