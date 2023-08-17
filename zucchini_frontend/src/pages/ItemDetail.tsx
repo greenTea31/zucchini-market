@@ -46,6 +46,7 @@ interface IItem {
 
 export default function ItemDetail() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMyOpen, setIsMyOpen] = useState(false);
   const [isReporting, setIsReporting] = useState(false); // 신고모달
   const [item, setItem] = useState<IItem>(); // item 상태 추가
   const [like, setLike] = useState(false);
@@ -61,6 +62,11 @@ export default function ItemDetail() {
   const toggle = () => {
     setIsOpen(!isOpen);
   };
+
+  const toggleMy = () => {
+    setIsMyOpen(!isMyOpen);
+  };
+
   const toggleReport = () => {
     if (!sessionStorage.getItem("USER")) {
       navigate("/login");
@@ -240,8 +246,24 @@ export default function ItemDetail() {
         <ModalDiv>
           <ClosedButton onClick={toggle} />
         </ModalDiv>
-        <ModalSpan>화상통화 일정 선택</ModalSpan>
+        <ModalSpan>영상통화 일정 선택</ModalSpan>
         <SubSpan>일정은 상품당 한 번씩만 선택 가능합니다</SubSpan>
+        <CalendarDiv>
+          <SimpleCalendar
+            itemNo={item?.no}
+            mark={item?.dateList}
+            myNickname={userNickname}
+            sellerNickname={item?.seller.nickname}
+          />
+        </CalendarDiv>
+      </Modal>
+
+      {/* 내 일정 보는 모달 */}
+      <Modal isOpen={isOpen} toggle={toggle}>
+        <ModalDiv>
+          <ClosedButton onClick={toggle} />
+        </ModalDiv>
+        <ModalSpan>영상통화 일정 보기</ModalSpan>
         <CalendarDiv>
           <SimpleCalendar
             itemNo={item?.no}
