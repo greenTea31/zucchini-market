@@ -173,11 +173,18 @@ export default function ItemDetail() {
 
   // 게시글 삭제
   const handleDelete = async () => {
-    try {
-      await api.delete(`item/${item?.no}`);
-      navigate(-1);
-    } catch (error) {
-      console.error("게시글 삭제 실패:", error);
+    if (
+      window.confirm(
+        "한 번 삭제하면 복구할 수 없습니다.\n해당 게시글을 삭제하시겠습니까?"
+      )
+    ) {
+      try {
+        await api.delete(`item/${item?.no}`);
+        navigate(-1);
+      } catch (error) {
+        alert("게시글 삭제 도중 오류 발생 : 다시 시도해주세요");
+        console.error("게시글 삭제 실패:", error);
+      }
     }
   };
 
@@ -400,16 +407,15 @@ export default function ItemDetail() {
                 </RedSvg>
               </TransBtn>
 
-              <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
-              <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
+              <SelectBtnDiv>
+                <SelectBtn onClick={toggle}>일정 선택하기</SelectBtn>
+                <SelectBtn onClick={toChatRoom}>채팅하기</SelectBtn>
+              </SelectBtnDiv>
             </>
           )}
           {item?.seller.nickname === userNickname && (
             <>
-              <SelectBtn onClick={() => navigate(`/item/${item?.no}/modify`)}>
-                수정하기
-              </SelectBtn>
-              <SelectBtn onClick={handleDelete}>삭제하기</SelectBtn>
+              <DeleteBtn onClick={handleDelete}>게시글 삭제</DeleteBtn>
             </>
           )}
         </UpperRightDiv>
@@ -449,7 +455,6 @@ export default function ItemDetail() {
                   <GradeText grade={item?.seller.grade || 1} />
                 </GradeDiv>
               </span>
-              {/* <SubSpan>판매중 3 · 거래완료 2</SubSpan> */}
             </SellerSpanDiv>
           </SellerDiv>
         </LowerRightDiv>
@@ -578,7 +583,7 @@ const TitleSpan = styled.span`
 const ContentSpan = styled.span`
   line-height: 1.3rem;
   margin-bottom: 1.5rem;
-  height: 14.2rem;
+  height: 20rem;
   margin-left: 0.3rem;
   overflow-x: none;
   overflow-y: scroll;
@@ -622,6 +627,7 @@ const SubSpan = styled.span`
 
 const SelectBtn = styled.button`
   height: 3rem;
+  width: 49%;
   background-color: #cde990;
   border: transparent;
   color: #254021;
@@ -651,11 +657,6 @@ const ImgDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const SellerImg = styled.img`
-  width: 4.3rem;
-  height: 4.3rem;
 `;
 
 const SellerSpanDiv = styled.div`
@@ -696,20 +697,6 @@ const CalendarDiv = styled.div`
   padding: 2rem;
 `;
 
-const StyledBtn = styled.button`
-  width: 9rem;
-  height: 2.5rem;
-  background-color: #cde990;
-  border: solid 1px #cde990;
-  border-radius: 0.4rem;
-  cursor: pointer;
-  margin-right: 0.4rem;
-
-  &:hover {
-    background-color: white;
-  }
-`;
-
 const SvgButton = styled.button`
   float: right;
   margin-right: 1rem;
@@ -724,19 +711,20 @@ const SvgButton = styled.button`
   cursor: pointer;
 `;
 
-const StatusSelect = styled.select`
+const DeleteBtn = styled.button`
   height: 3rem;
-  width: 7rem;
-  padding-left: 1rem;
+  background-color: transparent;
+  border: solid 2px red;
+  color: red;
   border-radius: 0.4rem;
+  cursor: pointer;
+  margin-top: 0.15rem;
   font-size: 1rem;
-`;
 
-const SelectDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-bottom: 1rem;
+  &:hover {
+    background-color: red;
+    color: white;
+  }
 `;
 
 const TransBtn = styled.button`
@@ -750,4 +738,10 @@ const TransBtn = styled.button`
 const GradeDiv = styled.div`
   display: flex;
   gap: 0.5rem;
+`;
+
+const SelectBtnDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 `;
