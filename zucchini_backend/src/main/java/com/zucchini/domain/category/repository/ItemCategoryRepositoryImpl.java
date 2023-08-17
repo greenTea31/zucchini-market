@@ -51,7 +51,8 @@ public class ItemCategoryRepositoryImpl implements ItemCategoryRepositoryCustom 
                                         .from(i)
                                         .join(i.seller, u)
                                         .where(u.isDeleted.eq(false)
-                                                .and(u.isLocked.eq(false)))
+                                                .and(u.isLocked.eq(false))
+                                                .and(i.status.eq(0)))
                         )
                 ))
                 .offset(pageable.getOffset())
@@ -73,7 +74,8 @@ public class ItemCategoryRepositoryImpl implements ItemCategoryRepositoryCustom 
                                         .from(i)
                                         .join(i.seller, u)
                                         .where(u.isDeleted.eq(false)
-                                                .and(u.isLocked.eq(false)))
+                                                .and(u.isLocked.eq(false))
+                                                .and(i.status.eq(0)))
                                 )
                         ));
 
