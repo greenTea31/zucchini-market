@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
     public FindUserResponse findUser() {
         String id = getCurrentId();
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
-        int dealCount = (int) userRepository.countItemsByStatusAndUserNo(id);
+        int dealCount = (int) userRepository.countItemsByStatusAndUserNo(user.getNickname());
         return FindUserResponse.builder()
                 .id(user.getId())
                 .nickname(user.getNickname())
