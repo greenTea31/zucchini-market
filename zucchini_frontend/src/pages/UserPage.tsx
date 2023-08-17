@@ -18,6 +18,8 @@ import Report from "../components/Common/Report";
 import GradeImage from "../components/Common/GradeImage";
 import GradeText from "../components/Common/GradeText";
 import { BASE_URL } from "../constants/url";
+import axios from "axios";
+import { constants } from "buffer";
 
 interface ISeller {
   nickname: string;
@@ -41,13 +43,16 @@ export default function UserPage() {
   const [page, setPage] = useState<number>(1); // pagination 선택된 페이지. 보낼 정보
   const [totalPages, setTotalPages] = useState(0); // 페이지네이션 토탈페이지, 받아올 정보.
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(-1); // 선택한 카테고리
 
   async function getItems() {
     try {
+      const nick = window.location.pathname.split("/")[2];
+      setUsername(nick);
       const response = await api.get(
-        BASE_URL + `user/deal/sell/${username}?keyword=${keyword}&page=${page}`
+        BASE_URL +
+          `user/deal/sell/${nick}?keyword=${keyword}&page=${page}&category=${selectedCategory}`
       );
-      setUsername(response.data.username);
       setItems(response.data.content);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -55,9 +60,29 @@ export default function UserPage() {
     }
   }
 
+  async function getUser() {
+    const nick = window.location.pathname.split("/")[2];
+
+    try {
+      const response = await api.get(`/user/${nick}`);
+      const { nickname, grade, dealCount } = response.data;
+      setUser({
+        nickname,
+        grade,
+        deal_count: dealCount,
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
   useEffect(() => {
     getItems();
-  }, [page]);
+  }, [selectedCategory, page]);
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
     setPage(page);
@@ -120,7 +145,10 @@ export default function UserPage() {
       <RightDiv>
         <div>
           <SubP>{user.nickname} 님의 판매 목록</SubP>
-          <CategorySecond />
+          <CategorySecond
+            setSelectedCategory={setSelectedCategory}
+            setKeyword={setKeyword}
+          />
           <Search
             setKeyword={setKeyword}
             getItems={getItems}
