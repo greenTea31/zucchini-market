@@ -13,7 +13,7 @@ export default function ReplayBuyVideo() {
   const [isOpen, setIsOpen] = useState(false);
   const [video, setVideo] = useState();
   const [title, setTitle] = useState("");
-  const [videoNo, setVideoNo] = useState();
+  const [videoNo, setVideoNo] = useState<number>();
   const [seller, setSeller] = useState("");
   const [itemNo, setItemNo] = useState();
 
@@ -87,6 +87,7 @@ export default function ReplayBuyVideo() {
 
   // 별점 모달 열고 닫기
   const toggleStar = () => {
+    confirmDeal();
     setIsStar(!isStar);
     // 모달 닫히면 별점 초기화
     setStarRating(0);
@@ -107,7 +108,7 @@ export default function ReplayBuyVideo() {
 
     try {
       // 닉네임, 아이템 번호, 점수 넘겨주기
-      await api.post("/grade", {
+      await api.post("grade", {
         gradeRecipient: seller,
         itemNo: itemNo,
         grade: starRating,

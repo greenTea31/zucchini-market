@@ -26,3 +26,7 @@ export function getUserInfo(): any | null {
   const userInfo = sessionStorage.getItem(USER_INFO_LOCAL_STORAGE_KEY);
   return userInfo;
 }
+
+export function removeUserInfo(): void {
+  sessionStorage.removeItem(USER_INFO_LOCAL_STORAGE_KEY);
+}
