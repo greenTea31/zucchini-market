@@ -236,7 +236,12 @@ export default function ItemDetail() {
         <ModalSpan>화상통화 일정 선택</ModalSpan>
         <SubSpan>일정은 상품당 한 번씩만 선택 가능합니다</SubSpan>
         <CalendarDiv>
-          <SimpleCalendar itemNo={item?.no} mark={item?.dateList} />
+          <SimpleCalendar
+            itemNo={item?.no}
+            mark={item?.dateList}
+            myNickname={userNickname}
+            sellerNickname={item?.seller.nickname}
+          />
         </CalendarDiv>
       </Modal>
 

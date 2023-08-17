@@ -291,7 +291,12 @@ export default function ChatRoom() {
           <UpperDiv>
             <TitleSpan>판매자가 선택한 일정</TitleSpan>
             {item ? (
-              <SimpleCalendar itemNo={item?.no} mark={item?.dateList} />
+              <SimpleCalendar
+                itemNo={item?.no}
+                mark={item?.dateList}
+                myNickname={user.nickname}
+                sellerNickname={item.seller.nickname}
+              />
             ) : null}
           </UpperDiv>
           <LowerDiv>
