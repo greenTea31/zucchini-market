@@ -339,10 +339,6 @@ public class ItemServiceImpl implements ItemService {
         removeDate(itemNo);
         addDate(itemNo, item.getDateList());
 
-        // category 수정
-        removeCategory(itemNo);
-        addCategory(itemNo, item.getCategoryList());
-
         findItem.modifyItem(item);
     }
 
