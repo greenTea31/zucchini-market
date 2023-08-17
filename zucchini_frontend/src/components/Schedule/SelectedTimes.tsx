@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../Common/Button";
 import styled from "styled-components";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../constants/url";
 import api from "../../utils/api";
 import dayjs from "dayjs";
@@ -10,7 +10,13 @@ import dayjs from "dayjs";
 // 우선 갖다놓는 날짜(임시, 테스트용.)
 // DB에서 해당 아이템,  해당 날짜에 해당하는 시간을 불러오는 로직 구현하기.
 // 아래 functions 안에서!
-export default function Times({ itemNo, clickedDate, mark }: any) {
+export default function Times({
+  itemNo,
+  clickedDate,
+  mark,
+  myNickname,
+  sellerNickname,
+}: any) {
   // clickedDate에 해당하는 시간들 담을 배열
   // const [times, setTimes] = useState([]);
 
@@ -25,7 +31,15 @@ export default function Times({ itemNo, clickedDate, mark }: any) {
 
   // 시간 버튼 클릭 시
   const navigate = useNavigate();
+  const location = useLocation();
   const onClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (
+      location.pathname.split("/")[1] === "chat" &&
+      myNickname === sellerNickname
+    ) {
+      alert("본인의 스케줄은 조회만 가능합니다.");
+      return;
+    }
     try {
       // 버튼 안의 시간입니다. 아래.
       await api({
@@ -47,7 +61,7 @@ export default function Times({ itemNo, clickedDate, mark }: any) {
           // 예약 가능하지만 구매자가 등록한 판매 상품의 날짜 목록이랑 겹침
           console.log(response.data.status);
           alert(
-            "내가 판매 중인  등록된 일정과 겹칩니다. 이전에 등록한 일정을 지우고 이 예약을 확정하시겠습니까?"
+            "내가 판매 중인 상품의 등록된 일정과 겹칩니다. 다른 시간을 선택해주세요."
           );
         } else if (response.data.status === 2) {
           console.log(response.data.status);
