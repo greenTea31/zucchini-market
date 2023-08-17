@@ -71,12 +71,21 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public FindUserResponse findUser(String id) {
         int dealCount = (int) userRepository.countItemsByStatusAndUserNo(id);
-
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth.getPrincipal().equals("anonymousUser")) {
+            return FindUserResponse.builder()
+                    .nickname(user.getNickname())
+                    .reportCount(user.getReportCount())
+                    .grade(user.getGrade())
+                    .dealCount(dealCount)
+                    .build();
+        }
+
         CustomUserDetails nowLogInDetail = (CustomUserDetails) auth.getPrincipal();
         String authority = nowLogInDetail.getAuthority();
 
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
         if (!user.getId().equals(getCurrentId()) && !authority.equals("ADMIN")) {
             return FindUserResponse.builder()
                     .nickname(user.getNickname())

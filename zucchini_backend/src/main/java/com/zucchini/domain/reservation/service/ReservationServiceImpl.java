@@ -2,6 +2,7 @@ package com.zucchini.domain.reservation.service;
 
 import com.zucchini.domain.conference.repository.ConferenceRepository;
 import com.zucchini.domain.conference.service.ConferenceService;
+import com.zucchini.domain.item.domain.Item;
 import com.zucchini.domain.item.domain.ItemDate;
 import com.zucchini.domain.item.repository.ItemDateRepository;
 import com.zucchini.domain.item.repository.ItemRepository;
@@ -96,10 +97,21 @@ public class ReservationServiceImpl implements ReservationService {
      */
     @Override
     public void addReservation(int itemNo, Date selectDate) {
+        // 내가 이미 이 아이템에 관한 예약이 존재하면 예약 안만들기
+        String buyerId = getCurrentId();
+        User buyer = userRepository.findById(buyerId).orElseThrow(() -> new NoSuchElementException("구매자가 존재하지 않습니다."));
+
+
+        // 해당 아이템에 관한 구매자의 예약이 하나 이상 존재하는지 판별함
+        int count = reservationRepository.countReservationsByItemNoAndUser(itemNo, buyer);
+
+        if (count > 0) {
+            throw new IllegalArgumentException("이미 예약한 아이템입니다.");
+        }
+
         // 예약 성공
         // 컨퍼런스 생성 후 예약 생성 -> 논의해야 함
         // 일단 해당 날짜로 컨퍼런스 생성 후 컨퍼런스에 대한 구매자, 판매자 예약 생성하는 방식으로 구현한 상태
-        String buyerId = getCurrentId();
         int conferenceNo = conferenceService.addConference(itemNo, selectDate);
         Reservation buyerReservation = Reservation.builder()
                 .user(userRepository.findById(buyerId).get())
@@ -107,8 +119,11 @@ public class ReservationServiceImpl implements ReservationService {
                 // 구매자라서
                 .isSeller(false)
                 .build();
+
         // 쿼리 최적화...?
-        int sellerNo = itemRepository.findById(itemNo).get().getSeller().getNo();
+        Item item = itemRepository.findById(itemNo).orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
+        User seller = item.getSeller();
+        int sellerNo = seller.getNo();
         Reservation sellerReservation = Reservation.builder()
                 .user(userRepository.findById(sellerNo).get())
                 .conferenceNo(conferenceNo)
