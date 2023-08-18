@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class GradeServiceImpl implements GradeService{
 
     private final ItemRepository itemRepository;

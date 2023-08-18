@@ -23,12 +23,4 @@ public interface ItemCategoryRepository extends JpaRepository<ItemCategory, Item
             "WHERE c.category = :category")
     List<Item> findAllByCategory(String category);
 
-    /**
-     * 해당하는 아이템이 속한 카테고리 전부 삭제
-     * @param itemNo : 상품 번호
-     */
-    @Modifying
-    @Query(value = "delete from ItemCategory ic where ic.id.itemNo = :itemNo")
-    void deleteByItemNo(@Param("itemNo") int itemNo);
-
 }

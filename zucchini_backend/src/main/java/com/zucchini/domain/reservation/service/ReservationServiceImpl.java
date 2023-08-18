@@ -30,7 +30,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class ReservationServiceImpl implements ReservationService {
 
     // 예약 확인 유효 시간 1분
@@ -50,6 +49,7 @@ public class ReservationServiceImpl implements ReservationService {
      * @return List<ReservationResponse> : 예약 내역 리스트
      */
     @Override
+    @Transactional(readOnly = true)
     public List<ReservationResponse> findReservationList() {
         String currentPrincipalId = getCurrentId();
         User user = userRepository.findById(currentPrincipalId).get();
@@ -60,37 +60,6 @@ public class ReservationServiceImpl implements ReservationService {
 
         return reservationResponseList;
     }
-
-    /**
-     * 예약 추가
-     * @param sellerId
-     * @param buyerId
-     * @param conferenceNo
-     */
-//    @Override
-//    public void addReservation(String sellerId, String buyerId, int conferenceNo) {
-//        User seller = userRepository.findById(sellerId).orElseThrow(() -> new NoSuchElementException("판매자가 존재하지 않습니다."));
-//        User buyer = userRepository.findById(buyerId).orElseThrow(() -> new NoSuchElementException("구매자가 존재하지 않습니다."));
-//        Conference conference = conferenceRepository.findById(conferenceNo).orElseThrow(() -> new NoSuchElementException("존재하지 않는 회의입니다."));
-//        List<Reservation> reservationList = new ArrayList<>();
-//
-//        Reservation reservation = Reservation.builder()
-//                .user(buyer)
-//                .conference(conference)
-//                .isSeller(false)
-//                .build();
-//        reservationList.add(reservation);
-//
-//        Reservation reservation2 = Reservation.builder()
-//                .user(seller)
-//                .conference(conference)
-//                .isSeller(true)
-//                .build();
-//        reservationList.add(reservation2);
-//
-//        reservationRepository.saveAll(reservationList);
-//    }
-
 
     /**
      * 예약 추가
@@ -113,7 +82,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         // 예약 성공
-        // 컨퍼런스 생성 후 예약 생성 -> 논의해야 함
+        // 컨퍼런스 생성 후 예약 생성
         // 일단 해당 날짜로 컨퍼런스 생성 후 컨퍼런스에 대한 구매자, 판매자 예약 생성하는 방식으로 구현한 상태
         int conferenceNo = conferenceService.addConference(itemNo, selectDate);
         Reservation buyerReservation = Reservation.builder()
@@ -227,6 +196,7 @@ public class ReservationServiceImpl implements ReservationService {
      * @return List<Date> : 화상 예약된 날짜 리스트
      */
     @Override
+    @Transactional(readOnly = true)
     public List<Date> findReservationDateList() {
         String currentPrincipalId = getCurrentId();
         User user = userRepository.findById(currentPrincipalId).get();

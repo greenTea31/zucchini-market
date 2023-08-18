@@ -29,7 +29,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 @Transactional
 public class SessionServiceImpl implements SessionService {
@@ -53,10 +52,8 @@ public class SessionServiceImpl implements SessionService {
     private Map<String, Boolean> sessionRecordings = new ConcurrentHashMap<>();
     private Map<String, String> sessionRecordingIds = new ConcurrentHashMap<>();
 
-//    @Value("${openvidu.url}")
     private String OPENVIDU_URL;
     // Secret shared with our OpenVidu server
-//    @Value("${openvidu.secret}")
     private String SECRET;
 
     private final long thirtyMillis = 30 * 60 * 1000; // 30분
@@ -71,7 +68,6 @@ public class SessionServiceImpl implements SessionService {
         this.SECRET = secret;
         this.OPENVIDU_URL = openviduUrl;
         this.openVidu = new OpenVidu(OPENVIDU_URL, SECRET);
-//        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -98,7 +94,6 @@ public class SessionServiceImpl implements SessionService {
         if(!conference.get().isActive()) {
             // 컨퍼런스 세션 활성화
             conference.get().setActive();
-//            conferenceRepository.save(conference.get());
         }
         // 해당 컨퍼런스 번호로 한 예약은 회원마다 유일함
         Reservation reservation = reservationList.get(0);
@@ -106,13 +101,12 @@ public class SessionServiceImpl implements SessionService {
             // 이미 접속중인 상태
             throw new IllegalArgumentException("이미 해당 컨퍼런스에 접속한 상태입니다.");
         }
-//         예약된 날짜부터 30분까지는 입장 가능하게 변경(임시)
+        // 예약된 날짜부터 30분까지는 입장 가능
         Date curDate = new Date();
         if(curDate.getTime()-conference.get().getConfirmedDate().getTime() > thirtyMillis)
             throw new IllegalArgumentException("입장 만료되었습니다.");
         // 회원의 참석 여부 true로 갱신
         reservation.attend();
-//        reservationRepository.save(reservation);
 
         OpenViduRole role = OpenViduRole.PUBLISHER;
 
@@ -126,13 +120,12 @@ public class SessionServiceImpl implements SessionService {
             //한번더 토큰발급 진행
             token = getToken(user, role, no, httpSession);
             sessionId = this.mapSessions.get(no).getSessionId();
-        }else {
-            // 컨퍼런스에 판매자 구매자 모두 접속한 경우 -> 동영상 녹화 시작!!
-            // 이미 녹화 시작한 경우 체크
-            if(getAttendedUserCount(no) == 1 && this.sessionRecordingIds.get(sessionId) == null){
-                // 일단은 오디오 비디오 모두 true인 것으로 설정
-                startRecording(sessionId, true, true);
-            }
+        }
+        // 컨퍼런스에 판매자 구매자 모두 접속한 경우 -> 동영상 녹화 시작!!
+        // 이미 녹화 시작한 경우 체크
+        if(getAttendedUserCount(no) == 1 && this.sessionRecordingIds.get(sessionId) == null){
+            // 일단은 오디오 비디오 모두 true인 것으로 설정
+            startRecording(sessionId, true, true);
         }
         return new FindSessionResponse(role, token, user.getNickname(), sessionId);
     }
@@ -161,7 +154,8 @@ public class SessionServiceImpl implements SessionService {
     private Recording stopRecording(String sessionId) throws OpenViduJavaClientException, OpenViduHttpException {
 
         String recordingId = this.sessionRecordingIds.remove(sessionId);
-        if(recordingId == null) { // 아직 시작된 녹화가 없는 상태(ex : 판매자가 화상방에 입장했다가 구매자가 들어오기도 전에 나가버린 경우)
+        if(recordingId == null) {
+            // 아직 시작된 녹화가 없는 상태(ex : 판매자가 화상방에 입장했다가 구매자가 들어오기도 전에 나가버린 경우)
             LeaveSessionResponse leaveSessionResponse = new LeaveSessionResponse();
             leaveSessionResponse.setIsFinished(false);
             throw new IllegalArgumentException("녹화되지 않은 상태에서 중지 요청을 시도했습니다.");
@@ -169,16 +163,6 @@ public class SessionServiceImpl implements SessionService {
         Recording recording = this.openVidu.stopRecording(recordingId);
         this.sessionRecordings.remove(recording.getSessionId());
         return recording;
-//        // 받은 비디오 url 링크를 db에 저장
-//        AddVideoRequest addVideoRequest = new AddVideoRequest();
-//        addVideoRequest.setItemNo(itemNo);
-//        addVideoRequest.setLink(recording.getUrl());
-//        addVideoRequest.setStartTime(new Date(recording.getCreatedAt()));
-//        addVideoRequest.setEndTime(new Date());
-//        // video 서비스 호출
-//        int videoNo = videoService.addVideo(addVideoRequest);
-
-//        return new LeaveSessionResponse(true, videoNo, recording.getUrl());
     }
 
     /**
@@ -236,34 +220,9 @@ public class SessionServiceImpl implements SessionService {
             this.mapSessionNamesTokens.remove(no);
             this.mapSessionIdTokens.remove(no);
         }
-//        if(cnt == 0 && item.getStatus() != 0){
-//            Session session = this.mapSessions.remove(no);
-//            String sessionId = session.getSessionId();
-//
-//            // 토큰삭제도 필요~~
-//                this.mapSessionNamesTokens.remove(no);
-//                this.mapSessionIdTokens.remove(no);
-//            // 예약된 날짜부터 30분까지는 입장 가능하게 변경(임시)
-////            Date curDate = new Date();
-////            // 본인이 퇴장 시 아무도 세션에 참가하지 않게 됨 -> 세션 삭제
-////            if(curDate.getTime()-conference.get().getConfirmedDate().getTime() > thirtyMillis) {
-////                this.mapSessions.remove(no);
-////                // 토큰삭제도 필요~~
-////                this.mapSessionNamesTokens.remove(no);
-////                this.mapSessionIdTokens.remove(no);
-////            }
-//            // 일단 둘다 종료시 컨퍼런스도 종료되게 구현? -> 컨퍼런스 비활성화 관련 고민(실수로 둘다 종료된 경우는?)
-////            conferenceRepository.delete(conference.get());
-//        }else {
-//            leaveSessionResponse = new LeaveSessionResponse();
-//            leaveSessionResponse.setIsFinished(false);
-//        }
 
         // 회원의 접속 여부 false로 갱신
         reservation.leave();
-//        reservationRepository.save(reservation);
-
-//        return leaveSessionResponse;
     }
 
     /**
@@ -314,7 +273,7 @@ public class SessionServiceImpl implements SessionService {
                 map.put(getCurrentId(), token);
                 this.mapSessionIdTokens.put(no, map);
             }catch (Exception e){
-                httpSession.setAttribute("error",e);
+                httpSession.setAttribute("error", e);
             }
         }else{
             try{

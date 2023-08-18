@@ -15,6 +15,10 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
      */
     Optional<Video> findByItemNo(int itemNo);
 
-    void deleteByDeleteTimeAfter(Date now);
+    /**
+     * 만료된 비디오 삭제
+     * @param now
+     */
+    void deleteByDeleteTimeBefore(Date now);
 
 }

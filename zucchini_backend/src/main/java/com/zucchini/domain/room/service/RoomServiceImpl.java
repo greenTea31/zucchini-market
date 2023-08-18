@@ -268,6 +268,7 @@ public class RoomServiceImpl implements RoomService{
      * @return 해당 채팅방의 모든 메시지 목록
      */
     @Override
+    @Transactional(readOnly = true)
     public List<MessageResponse> findMessageList(int roomNo) {
         String currentPrincipalId = getCurrentId();
 
@@ -301,13 +302,11 @@ public class RoomServiceImpl implements RoomService{
     @Override
     public void addMessage(int roomNo, AddMessageRequest addMessageRequest, boolean isJoined) {
         // 로그인한 유저 정보 얻어옴
-//        String currentPrincipalId = getCurrentId();
 
         // 로그인한 유저가 그 방에 참가해 있는지 RoomUser Table 조회하면서 확인함
         // 참가해있지 않으면 예외 발생시킴
         Room room = roomRepository.findById(roomNo).orElseThrow(() -> new NoSuchElementException("해당 방이 없습니다."));
         User user = userRepository.findById(addMessageRequest.getSenderNo()).orElseThrow(() -> new UserException("잘못된 접근입니다."));
-//        User user = userRepository.findById(addMessageRequest.getSenderNo()).orElseThrow(() -> new UserException("잘못된 접근입니다.");
 
         boolean joined = roomUserRepository.existsByRoomAndUser(room, user);
 
@@ -335,6 +334,7 @@ public class RoomServiceImpl implements RoomService{
      * @return RoomItemResponse : 채팅창에 필요한 상품 정보
      */
     @Override
+    @Transactional(readOnly = true)
     public RoomItemResponse getRoomItem(int roomNo) {
         Item item = roomRepository.findItemByRoom(roomNo);
 
@@ -358,6 +358,7 @@ public class RoomServiceImpl implements RoomService{
      * @param itemNo : 아이템 번호 (PK)
      * @return imageList.get(0) : 이미지 링크
      */
+    @Transactional(readOnly = true)
     private String getItemImage(int itemNo) {
         List<String> imageList = imageService.findImageLinkList(itemNo);
         // 이미지가 없는 경우 null 반환

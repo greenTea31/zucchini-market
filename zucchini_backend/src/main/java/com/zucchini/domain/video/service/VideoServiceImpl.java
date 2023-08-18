@@ -154,7 +154,7 @@ public class VideoServiceImpl implements VideoService {
     @Scheduled(cron = "0 0 0 * * *")
     public void deleteExpiredVideo(){
         Date now = new Date();
-        videoRepository.deleteByDeleteTimeAfter(now);
+        videoRepository.deleteByDeleteTimeBefore(now);
     }
 
     /**

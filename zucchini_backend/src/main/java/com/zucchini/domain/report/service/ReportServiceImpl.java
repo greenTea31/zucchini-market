@@ -46,20 +46,12 @@ public class ReportServiceImpl implements ReportService {
 
         // 신고가 들어오면 같은 reporter와 reported로 삽입된 신고가 있는지 확인, 있다면 24시간 이내인지 확인함
         // 24시간 이내라면 24시간 이내에는 신고할수 없다는 메세지를 반환
-        // LocalDateTime now = LocalDateTime.now();
-        // LocalDateTime before24Hour = LocalDateTime.now().minusDays(1);
-
         Date realnow = new Date();
         Date realbefore24Hour = new Date(realnow.getTime() - (1000 * 60 * 60 * 24));
 
         if (reportRepository.findByReporterAndReportedAndReportDateBetween(currentPrincipalId, report.getReported(), realbefore24Hour, realnow) != null) {
             throw new IllegalArgumentException("24시간 이내에는 같은 회원에게 신고할 수 없습니다.");
         }
-
-        // LocalDateTime oneDayBeforeNow = LocalDateTime.now().minusDays(1);
-        // if (reportRepository.existsByReporterAndReportedAndReportDateAfter(currentPrincipalId, report.getReported(), oneDayBeforeNow)) {
-        //   throw new UserException("24시간 이내에는 같은 회원에게 신고할 수 없습니다.");
-        // }
 
         // 24시간 이내가 아니라면 신고 테이블에 신고를 삽입함
         // 신고 횟수 증가시키고 임계점 이상이면 lock 넣어야함
