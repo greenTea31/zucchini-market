@@ -31,20 +31,22 @@ CI / CD : Jenkins
 ### 1-3-1. JVM, 웹서버, WAS 종류 및 설정값, 버전
 
 - JVM
-    - openJDK 1.8.0_312(Zulu 8)
+  - openJDK 1.8.0_312(Zulu 8)
 - 웹서버
-    - NGINX(nginx/1.25.1(Ubuntu))
+  - NGINX(nginx/1.25.1(Ubuntu))
 - WAS 제품 종료 및 설정값
-    - SpringBoot 내장 톰캣 : spring-boot-starter-tomcat-2.7.13.jar
+  - SpringBoot 내장 톰캣 : spring-boot-starter-tomcat-2.7.13.jar
 - 버전(IDE 버전)
-    - Gradle : 7.6.1
-    - IntelliJ IDEA : Ultimate, 2021.3
-    - Visual Studio Code : 1.81.1
-   
+  - Gradle : 7.6.1
+  - IntelliJ IDEA : Ultimate, 2021.3
+  - Visual Studio Code : 1.81.1
 
 <br/><br/>
 
 ### I-3-2. Front-End
+
+![react](assets/react.png) ![sc2](assets/sc2.png) ![ts3](assets/ts3.png)
+![rq4](assets/rq4.png) ![rr5](assets/rr5.png)
 
 1. React 18.2.0
 2. TypeScript 4.4.2
@@ -57,6 +59,9 @@ CI / CD : Jenkins
 <br/><br/>
 
 ### I-3-3. Back-End
+
+![jpa6](assets/jpa6.png) ![dsl7](assets/dsl7.png)
+![ss8](assets/ss8.png) ![jwt](assets/jwt.png)
 
 1. openJDK 1.8.0_312(Zulu 8)
 2. Spring Boot 2.7.13
@@ -99,20 +104,18 @@ CI / CD : Jenkins
 ### II-1-3. 데이터베이스 접속 정보
 
 ```markdown
-
 ✔️ **application.yml**
 
-   java
-    datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      hikari:
-        password: zucchini
-        username: zucchini
-      url: jdbc:mysql://i9a209.p.ssafy.io:3308/zucchini?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
-    redis:
-      host: i9a209.p.ssafy.io
-      port: 6379
-  
+java
+datasource:
+driver-class-name: com.mysql.cj.jdbc.Driver
+hikari:
+password: zucchini
+username: zucchini
+url: jdbc:mysql://i9a209.p.ssafy.io:3308/zucchini?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
+redis:
+host: i9a209.p.ssafy.io
+port: 6379
 ```
 
 <br/><br/>
@@ -347,12 +350,12 @@ jenkins:  # Jenkins Container
 		container_name: jenkins
 		volumes:
 			- /usr/bin/docker:/usr/bin/docker
-			- /var/run/docker.sock:/var/run/docker.sock 
+			- /var/run/docker.sock:/var/run/docker.sock
 			- /var/jenkins_home:/var/jenkins_home
 		ports:
 			- 8093:8080
 		privileged: true
-		user: root 
+		user: root
 		restart: unless-stopped
 ```
 
@@ -367,16 +370,16 @@ pipeline {
         nodejs "node18"
         git "git"
     }
-    
+
     stages {
-        
+
         stage('pull') {
             steps {
                  git branch: "master", credentialsId: "Credentials에 등록한 깃랩접근가능한계정 ID", url: 'https://lab.ssafy.com/s09-webmobile1-sub2/S09P12A209'
                  sh  'ls -al'
             }
         }
-        
+
         stage('front_build') {
             steps {
                     dir('zucchini_frontend'){
@@ -386,7 +389,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('back_build') {
             steps {
                 dir('zucchini_backend'){
