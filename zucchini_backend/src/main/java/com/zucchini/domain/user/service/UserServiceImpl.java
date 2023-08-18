@@ -434,7 +434,7 @@ public class UserServiceImpl implements UserService {
                 .map(userItemLike -> FindItemListResponse.builder()
                         .no(userItemLike.getNo())
                         .title(userItemLike.getTitle())
-                        .updatedAt(userItemLike.getUpdatedAt())
+                        .createdAt(userItemLike.getCreatedAt())
                         .content(userItemLike.getContent())
                         .price(userItemLike.getPrice())
                         .status(userItemLike.getStatus())
@@ -495,7 +495,7 @@ public class UserServiceImpl implements UserService {
     private PageResponse<FindItemListResponse> getFindItemListResponsePageResponse(Page<Item> pageItemList) {
         return new PageResponse<>(pageItemList.getContent().stream().map(item -> FindItemListResponse.builder().no(item.getNo())
                 .title(item.getTitle())
-                .updatedAt(item.getUpdatedAt())
+                .createdAt(item.getCreatedAt())
                 .content(item.getContent())
                 .price(item.getPrice())
                 .status(item.getStatus())
