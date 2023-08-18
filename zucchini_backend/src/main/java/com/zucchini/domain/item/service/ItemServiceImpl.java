@@ -72,7 +72,7 @@ public class ItemServiceImpl implements ItemService {
                 item -> FindItemListResponse.builder()
                         .no(item.getNo())
                         .title(item.getTitle())
-                        .updatedAt(item.getUpdatedAt())
+                        .createdAt(item.getCreatedAt())
                         .content(item.getContent())
                         .price(item.getPrice())
                         .status(item.getStatus())
