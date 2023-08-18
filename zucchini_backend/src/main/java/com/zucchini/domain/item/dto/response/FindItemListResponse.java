@@ -19,7 +19,7 @@ public class FindItemListResponse {
 
     private String content;
 
-    private Date updatedAt;
+    private Date createdAt;
 
     private int price;
 
