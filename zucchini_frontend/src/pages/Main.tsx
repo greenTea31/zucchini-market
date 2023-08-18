@@ -22,7 +22,7 @@ export default function Main() {
               화상 통화 기능을 활용하면 허위 거래에 대한 위험성을 줄일 수
             </SpanContent>
             <SpanContent>
-              있습니다. 거래 파트너와 실제 물건을 확인하고 직접적은 소통을
+              있습니다. 거래 파트너와 실제 물건을 확인하고 직접적인 소통을
             </SpanContent>
             <SpanContent>
               통해 애호박 마켓에서 신뢰성 있는 중고거래를 경험해보세요!
