@@ -334,7 +334,7 @@ class ConferenceRoom extends Component {
 
   // info(itemNo, link, startTime, endTime)
   async storeVideo(info) {
-    fetch(info.link)
+    await fetch(info.link)
       .then((response) => response.blob())
       .then(async (blob) => {
         console.log(info);
