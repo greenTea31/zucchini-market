@@ -44,7 +44,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final ImageService imageService;
@@ -162,7 +161,6 @@ public class UserServiceImpl implements UserService {
     private String getCurrentId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails principal = (UserDetails) authentication.getPrincipal();
-        log.info("principal : {}", principal.getUsername());
         return principal.getUsername();
     }
 
@@ -362,18 +360,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public TokenDto reissue(String refreshToken) {
         refreshToken = resolveToken(refreshToken);
-        log.info("serviceImpl refreshToken : {}", refreshToken);
         String username = getCurrentUsername(refreshToken);
-        log.info("serviceImpl username : {}", username);
         RefreshToken redisRefreshToken = refreshTokenRedisRepository.findById(username).orElseThrow(NoSuchElementException::new);
-        log.info("serviceImpl redisRefreshToken : {}", redisRefreshToken);
 
         if (refreshToken.equals(redisRefreshToken.getRefreshToken())) {
-            log.info("레디스에 있는거랑 토큰이 일치하네요");
             return reissueRefreshToken(refreshToken, username);
         }
 
-        log.info("레디스에 있는거랑 토큰이 일치하지 않네요");
         throw new IllegalArgumentException("토큰이 일치하지 않습니다.");
     }
 

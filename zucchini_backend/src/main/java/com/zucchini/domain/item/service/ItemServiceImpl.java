@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
@@ -59,6 +58,7 @@ public class ItemServiceImpl implements ItemService {
      * @return PageResponse<FindItemListResponse>
      */
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<FindItemListResponse> findItemList(String category, String keyword, Pageable pageable) {
         Page<Item> pageItemList = null;
         if(category.equals("")){
@@ -131,6 +131,7 @@ public class ItemServiceImpl implements ItemService {
      * @return FindItemResponse : 상품 정보
      */
     @Override
+    @Transactional(readOnly = true)
     public FindItemResponse findItem(int itemNo) {
         // 상품 조회
         Item item = itemRepository.findItemByUser(itemNo);
@@ -200,8 +201,6 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     public int addItem(AddItemRequest item) {
-        log.info("addItem");
-        log.info("item : " + item);
         // 현재 로그인한 회원의 아이디
         String currentPrincipalId = getCurrentId();
         User user = userRepository.findById(currentPrincipalId).get();
@@ -232,7 +231,6 @@ public class ItemServiceImpl implements ItemService {
         int itemNo = itemEntity.getNo();
 
         // 이미지, 화상 가능 날짜, 카테고리 등록
-        log.info("item.getImageList() : " + item.getImageList());
         addImage(itemNo, item.getImageList());
         addDate(itemNo, item.getDateList());
         addCategory(itemNo, item.getCategoryList());
@@ -246,9 +244,6 @@ public class ItemServiceImpl implements ItemService {
      * @param getImageList : 등록할 이미지 리스트
      */
     private void addImage(int itemNo, List<String> getImageList) {
-        log.info("addImage");
-        log.info("itemNo : " + itemNo);
-        log.info("getImageList : " + getImageList);
         List<Image> imageList = new ArrayList<>();
 
         // 등록할 이미지가 없는 경우
@@ -257,7 +252,6 @@ public class ItemServiceImpl implements ItemService {
         }
 
         for (String image : getImageList) {
-            log.info("image : " + image);
             Image buildImage = Image.builder()
                     .itemNo(itemNo)
                     .link(image)
@@ -350,13 +344,6 @@ public class ItemServiceImpl implements ItemService {
         itemDateRepository.deleteByItemNo(itemNo);
     }
 
-    /**
-     * 상품 카테고리 삭제
-     * @param itemNo : 상품 번호 (PK)
-     */
-    private void removeCategory(int itemNo) {
-        itemCategoryRepository.deleteByItemNo(itemNo);
-    }
 
     /**
      * 상품 삭제
@@ -392,17 +379,13 @@ public class ItemServiceImpl implements ItemService {
      */
     private String getCurrentId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("authentication : " + authentication);
 
         // 로그인 하지 않은 유저면 String "anonymousUser" 반환
         if (authentication.getPrincipal().equals("anonymousUser")) {
             return "anonymousUser";
         }
 
-        log.info("authentication.getPrincipal() : " + authentication.getPrincipal());
-
         UserDetails principal = (UserDetails) authentication.getPrincipal();
-        log.info("principal.getUsername() : " + principal.getUsername());
         return principal.getUsername();
     }
 
