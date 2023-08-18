@@ -5,12 +5,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import NoImage from "../../assets/images/NoImage.png";
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import dayjs from "dayjs";
 
 interface IItem {
   no: number;
   title: string;
   content: string;
-  updatedAt: string;
+  createdAt: string;
   price: number;
   status: number;
   image?: string;
@@ -67,7 +68,8 @@ export default function ItemEach({ item }: IProps) {
         찜 {item?.likeCount} | 조회 {item?.view}
       </ItemContent>
       <ItemContent>
-        {moment(item?.updatedAt).format("YYYY-MM-DD hh:mm:ss")}
+        {dayjs(item?.createdAt).format("YYYY-MM-DD hh:mm:ss")}
+        {/* {moment(item?.createdAt).format("YYYY-MM-DD hh:mm:ss")} */}
       </ItemContent>
       <ItemContent>{item?.category}</ItemContent>
     </ItemDiv>
