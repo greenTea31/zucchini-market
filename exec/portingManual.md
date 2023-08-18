@@ -8,6 +8,8 @@
 
 허위 매물 방지 효과 및 판매 당시 상품 상태 기록을 통해, 사용자 구매자 양측의 사기 방지 서비스 제공
 
+<br/><br/>
+
 ## I - 2. 프로젝트 사용 도구
 
 이슈 관리 : JIRA
@@ -21,6 +23,8 @@
 UCC : 모바비
 
 CI / CD : Jenkins
+
+<br/><br/><br/>
 
 ## I - 3. 개발 환경
 
@@ -36,18 +40,11 @@ CI / CD : Jenkins
     - Gradle : 7.6.1
     - IntelliJ IDEA : Ultimate, 2021.3
     - Visual Studio Code : 1.81.1
+   
 
-### I-3-2**. Front-End**
+<br/><br/>
 
-![Untitled](%E1%84%91%E1%85%A9%E1%84%90%E1%85%B5%E1%86%BC%20%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF%201d099092edb346f59f4240a858a4faf3/Untitled.png)
-
-![Untitled](%E1%84%91%E1%85%A9%E1%84%90%E1%85%B5%E1%86%BC%20%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF%201d099092edb346f59f4240a858a4faf3/Untitled%201.png)
-
-![Untitled](%E1%84%91%E1%85%A9%E1%84%90%E1%85%B5%E1%86%BC%20%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF%201d099092edb346f59f4240a858a4faf3/Untitled%202.png)
-
-![Untitled](%E1%84%91%E1%85%A9%E1%84%90%E1%85%B5%E1%86%BC%20%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF%201d099092edb346f59f4240a858a4faf3/Untitled%203.png)
-
-![Untitled](%E1%84%91%E1%85%A9%E1%84%90%E1%85%B5%E1%86%BC%20%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF%201d099092edb346f59f4240a858a4faf3/Untitled%204.png)
+### I-3-2. Front-End
 
 1. React 18.2.0
 2. TypeScript 4.4.2
@@ -57,17 +54,9 @@ CI / CD : Jenkins
 6. openvidu-browser 2.28.0
 7. React-Hook-Form 7.45.2
 
+<br/><br/>
+
 ### I-3-3. Back-End
-
-![Untitled](%E1%84%91%E1%85%A9%E1%84%90%E1%85%B5%E1%86%BC%20%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF%201d099092edb346f59f4240a858a4faf3/Untitled%205.png)
-
-![Untitled](%E1%84%91%E1%85%A9%E1%84%90%E1%85%B5%E1%86%BC%20%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF%201d099092edb346f59f4240a858a4faf3/Untitled%206.png)
-
-![Untitled](%E1%84%91%E1%85%A9%E1%84%90%E1%85%B5%E1%86%BC%20%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF%201d099092edb346f59f4240a858a4faf3/Untitled%207.png)
-
-![Untitled](%E1%84%91%E1%85%A9%E1%84%90%E1%85%B5%E1%86%BC%20%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF%201d099092edb346f59f4240a858a4faf3/Untitled%208.png)
-
-![Untitled](%E1%84%91%E1%85%A9%E1%84%90%E1%85%B5%E1%86%BC%20%E1%84%86%E1%85%A2%E1%84%82%E1%85%B2%E1%84%8B%E1%85%A5%E1%86%AF%201d099092edb346f59f4240a858a4faf3/Untitled%209.png)
 
 1. openJDK 1.8.0_312(Zulu 8)
 2. Spring Boot 2.7.13
@@ -76,11 +65,15 @@ CI / CD : Jenkins
 5. Jwt 0.11.2
 6. QueryDSL 1.0.10
 
+<br/><br/><br/>
+
 ## I - 4. 외부 서비스
 
 ### I-4-1. Amazon S3
 
 ### I-4-2. OpenVidu
+
+<br/><br/><br/>
 
 # II. 빌드
 
@@ -92,12 +85,16 @@ CI / CD : Jenkins
 ✔️ application.yml 참조
 ```
 
+<br/><br/>
+
 ### II-1-2. 배포 시 특이사항
 
 ```
 ✔️ FrontEnd 배포 시 -> NGINX
 ✔️ BackEnd 배포 시 -> Spring Boot 내장 톰캣
 ```
+
+<br/><br/>
 
 ### II-1-3. 데이터베이스 접속 정보
 
@@ -117,6 +114,8 @@ CI / CD : Jenkins
       port: 6379
   
 ```
+
+<br/><br/>
 
 ### II-1-4. 배포 순서
 
@@ -556,6 +555,8 @@ server {
 ```
 
 - `docker restart nginx` 명령어 실행
+
+<br/><br/><br/>
 
 # III. DB 덤프 파일 최신본
 
