@@ -45,9 +45,6 @@ CI / CD : Jenkins
 
 ### I-3-2. Front-End
 
-![react](assets/react.png) ![sc2](assets/sc2.png) ![ts3](assets/ts3.png)
-![rq4](assets/rq4.png) ![rr5](assets/rr5.png)
-
 1. React 18.2.0
 2. TypeScript 4.4.2
 3. React-Query 4.32.0
@@ -59,9 +56,6 @@ CI / CD : Jenkins
 <br/><br/>
 
 ### I-3-3. Back-End
-
-![jpa6](assets/jpa6.png) ![dsl7](assets/dsl7.png)
-![ss8](assets/ss8.png) ![jwt](assets/jwt.png)
 
 1. openJDK 1.8.0_312(Zulu 8)
 2. Spring Boot 2.7.13
