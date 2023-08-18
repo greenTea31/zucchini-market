@@ -514,15 +514,14 @@
 
 ## 📌 시연 시나리오
 
-[애호박 마켓의 UCC 보러가기 (∩^o^)⊃━☆](./assets/시연영상.mp4)
+[애호박 마켓의 시연 보러가기 (☞ ﾟヮﾟ)☞](./assets/시연영상.mp4)
 
 <br>
-
 <br>
 
 ## 🎥 UCC
 
-[애호박 마켓의 UCC 보러가기 (∩^o^)⊃━☆](./assets/발표ucc.mp4)
+[애호박 마켓의 UCC 보러가기 ヾ(⌐■_■)ノ ♪](./assets/발표ucc.mp4)
 
 <br>
 <br>
@@ -530,4 +529,4 @@
 ## 📊 PPT 발표 자료
 
 - 중간 발표 : [중간 발표 ppt자료 보러가기 (∩^o^)⊃━☆](./assets/firstppt.pptx)
-- 최종 발표 : [최종 발표 ppt자료 보러가기 (∩^o^)⊃━☆](./assets/firstppt.pptx)
+- 최종 발표 : [최종 발표 ppt자료 보러가기 (∩^o^)⊃━☆](./assets/finalppt.pdf)
