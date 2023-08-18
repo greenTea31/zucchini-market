@@ -89,14 +89,17 @@ class ConferenceRoom extends Component {
       const { data: receivedConnectData } = e;
     });
 
-    sse.addEventListener("buy", (e) => {
+    sse.addEventListener("buy", async (e) => {
       // count를 누른 유저가 아닌데 count event를 인식했으면 alert를 띄움
       const { data: receivedCount } = e;
       if (this.buyer !== parsedinfo.nickname) {
-        this.dealItem();
-        this.stopRecording();
+        await this.dealItem();
+        await this.stopRecording();
       }
-      this.setState({ isOkModalOpen: !this.state.isOkModalOpen });
+      setTimeout(
+        () => this.setState({ isOkModalOpen: !this.state.isOkModalOpen }),
+        3000
+      );
     });
 
     sse.addEventListener("notbuy", (e) => {
