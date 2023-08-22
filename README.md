@@ -536,7 +536,7 @@
 
 ### `영상통화 중 구매`
 
-![conference](./assets/conference.gif)
+![conference](./assets/buy.gif)
 
 <br>
 
