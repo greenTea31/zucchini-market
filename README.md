@@ -512,6 +512,79 @@
 <br>
 <br>
 
+## 🖥 서비스 화면
+
+### `메인 화면`
+
+[Main](./assets/main.png)
+
+<br>
+
+### `기능 설명`
+
+[about1](./assets/about1.png)
+[about2](./assets/about2.png)
+[about3](./assets/about3.png)
+
+<br>
+
+### `영상통화 입장`
+
+[conference](./assets/conference.gif)
+
+<br>
+
+### `영상통화 중 구매`
+
+[conference](./assets/conference.gif)
+
+<br>
+
+### `거래 완료 후 영상 다시보기 & 별점 기능`
+
+[replaystar](./assets/replaystar.gif)
+
+<br>
+
+### `판매자 일정 선택`
+
+[sellerselect](./assets/sellerselect.gif)
+
+<br>
+
+### `판매자 일정 선택`
+
+[buyerselect](./assets/buyerselect.gif)
+
+<br>
+
+### `카테고리`
+
+[category](./assets/category.gif)
+
+<br>
+
+### `로그인 전 내비게이션바`
+
+[beforeLogin](./assets/beforeLogin.gif)
+
+<br>
+
+### `로그인 후 내비게이션바`
+
+[Navbar](./assets/Navbar.gif)
+
+<br>
+
+### `Footer`
+
+[footer](./assets/Footer.gif)
+
+<br>
+
+<br>
+<br>
+
 ## 📌 시연 시나리오
 
 [애호박 마켓의 시연 보러가기 (☞ ﾟヮﾟ)☞](./assets/시연영상.mp4)
